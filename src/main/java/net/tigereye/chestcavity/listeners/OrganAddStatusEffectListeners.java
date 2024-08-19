@@ -38,7 +38,12 @@ public class OrganAddStatusEffectListeners {
         if(ccStatusEffect.CC_IsHarmful()){
             CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
             float detoxRatio = cc.getOrganScore(CCOrganScores.DETOXIFICATION)/cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION);
-            ccInstance.CC_setDuration((int) Math.max(1,instance.getDuration() * 2 / (1 + detoxRatio)));
+            if(detoxRatio > -1) {
+                ccInstance.CC_setDuration((int) Math.max(1, instance.getDuration() * 2 / (1 + detoxRatio)));
+            }
+            else {
+                ccInstance.CC_setDuration(9999);
+            }
         }
         return instance;
     }
