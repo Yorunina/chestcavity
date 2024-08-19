@@ -6,6 +6,7 @@ import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
@@ -643,5 +644,6 @@ public class CCItems {
 			entries.add(MINI_SAUSAGE_SKIN);
 			entries.add(IRON_SCRAP);
 		});
+		Registry.register(Registries.ITEM_GROUP, Identifier.of(ChestCavity.MODID,"organ_item_group"), ORGAN_ITEM_GROUP);
 	}
 }
