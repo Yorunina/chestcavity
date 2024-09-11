@@ -24,14 +24,14 @@ public class GeneratedChestCavityTypeManager implements SimpleSynchronousResourc
         return new ResourceLocation("chestcavity", "types");
     }
 
-    public void m_6213_(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         GeneratedChestCavityTypes.clear();
         ChestCavity.LOGGER.info("Loading chest cavity types.");
-        manager.m_214159_("types", (path) -> {
-            return path.m_135815_().endsWith(".json");
+        manager.listResources("types", (path) -> {
+            return path.getPath().endsWith(".json");
         }).forEach((id, resource) -> {
             try {
-                InputStream stream = resource.m_215507_();
+                InputStream stream = resource.open();
 
                 try {
                     Reader reader = new InputStreamReader(stream);
@@ -58,4 +58,5 @@ public class GeneratedChestCavityTypeManager implements SimpleSynchronousResourc
         });
         ChestCavity.LOGGER.info("Loaded " + GeneratedChestCavityTypes.size() + " chest cavity types.");
     }
+
 }

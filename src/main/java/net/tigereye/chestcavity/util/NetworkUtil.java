@@ -20,7 +20,7 @@ public class NetworkUtil {
     }
 
     public static boolean SendS2CChestCavityUpdatePacket(ChestCavityInstance cc, boolean buf) {
-        if (!cc.owner.m_9236_().m_5776_()) {
+        if (!cc.owner.level().m_5776_()) {
             LivingEntity var3 = cc.owner;
             if (var3 instanceof ServerPlayer) {
                 ServerPlayer spe = (ServerPlayer)var3;

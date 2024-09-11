@@ -77,16 +77,16 @@ public class ChestCavityTypeSerializer {
                             pos = obj.get("count").getAsInt();
                             stack = new ItemStack(item, pos);
                         } else {
-                            stack = new ItemStack(item, item.m_41459_());
+                            stack = new ItemStack(item, item.getMaxStackSize());
                         }
 
                         pos = obj.get("position").getAsInt();
-                        if (pos >= inv.m_6643_()) {
+                        if (pos >= inv.getContainerSize()) {
                             ChestCavity.LOGGER.error("Position component is out of bounds in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                         } else if (forbiddenSlots.contains(pos)) {
                             ChestCavity.LOGGER.error("Position component is forbidden in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                         } else {
-                            inv.m_6836_(pos, stack);
+                            inv.setItem(pos, stack);
                         }
                     } else {
                         ChestCavity.LOGGER.error("Unknown " + itemID.toString() + " in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
@@ -120,7 +120,7 @@ public class ChestCavityTypeSerializer {
                 } else if (!obj.has("value")) {
                     ChestCavity.LOGGER.error("Missing value component in entry no. " + i + " in " + id.toString() + "'s exceptional organs");
                 } else {
-                    Ingredient ingredient = Ingredient.m_43917_(obj.get("ingredient"));
+                    Ingredient ingredient = Ingredient.fromJson(obj.get("ingredient"));
                     exceptionalOrgans.put(ingredient, this.readOrganScoresFromJson(id, obj.get("value").getAsJsonArray()));
                 }
             } catch (Exception var9) {

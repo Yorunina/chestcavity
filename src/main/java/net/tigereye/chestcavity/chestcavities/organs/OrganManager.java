@@ -31,19 +31,19 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
         return new ResourceLocation("chestcavity", "organs");
     }
 
-    public void m_6213_(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         GeneratedOrganData.clear();
         ChestCavity.LOGGER.info("Loading organs.");
-        manager.m_214159_("organs", (path) -> {
-            return path.m_135815_().endsWith(".json");
+        manager.listResources("organs", (path) -> {
+            return path.getPath().endsWith(".json");
         }).forEach((id, resource) -> {
             try {
-                InputStream stream = resource.m_215507_();
+                InputStream stream = resource.open();
 
                 try {
                     Reader reader = new InputStreamReader(stream);
                     Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat)(new Gson()).fromJson(reader, OrganJsonFormat.class));
-                    GeneratedOrganData.put((ResourceLocation)organDataPair.m_14418_(), (OrganData)organDataPair.m_14419_());
+                    GeneratedOrganData.put((ResourceLocation)organDataPair.getA(), (OrganData)organDataPair.getB());
                 } catch (Throwable var7) {
                     if (stream != null) {
                         try {
@@ -94,7 +94,7 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
 
         for (String key : nbt.getAllKeys()) {
             if (!key.equals("pseudoOrgan")) {
-                organData.organScores.put(new ResourceLocation(key), nbt.m_128457_(key));
+                organData.organScores.put(new ResourceLocation(key), nbt.getFloat(key));
             }
         }
 

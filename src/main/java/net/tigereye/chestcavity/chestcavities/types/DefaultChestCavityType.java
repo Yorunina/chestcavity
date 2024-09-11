@@ -38,8 +38,8 @@ public class DefaultChestCavityType implements ChestCavityType {
     }
 
     private void prepareDefaultChestCavity() {
-        for(int i = 0; i < this.defaultChestCavity.m_6643_(); ++i) {
-            this.defaultChestCavity.m_6836_(i, new ItemStack(Items.f_42329_, 64));
+        for(int i = 0; i < this.defaultChestCavity.getContainerSize(); ++i) {
+            this.defaultChestCavity.setItem(i, new ItemStack(Items.DIRT, 64));
         }
 
     }
@@ -123,9 +123,9 @@ public class DefaultChestCavityType implements ChestCavityType {
     private void deriveDroppableOrgans() {
         this.droppableOrgans = new LinkedList();
 
-        for(int i = 0; i < this.defaultChestCavity.m_6643_(); ++i) {
-            ItemStack stack = this.defaultChestCavity.m_8020_(i);
-            if (OrganManager.isTrueOrgan(stack.m_41720_())) {
+        for(int i = 0; i < this.defaultChestCavity.getContainerSize(); ++i) {
+            ItemStack stack = this.defaultChestCavity.getItem(i);
+            if (OrganManager.isTrueOrgan(stack.getItem())) {
                 this.droppableOrgans.add(stack);
             }
         }
@@ -173,10 +173,10 @@ public class DefaultChestCavityType implements ChestCavityType {
     }
 
     public void fillChestCavityInventory(ChestCavityInventory chestCavity) {
-        chestCavity.m_6211_();
+        chestCavity.clearContent();
 
-        for(int i = 0; i < chestCavity.m_6643_(); ++i) {
-            chestCavity.m_6836_(i, this.defaultChestCavity.m_8020_(i));
+        for(int i = 0; i < chestCavity.getContainerSize(); ++i) {
+            chestCavity.setItem(i, this.defaultChestCavity.getItem(i));
         }
 
     }
@@ -205,7 +205,7 @@ public class DefaultChestCavityType implements ChestCavityType {
             this.generateGuaranteedOrganDrops(random, looting, loot);
             return loot;
         } else {
-            if (random.m_188501_() < ChestCavity.config.UNIVERSAL_DONOR_RATE + ChestCavity.config.ORGAN_BUNDLE_LOOTING_BOOST * (float)looting) {
+            if (random.nextFloat() < ChestCavity.config.UNIVERSAL_DONOR_RATE + ChestCavity.config.ORGAN_BUNDLE_LOOTING_BOOST * (float)looting) {
                 this.generateRareOrganDrops(random, looting, loot);
             }
 
@@ -215,26 +215,26 @@ public class DefaultChestCavityType implements ChestCavityType {
 
     public void generateRareOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
         LinkedList<ItemStack> organPile = new LinkedList(this.getDroppableOrgans());
-        int rolls = 1 + random.m_188503_(3) + random.m_188503_(3);
+        int rolls = 1 + random.nextInt(3) + random.nextInt(3);
         ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
     }
 
     public void generateGuaranteedOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
         LinkedList<ItemStack> organPile = new LinkedList(this.getDroppableOrgans());
-        int rolls = 3 + random.m_188503_(2 + looting) + random.m_188503_(2 + looting);
+        int rolls = 3 + random.nextInt(2 + looting) + random.nextInt(2 + looting);
         ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
     }
 
     public void setOrganCompatibility(ChestCavityInstance instance) {
         ChestCavityInventory chestCavity = instance.inventory;
 
-        for(int i = 0; i < chestCavity.m_6643_(); ++i) {
-            ItemStack itemStack = chestCavity.m_8020_(i);
-            if (itemStack != null && itemStack != ItemStack.f_41583_) {
+        for(int i = 0; i < chestCavity.getContainerSize(); ++i) {
+            ItemStack itemStack = chestCavity.getItem(i);
+            if (itemStack != null && itemStack != ItemStack.EMPTY) {
                 CompoundTag tag = new CompoundTag();
-                tag.m_128362_("owner", instance.compatibility_id);
-                tag.m_128359_("name", instance.owner.m_5446_().getString());
-                itemStack.m_41700_(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
+                tag.putUUID("owner", instance.compatibility_id);
+                tag.putString("name", instance.owner.getDisplayName().getString());
+                itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
             }
         }
 
@@ -245,8 +245,8 @@ public class DefaultChestCavityType implements ChestCavityType {
     }
 
     public boolean isOpenable(ChestCavityInstance instance) {
-        boolean weakEnough = instance.owner.m_21223_() <= (float)ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD || instance.owner.m_21223_() <= instance.owner.m_21233_() * ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD;
-        boolean chestVulnerable = instance.owner.m_6844_(EquipmentSlot.CHEST).m_41619_();
+        boolean weakEnough = instance.owner.getHealth() <= (float)ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD || instance.owner.getHealth() <= instance.owner.getMaxHealth() * ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD;
+        boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         boolean easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F;
         return chestVulnerable && (easeOfAccess || weakEnough);
     }
@@ -254,7 +254,7 @@ public class DefaultChestCavityType implements ChestCavityType {
     public void onDeath(ChestCavityInstance cc) {
         cc.projectileQueue.clear();
         if (cc.connectedCrystal != null) {
-            cc.connectedCrystal.m_31052_((BlockPos)null);
+            cc.connectedCrystal.setBeamTarget((BlockPos)null);
             cc.connectedCrystal = null;
         }
 

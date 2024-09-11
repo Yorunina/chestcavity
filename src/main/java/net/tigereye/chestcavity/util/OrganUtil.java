@@ -130,7 +130,7 @@ public class OrganUtil {
         if (EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
             textString = "Unsafe to use";
         } else if (tag != null && tag.m_128441_(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
-            tag = tag.m_128469_(ChestCavity.COMPATIBILITY_TAG.toString());
+            tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
             String name = tag.m_128461_("name");
             textString = "Only Compatible With: " + name;
         } else {
@@ -151,8 +151,8 @@ public class OrganUtil {
     }
 
     public static void explode(LivingEntity entity, float explosionYield) {
-        if (!entity.m_9236_().f_46443_) {
-            entity.m_9236_().m_254849_((Entity)null, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), (float)Math.sqrt((double)explosionYield), ExplosionInteraction.MOB);
+        if (!entity.level().f_46443_) {
+            entity.level().m_254849_((Entity)null, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), (float)Math.sqrt((double)explosionYield), ExplosionInteraction.MOB);
             spawnEffectsCloud(entity);
         }
 
@@ -179,13 +179,13 @@ public class OrganUtil {
     }
 
     public static void milkSilk(LivingEntity entity) {
-        if (!entity.m_21023_((MobEffect)CCStatusEffects.SILK_COOLDOWN.get())) {
+        if (!entity.hasEffect((MobEffect)CCStatusEffects.SILK_COOLDOWN.get())) {
             ChestCavityEntity.of(entity).ifPresent((cce) -> {
                 if (cce.getChestCavityInstance().opened) {
                     ChestCavityInstance cc = cce.getChestCavityInstance();
                     float silk = cc.getOrganScore(CCOrganScores.SILK);
                     if (silk > 0.0F && spinWeb(entity, cc, silk)) {
-                        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
+                        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
                     }
                 }
 
@@ -203,7 +203,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnDragonBomb);
         }
 
-        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.DRAGON_BOMB_COOLDOWN.get(), ChestCavity.config.DRAGON_BOMB_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.DRAGON_BOMB_COOLDOWN.get(), ChestCavity.config.DRAGON_BOMB_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueForcefulSpit(LivingEntity entity, ChestCavityInstance cc, int projectiles) {
@@ -215,7 +215,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnSpit);
         }
 
-        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get(), ChestCavity.config.FORCEFUL_SPIT_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get(), ChestCavity.config.FORCEFUL_SPIT_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueGhastlyFireballs(LivingEntity entity, ChestCavityInstance cc, int ghastly) {
@@ -227,7 +227,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnGhastlyFireball);
         }
 
-        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.GHASTLY_COOLDOWN.get(), ChestCavity.config.GHASTLY_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.GHASTLY_COOLDOWN.get(), ChestCavity.config.GHASTLY_COOLDOWN, 0, false, false, true));
     }
 
     public static void queuePyromancyFireballs(LivingEntity entity, ChestCavityInstance cc, int pyromancy) {
@@ -239,7 +239,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnPyromancyFireball);
         }
 
-        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.PYROMANCY_COOLDOWN.get(), ChestCavity.config.PYROMANCY_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.PYROMANCY_COOLDOWN.get(), ChestCavity.config.PYROMANCY_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueShulkerBullets(LivingEntity entity, ChestCavityInstance cc, int shulkerBullets) {
@@ -251,7 +251,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnShulkerBullet);
         }
 
-        entity.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.SHULKER_BULLET_COOLDOWN.get(), ChestCavity.config.SHULKER_BULLET_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.SHULKER_BULLET_COOLDOWN.get(), ChestCavity.config.SHULKER_BULLET_COOLDOWN, 0, false, false, true));
     }
 
     public static void setStatusEffects(ItemStack organ, ItemStack potion) {
@@ -277,7 +277,7 @@ public class OrganUtil {
             MobEffectInstance effect = (MobEffectInstance)list.get(i);
             if (effect != null) {
                 CompoundTag NbtCompound = new CompoundTag();
-                NbtList.add(effect.m_19555_(NbtCompound));
+                NbtList.add(effect.save(NbtCompound));
             }
         }
 
@@ -293,14 +293,14 @@ public class OrganUtil {
                     ItemEntity itemEntity;
                     if (silk >= 2.0F) {
                         stack = new ItemStack(Items.f_41863_, (int)silk / 2);
-                        itemEntity = new ItemEntity(entity.m_9236_(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
-                        entity.m_9236_().m_7967_(itemEntity);
+                        itemEntity = new ItemEntity(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
+                        entity.level().m_7967_(itemEntity);
                     }
 
                     if (silk % 2.0F >= 1.0F) {
                         stack = new ItemStack(Items.f_42401_);
-                        itemEntity = new ItemEntity(entity.m_9236_(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
-                        entity.m_9236_().m_7967_(itemEntity);
+                        itemEntity = new ItemEntity(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
+                        entity.level().m_7967_(itemEntity);
                     }
                 }
             }
@@ -311,7 +311,7 @@ public class OrganUtil {
     public static void spawnEffectsCloud(LivingEntity entity) {
         Collection<MobEffectInstance> collection = entity.m_21220_();
         if (!collection.isEmpty()) {
-            AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.m_9236_(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_());
+            AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_());
             areaEffectCloudEntity.m_19712_(2.5F);
             areaEffectCloudEntity.m_19732_(-0.5F);
             areaEffectCloudEntity.m_19740_(10);
@@ -324,7 +324,7 @@ public class OrganUtil {
                 areaEffectCloudEntity.m_19716_(new MobEffectInstance(statusEffectInstance));
             }
 
-            entity.m_9236_().m_7967_(areaEffectCloudEntity);
+            entity.level().m_7967_(areaEffectCloudEntity);
         }
 
     }
@@ -335,24 +335,24 @@ public class OrganUtil {
 
     public static void spawnSpit(LivingEntity entity) {
         Vec3 entityFacing = entity.m_20154_().m_82541_();
-        Llama fakeLlama = new Llama(EntityType.f_20466_, entity.m_9236_());
+        Llama fakeLlama = new Llama(EntityType.f_20466_, entity.level());
         fakeLlama.m_20343_(entity.m_20185_(), entity.m_20186_(), entity.m_20189_());
         fakeLlama.m_146926_(entity.m_146909_());
         fakeLlama.m_146922_(entity.m_146908_());
         fakeLlama.f_20883_ = entity.f_20883_;
-        LlamaSpit llamaSpitEntity = new LlamaSpit(entity.m_9236_(), fakeLlama);
+        LlamaSpit llamaSpitEntity = new LlamaSpit(entity.level(), fakeLlama);
         llamaSpitEntity.m_5602_(entity);
         llamaSpitEntity.m_20334_(entityFacing.f_82479_ * 2.0, entityFacing.f_82480_ * 2.0, entityFacing.f_82481_ * 2.0);
-        entity.m_9236_().m_7967_(llamaSpitEntity);
+        entity.level().m_7967_(llamaSpitEntity);
         entityFacing = entityFacing.m_82490_(-0.1);
         entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
     }
 
     public static void spawnDragonBomb(LivingEntity entity) {
         Vec3 entityFacing = entity.m_20154_().m_82541_();
-        DragonFireball fireballEntity = new DragonFireball(entity.m_9236_(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
+        DragonFireball fireballEntity = new DragonFireball(entity.level(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
         fireballEntity.m_20248_(fireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, fireballEntity.m_20189_());
-        entity.m_9236_().m_7967_(fireballEntity);
+        entity.level().m_7967_(fireballEntity);
         entityFacing = entityFacing.m_82490_(-0.2);
         entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
     }
@@ -371,7 +371,7 @@ public class OrganUtil {
             double z = pos.f_82481_;
             BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, y, z);
 
-            while(entity.m_9236_().m_46859_(mutable)) {
+            while(entity.level().m_46859_(mutable)) {
                 --y;
                 if (y < 0.0) {
                     return;
@@ -381,31 +381,31 @@ public class OrganUtil {
             }
 
             y = (double)(Mth.m_14107_(y) + 1);
-            AreaEffectCloud breathEntity = new AreaEffectCloud(entity.m_9236_(), x, y, z);
+            AreaEffectCloud breathEntity = new AreaEffectCloud(entity.level(), x, y, z);
             breathEntity.m_19718_(entity);
             breathEntity.m_19712_((float)Math.max(range / 2.0, Math.min(range, (double)MathUtil.horizontalDistanceTo(breathEntity, entity))));
             breathEntity.m_19734_(200);
             breathEntity.m_19724_(ParticleTypes.f_123799_);
             breathEntity.m_19716_(new MobEffectInstance(MobEffects.f_19602_));
-            entity.m_9236_().m_7967_(breathEntity);
+            entity.level().m_7967_(breathEntity);
         }
 
     }
 
     public static void spawnGhastlyFireball(LivingEntity entity) {
         Vec3 entityFacing = entity.m_20154_().m_82541_();
-        LargeFireball fireballEntity = new LargeFireball(entity.m_9236_(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_, 1);
+        LargeFireball fireballEntity = new LargeFireball(entity.level(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_, 1);
         fireballEntity.m_20248_(fireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, fireballEntity.m_20189_());
-        entity.m_9236_().m_7967_(fireballEntity);
+        entity.level().m_7967_(fireballEntity);
         entityFacing = entityFacing.m_82490_(-0.8);
         entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
     }
 
     public static void spawnPyromancyFireball(LivingEntity entity) {
         Vec3 entityFacing = entity.m_20154_().m_82541_();
-        SmallFireball smallFireballEntity = new SmallFireball(entity.m_9236_(), entity, entityFacing.f_82479_ + entity.m_217043_().m_188583_() * 0.1, entityFacing.f_82480_, entityFacing.f_82481_ + entity.m_217043_().m_188583_() * 0.1);
+        SmallFireball smallFireballEntity = new SmallFireball(entity.level(), entity, entityFacing.f_82479_ + entity.m_217043_().m_188583_() * 0.1, entityFacing.f_82480_, entityFacing.f_82481_ + entity.m_217043_().m_188583_() * 0.1);
         smallFireballEntity.m_20248_(smallFireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, smallFireballEntity.m_20189_());
-        entity.m_9236_().m_7967_(smallFireballEntity);
+        entity.level().m_7967_(smallFireballEntity);
         entityFacing = entityFacing.m_82490_(-0.2);
         entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
     }
@@ -413,11 +413,11 @@ public class OrganUtil {
     public static void spawnShulkerBullet(LivingEntity entity) {
         TargetingConditions targetPredicate = TargetingConditions.m_148352_();
         targetPredicate.m_26883_((double)(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2));
-        LivingEntity target = entity.m_9236_().m_45963_(LivingEntity.class, targetPredicate, entity, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), new AABB(entity.m_20185_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20185_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
+        LivingEntity target = entity.level().m_45963_(LivingEntity.class, targetPredicate, entity, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), new AABB(entity.m_20185_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20185_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
         if (target != null) {
-            ShulkerBullet shulkerBulletEntity = new ShulkerBullet(entity.m_9236_(), entity, target, Axis.Y);
+            ShulkerBullet shulkerBulletEntity = new ShulkerBullet(entity.level(), entity, target, Axis.Y);
             shulkerBulletEntity.m_20248_(shulkerBulletEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, shulkerBulletEntity.m_20189_());
-            entity.m_9236_().m_7967_(shulkerBulletEntity);
+            entity.level().m_7967_(shulkerBulletEntity);
         }
 
     }
@@ -431,8 +431,8 @@ public class OrganUtil {
         }
 
         if (silkScore >= 2.0F) {
-            BlockPos pos = entity.m_20183_().m_121945_(entity.m_6350_().m_122424_());
-            if (entity.m_20193_().m_8055_(pos).m_60795_()) {
+            BlockPos pos = entity.blockPosition().m_121945_(entity.m_6350_().m_122424_());
+            if (entity.m_20193_().getBlockState(pos).m_60795_()) {
                 if (silkScore >= 3.0F) {
                     hungerCost = 16;
                     silkScore -= 3.0F;
@@ -459,7 +459,7 @@ public class OrganUtil {
     }
 
     public static boolean teleportRandomly(LivingEntity entity, float range) {
-        if (!entity.m_9236_().m_5776_() && entity.m_6084_()) {
+        if (!entity.level().m_5776_() && entity.m_6084_()) {
             for(int i = 0; i < ChestCavity.config.MAX_TELEPORT_ATTEMPTS; ++i) {
                 double d = entity.m_20185_() + (entity.m_217043_().m_188500_() - 0.5) * (double)range;
                 double e = Math.max(1.0, entity.m_20186_() + (entity.m_217043_().m_188500_() - 0.5) * (double)range);
@@ -481,7 +481,7 @@ public class OrganUtil {
         BlockPos.MutableBlockPos targetPos = new BlockPos.MutableBlockPos(x, y, z);
 
         BlockState blockState;
-        for(blockState = entity.m_9236_().m_8055_(targetPos); targetPos.m_123342_() > 0 && !blockState.m_280555_() && !blockState.m_278721_(); blockState = entity.m_9236_().m_8055_(targetPos)) {
+        for(blockState = entity.level().getBlockState(targetPos); targetPos.m_123342_() > 0 && !blockState.m_280555_() && !blockState.m_278721_(); blockState = entity.level().getBlockState(targetPos)) {
             targetPos.m_122173_(Direction.DOWN);
         }
 
@@ -489,20 +489,20 @@ public class OrganUtil {
             return false;
         } else {
             targetPos.m_122173_(Direction.UP);
-            blockState = entity.m_9236_().m_8055_(targetPos);
+            blockState = entity.level().getBlockState(targetPos);
 
-            for(BlockState blockState2 = entity.m_9236_().m_8055_(targetPos.m_7494_()); blockState.m_280555_() || blockState.m_278721_() || blockState2.m_280555_() || blockState2.m_278721_(); blockState2 = entity.m_9236_().m_8055_(targetPos.m_7494_())) {
+            for(BlockState blockState2 = entity.level().getBlockState(targetPos.m_7494_()); blockState.m_280555_() || blockState.m_278721_() || blockState2.m_280555_() || blockState2.m_278721_(); blockState2 = entity.level().getBlockState(targetPos.m_7494_())) {
                 targetPos.m_122173_(Direction.UP);
-                blockState = entity.m_9236_().m_8055_(targetPos);
+                blockState = entity.level().getBlockState(targetPos);
             }
 
-            if (entity.m_9236_().m_6042_().f_63856_() && targetPos.m_123342_() >= entity.m_9236_().m_141928_()) {
+            if (entity.level().m_6042_().f_63856_() && targetPos.m_123342_() >= entity.level().m_141928_()) {
                 return false;
             } else {
                 entity.m_20324_(x, (double)targetPos.m_123342_() + 0.1, z);
                 if (!entity.m_20067_()) {
-                    entity.m_9236_().m_6263_((Player)null, entity.f_19854_, entity.f_19855_, entity.f_19856_, SoundEvents.f_11852_, entity.m_5720_(), 1.0F, 1.0F);
-                    entity.m_5496_(SoundEvents.f_11852_, 1.0F, 1.0F);
+                    entity.level().m_6263_((Player)null, entity.f_19854_, entity.f_19855_, entity.f_19856_, SoundEvents.f_11852_, entity.m_5720_(), 1.0F, 1.0F);
+                    entity.playSound(SoundEvents.f_11852_, 1.0F, 1.0F);
                 }
 
                 return true;

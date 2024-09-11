@@ -38,15 +38,15 @@ public class ClientModEventBusSubscriber {
 
     @SubscribeEvent
     public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.f_256869_) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(CCItems.CHEST_OPENER);
-        } else if (event.getTabKey() == CreativeModeTabs.f_256797_) {
+        } else if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(CCItems.WOODEN_CLEAVER);
             event.accept(CCItems.STONE_CLEAVER);
             event.accept(CCItems.IRON_CLEAVER);
             event.accept(CCItems.DIAMOND_CLEAVER);
             event.accept(CCItems.NETHERITE_CLEAVER);
-        } else if (event.getTabKey() == CreativeModeTabs.f_256839_) {
+        } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(CCItems.BURNT_MEAT_CHUNK);
             event.accept(CCItems.RAW_ORGAN_MEAT);
             event.accept(CCItems.COOKED_ORGAN_MEAT);
@@ -93,7 +93,7 @@ public class ClientModEventBusSubscriber {
             event.accept(CCItems.COOKED_DRAGON_SAUSAGE);
             event.accept(CCItems.RAW_RICH_DRAGON_SAUSAGE);
             event.accept(CCItems.COOKED_RICH_DRAGON_SAUSAGE);
-        } else if (event.getTabKey() == CreativeModeTabs.f_256968_) {
+        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(CCItems.SAUSAGE_SKIN);
             event.accept(CCItems.MINI_SAUSAGE_SKIN);
             event.accept(CCItems.IRON_SCRAP);

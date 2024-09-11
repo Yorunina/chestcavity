@@ -18,11 +18,11 @@ public class ChestCavityHotkeyPacket {
     }
 
     public ChestCavityHotkeyPacket(FriendlyByteBuf buf) {
-        this(buf.m_130281_());
+        this(buf.readResourceLocation());
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.m_130085_(this.location);
+        buf.writeResourceLocation(this.location);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {

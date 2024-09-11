@@ -21,7 +21,7 @@ public class OrganFoodListeners {
     }
 
     private static EffectiveFoodScores applyHerbivorousCarnivorous(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if (!foodComponent.m_38746_() && !food.m_7968_().m_204117_(CCTags.CARNIVORE_FOOD)) {
+        if (!foodComponent.m_38746_() && !food.m_7968_().is(CCTags.CARNIVORE_FOOD)) {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
         } else {
@@ -33,7 +33,7 @@ public class OrganFoodListeners {
     }
 
     private static EffectiveFoodScores applyRot(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if (food.m_7968_().m_204117_(CCTags.ROTTEN_FOOD)) {
+        if (food.m_7968_().is(CCTags.ROTTEN_FOOD)) {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROT_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROTGUT);
         }
@@ -44,8 +44,8 @@ public class OrganFoodListeners {
     private static EffectiveFoodScores applyFurnacePower(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
         if (food == CCItems.FURNACE_POWER.get()) {
             int power = 0;
-            if (cce.getChestCavityInstance().owner.m_21023_((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
-                power = cce.getChestCavityInstance().owner.m_21124_((MobEffect)CCStatusEffects.FURNACE_POWER.get()).m_19564_() + 1;
+            if (cce.getChestCavityInstance().owner.hasEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
+                power = cce.getChestCavityInstance().owner.getEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get()).getAmplifier() + 1;
             }
 
             efs.digestion -= cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);

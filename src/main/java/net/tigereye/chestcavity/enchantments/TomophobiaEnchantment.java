@@ -26,7 +26,7 @@ public class TomophobiaEnchantment extends Enchantment {
     public boolean m_6591_() {
         return true;
     }
-    public boolean m_5975_(Enchantment other) {
+    public boolean isCompatibleWith(Enchantment other) {
         return super.isCompatibleWith(other) && other != CCEnchantments.SURGICAL.get() && other != CCEnchantments.MALPRACTICE.get();
     }
 }

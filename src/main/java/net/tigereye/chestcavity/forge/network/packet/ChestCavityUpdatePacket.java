@@ -36,7 +36,7 @@ public class ChestCavityUpdatePacket {
         int entries = buf.readInt();
 
         for(int i = 0; i < entries; ++i) {
-            organScores.put(new ResourceLocation(buf.m_130277_()), buf.readFloat());
+            organScores.put(new ResourceLocation(buf.readUtf()), buf.readFloat());
         }
 
         return new ChestCavityUpdatePacket(open, entries, organScores);
@@ -46,7 +46,7 @@ public class ChestCavityUpdatePacket {
         buf.writeBoolean(this.opened);
         buf.writeInt(this.organScoreSize);
         this.organScoresMap.forEach((id, value) -> {
-            buf.m_130070_(id.toString());
+            buf.writeUtf(id.toString());
             buf.writeFloat(value);
         });
     }
@@ -56,7 +56,7 @@ public class ChestCavityUpdatePacket {
         ((NetworkEvent.Context)ctx.get()).enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
                 return () -> {
-                    Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.m_91087_().f_91075_);
+                    Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.getInstance().player);
                     optional.ifPresent((chestCavityEntity) -> {
                         ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
                         instance.opened = this.opened;

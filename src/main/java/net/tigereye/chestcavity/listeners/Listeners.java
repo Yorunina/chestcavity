@@ -24,7 +24,7 @@ public class Listeners {
 
     private static List<ItemStack> AddLootSubEventListener(LootContextParamSet type, LootContext context) {
         List<ItemStack> loot = new ArrayList();
-        if (type == LootContextParamSets.f_81415_) {
+        if (type == LootContextParamSets.ENTITY) {
             loot.addAll(LootRegister.addEntityLoot(type, context));
         }
 
@@ -32,7 +32,7 @@ public class Listeners {
     }
 
     private static List<ItemStack> ModifyLootSubEventListener(LootContextParamSet type, LootContext context, List<ItemStack> loot) {
-        if (type == LootContextParamSets.f_81415_) {
+        if (type == LootContextParamSets.ENTITY) {
             loot = LootRegister.modifyEntityLoot(type, context, loot);
         }
 

@@ -23,14 +23,14 @@ public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousR
         return new ResourceLocation("chestcavity", "entity_assignment");
     }
 
-    public void m_6213_(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         GeneratedChestCavityAssignments.clear();
         ChestCavity.LOGGER.info("Loading chest cavity assignments.");
-        manager.m_214159_("entity_assignment", (path) -> {
-            return path.m_135815_().endsWith(".json");
+        manager.listResources("entity_assignment", (path) -> {
+            return path.getPath().endsWith(".json");
         }).forEach((id, resource) -> {
             try {
-                InputStream stream = resource.m_215507_();
+                InputStream stream = resource.open();
 
                 try {
                     Reader reader = new InputStreamReader(stream);

@@ -27,13 +27,13 @@ public class OrganDataPacket {
         Map<ResourceLocation, OrganData> organMap = new HashMap();
 
         for(int i = 0; i < organCount; ++i) {
-            ResourceLocation organID = buf.m_130281_();
+            ResourceLocation organID = buf.readResourceLocation();
             OrganData organData = new OrganData();
             organData.pseudoOrgan = buf.readBoolean();
             int organAbilityCount = buf.readInt();
 
             for(int j = 0; j < organAbilityCount; ++j) {
-                organData.organScores.put(buf.m_130281_(), buf.readFloat());
+                organData.organScores.put(buf.readResourceLocation(), buf.readFloat());
             }
 
             organMap.put(organID, organData);
@@ -45,11 +45,11 @@ public class OrganDataPacket {
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(this.organDataSize);
         this.organData.forEach((id, data) -> {
-            buf.m_130085_(id);
+            buf.writeResourceLocation(id);
             buf.writeBoolean(data.pseudoOrgan);
             buf.writeInt(data.organScores.size());
             data.organScores.forEach((ability, score) -> {
-                buf.m_130085_(ability);
+                buf.writeResourceLocation(ability);
                 buf.writeFloat(score);
             });
         });

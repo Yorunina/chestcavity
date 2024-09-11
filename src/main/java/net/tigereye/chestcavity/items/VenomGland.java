@@ -25,14 +25,14 @@ import net.tigereye.chestcavity.util.OrganUtil;
 
 public class VenomGland extends Item implements OrganOnHitListener {
     public VenomGland() {
-        super((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+        super((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
     }
 
     public float onHit(DamageSource source, LivingEntity attacker, LivingEntity target, ChestCavityInstance cc, ItemStack organ, float damage) {
-        if (attacker.m_21120_(attacker.m_7655_()).m_41619_() || source.m_269533_(DamageTypeTags.f_268524_) && source.m_7640_() instanceof LlamaSpit) {
-            if (attacker.m_21023_((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get())) {
-                MobEffectInstance cooldown = attacker.m_21124_((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get());
-                if (cooldown.m_19557_() != ChestCavity.config.VENOM_COOLDOWN) {
+        if (attacker.getItemInHand(attacker.getUsedItemHand()).isEmpty() || source.is(DamageTypeTags.IS_PROJECTILE) && source.getEntity() instanceof LlamaSpit) {
+            if (attacker.hasEffect((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get())) {
+                MobEffectInstance cooldown = attacker.getEffect((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get());
+                if (cooldown.getDuration() != ChestCavity.config.VENOM_COOLDOWN) {
                     return damage;
                 }
             }
@@ -43,25 +43,25 @@ public class VenomGland extends Item implements OrganOnHitListener {
 
                 while(var8.hasNext()) {
                     MobEffectInstance effect = (MobEffectInstance)var8.next();
-                    target.m_7292_(effect);
+                    target.addEffect(effect);
                 }
             } else {
-                target.m_7292_(new MobEffectInstance(MobEffects.f_19614_, 200, 0));
+                target.addEffect(new MobEffectInstance(MobEffects.POISON, 200, 0));
             }
 
-            attacker.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get(), ChestCavity.config.VENOM_COOLDOWN, 0));
+            attacker.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get(), ChestCavity.config.VENOM_COOLDOWN, 0));
             if (attacker instanceof Player) {
-                ((Player)attacker).m_36399_(0.1F);
+                ((Player)attacker).causeFoodExhaustion(0.1F);
             }
         }
 
         return damage;
     }
 
-    public void m_7373_(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
-        super.m_7373_(itemStack, world, tooltip, tooltipContext);
+    public void appendHoverText(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
+        super.appendHoverText(itemStack, world, tooltip, tooltipContext);
         if (!OrganUtil.getStatusEffects(itemStack).isEmpty()) {
-            PotionUtils.m_43555_(itemStack, tooltip, 1.0F);
+            PotionUtils.addPotionTooltip(itemStack, tooltip, 1.0F);
         }
 
     }

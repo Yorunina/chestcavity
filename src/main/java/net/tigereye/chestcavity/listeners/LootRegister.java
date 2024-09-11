@@ -36,8 +36,8 @@ public class LootRegister {
 
     public static List<ItemStack> addEntityLoot(LootContextParamSet type, LootContext lootContext) {
         List<ItemStack> loot = new ArrayList();
-        if (lootContext.m_78936_(LootContextParams.f_81456_)) {
-            Entity entity = (Entity)lootContext.m_78953_(LootContextParams.f_81455_);
+        if (lootContext.hasParam(LootContextParams.LAST_DAMAGE_PLAYER)) {
+            Entity entity = (Entity)lootContext.getParam(LootContextParams.THIS_ENTITY);
             Optional<ChestCavityEntity> chestCavityEntity = ChestCavityEntity.of(entity);
             if (!chestCavityEntity.isPresent()) {
                 return loot;
@@ -48,25 +48,25 @@ public class LootRegister {
                 return loot;
             }
 
-            Entity killer_ = (Entity)lootContext.m_78953_(LootContextParams.f_81458_);
+            Entity killer_ = (Entity)lootContext.getParam(LootContextParams.KILLER_ENTITY);
             int lootingLevel;
             RandomSource random;
             if (killer_ instanceof LivingEntity) {
                 LivingEntity killer = (LivingEntity)killer_;
-                if (EnchantmentHelper.m_44836_((Enchantment)CCEnchantments.TOMOPHOBIA.get(), killer) > 0) {
+                if (EnchantmentHelper.getEnchantmentLevel((Enchantment)CCEnchantments.TOMOPHOBIA.get(), killer) > 0) {
                     return loot;
                 }
 
-                lootingLevel = EnchantmentHelper.m_44836_(Enchantments.f_44982_, killer);
-                lootingLevel += EnchantmentHelper.m_44836_((Enchantment)CCEnchantments.SURGICAL.get(), killer) * 2;
-                if (killer.m_21120_(killer.m_7655_()).m_204117_(CCTags.BUTCHERING_TOOL)) {
+                lootingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.MOB_LOOTING, killer);
+                lootingLevel += EnchantmentHelper.getEnchantmentLevel((Enchantment)CCEnchantments.SURGICAL.get(), killer) * 2;
+                if (killer.getItemInHand(killer.getUsedItemHand()).is(CCTags.BUTCHERING_TOOL)) {
                     lootingLevel = 10 + 10 * lootingLevel;
                 }
 
-                random = lootContext.m_230907_();
+                random = lootContext.getRandom();
             } else {
                 lootingLevel = 0;
-                random = RandomSource.m_216327_();
+                random = RandomSource.create();
             }
 
             loot.addAll(cc.getChestCavityType().generateLootDrops(random, lootingLevel));
@@ -76,17 +76,17 @@ public class LootRegister {
     }
 
     public static List<ItemStack> modifyEntityLoot(LootContextParamSet type, LootContext lootContext, List<ItemStack> loot) {
-        if (lootContext.m_78936_(LootContextParams.f_81458_)) {
-            Entity killer_ = (Entity)lootContext.m_78953_(LootContextParams.f_81458_);
+        if (lootContext.hasParam(LootContextParams.KILLER_ENTITY)) {
+            Entity killer_ = (Entity)lootContext.getParam(LootContextParams.KILLER_ENTITY);
             if (killer_ instanceof LivingEntity) {
                 LivingEntity killer = (LivingEntity)killer_;
-                if (killer.m_21120_(killer.m_7655_()).m_204117_(CCTags.BUTCHERING_TOOL)) {
+                if (killer.getItemInHand(killer.getUsedItemHand()).is(CCTags.BUTCHERING_TOOL)) {
                     Map<SalvageRecipe, Integer> salvageResults = new HashMap();
                     Iterator<ItemStack> i = loot.iterator();
                     Iterator var8;
                     if (salvageRecipeList == null) {
                         salvageRecipeList = new ArrayList();
-                        List<CraftingRecipe> recipes = killer.m_9236_().m_7465_().m_44013_(RecipeType.f_44107_);
+                        List<CraftingRecipe> recipes = killer.level().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
                         var8 = recipes.iterator();
 
                         while(var8.hasNext()) {
@@ -104,22 +104,22 @@ public class LootRegister {
                             do {
                                 if (!i.hasNext()) {
                                     salvageResults.forEach((recipexx, count) -> {
-                                        ItemStack out = recipexx.m_8043_(killer.m_9236_().m_9598_());
-                                        out.m_41764_(out.m_41613_() * (count / recipexx.getRequired()));
+                                        ItemStack out = recipexx.m_8043_(killer.getServer().registryAccess());
+                                        out.setCount(out.getCount() * (count / recipexx.getRequired()));
                                         loot.add(out);
                                     });
                                     break label53;
                                 }
 
                                 stackx = (ItemStack)i.next();
-                            } while(!stackx.m_204117_(CCTags.SALVAGEABLE));
+                            } while(!stackx.is(CCTags.SALVAGEABLE));
 
                             var8 = salvageRecipeList.iterator();
 
                             while(var8.hasNext()) {
                                 SalvageRecipe recipe = (SalvageRecipe)var8.next();
                                 if (recipe.getInput().test(stackx)) {
-                                    salvageResults.put(recipe, (Integer)salvageResults.getOrDefault(recipe, 0) + stackx.m_41613_());
+                                    salvageResults.put(recipe, (Integer)salvageResults.getOrDefault(recipe, 0) + stackx.getCount());
                                     i.remove();
                                     break;
                                 }
@@ -128,13 +128,13 @@ public class LootRegister {
                     }
                 }
 
-                if (EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.MALPRACTICE.get(), killer.m_21120_(killer.m_7655_())) > 0) {
+                if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.MALPRACTICE.get(), killer.getItemInHand(killer.getUsedItemHand())) > 0) {
                     Iterator<ItemStack> var10 = loot.iterator();
 
                     while(var10.hasNext()) {
                         ItemStack stack = (ItemStack)var10.next();
-                        if (OrganManager.isTrueOrgan(stack.m_41720_())) {
-                            stack.m_41663_((Enchantment)CCEnchantments.MALPRACTICE.get(), 1);
+                        if (OrganManager.isTrueOrgan(stack.getItem())) {
+                            stack.enchant((Enchantment)CCEnchantments.MALPRACTICE.get(), 1);
                         }
                     }
                 }

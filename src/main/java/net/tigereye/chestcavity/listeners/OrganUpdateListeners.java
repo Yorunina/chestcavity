@@ -110,7 +110,7 @@ public class OrganUpdateListeners {
     public static void UpdateIncompatibility(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOldOrganScore(CCOrganScores.INCOMPATIBILITY) != cc.getOrganScore(CCOrganScores.INCOMPATIBILITY)) {
             try {
-                entity.m_21195_((MobEffect)CCStatusEffects.ORGAN_REJECTION.get());
+                entity.removeEffect((MobEffect)CCStatusEffects.ORGAN_REJECTION.get());
             } catch (Exception var3) {
             }
         }

@@ -17,8 +17,8 @@ public class KeybindingClientListeners {
         EventHelper.CLIENT_TICK.register((client) -> {
             label20:
             while(true) {
-                if (CCKeybindings.UTILITY_ABILITIES.m_90859_()) {
-                    if (Minecraft.m_91087_().f_91074_ == null) {
+                if (CCKeybindings.UTILITY_ABILITIES.consumeClick()) {
+                    if (Minecraft.getInstance().player == null) {
                         continue;
                     }
 
@@ -40,8 +40,8 @@ public class KeybindingClientListeners {
         EventHelper.CLIENT_TICK.register((client) -> {
             label20:
             while(true) {
-                if (CCKeybindings.ATTACK_ABILITIES.m_90859_()) {
-                    if (Minecraft.m_91087_().f_91074_ == null) {
+                if (CCKeybindings.ATTACK_ABILITIES.consumeClick()) {
+                    if (Minecraft.getInstance().player == null) {
                         continue;
                     }
 
@@ -75,8 +75,8 @@ public class KeybindingClientListeners {
 
     public static void register(KeyMapping keybinding, ResourceLocation id) {
         EventHelper.CLIENT_TICK.register((client) -> {
-            while(keybinding.m_90859_()) {
-                if (Minecraft.m_91087_().f_91074_ != null) {
+            while(keybinding.consumeClick()) {
+                if (Minecraft.getInstance().player != null) {
                     NetworkUtil.SendC2SChestCavityHotkeyPacket(id);
                 }
             }

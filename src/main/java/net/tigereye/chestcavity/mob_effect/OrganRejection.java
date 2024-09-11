@@ -15,8 +15,8 @@ public class OrganRejection extends CCStatusEffect {
     }
 
     public void m_6742_(LivingEntity entity, int amplifier) {
-        if (!entity.m_9236_().f_46443_) {
-            entity.m_6469_(CCDamageSources.of(entity.m_9236_(), CCDamageSources.ORGAN_REJECTION), (float)ChestCavity.config.ORGAN_REJECTION_DAMAGE);
+        if (!entity.level().f_46443_) {
+            entity.m_6469_(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float)ChestCavity.config.ORGAN_REJECTION_DAMAGE);
         }
 
     }

@@ -87,7 +87,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"baseTick"}
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
-        if (!this.m_204029_(FluidTags.f_13131_) || this.m_9236_().m_8055_(this.m_20183_()).m_60713_(Blocks.f_50628_)) {
+        if (!this.m_204029_(FluidTags.f_13131_) || this.level().getBlockState(this.blockPosition()).is(Blocks.f_50628_)) {
             this.m_20301_(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.m_20146_(), this.m_7305_(0)));
         }
 
@@ -358,7 +358,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         )
         public void chestCavityEntityMoveToWorldMixin(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> info) {
             Entity entity = (Entity)info.getReturnValue();
-            if (entity instanceof ChestCavityEntity && !entity.m_9236_().f_46443_) {
+            if (entity instanceof ChestCavityEntity && !entity.level().f_46443_) {
                 NetworkUtil.SendS2CChestCavityUpdatePacket(((ChestCavityEntity)entity).getChestCavityInstance());
             }
 

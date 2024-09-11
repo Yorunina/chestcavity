@@ -33,9 +33,9 @@ public class CommonForgeEventBusSubscriber {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        dispatcher.register((LiteralArgumentBuilder)Commands.m_82127_("chestcavity").then(((LiteralArgumentBuilder)Commands.m_82127_("getscores").executes(CCCommands::getScoresNoArgs)).then(Commands.m_82129_("entity", EntityArgument.m_91449_()).executes(CCCommands::getScores))));
-        dispatcher.register((LiteralArgumentBuilder)Commands.m_82127_("chestcavity").then(((LiteralArgumentBuilder)((LiteralArgumentBuilder)Commands.m_82127_("resetChestCavity").requires((source) -> {
-            return source.m_6761_(2);
-        })).executes(CCCommands::resetChestCavityNoArgs)).then(Commands.m_82129_("entity", EntityArgument.m_91449_()).executes(CCCommands::resetChestCavity))));
+        dispatcher.register((LiteralArgumentBuilder)Commands.literal("chestcavity").then(((LiteralArgumentBuilder)Commands.literal("getscores").executes(CCCommands::getScoresNoArgs)).then(Commands.argument("entity", EntityArgument.entities()).executes(CCCommands::getScores))));
+        dispatcher.register((LiteralArgumentBuilder)Commands.literal("chestcavity").then(((LiteralArgumentBuilder)((LiteralArgumentBuilder)Commands.literal("resetChestCavity").requires((source) -> {
+            return source.hasPermission(2);
+        })).executes(CCCommands::resetChestCavityNoArgs)).then(Commands.argument("entity", EntityArgument.entities()).executes(CCCommands::resetChestCavity))));
     }
 }

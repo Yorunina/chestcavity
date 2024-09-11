@@ -111,7 +111,7 @@ public class ChestCavityUtil {
             return oldAir;
         } else {
             float airLoss;
-            if (!cc.owner.m_21023_(MobEffects.f_19608_) && !cc.owner.m_21023_(MobEffects.f_19592_)) {
+            if (!cc.owner.hasEffect(MobEffects.f_19608_) && !cc.owner.hasEffect(MobEffects.f_19592_)) {
                 airLoss = 1.0F;
             } else {
                 airLoss = 0.0F;
@@ -190,7 +190,7 @@ public class ChestCavityUtil {
         if (digestion == 1.0F) {
             return hunger;
         } else if (digestion < 0.0F) {
-            cc.owner.m_7292_(new MobEffectInstance(MobEffects.f_19604_, (int)((float)(-hunger) * digestion * 400.0F)));
+            cc.owner.addEffect(new MobEffectInstance(MobEffects.f_19604_, (int)((float)(-hunger) * digestion * 400.0F)));
             return 0;
         } else {
             return Math.max((int)((float)hunger * digestion), 1);
@@ -222,7 +222,7 @@ public class ChestCavityUtil {
         if (nutrition == 4.0F) {
             return saturation;
         } else if (nutrition < 0.0F) {
-            cc.owner.m_7292_(new MobEffectInstance(MobEffects.f_19612_, (int)(saturation * nutrition * 800.0F)));
+            cc.owner.addEffect(new MobEffectInstance(MobEffects.f_19612_, (int)(saturation * nutrition * 800.0F)));
             return 0.0F;
         } else {
             return saturation * nutrition / 4.0F;
@@ -274,14 +274,14 @@ public class ChestCavityUtil {
         float dodge = cc.getOrganScore(CCOrganScores.ARROW_DODGING);
         if (dodge == 0.0F) {
             return false;
-        } else if (cc.owner.m_21023_((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get())) {
+        } else if (cc.owner.hasEffect((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get())) {
             return false;
         } else if (!source.m_269533_(DamageTypeTags.f_268524_)) {
             return false;
         } else if (!OrganUtil.teleportRandomly(cc.owner, (float)ChestCavity.config.ARROW_DODGE_DISTANCE / dodge)) {
             return false;
         } else {
-            cc.owner.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get(), (int)((float)ChestCavity.config.ARROW_DODGE_COOLDOWN / dodge), 0, false, false, true));
+            cc.owner.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get(), (int)((float)ChestCavity.config.ARROW_DODGE_COOLDOWN / dodge), 0, false, false, true));
             return true;
         }
     }
@@ -447,7 +447,7 @@ public class ChestCavityUtil {
                 int ownership = 0;
                 CompoundTag tag = itemStack.m_41783_();
                 if (tag != null && tag.m_128441_(ChestCavity.COMPATIBILITY_TAG.toString())) {
-                    tag = tag.m_128469_(ChestCavity.COMPATIBILITY_TAG.toString());
+                    tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
                     if (tag.m_128342_("owner").equals(cc.compatibility_id)) {
                         ownership = 2;
                     }
@@ -515,7 +515,7 @@ public class ChestCavityUtil {
 
                     while(var6.hasNext()) {
                         TagKey<Item> itemTag = (TagKey)var6.next();
-                        if (itemStack.m_204117_(itemTag)) {
+                        if (itemStack.is(itemTag)) {
                             organData = new OrganData();
                             organData.pseudoOrgan = true;
                             organData.organScores = (Map)CCTagOrgans.tagMap.get(itemTag);
@@ -629,7 +629,7 @@ public class ChestCavityUtil {
 
     public static void splashHydrophobicWithWater(ThrownPotion splash) {
         AABB box = splash.m_20191_().m_82377_(4.0, 2.0, 4.0);
-        List<LivingEntity> list = splash.m_9236_().m_6443_(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
+        List<LivingEntity> list = splash.level().m_6443_(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
         if (!list.isEmpty()) {
             Iterator var3 = list.iterator();
 
