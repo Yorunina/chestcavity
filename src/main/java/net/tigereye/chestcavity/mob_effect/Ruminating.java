@@ -1,29 +1,29 @@
 package net.tigereye.chestcavity.mob_effect;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.player.HungerManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.registration.CCItems;
 
-public class Ruminating extends CCStatusEffect{
-
-    public Ruminating(){
-        super(StatusEffectCategory.BENEFICIAL, 0xC8FF00);
+public class Ruminating extends CCStatusEffect {
+    public Ruminating() {
+        super(MobEffectCategory.BENEFICIAL, 13172480);
     }
 
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean m_6584_(int duration, int amplifier) {
         return duration % ChestCavity.config.RUMINATION_TIME == 1;
     }
 
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if(entity instanceof PlayerEntity){
-            if(!(entity.getWorld().isClient)) {
-                HungerManager hungerManager = ((PlayerEntity) entity).getHungerManager();
-                hungerManager.eat(CCItems.CUD, new ItemStack(CCItems.CUD));
-            }
+    public void m_6742_(LivingEntity entity, int amplifier) {
+        if (entity instanceof Player && !entity.m_9236_().f_46443_) {
+            FoodData hungerManager = ((Player)entity).m_36324_();
+            hungerManager.eat((Item)CCItems.CUD.get(), new ItemStack((ItemLike)CCItems.CUD.get()), entity);
         }
+
     }
 }

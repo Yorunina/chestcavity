@@ -1,32 +1,31 @@
 package net.tigereye.chestcavity.enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.LuckEnchantment;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.LootBonusEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 import net.tigereye.chestcavity.registration.CCEnchantments;
 
-public class SurgicalEnchantment extends LuckEnchantment {
+public class SurgicalEnchantment extends LootBonusEnchantment {
     public SurgicalEnchantment() {
-        super(Rarity.VERY_RARE, EnchantmentTarget.WEAPON, EquipmentSlot.MAINHAND);
+        super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
-    public int getMinPower(int level) {
+    public int m_6183_(int level) {
         return 15 + (level - 1) * 9;
     }
 
-    public int getMaxPower(int level) {
-        return super.getMinPower(level) + 50;
+    public int m_6175_(int level) {
+        return super.getMinCost(level) + 50;
     }
 
-    public int getMaxLevel() {
+    public int m_6586_() {
         return 3;
     }
 
-    public boolean canAccept(Enchantment other) {
-        return super.canAccept(other) &&
-                other.canCombine(Enchantments.LOOTING)
-                && other != CCEnchantments.TOMOPHOBIA;
+    public boolean m_5975_(Enchantment other) {
+        return super.isCompatibleWith(other) && other.isCompatibleWith(Enchantments.MOB_LOOTING) && other != CCEnchantments.TOMOPHOBIA.get();
     }
 }

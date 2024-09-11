@@ -9,5 +9,8 @@ public class ChestCavityTypeJsonFormat {
     JsonArray forbiddenSlots;
     boolean bossChestCavity = false;
     boolean playerChestCavity = false;
-    float dropRateMultiplier = 1;
+    float dropRateMultiplier = 1.0F;
+
+    public ChestCavityTypeJsonFormat() {
+    }
 }

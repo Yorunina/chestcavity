@@ -1,26 +1,26 @@
 package net.tigereye.chestcavity.recipes;
 
-import net.minecraft.inventory.RecipeInputInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.registration.CCRecipes;
 
 public class SalvageRecipe implements CraftingRecipe {
     private final Ingredient input;
     private int required;
-    private final CraftingRecipeCategory category;
+    private final CraftingBookCategory category;
     public final ItemStack outputStack;
-    private final Identifier id;
+    private final ResourceLocation id;
 
-    public SalvageRecipe(Ingredient input, int required, CraftingRecipeCategory category, ItemStack outputStack, Identifier id){
+    public SalvageRecipe(Ingredient input, int required, CraftingBookCategory category, ItemStack outputStack, ResourceLocation id) {
         this.input = input;
         this.required = required;
         this.category = category;
@@ -28,101 +28,80 @@ public class SalvageRecipe implements CraftingRecipe {
         this.id = id;
     }
 
-    public Ingredient getInput(){
-        return input;
+    public Ingredient getInput() {
+        return this.input;
     }
 
-    public int getRequired(){return required;}
-
-    @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        return DefaultedList.ofSize(required,input);
+    public int getRequired() {
+        return this.required;
     }
 
-    @Override
-    public boolean matches(RecipeInputInventory inv, World world) {
-        //ChestCavity.LOGGER.info("Attempting to match salvage recipe");
+    public NonNullList<Ingredient> m_7527_() {
+        return NonNullList.m_122780_(this.required, this.input);
+    }
+
+    public boolean matches(CraftingContainer inv, Level world) {
         int count = 0;
-        ItemStack target;
-        for(int i = 0; i < inv.size(); ++i) {
-            target = inv.getStack(i);
-            if(target != null && target != ItemStack.EMPTY && target.getItem() != Items.AIR) {
-                if (input.test(inv.getStack(i))) {
-                    count++;
-                    //ChestCavity.LOGGER.info("Salvage recipe counts "+count+" "+target.getName()+"s");
-                }
-                else{
-                    //ChestCavity.LOGGER.info("Salvage recipe found bad item: "+target.getName().getString());
+
+        for(int i = 0; i < inv.m_6643_(); ++i) {
+            ItemStack target = inv.m_8020_(i);
+            if (target != null && target != ItemStack.f_41583_ && target.m_41720_() != Items.f_41852_) {
+                if (!this.input.test(inv.m_8020_(i))) {
                     return false;
                 }
+
+                ++count;
             }
         }
-        //if(count > 0){
-            //ChestCavity.LOGGER.info("Found salvage recipe match");
-        //}
-        return count > 0 && count % required == 0;
+
+        return count > 0 && count % this.required == 0;
     }
 
-    @Override
-    public ItemStack craft(RecipeInputInventory inv, DynamicRegistryManager registryManager) {
-        //ChestCavity.LOGGER.info("Attempting to craft salvage recipe");
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         int count = 0;
-        ItemStack target;
-        for(int i = 0; i < inv.size(); ++i) {
-            target = inv.getStack(i);
-            if(target != null && target != ItemStack.EMPTY && target.getItem() != Items.AIR) {
-                if (input.test(inv.getStack(i))) {
-                    count++;
+
+        for(int i = 0; i < inv.m_6643_(); ++i) {
+            ItemStack target = inv.m_8020_(i);
+            if (target != null && target != ItemStack.f_41583_ && target.m_41720_() != Items.f_41852_) {
+                if (!this.input.test(inv.m_8020_(i))) {
+                    return ItemStack.f_41583_;
                 }
-                else{
-                    return ItemStack.EMPTY;
-                }
+
+                ++count;
             }
         }
-        //ChestCavity.LOGGER.info("Found salvage recipe, count "+count);
-        if(count == 0 || count % required != 0){
-            //ChestCavity.LOGGER.info("Salvage recipe failed modulo check");
-            return ItemStack.EMPTY;
+
+        if (count != 0 && count % this.required == 0) {
+            count = count / this.required * this.outputStack.m_41613_();
+            if (count > this.outputStack.m_41741_()) {
+                return ItemStack.f_41583_;
+            } else {
+                ItemStack out = this.m_8043_(registryAccess);
+                out.m_41764_(count);
+                return out;
+            }
+        } else {
+            return ItemStack.f_41583_;
         }
-        count = (count / required) * outputStack.getCount();
-        if(count > outputStack.getMaxCount()) {
-            //ChestCavity.LOGGER.info("Salvage recipe exceeded max stack size");
-            return ItemStack.EMPTY;
-        }
-        ItemStack out = getOutput(registryManager);
-        out.setCount(count);
-        return out;
     }
 
-    @Override
-    public boolean fits(int width, int height) {
+    public boolean m_8004_(int width, int height) {
         return true;
     }
 
-    @Override
-    public ItemStack getOutput(DynamicRegistryManager registryManager) {
-        return outputStack.copy();
+    public ItemStack m_8043_(RegistryAccess registryAccess) {
+        return this.outputStack.m_41777_();
     }
 
-    @Override
-    public Identifier getId() {
-        return id;
+    public ResourceLocation m_6423_() {
+        return this.id;
     }
 
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return CCRecipes.SALVAGE_RECIPE_SERIALIZER;
+    public RecipeSerializer<?> m_7707_() {
+        return (RecipeSerializer)CCRecipes.SALVAGE_RECIPE_SERIALIZER.get();
     }
 
-    @Override
-    public CraftingRecipeCategory getCategory() {
-        return category;
+    public CraftingBookCategory m_245232_() {
+        return this.category;
     }
-
-    /*@Override
-    public RecipeType<SalvageRecipe> getType() {
-        return CCRecipes.SALVAGE_RECIPE_TYPE;
-    }
-    */
-
 }

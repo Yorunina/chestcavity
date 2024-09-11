@@ -4,35 +4,38 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.tigereye.chestcavity.ChestCavity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class OrganSerializer {
-    //remember: the first identifier is the entity, the second is the chest cavity type
-    public Pair<Identifier, OrganData> read(Identifier id, OrganJsonFormat organJson) {
-
-        if (organJson.itemID == null) {
-            throw new JsonSyntaxException("Organ " + id + " must have an item ID");
-        }
-        //isPsudoOrgan should default to false
-        if (organJson.organScores == null) {
-            throw new JsonSyntaxException("Organ " + id + " must have organScores");
-        }
-        OrganData organData = new OrganData();
-        Identifier itemID = new Identifier(organJson.itemID);
-        organData.pseudoOrgan = organJson.pseudoOrgan;
-        organData.organScores = readOrganScoresFromJson(id, organJson.organScores);
-        return new Pair<>(itemID,organData);
+    public OrganSerializer() {
     }
 
-    private Map<Identifier,Float> readOrganScoresFromJson(Identifier id, JsonArray json){
-        Map<Identifier,Float> organScores = new HashMap<>();
-        for (JsonElement entry:
-                json) {
+    public Tuple<ResourceLocation, OrganData> read(ResourceLocation id, OrganJsonFormat organJson) {
+        if (organJson.itemID == null) {
+            throw new JsonSyntaxException("Organ " + id + " must have an item ID");
+        } else if (organJson.organScores == null) {
+            throw new JsonSyntaxException("Organ " + id + " must have organScores");
+        } else {
+            OrganData organData = new OrganData();
+            ResourceLocation itemID = new ResourceLocation(organJson.itemID);
+            organData.pseudoOrgan = organJson.pseudoOrgan;
+            organData.organScores = this.readOrganScoresFromJson(id, organJson.organScores);
+            return new Tuple(itemID, organData);
+        }
+    }
+
+    private Map<ResourceLocation, Float> readOrganScoresFromJson(ResourceLocation id, JsonArray json) {
+        Map<ResourceLocation, Float> organScores = new HashMap();
+        Iterator<JsonElement> var4 = json.iterator();
+
+        while(var4.hasNext()) {
+            JsonElement entry = (JsonElement)var4.next();
+
             try {
                 JsonObject obj = entry.getAsJsonObject();
                 if (!obj.has("id")) {
@@ -40,14 +43,14 @@ public class OrganSerializer {
                 } else if (!obj.has("value")) {
                     ChestCavity.LOGGER.error("Missing value component in " + id.toString() + "'s organ scores");
                 } else {
-                    Identifier ability = new Identifier(obj.get("id").getAsString());
-                    organScores.put(ability,obj.get("value").getAsFloat());
+                    ResourceLocation ability = new ResourceLocation(obj.get("id").getAsString());
+                    organScores.put(ability, obj.get("value").getAsFloat());
                 }
-            }
-            catch(Exception e){
+            } catch (Exception var8) {
                 ChestCavity.LOGGER.error("Error parsing " + id.toString() + "'s organ scores!");
             }
         }
+
         return organScores;
     }
 }

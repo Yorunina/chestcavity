@@ -1,107 +1,98 @@
 package net.tigereye.chestcavity.registration;
 
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import java.util.Optional;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
-import java.util.Optional;
-
 public class CCCommands {
+    public CCCommands() {
+    }
 
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("chestcavity")
-                .then(CommandManager.literal("getscores")
-                    .executes(CCCommands::getScoresNoArgs)
-                    .then(CommandManager.argument("entity", EntityArgumentType.entity())
-                        .executes(CCCommands::getScores)))
-            );
-            dispatcher.register(CommandManager.literal("chestcavity")
-                .then(CommandManager.literal("resetChestCavity").requires(source -> source.hasPermissionLevel(2))
-                    .executes(CCCommands::resetChestCavityNoArgs)
-                    .then(CommandManager.argument("entity", EntityArgumentType.entity())
-                        .executes(CCCommands::resetChestCavity)))
-            );
-        });
-
     }
 
-    private static int getScoresNoArgs(CommandContext<ServerCommandSource> context) {
+    public static int getScoresNoArgs(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = context.getSource().getEntityOrThrow();
-        }
-        catch(Exception e){
-            context.getSource().sendError(Text.literal("getScores failed to get entity"));
+            entity = ((CommandSourceStack)context.getSource()).getEntity();
+        } catch (Exception var3) {
+            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getScores failed to get entity"));
             return -1;
         }
+
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             ChestCavityUtil.outputOrganScoresString((string) -> {
-                context.getSource().sendFeedback(() -> Text.literal(string),false);
-            },optional.get().getChestCavityInstance());
+                ((CommandSourceStack)context.getSource()).sendSuccess(() -> {
+                    return Component.translatable(string);
+                }, false);
+            }, ((ChestCavityEntity)optional.get()).getChestCavityInstance());
             return 1;
+        } else {
+            return 0;
         }
-        return 0;
     }
 
-    private static int getScores(CommandContext<ServerCommandSource> context) {
+    public static int getScores(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = EntityArgumentType.getEntity(context, "entity");
-        }
-        catch(Exception e){
-            context.getSource().sendError(Text.literal("getScores failed to get entity"));
+            entity = EntityArgument.getEntity(context, "entity");
+        } catch (Exception var3) {
+            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getScores failed to get entity"));
             return -1;
         }
+
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             ChestCavityUtil.outputOrganScoresString((string) -> {
-                context.getSource().sendFeedback(() -> Text.literal(string),false);
-            },optional.get().getChestCavityInstance());
+                ((CommandSourceStack)context.getSource()).sendSuccess(() -> {
+                    return Component.translatable(string);
+                }, false);
+            }, ((ChestCavityEntity)optional.get()).getChestCavityInstance());
             return 1;
+        } else {
+            return 0;
         }
-        return 0;
     }
 
-    private static int resetChestCavityNoArgs(CommandContext<ServerCommandSource> context) {
+    public static int resetChestCavityNoArgs(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = context.getSource().getEntityOrThrow();
-        }
-        catch(Exception e){
-            context.getSource().sendError(Text.literal("resetChestCavity failed to get entity"));
+            entity = ((CommandSourceStack)context.getSource()).getEntity();
+        } catch (Exception var3) {
+            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("resetChestCavity failed to get entity"));
             return -1;
         }
+
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if(optional.isPresent()){
-            ChestCavityUtil.generateChestCavityIfOpened(optional.get().getChestCavityInstance());
+        if (optional.isPresent()) {
+            ChestCavityUtil.generateChestCavityIfOpened(((ChestCavityEntity)optional.get()).getChestCavityInstance());
             return 1;
+        } else {
+            return 0;
         }
-        return 0;
     }
 
-    private static int resetChestCavity(CommandContext<ServerCommandSource> context) {
+    public static int resetChestCavity(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = EntityArgumentType.getEntity(context, "entity");
-        }
-        catch(Exception e){
-            context.getSource().sendError(Text.literal("getChestCavity failed to get entity"));
+            entity = EntityArgument.getEntity(context, "entity");
+        } catch (Exception var3) {
+            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getChestCavity failed to get entity"));
             return -1;
         }
-        Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if(optional.isPresent()){
-            ChestCavityUtil.generateChestCavityIfOpened(optional.get().getChestCavityInstance());
-            return 1;
-        }
-        return 0;
-    }
 
+        Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
+        if (optional.isPresent()) {
+            ChestCavityUtil.generateChestCavityIfOpened(((ChestCavityEntity)optional.get()).getChestCavityInstance());
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

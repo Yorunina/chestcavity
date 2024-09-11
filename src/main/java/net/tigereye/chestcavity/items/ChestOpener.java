@@ -1,19 +1,18 @@
 package net.tigereye.chestcavity.items;
 
-//import ladysnake.requiem.api.v1.possession.PossessionComponent;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import java.util.Optional;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -22,82 +21,71 @@ import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
-import java.util.Optional;
-
 public class ChestOpener extends Item {
-	
 	public ChestOpener() {
 		super(CCItems.CHEST_OPENER_SETTINGS);
 	}
 
-	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> m_7203_(Level world, Player player, InteractionHand hand) {
 		LivingEntity target = null;
-		//Requiem is no longer a fabric mod.
-		/*if(CCRequiem.REQUIEM_ACTIVE){
-			target = PossessionComponent.getHost(player);
-		}*/
-		if(target == null) {
+		if (target == null) {
 			target = player;
 		}
-		if (openChestCavity(player, target,false)) {
-			return TypedActionResult.success(player.getStackInHand(hand), false);
-		} else {
-			return TypedActionResult.pass(player.getStackInHand(hand));
-		}
+
+		return this.openChestCavity(player, target, false) ? InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), false) : InteractionResultHolder.fail(player.getItemInHand(hand));
 	}
 
-	public boolean openChestCavity(PlayerEntity player, LivingEntity target){
-		return openChestCavity(player,target,true);
+	public boolean openChestCavity(Player player, LivingEntity target) {
+		return this.openChestCavity(player, target, true);
 	}
-	public boolean openChestCavity(PlayerEntity player, LivingEntity target, boolean shouldKnockback){
+
+	public boolean openChestCavity(Player player, LivingEntity target, boolean shouldKnockback) {
 		Optional<ChestCavityEntity> optional = ChestCavityEntity.of(target);
-		if(optional.isPresent()){
-			ChestCavityEntity chestCavityEntity = optional.get();
+		if (optional.isPresent()) {
+			ChestCavityEntity chestCavityEntity = (ChestCavityEntity)optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
-			if(target == player || cc.getChestCavityType().isOpenable(cc)) {
-				if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0) {
-					if(player.getWorld().isClient) {
-						player.playSound(SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.PLAYERS, .75f, 1);
-					}
-				}
-				else{
-					if (!shouldKnockback) {
-						target.damage(player.getDamageSources().generic(), 4f); // this is to prevent self-knockback, as that feels weird.
+			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
+				if (player.level().isClientSide()) {
+					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+						player.displayClientMessage(Component.translatable("Target's chest is obstructed"), true);
+						player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
 					} else {
-						target.damage(player.getDamageSources().playerAttack(player), 4f);
+						player.displayClientMessage(Component.translatable("Target is too healthy to open"), true);
+						player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
 					}
 				}
+
+				return false;
+			} else {
+				if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F) {
+					if (player.level().isClientSide()) {
+						player.playNotifySound(SoundEvents.CHEST_OPEN, SoundSource.PLAYERS, 0.75F, 1.0F);
+					}
+				} else if (!shouldKnockback) {
+					target.hurt(player.damageSources().generic(), 4.0F);
+				} else {
+					target.hurt(player.damageSources().playerAttack(player), 4.0F);
+				}
+
 				if (target.isAlive()) {
 					String name;
 					try {
 						name = target.getDisplayName().getString();
 						name = name.concat("'s ");
-					} catch (Exception e) {
+					} catch (Exception var9) {
 						name = "";
 					}
+
 					ChestCavityInventory inv = ChestCavityUtil.openChestCavity(cc);
 					((ChestCavityEntity)player).getChestCavityInstance().ccBeingOpened = cc;
-					player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> {
+					player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> {
 						return new ChestCavityScreenHandler(i, playerInventory, inv);
-					}, Text.translatable(name + "Chest Cavity")));
+					}, Component.translatable(name + "Chest Cavity")));
 				}
+
 				return true;
 			}
-			else{
-				if(player.getWorld().isClient) {
-					if (!target.getEquippedStack(EquipmentSlot.CHEST).isEmpty()) {
-						player.sendMessage(Text.literal("Target's chest is obstructed"),true);
-						player.playSound(SoundEvents.BLOCK_CHAIN_HIT, SoundCategory.PLAYERS, .75f, 1);
-					} else {
-						player.sendMessage(Text.literal("Target is too healthy to open"),true);
-						player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, SoundCategory.PLAYERS, .75f, 1);
-					}
-				}
-			}
-			return false;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}

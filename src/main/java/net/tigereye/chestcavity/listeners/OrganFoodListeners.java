@@ -1,7 +1,8 @@
 package net.tigereye.chestcavity.listeners;
 
-import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
@@ -9,45 +10,49 @@ import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTags;
 
 public class OrganFoodListeners {
-
-    public static void register(){
-        OrganFoodCallback.EVENT.register(OrganFoodListeners::applyHerbivorousCarnivorous);
-        OrganFoodCallback.EVENT.register(OrganFoodListeners::applyRot);
-        OrganFoodCallback.EVENT.register(OrganFoodListeners::applyFurnacePower);
+    public OrganFoodListeners() {
     }
 
-    private static EffectiveFoodScores applyHerbivorousCarnivorous(Item food, FoodComponent foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if(foodComponent.isMeat() || food.getDefaultStack().isIn(CCTags.CARNIVORE_FOOD)){
+    public static EffectiveFoodScores call(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
+        efs = applyHerbivorousCarnivorous(food, foodComponent, cce, efs);
+        efs = applyRot(food, foodComponent, cce, efs);
+        efs = applyFurnacePower(food, foodComponent, cce, efs);
+        return efs;
+    }
+
+    private static EffectiveFoodScores applyHerbivorousCarnivorous(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
+        if (!foodComponent.m_38746_() && !food.m_7968_().m_204117_(CCTags.CARNIVORE_FOOD)) {
+            efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
+            efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
+        } else {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.CARNIVOROUS_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.CARNIVOROUS_NUTRITION);
         }
-        else{
-            efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
-            efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
-        }
+
         return efs;
     }
 
-    private static EffectiveFoodScores applyRot(Item food, FoodComponent foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if(food.getDefaultStack().isIn(CCTags.ROTTEN_FOOD)){
+    private static EffectiveFoodScores applyRot(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
+        if (food.m_7968_().m_204117_(CCTags.ROTTEN_FOOD)) {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROT_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROTGUT);
         }
+
         return efs;
     }
 
-    private static EffectiveFoodScores applyFurnacePower(Item food, FoodComponent foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if(food == CCItems.FURNACE_POWER){
+    private static EffectiveFoodScores applyFurnacePower(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
+        if (food == CCItems.FURNACE_POWER.get()) {
             int power = 0;
-            if(cce.getChestCavityInstance().owner.hasStatusEffect(CCStatusEffects.FURNACE_POWER)){
-                power = cce.getChestCavityInstance().owner.getStatusEffect(CCStatusEffects.FURNACE_POWER).getAmplifier() + 1;
+            if (cce.getChestCavityInstance().owner.m_21023_((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
+                power = cce.getChestCavityInstance().owner.m_21124_((MobEffect)CCStatusEffects.FURNACE_POWER.get()).m_19564_() + 1;
             }
-            //herbivorous will have gotten a false positive, so that needs corrected
+
             efs.digestion -= cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
             efs.nutrition -= cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
-            //nutrition scales with furnaces
-            efs.nutrition += power;
+            efs.nutrition += (float)power;
         }
+
         return efs;
     }
 }

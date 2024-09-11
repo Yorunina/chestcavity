@@ -1,25 +1,29 @@
 package net.tigereye.chestcavity.registration;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.tigereye.chestcavity.ChestCavity;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.enchantments.MalpracticeCurseEnchantment;
 import net.tigereye.chestcavity.enchantments.ONegativeEnchantment;
 import net.tigereye.chestcavity.enchantments.SurgicalEnchantment;
 import net.tigereye.chestcavity.enchantments.TomophobiaEnchantment;
 
 public class CCEnchantments {
-    public static final Enchantment O_NEGATIVE = new ONegativeEnchantment();
-    public static final Enchantment SURGICAL = new SurgicalEnchantment();
-    public static final Enchantment MALPRACTICE = new MalpracticeCurseEnchantment();
-    public static final Enchantment TOMOPHOBIA = new TomophobiaEnchantment();
+    public static final DeferredRegister<Enchantment> ENCHANTMENTS;
+    public static final RegistryObject<Enchantment> O_NEGATIVE;
+    public static final RegistryObject<Enchantment> SURGICAL;
+    public static final RegistryObject<Enchantment> MALPRACTICE;
+    public static final RegistryObject<Enchantment> TOMOPHOBIA;
 
-    public static void register() {
-        Registry.register(Registries.ENCHANTMENT, new Identifier(ChestCavity.MODID, "o_negative"), O_NEGATIVE);
-        Registry.register(Registries.ENCHANTMENT, new Identifier(ChestCavity.MODID, "surgical"), SURGICAL);
-        Registry.register(Registries.ENCHANTMENT, new Identifier(ChestCavity.MODID, "malpractice"), MALPRACTICE);
-        Registry.register(Registries.ENCHANTMENT, new Identifier(ChestCavity.MODID, "tomophobia"), TOMOPHOBIA);
+    public CCEnchantments() {
+    }
+
+    static {
+        ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, "chestcavity");
+        O_NEGATIVE = ENCHANTMENTS.register("o_negative", ONegativeEnchantment::new);
+        SURGICAL = ENCHANTMENTS.register("surgical", SurgicalEnchantment::new);
+        MALPRACTICE = ENCHANTMENTS.register("malpractice", MalpracticeCurseEnchantment::new);
+        TOMOPHOBIA = ENCHANTMENTS.register("tomophobia", TomophobiaEnchantment::new);
     }
 }

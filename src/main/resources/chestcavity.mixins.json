@@ -4,6 +4,7 @@
   "package": "net.tigereye.chestcavity.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LootTableGenerateLootMixin",
     "MixinEnchantmentHelper",
     "MixinEntity",
     "MixinHungerManager",
@@ -17,12 +18,13 @@
     "MixinLivingEntity$Wither",
     "MixinPotionEntity",
     "MixinStatusEffect",
-    "MixinStatusEffectInstance"
+    "MixinStatusEffectInstance",
+    "forge.MixinNetworkHooks"
   ],
   "client": [
     "MixinItem"
   ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  "server": [
+  ],
+  "refmap": "chestcavity.refmap.json"
 }

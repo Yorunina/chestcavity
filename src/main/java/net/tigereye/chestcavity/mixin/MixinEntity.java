@@ -1,13 +1,14 @@
 package net.tigereye.chestcavity.mixin;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonPart;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCOrganScores;
@@ -17,40 +18,42 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
-
-@Mixin(Entity.class)
+@Mixin({Entity.class})
 public class MixinEntity {
+    public MixinEntity() {
+    }
 
-    @ModifyVariable(at = @At("HEAD"), ordinal = 0, method = "fall")
-    public double chestCavityEntityFallMixin(double finalHeightDifference, double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition){
-        if (heightDifference < 0.0D) {
-            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((Entity) (Object) this);
+    @ModifyVariable(
+            at = @At("HEAD"),
+            ordinal = 0,
+            method = {"checkFallDamage"},
+            argsOnly = true
+    )
+    public double chestCavityEntityFallMixin(double finalHeightDifference, double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+        if (heightDifference < 0.0) {
+            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((Entity)this);
             if (cce.isPresent()) {
-                finalHeightDifference = heightDifference * (1 - (cce.get().getChestCavityInstance().getOrganScore(CCOrganScores.BUOYANT)/3));
+                finalHeightDifference = heightDifference * (double)(1.0F - ((ChestCavityEntity)cce.get()).getChestCavityInstance().getOrganScore(CCOrganScores.BUOYANT) / 3.0F);
             }
         }
+
         return finalHeightDifference;
     }
 
-    @Inject(at = @At("RETURN"), method = "interact", cancellable = true)
-    public void chestCavityEntityInteractMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info){
-        if(info.getReturnValue() == ActionResult.PASS && ((Entity)(Object)this) instanceof EnderDragonPart){
-            ChestCavity.LOGGER.info("Attempting to open dragon's " + ((EnderDragonPart)(Object)this).name);
-            EnderDragonEntity dragon = ((EnderDragonPart)(Object)this).owner;
-            if(dragon != null){
+    @Inject(
+            at = {@At("RETURN")},
+            method = {"interact"},
+            cancellable = true
+    )
+    public void chestCavityEntityInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
+        if (info.getReturnValue() == InteractionResult.PASS && (Entity)this instanceof EnderDragonPart) {
+            ChestCavity.LOGGER.info("Attempting to open dragon's " + ((EnderDragonPart)this).f_31011_);
+            EnderDragon dragon = ((EnderDragonPart)this).f_31010_;
+            if (dragon != null) {
                 ChestCavity.LOGGER.info("Dragon was not null");
-                info.setReturnValue(dragon.interact(player,hand));
+                info.setReturnValue(dragon.m_6096_(player, hand));
             }
         }
+
     }
-/*
-    @Inject(at = @At("TAIL"), method = "dealDamage")
-    public void chestCavityDealDamageMixin(LivingEntity attacker, Entity target, CallbackInfo info) {
-        Optional<ChestCavityEntity> cce = ChestCavityEntity.of(attacker);
-        if (cce.isPresent() && target instanceof LivingEntity) {
-            OrganOnHitCallback.EVENT.invoker().onHit(attacker, (LivingEntity)target, cce.get().getChestCavityInstance());
-        }
-    }*/
-    
 }

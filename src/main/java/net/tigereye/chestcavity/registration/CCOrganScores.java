@@ -1,70 +1,61 @@
 package net.tigereye.chestcavity.registration;
 
-import net.minecraft.util.Identifier;
-import net.tigereye.chestcavity.ChestCavity;
+import net.minecraft.resources.ResourceLocation;
 
 public class CCOrganScores {
-    //basic organ abilities
-    public static final Identifier LUCK = new Identifier(ChestCavity.MODID, "luck");
-    public static final Identifier HEALTH = new Identifier(ChestCavity.MODID, "health");
-    public static final Identifier NUTRITION = new Identifier(ChestCavity.MODID, "nutrition");
-    public static final Identifier FILTRATION = new Identifier(ChestCavity.MODID, "filtration");
-    public static final Identifier DETOXIFICATION = new Identifier(ChestCavity.MODID, "detoxification");
-    public static final Identifier BREATH_RECOVERY = new Identifier(ChestCavity.MODID, "breath_recovery");
-    public static final Identifier BREATH_CAPACITY = new Identifier(ChestCavity.MODID, "breath_capacity");
-    public static final Identifier ENDURANCE = new Identifier(ChestCavity.MODID, "endurance");
-    public static final Identifier STRENGTH = new Identifier(ChestCavity.MODID, "strength");
-    public static final Identifier SPEED = new Identifier(ChestCavity.MODID, "speed");
-    public static final Identifier DEFENSE = new Identifier(ChestCavity.MODID, "defense");
-    public static final Identifier NERVES = new Identifier(ChestCavity.MODID, "nerves");
-    public static final Identifier METABOLISM = new Identifier(ChestCavity.MODID, "metabolism");
-    public static final Identifier DIGESTION = new Identifier(ChestCavity.MODID, "digestion");
-    public static final Identifier INCOMPATIBILITY = new Identifier(ChestCavity.MODID, "incompatibility");
+    public static final ResourceLocation LUCK = new ResourceLocation("chestcavity", "luck");
+    public static final ResourceLocation HEALTH = new ResourceLocation("chestcavity", "health");
+    public static final ResourceLocation NUTRITION = new ResourceLocation("chestcavity", "nutrition");
+    public static final ResourceLocation FILTRATION = new ResourceLocation("chestcavity", "filtration");
+    public static final ResourceLocation DETOXIFICATION = new ResourceLocation("chestcavity", "detoxification");
+    public static final ResourceLocation BREATH_RECOVERY = new ResourceLocation("chestcavity", "breath_recovery");
+    public static final ResourceLocation BREATH_CAPACITY = new ResourceLocation("chestcavity", "breath_capacity");
+    public static final ResourceLocation ENDURANCE = new ResourceLocation("chestcavity", "endurance");
+    public static final ResourceLocation STRENGTH = new ResourceLocation("chestcavity", "strength");
+    public static final ResourceLocation SPEED = new ResourceLocation("chestcavity", "speed");
+    public static final ResourceLocation DEFENSE = new ResourceLocation("chestcavity", "defense");
+    public static final ResourceLocation NERVES = new ResourceLocation("chestcavity", "nerves");
+    public static final ResourceLocation METABOLISM = new ResourceLocation("chestcavity", "metabolism");
+    public static final ResourceLocation DIGESTION = new ResourceLocation("chestcavity", "digestion");
+    public static final ResourceLocation INCOMPATIBILITY = new ResourceLocation("chestcavity", "incompatibility");
+    public static final ResourceLocation ARROW_DODGING = new ResourceLocation("chestcavity", "arrow_dodging");
+    public static final ResourceLocation BUFF_PURGING = new ResourceLocation("chestcavity", "buff_purging");
+    public static final ResourceLocation BUOYANT = new ResourceLocation("chestcavity", "buoyant");
+    public static final ResourceLocation DESTRUCTIVE_COLLISIONS = new ResourceLocation("chestcavity", "destructive_collisions");
+    public static final ResourceLocation EASE_OF_ACCESS = new ResourceLocation("chestcavity", "ease_of_access");
+    public static final ResourceLocation FIRE_RESISTANT = new ResourceLocation("chestcavity", "fire_resistant");
+    public static final ResourceLocation GLOWING = new ResourceLocation("chestcavity", "glowing");
+    public static final ResourceLocation HYDROALLERGENIC = new ResourceLocation("chestcavity", "hydroallergenic");
+    public static final ResourceLocation HYDROPHOBIA = new ResourceLocation("chestcavity", "hydrophobia");
+    public static final ResourceLocation IMPACT_RESISTANT = new ResourceLocation("chestcavity", "impact_resistant");
+    public static final ResourceLocation KNOCKBACK_RESISTANT = new ResourceLocation("chestcavity", "knockback_resistant");
+    public static final ResourceLocation LAUNCHING = new ResourceLocation("chestcavity", "launching");
+    public static final ResourceLocation LEAPING = new ResourceLocation("chestcavity", "leaping");
+    public static final ResourceLocation SWIM_SPEED = new ResourceLocation("chestcavity", "swim_speed");
+    public static final ResourceLocation WATERBREATH = new ResourceLocation("chestcavity", "water_breath");
+    public static final ResourceLocation WITHERED = new ResourceLocation("chestcavity", "withered");
+    public static final ResourceLocation CREEPY = new ResourceLocation("chestcavity", "creepy");
+    public static final ResourceLocation DRAGON_BOMBS = new ResourceLocation("chestcavity", "dragon_bombs");
+    public static final ResourceLocation DRAGON_BREATH = new ResourceLocation("chestcavity", "dragon_breath");
+    public static final ResourceLocation EXPLOSIVE = new ResourceLocation("chestcavity", "explosive");
+    public static final ResourceLocation FORCEFUL_SPIT = new ResourceLocation("chestcavity", "forceful_spit");
+    public static final ResourceLocation GHASTLY = new ResourceLocation("chestcavity", "ghastly");
+    public static final ResourceLocation GRAZING = new ResourceLocation("chestcavity", "grazing");
+    public static final ResourceLocation PYROMANCY = new ResourceLocation("chestcavity", "pyromancy");
+    public static final ResourceLocation SHULKER_BULLETS = new ResourceLocation("chestcavity", "shulker_bullets");
+    public static final ResourceLocation SILK = new ResourceLocation("chestcavity", "silk");
+    public static final ResourceLocation CRYSTALSYNTHESIS = new ResourceLocation("chestcavity", "crystalsynthesis");
+    public static final ResourceLocation PHOTOSYNTHESIS = new ResourceLocation("chestcavity", "photosynthesis");
+    public static final ResourceLocation CARNIVOROUS_DIGESTION = new ResourceLocation("chestcavity", "carnivorous_digestion");
+    public static final ResourceLocation CARNIVOROUS_NUTRITION = new ResourceLocation("chestcavity", "carnivorous_nutrition");
+    public static final ResourceLocation FURNACE_POWERED = new ResourceLocation("chestcavity", "furnace_powered");
+    public static final ResourceLocation HERBIVOROUS_DIGESTION = new ResourceLocation("chestcavity", "herbivorous_digestion");
+    public static final ResourceLocation HERBIVOROUS_NUTRITION = new ResourceLocation("chestcavity", "herbivorous_nutrition");
+    public static final ResourceLocation IRON_REPAIR = new ResourceLocation("chestcavity", "iron_repair");
+    public static final ResourceLocation ROT_DIGESTION = new ResourceLocation("chestcavity", "rot_digestion");
+    public static final ResourceLocation ROTGUT = new ResourceLocation("chestcavity", "rotgut");
+    public static final ResourceLocation VENOMOUS = new ResourceLocation("chestcavity", "venomous");
 
-    //passive abilities
-    public static final Identifier ARROW_DODGING = new Identifier(ChestCavity.MODID, "arrow_dodging");
-    public static final Identifier BUFF_PURGING = new Identifier(ChestCavity.MODID, "buff_purging");
-    public static final Identifier BUOYANT = new Identifier(ChestCavity.MODID, "buoyant");
-    public static final Identifier DESTRUCTIVE_COLLISIONS = new Identifier(ChestCavity.MODID, "destructive_collisions");
-    public static final Identifier EASE_OF_ACCESS = new Identifier(ChestCavity.MODID, "ease_of_access");
-    public static final Identifier FIRE_RESISTANT = new Identifier(ChestCavity.MODID, "fire_resistant");
-    public static final Identifier GLOWING = new Identifier(ChestCavity.MODID, "glowing");
-    public static final Identifier HYDROALLERGENIC = new Identifier(ChestCavity.MODID, "hydroallergenic");
-    public static final Identifier HYDROPHOBIA = new Identifier(ChestCavity.MODID, "hydrophobia");
-    public static final Identifier IMPACT_RESISTANT = new Identifier(ChestCavity.MODID, "impact_resistant");
-    public static final Identifier KNOCKBACK_RESISTANT = new Identifier(ChestCavity.MODID, "knockback_resistant");
-    public static final Identifier LAUNCHING = new Identifier(ChestCavity.MODID, "launching");
-    public static final Identifier LEAPING = new Identifier(ChestCavity.MODID, "leaping");
-    public static final Identifier SWIM_SPEED = new Identifier(ChestCavity.MODID, "swim_speed");
-    public static final Identifier WATERBREATH = new Identifier(ChestCavity.MODID, "water_breath");
-    public static final Identifier WITHERED = new Identifier(ChestCavity.MODID, "withered");
-
-    //activated abilities
-    public static final Identifier CREEPY = new Identifier(ChestCavity.MODID, "creepy");
-    public static final Identifier DRAGON_BOMBS = new Identifier(ChestCavity.MODID, "dragon_bombs");
-    public static final Identifier DRAGON_BREATH = new Identifier(ChestCavity.MODID, "dragon_breath");
-    public static final Identifier EXPLOSIVE = new Identifier(ChestCavity.MODID, "explosive");
-    public static final Identifier FORCEFUL_SPIT = new Identifier(ChestCavity.MODID, "forceful_spit");
-    public static final Identifier GHASTLY = new Identifier(ChestCavity.MODID, "ghastly");
-    public static final Identifier GRAZING = new Identifier(ChestCavity.MODID,"grazing");
-    public static final Identifier PYROMANCY = new Identifier(ChestCavity.MODID, "pyromancy");
-    public static final Identifier SHULKER_BULLETS = new Identifier(ChestCavity.MODID, "shulker_bullets");
-    public static final Identifier SILK = new Identifier(ChestCavity.MODID, "silk");
-
-    //food abilities
-    public static final Identifier CRYSTALSYNTHESIS = new Identifier(ChestCavity.MODID, "crystalsynthesis");
-    public static final Identifier PHOTOSYNTHESIS = new Identifier(ChestCavity.MODID,"photosynthesis");
-    public static final Identifier CARNIVOROUS_DIGESTION = new Identifier(ChestCavity.MODID,"carnivorous_digestion");
-    public static final Identifier CARNIVOROUS_NUTRITION = new Identifier(ChestCavity.MODID,"carnivorous_nutrition");
-    public static final Identifier FURNACE_POWERED = new Identifier(ChestCavity.MODID,"furnace_powered");
-    public static final Identifier HERBIVOROUS_DIGESTION = new Identifier(ChestCavity.MODID,"herbivorous_digestion");
-    public static final Identifier HERBIVOROUS_NUTRITION = new Identifier(ChestCavity.MODID,"herbivorous_nutrition");
-    public static final Identifier IRON_REPAIR = new Identifier(ChestCavity.MODID,"iron_repair");
-    public static final Identifier ROT_DIGESTION = new Identifier(ChestCavity.MODID,"rot_digestion");
-    public static final Identifier ROTGUT = new Identifier(ChestCavity.MODID,"rotgut");
-
-    //on hit abilities
-    public static final Identifier VENOMOUS = new Identifier(ChestCavity.MODID, "venomous");
-
-
+    public CCOrganScores() {
+    }
 }

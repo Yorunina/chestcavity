@@ -3,49 +3,53 @@ package net.tigereye.chestcavity.recipes.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import java.util.Optional;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.recipes.SalvageRecipe;
 
 public class SalvageRecipeSerializer implements RecipeSerializer<SalvageRecipe> {
+    public SalvageRecipeSerializer() {
+    }
 
-    @Override
-    public SalvageRecipe read(Identifier id, JsonObject json) {
-        SalvageRecipeJsonFormat recipeJson = new Gson().fromJson(json, SalvageRecipeJsonFormat.class);
+    public SalvageRecipe fromJson(ResourceLocation id, JsonObject json) {
+        SalvageRecipeJsonFormat recipeJson = (SalvageRecipeJsonFormat)(new Gson()).fromJson(json, SalvageRecipeJsonFormat.class);
+        if (recipeJson.ingredient != null && recipeJson.result != null) {
+            if (recipeJson.required == 0) {
+                recipeJson.required = 1;
+            }
 
-        if (recipeJson.ingredient == null || recipeJson.result == null) {
+            if (recipeJson.count == 0) {
+                recipeJson.count = 1;
+            }
+
+            Ingredient input = Ingredient.m_43917_(recipeJson.ingredient);
+            Item outputItem = (Item)Optional.ofNullable((Item)ForgeRegistries.ITEMS.getValue(new ResourceLocation(recipeJson.result))).orElseThrow(() -> {
+                return new JsonSyntaxException("No such item " + recipeJson.result);
+            });
+            ItemStack output = new ItemStack(outputItem, recipeJson.count);
+            return new SalvageRecipe(input, recipeJson.required, CraftingBookCategory.MISC, output, id);
+        } else {
             throw new JsonSyntaxException("A required attribute is missing!");
         }
-
-        if (recipeJson.required == 0) recipeJson.required = 1;
-        if (recipeJson.count == 0) recipeJson.count = 1;
-        Ingredient input = Ingredient.fromJson(recipeJson.ingredient);
-        Item outputItem = Registries.ITEM.getOrEmpty(new Identifier(recipeJson.result))
-                // Validate the inputted item actually exists
-                .orElseThrow(() -> new JsonSyntaxException("No such item " + recipeJson.result));
-        ItemStack output = new ItemStack(outputItem, recipeJson.count);
-
-        return new SalvageRecipe(input, recipeJson.required, CraftingRecipeCategory.MISC, output, id);
     }
 
-    @Override
-    public SalvageRecipe read(Identifier id, PacketByteBuf buf) {
-        Ingredient input = Ingredient.fromPacket(buf);
+    public SalvageRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+        Ingredient input = Ingredient.m_43940_(buf);
         int required = buf.readInt();
-        ItemStack output = buf.readItemStack();
-        return new SalvageRecipe(input, required, CraftingRecipeCategory.MISC, output, id);
+        ItemStack output = buf.m_130267_();
+        return new SalvageRecipe(input, required, CraftingBookCategory.MISC, output, id);
     }
 
-    @Override
-    public void write(PacketByteBuf buf, SalvageRecipe recipe) {
-        recipe.getInput().write(buf);
+    public void toNetwork(FriendlyByteBuf buf, SalvageRecipe recipe) {
+        recipe.getInput().m_43923_(buf);
         buf.writeInt(recipe.getRequired());
-        buf.writeItemStack(recipe.outputStack.copy());
+        buf.m_130055_(recipe.outputStack.m_41777_());
     }
 }

@@ -1,19 +1,18 @@
 package net.tigereye.chestcavity.chestcavities;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
-public class ChestCavityInventory extends SimpleInventory {
-
+public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
     boolean test;
 
     public ChestCavityInstance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     public void setInstance(ChestCavityInstance instance) {
@@ -24,33 +23,34 @@ public class ChestCavityInventory extends SimpleInventory {
         super(27);
     }
 
-    public ChestCavityInventory(int size,ChestCavityInstance instance) {
+    public ChestCavityInventory(int size, ChestCavityInstance instance) {
         super(size);
         this.instance = instance;
     }
 
-    public void readTags(NbtList tags) {
-        clear();
+    public void readTags(ListTag tags) {
+        this.clearContent();
+
         for(int j = 0; j < tags.size(); ++j) {
-            NbtCompound NbtCompound = tags.getCompound(j);
+            CompoundTag NbtCompound = tags.getCompound(j);
             int k = NbtCompound.getByte("Slot") & 255;
             boolean f = NbtCompound.getBoolean("Forbidden");
-            if (k >= 0 && k < this.size()) {
-                this.setStack(k, ItemStack.fromNbt(NbtCompound));
+            if (k >= 0 && k < this.getContainerSize()) {
+                this.setItem(k, ItemStack.of(NbtCompound));
             }
         }
 
     }
 
-    public NbtList getTags() {
-        NbtList list = new NbtList();
+    public ListTag getTags() {
+        ListTag list = new ListTag();
 
-        for(int i = 0; i < this.size(); ++i) {
-            ItemStack itemStack = this.getStack(i);
+        for(int i = 0; i < this.getContainerSize(); ++i) {
+            ItemStack itemStack = this.getItem(i);
             if (!itemStack.isEmpty()) {
-                NbtCompound NbtCompound = new NbtCompound();
+                CompoundTag NbtCompound = new CompoundTag();
                 NbtCompound.putByte("Slot", (byte)i);
-                itemStack.writeNbt(NbtCompound);
+                itemStack.setTag(NbtCompound);
                 list.add(NbtCompound);
             }
         }
@@ -58,13 +58,13 @@ public class ChestCavityInventory extends SimpleInventory {
         return list;
     }
 
-    @Override
-    public boolean canPlayerUse(PlayerEntity player) {
-
-        if(instance == null) {
+    public boolean m_6542_(Player player) {
+        if (this.instance == null) {
             return true;
-        } //this is for if something goes wrong with that first moment before things sync
-        if(instance.owner.isDead()){return false;}
-        return (player.distanceTo(instance.owner) < 8);
+        } else if (this.instance.owner.isDeadOrDying()) {
+            return false;
+        } else {
+            return player.distanceTo(this.instance.owner) < 8.0F;
+        }
     }
 }

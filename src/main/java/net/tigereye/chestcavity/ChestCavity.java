@@ -2,54 +2,95 @@ package net.tigereye.chestcavity;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
-import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityAssignmentManager;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityTypeManager;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.compat.CrossModContent;
 import net.tigereye.chestcavity.config.CCConfig;
-import net.tigereye.chestcavity.registration.*;
+import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.registration.CCCommands;
+import net.tigereye.chestcavity.registration.CCEnchantments;
+import net.tigereye.chestcavity.registration.CCItems;
+import net.tigereye.chestcavity.registration.CCListeners;
+import net.tigereye.chestcavity.registration.CCNetworkingPackets;
+import net.tigereye.chestcavity.registration.CCRecipes;
+import net.tigereye.chestcavity.registration.CCStatusEffects;
+import net.tigereye.chestcavity.registration.CCTagOrgans;
+import net.tigereye.chestcavity.ui.ChestCavityScreen;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChestCavity implements ModInitializer {
+@Mod("chestcavity")
+public class ChestCavity {
 	public static final String MODID = "chestcavity";
-    public static final boolean DEBUG_MODE = false;
+	public static final boolean DEBUG_MODE = false;
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static CCConfig config;
-	public static final ScreenHandlerType<ChestCavityScreenHandler> CHEST_CAVITY_SCREEN_HANDLER;
-	public static final Identifier CHEST_CAVITY_SCREEN_ID = new Identifier(MODID,"chest_cavity_screen");
-	public static final Identifier COMPATIBILITY_TAG = new Identifier(MODID,"organ_compatibility");
+	private static final ResourceLocation DESERT_PYRAMID_LOOT_TABLE_ID = new ResourceLocation("minecraft", "chests/desert_pyramid");
+	public static final DeferredRegister<MenuType<?>> MENU_TYPES;
+	public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER;
+	public static final ResourceLocation CHEST_CAVITY_SCREEN_ID;
+	public static final ResourceLocation COMPATIBILITY_TAG;
 
-
-	//public static final ScreenHandlerType<ScreenHandler> CHEST_CAVITY_SCREEN_HANDLER;
-
-	static{
-		CHEST_CAVITY_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(CHEST_CAVITY_SCREEN_ID, ChestCavityScreenHandler::new);
-	}
-	@Override
-	public void onInitialize() {
-		//Register mod resources
+	public ChestCavity() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		eventBus.addListener(this::clientSetup);
 		AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
-		CCItems.register();
-		CCRecipes.register();
-		CCEnchantments.register();
+		config = (CCConfig)AutoConfig.getConfigHolder(CCConfig.class).getConfig();
+		CCItems.ITEMS.register(eventBus);
+		CCRecipes.RECIPE_SERIALIZERS.register(eventBus);
+		CCRecipes.MCRECIPE_SERIALIZERS.register(eventBus);
+		CCRecipes.RECIPE_TYPES.register(eventBus);
+		CCEnchantments.ENCHANTMENTS.register(eventBus);
 		CCListeners.register();
-		CCStatusEffects.register();
+		CCStatusEffects.MOB_EFFECTS.register(eventBus);
 		CCTagOrgans.init();
 		CCCommands.register();
 		CCNetworkingPackets.register();
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new OrganManager());
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new GeneratedChestCavityTypeManager());
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new GeneratedChestCavityAssignmentManager());
+		ChestCavityNetwork.init();
+		MENU_TYPES.register(eventBus);
 		CrossModContent.register();
+		eventBus = MinecraftForge.EVENT_BUS;
+		eventBus.register(this);
+		eventBus.addListener(this::lootTableLoad);
+	}
 
+	public void clientSetup(FMLClientSetupEvent event) {
+		MenuScreens.register((MenuType)CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
+		ChestCavityClient.onInitializeClient();
+	}
+
+	public void lootTableLoad(LootTableLoadEvent event) {
+		if (DESERT_PYRAMID_LOOT_TABLE_ID.equals(event.getName())) {
+			LootPool.Builder poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(4, 0.25F)).add(LootItem.lootTableItem((ItemLike)CCItems.ROTTEN_RIB.get()));
+			event.getTable().addPool(poolBuilder.build());
+			poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(1, 0.3F)).add(LootItem.lootTableItem((ItemLike)CCItems.ROTTEN_RIB.get()));
+			event.getTable().addPool(poolBuilder.build());
+		}
+
+	}
+
+	static {
+		MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, "chestcavity");
+		CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> {
+			return new MenuType(ChestCavityScreenHandler::new, FeatureFlags.DEFAULT_FLAGS);
+		});
+		CHEST_CAVITY_SCREEN_ID = new ResourceLocation("chestcavity", "chest_cavity_screen");
+		COMPATIBILITY_TAG = new ResourceLocation("chestcavity", "organ_compatibility");
 	}
 }

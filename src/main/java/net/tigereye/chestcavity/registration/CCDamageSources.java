@@ -1,30 +1,30 @@
 package net.tigereye.chestcavity.registration;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.tigereye.chestcavity.ChestCavity;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 public class CCDamageSources {
-    public static final RegistryKey<DamageType> HEARTBLEED = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(ChestCavity.MODID,"cc_heartbleed"));
-    public static final RegistryKey<DamageType> ORGAN_REJECTION = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(ChestCavity.MODID,"cc_organ_rejection"));
+    public static final ResourceKey<DamageType> HEARTBLEED;
+    public static final ResourceKey<DamageType> ORGAN_REJECTION;
 
-    public static DamageSource of(World world, RegistryKey<DamageType> key) {
-        return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
+    public CCDamageSources() {
     }
 
-    public static DamageSource of(World world, RegistryKey<DamageType> key, @Nullable Entity attacker) {
-        if(attacker != null) {
-            return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key), attacker);
-        }
-        else {
-            return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
-        }
+    public static DamageSource of(Level world, ResourceKey<DamageType> key) {
+        return new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key));
     }
 
+    public static DamageSource of(Level world, ResourceKey<DamageType> key, Entity attacker) {
+        return attacker != null ? new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key), attacker) : new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key));
+    }
+
+    static {
+        HEARTBLEED = ResourceKey.m_135785_(Registries.f_268580_, new ResourceLocation("chestcavity", "cc_heartbleed"));
+        ORGAN_REJECTION = ResourceKey.m_135785_(Registries.f_268580_, new ResourceLocation("chestcavity", "cc_organ_rejection"));
+    }
 }

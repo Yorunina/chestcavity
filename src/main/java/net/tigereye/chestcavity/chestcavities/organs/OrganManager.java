@@ -1,82 +1,103 @@
 package net.tigereye.chestcavity.chestcavities.organs;
 
 import com.google.gson.Gson;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.tigereye.chestcavity.ChestCavity;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListener;
+import org.jetbrains.annotations.NotNull;
 
 public class OrganManager implements SimpleSynchronousResourceReloadListener {
     private static final String RESOURCE_LOCATION = "organs";
     private static final String NBT_KEY = "organData";
     private final OrganSerializer SERIALIZER = new OrganSerializer();
-    public static Map<Identifier, OrganData> GeneratedOrganData = new HashMap<>();
+    public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap();
 
-    @Override
-    public Identifier getFabricId() {
-        return new Identifier(ChestCavity.MODID, RESOURCE_LOCATION);
+    public OrganManager() {
     }
 
-    @Override
-    public void reload(ResourceManager manager) {
+    public ResourceLocation getFabricId() {
+        return new ResourceLocation("chestcavity", "organs");
+    }
+
+    public void m_6213_(ResourceManager manager) {
         GeneratedOrganData.clear();
         ChestCavity.LOGGER.info("Loading organs.");
-        manager.findResources(RESOURCE_LOCATION, path -> path.getPath().endsWith(".json")).forEach((id,resource) -> {
-            try(InputStream stream = resource.getInputStream()) {
-                Reader reader = new InputStreamReader(stream);
-                Pair<Identifier,OrganData> organDataPair = SERIALIZER.read(id,new Gson().fromJson(reader,OrganJsonFormat.class));
-                GeneratedOrganData.put(organDataPair.getLeft(),organDataPair.getRight());
-            } catch(Exception e) {
-                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), e);
+        manager.m_214159_("organs", (path) -> {
+            return path.m_135815_().endsWith(".json");
+        }).forEach((id, resource) -> {
+            try {
+                InputStream stream = resource.m_215507_();
+
+                try {
+                    Reader reader = new InputStreamReader(stream);
+                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat)(new Gson()).fromJson(reader, OrganJsonFormat.class));
+                    GeneratedOrganData.put((ResourceLocation)organDataPair.m_14418_(), (OrganData)organDataPair.m_14419_());
+                } catch (Throwable var7) {
+                    if (stream != null) {
+                        try {
+                            stream.close();
+                        } catch (Throwable var6) {
+                            var7.addSuppressed(var6);
+                        }
+                    }
+
+                    throw var7;
+                }
+
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (Exception var8) {
+                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
             }
+
         });
-        ChestCavity.LOGGER.info("Loaded "+ GeneratedOrganData.size()+" organs.");
+        ChestCavity.LOGGER.info("Loaded " + GeneratedOrganData.size() + " organs.");
     }
 
-    public static boolean hasEntry(Item item){
-        return GeneratedOrganData.containsKey(Registries.ITEM.getId(item));
+    public static boolean hasEntry(Item item) {
+        return GeneratedOrganData.containsKey(ForgeRegistries.ITEMS.getKey(item));
     }
 
-    public static OrganData getEntry(Item item){
-        return GeneratedOrganData.get(Registries.ITEM.getId(item));
+    public static OrganData getEntry(Item item) {
+        return (OrganData)GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
     }
 
-    public static boolean isTrueOrgan(Item item){
-        if(hasEntry(item)){
+    public static boolean isTrueOrgan(Item item) {
+        if (hasEntry(item)) {
             return !getEntry(item).pseudoOrgan;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public static OrganData readNBTOrganData(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getSubNbt(NBT_KEY);
-        if(nbt != null) {
-            return readNBTOrganData(nbt);
-        }
-        return null;
+        CompoundTag nbt = itemStack.getTagElement("organData");
+        return nbt != null ? readNBTOrganData(nbt) : null;
     }
 
-    public static OrganData readNBTOrganData(@NotNull NbtCompound nbt) {
+    public static OrganData readNBTOrganData(@NotNull CompoundTag nbt) {
         OrganData organData = new OrganData();
         organData.pseudoOrgan = nbt.getBoolean("pseudoOrgan");
-        for (String key:
-             nbt.getKeys()) {
-            if(!key.equals("pseudoOrgan")){
-                organData.organScores.put(new Identifier(key),nbt.getFloat(key));
+
+        for (String key : nbt.getAllKeys()) {
+            if (!key.equals("pseudoOrgan")) {
+                organData.organScores.put(new ResourceLocation(key), nbt.m_128457_(key));
             }
         }
+
         return organData;
     }
 }

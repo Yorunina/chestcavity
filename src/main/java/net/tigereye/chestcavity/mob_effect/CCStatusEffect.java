@@ -1,10 +1,10 @@
 package net.tigereye.chestcavity.mob_effect;
 
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class CCStatusEffect extends StatusEffect {
-    public CCStatusEffect(StatusEffectCategory type, int color) {
+public class CCStatusEffect extends MobEffect {
+    public CCStatusEffect(MobEffectCategory type, int color) {
         super(type, color);
     }
 }

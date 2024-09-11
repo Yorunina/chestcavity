@@ -1,18 +1,21 @@
 package net.tigereye.chestcavity.items;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.LlamaSpitEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import java.util.Iterator;
+import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.LlamaSpit;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.listeners.OrganOnHitListener;
@@ -20,54 +23,46 @@ import net.tigereye.chestcavity.registration.CCFoodComponents;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.util.OrganUtil;
 
-import java.util.List;
-
 public class VenomGland extends Item implements OrganOnHitListener {
-
     public VenomGland() {
-        super(new Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+        super((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
     }
 
-    @Override
     public float onHit(DamageSource source, LivingEntity attacker, LivingEntity target, ChestCavityInstance cc, ItemStack organ, float damage) {
-        if(attacker.getStackInHand(attacker.getActiveHand()).isEmpty()
-        //venom glands don't trigger from projectiles... unless it is llama spit. Because I find that hilarious.
-        ||(source.isIn(DamageTypeTags.IS_PROJECTILE) && (source.getSource() instanceof LlamaSpitEntity))
-        ){
-            //venom glands don't trigger if they are on cooldown,
-            //unless that cooldown was applied this same tick
-            if(attacker.hasStatusEffect(CCStatusEffects.VENOM_COOLDOWN)){
-                StatusEffectInstance cooldown = attacker.getStatusEffect(CCStatusEffects.VENOM_COOLDOWN);
-                //this is to check if the cooldown was inflicted this same tick; likely because of other venom glands
-                if(cooldown.getDuration() != ChestCavity.config.VENOM_COOLDOWN){
+        if (attacker.m_21120_(attacker.m_7655_()).m_41619_() || source.m_269533_(DamageTypeTags.f_268524_) && source.m_7640_() instanceof LlamaSpit) {
+            if (attacker.m_21023_((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get())) {
+                MobEffectInstance cooldown = attacker.m_21124_((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get());
+                if (cooldown.m_19557_() != ChestCavity.config.VENOM_COOLDOWN) {
                     return damage;
                 }
             }
-            //failure conditions passed, the venom gland now delivers its payload
-            List<StatusEffectInstance> effects = OrganUtil.getStatusEffects(organ);
-            if(!effects.isEmpty()){
-                for(StatusEffectInstance effect : effects){
-                    target.addStatusEffect(effect);
+
+            List<MobEffectInstance> effects = OrganUtil.getStatusEffects(organ);
+            if (!effects.isEmpty()) {
+                Iterator<MobEffectInstance> var8 = effects.iterator();
+
+                while(var8.hasNext()) {
+                    MobEffectInstance effect = (MobEffectInstance)var8.next();
+                    target.m_7292_(effect);
                 }
+            } else {
+                target.m_7292_(new MobEffectInstance(MobEffects.f_19614_, 200, 0));
             }
-            else {
-                target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 200, 0));
-            }
-            attacker.addStatusEffect(new StatusEffectInstance(CCStatusEffects.VENOM_COOLDOWN, ChestCavity.config.VENOM_COOLDOWN, 0));
-            if(attacker instanceof PlayerEntity){
-                ((PlayerEntity)attacker).addExhaustion(.1f);
+
+            attacker.m_7292_(new MobEffectInstance((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get(), ChestCavity.config.VENOM_COOLDOWN, 0));
+            if (attacker instanceof Player) {
+                ((Player)attacker).m_36399_(0.1F);
             }
         }
+
         return damage;
     }
 
-    @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        super.appendTooltip(itemStack,world,tooltip,tooltipContext);
-        if(!OrganUtil.getStatusEffects(itemStack).isEmpty()) {
-            PotionUtil.buildTooltip(itemStack, tooltip, 1);
+    public void m_7373_(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
+        super.m_7373_(itemStack, world, tooltip, tooltipContext);
+        if (!OrganUtil.getStatusEffects(itemStack).isEmpty()) {
+            PotionUtils.m_43555_(itemStack, tooltip, 1.0F);
         }
+
     }
-
-
 }

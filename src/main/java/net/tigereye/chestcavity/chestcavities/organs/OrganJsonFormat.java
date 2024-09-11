@@ -6,4 +6,7 @@ public class OrganJsonFormat {
     String itemID;
     boolean pseudoOrgan;
     JsonArray organScores;
+
+    public OrganJsonFormat() {
+    }
 }

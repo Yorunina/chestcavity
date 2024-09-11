@@ -1,29 +1,40 @@
-package net.tigereye.chestcavity.chestcavities;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
-import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
-import net.tigereye.chestcavity.chestcavities.organs.OrganData;
+package net.tigereye.chestcavity.chestcavities;
 
 import java.util.List;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.organs.OrganData;
 
 public interface ChestCavityType {
+    Map<ResourceLocation, Float> getDefaultOrganScores();
 
-    public Map<Identifier,Float> getDefaultOrganScores();
-    public float getDefaultOrganScore(Identifier id);
-    public ChestCavityInventory getDefaultChestCavity();
-    public boolean isSlotForbidden(int index);
+    float getDefaultOrganScore(ResourceLocation var1);
 
-    public void fillChestCavityInventory(ChestCavityInventory chestCavity);
-    public void loadBaseOrganScores(Map<Identifier, Float> organScores);
-    public OrganData catchExceptionalOrgan(ItemStack slot);
+    ChestCavityInventory getDefaultChestCavity();
 
-    public List<ItemStack> generateLootDrops(Random random, int looting);
+    boolean isSlotForbidden(int var1);
 
-    public void setOrganCompatibility(ChestCavityInstance instance);
-    public float getHeartBleedCap();
-    public boolean isOpenable(ChestCavityInstance instance);
-    public void onDeath(ChestCavityInstance instance);
+    void fillChestCavityInventory(ChestCavityInventory var1);
+
+    void loadBaseOrganScores(Map<ResourceLocation, Float> var1);
+
+    OrganData catchExceptionalOrgan(ItemStack var1);
+
+    List<ItemStack> generateLootDrops(RandomSource var1, int var2);
+
+    void setOrganCompatibility(ChestCavityInstance var1);
+
+    float getHeartBleedCap();
+
+    boolean isOpenable(ChestCavityInstance var1);
+
+    void onDeath(ChestCavityInstance var1);
 }

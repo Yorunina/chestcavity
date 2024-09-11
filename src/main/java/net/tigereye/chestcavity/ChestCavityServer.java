@@ -1,24 +1,9 @@
 package net.tigereye.chestcavity;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.registration.CCNetworkingPackets;
-import net.tigereye.chestcavity.util.NetworkUtil;
+public class ChestCavityServer {
+    public ChestCavityServer() {
+    }
 
-import java.util.Optional;
-
-public class ChestCavityServer implements DedicatedServerModInitializer{
-
-    @Override
     public void onInitializeServer() {
-        ServerPlayNetworking.registerGlobalReceiver(CCNetworkingPackets.RECEIVED_UPDATE_PACKET_ID, (server, player, handler, buf, sender) -> {
-            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(player);
-            optional.ifPresent(chestCavityEntity -> NetworkUtil.ReadChestCavityReceivedUpdatePacket(chestCavityEntity.getChestCavityInstance()));
-        });
-        ServerPlayNetworking.registerGlobalReceiver(CCNetworkingPackets.HOTKEY_PACKET_ID, (server, player, handler, buf, sender) -> {
-            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(player);
-            optional.ifPresent(chestCavityEntity -> NetworkUtil.ReadChestCavityHotkeyPacket(chestCavityEntity.getChestCavityInstance(),buf));
-        });
     }
 }

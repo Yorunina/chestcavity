@@ -1,142 +1,101 @@
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
-	id 'maven-publish'
+	id 'idea'
+	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+	id 'org.spongepowered.mixin' version '0.7.+'
+	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+version = "${mod_version}-${mc_version}"
+group = "net.tigereye.${modid}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${modid}"
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-repositories {
-	/*maven {
-		name = 'Ladysnake Mods'
-		url = 'https://ladysnake.jfrog.io/artifactory/mods'
-		content {
-			includeGroup 'io.github.ladysnake'
-			includeGroupByRegex '(dev|io\\.github)\\.onyxstudios.*'
-			includeGroupByRegex 'dev\\.emi.*'
+minecraft {
+	mappings channel: 'official', version: '1.20.1'
+	runs {
+		client {
+			properties 'mixin.env.remapRefMap': 'true'
+			property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+			workingDirectory project.file('run_client')
+			arg "-mixin.config="+archivesBaseName+".mixins.json"
+
+
+			// Recommended logging level for the console
+			property 'forge.logging.console.level', 'debug'
+
+			mods {
+				examplemod {
+					source sourceSets.main
+				}
+			}
+		}
+
+		server {
+			properties 'mixin.env.remapRefMap': 'true'
+			property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+			workingDirectory project.file('run_server')
+			arg "-mixin.config="+archivesBaseName+".mixins.json"
+
+			property 'forge.logging.console.level', 'debug'
+
+			mods {
+				examplemod {
+					source sourceSets.main
+				}
+			}
 		}
 	}
-	maven {
-		name = 'Nexus OSS Repository'
-		url = 'https://oss.sonatype.org/content/repositories/snapshots'
-	}
-	maven {
-		url = 'https://maven.jamieswhiteshirt.com/libs-release/'
-		content {
-			includeGroup 'com.jamieswhiteshirt'
-		}
-	}*/ //Requiem is no longer a fabric mod, so its maven repos are no longer needed.
-	maven {
-		url = "https://maven.modmuss50.me/"
-	}
-	maven { url = 'https://jitpack.io'
-		content{
-			excludeGroup 'io.github.ladysnake'
-		}
-	} //good 'ol jitpack
-	maven { url = 'https://maven.terraformersmc.com/releases/' } //for mod menu
-	maven { url "https://maven.shedaniel.me/" } //for cloth config and rei
-	//maven { url "https://oss.sonatype.org/service/local/repositories/snapshots/content"} //for a misbehaving requiem prereq?
 }
 
-configurations.all {
-	resolutionStrategy {
-		force("net.fabricmc:fabric-loader:$loader_version")
+repositories{
+	maven {
+		name = "Jared's maven"
+		url = "https://maven.blamejared.com/"
+		content {
+			includeGroup "mezz.jei"
+		}
 	}
+
+	maven {
+		name = "Curse maven"
+		url = "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+	mavenCentral()
 }
 
 dependencies {
-	//to change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	// You may need to force-disable transitiveness on them.
-
-	// Replace modImplementation with modApi if you expose components in your own API
-	modApi ("com.github.tigereye504:modify-drops-api:${project.modify_drops_api_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	modImplementation ("com.terraformersmc:modmenu:${project.mod_menus_version}"){
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	// These are optional dependencies, though best as I can tell gradlew doesn't care
-
-	// Requiem is no longer supported as a fabric mod.
-	// modImplementation "io.github.ladysnake:requiem-api:${project.requiem_version}"
-	// modRuntimeOnly "io.github.ladysnake:requiem-core:${project.requiem_version}"
-	// modRuntimeOnly "io.github.ladysnake:requiem:${project.requiem_version}"
-
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"){
-		exclude group: "net.fabricmc", module: "fabric-loader"
-		exclude group: "dev.architectury", module: "architectury"
-	}
-	//modRuntimeOnly("dev.architectury:architectury:${project.architectury_version}"){
-	//	exclude group: "net.fabricmc", module: "fabric-loader"
-	//}
-	modCompileOnly ("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"){
-		exclude group: "net.fabricmc", module: "fabric-loader"
-	}
-
-
-	// Jar-in-Jar dependencies
-	include ("com.github.tigereye504:modify-drops-api:${project.modify_drops_api_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	//include "me.shedaniel.cloth:cloth-config-fabric:5.0.38"
-	//include "me.shedaniel.mcmods:autoconfig1u:3.2.2"
+	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
+	compileOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
+	runtimeOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
 }
 
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+sourceSets {
+	main.resources.srcDirs += 'src/generated/resources'
 }
 
-tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-}
-
+// Example for how to get properties into the manifest for reading by the runtime..
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+	manifest {
+		attributes([
+				"Specification-Title": "${modid}",
+				"Specification-Vendor": "examplemodsareus",
+				"Specification-Version": "1",
+				"Implementation-Title": project.name,
+				"Implementation-Version": "${version}",
+				"Implementation-Vendor" :"examplemodsareus",
+				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+				"MixinConfigs": "${modid}.mixins.json"
+		])
 	}
 }
 
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+mixin {
+	add sourceSets.main, "${modid}.refmap.json"
+	config "${modid}.mixins.json"
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+	debug.export = true
 }

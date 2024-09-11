@@ -1,649 +1,749 @@
 package net.tigereye.chestcavity.registration;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.tigereye.chestcavity.ChestCavity;
+import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
 import net.tigereye.chestcavity.items.VenomGland;
 
 public class CCItems {
+	public static final DeferredRegister<Item> ITEMS;
+	public static final Item.Properties CHEST_OPENER_SETTINGS;
+	public static final Item.Properties FOOD_ITEM_SETTINGS;
+	public static final RegistryObject<Item> CHEST_OPENER;
+	public static final RegistryObject<SwordItem> WOODEN_CLEAVER;
+	public static final RegistryObject<SwordItem> GOLD_CLEAVER;
+	public static final RegistryObject<SwordItem> STONE_CLEAVER;
+	public static final RegistryObject<SwordItem> IRON_CLEAVER;
+	public static final RegistryObject<SwordItem> DIAMOND_CLEAVER;
+	public static final RegistryObject<SwordItem> NETHERITE_CLEAVER;
+	public static final RegistryObject<Item> HUMAN_APPENDIX;
+	public static final RegistryObject<Item> HUMAN_HEART;
+	public static final RegistryObject<Item> HUMAN_INTESTINE;
+	public static final RegistryObject<Item> HUMAN_KIDNEY;
+	public static final RegistryObject<Item> HUMAN_LIVER;
+	public static final RegistryObject<Item> HUMAN_LUNG;
+	public static final RegistryObject<Item> HUMAN_MUSCLE;
+	public static final RegistryObject<Item> HUMAN_RIB;
+	public static final RegistryObject<Item> HUMAN_SPINE;
+	public static final RegistryObject<Item> HUMAN_SPLEEN;
+	public static final RegistryObject<Item> HUMAN_STOMACH;
+	public static final RegistryObject<Item> ROTTEN_APPENDIX;
+	public static final RegistryObject<Item> ROTTEN_HEART;
+	public static final RegistryObject<Item> ROTTEN_INTESTINE;
+	public static final RegistryObject<Item> ROTTEN_KIDNEY;
+	public static final RegistryObject<Item> ROTTEN_LIVER;
+	public static final RegistryObject<Item> ROTTEN_LUNG;
+	public static final RegistryObject<Item> ROTTEN_MUSCLE;
+	public static final RegistryObject<Item> ROTTEN_RIB;
+	public static final RegistryObject<Item> ROTTEN_SPINE;
+	public static final RegistryObject<Item> ROTTEN_SPLEEN;
+	public static final RegistryObject<Item> ROTTEN_STOMACH;
+	public static final RegistryObject<Item> WITHERED_RIB;
+	public static final RegistryObject<Item> WITHERED_SPINE;
+	public static final RegistryObject<Item> WRITHING_SOULSAND;
+	public static final RegistryObject<Item> ANIMAL_APPENDIX;
+	public static final RegistryObject<Item> ANIMAL_HEART;
+	public static final RegistryObject<Item> ANIMAL_INTESTINE;
+	public static final RegistryObject<Item> ANIMAL_KIDNEY;
+	public static final RegistryObject<Item> ANIMAL_LIVER;
+	public static final RegistryObject<Item> ANIMAL_LUNG;
+	public static final RegistryObject<Item> ANIMAL_MUSCLE;
+	public static final RegistryObject<Item> ANIMAL_RIB;
+	public static final RegistryObject<Item> ANIMAL_SPINE;
+	public static final RegistryObject<Item> ANIMAL_SPLEEN;
+	public static final RegistryObject<Item> ANIMAL_STOMACH;
+	public static final RegistryObject<Item> AQUATIC_MUSCLE;
+	public static final RegistryObject<Item> FISH_MUSCLE;
+	public static final RegistryObject<Item> GILLS;
+	public static final RegistryObject<Item> LLAMA_LUNG;
+	public static final RegistryObject<Item> CARNIVORE_STOMACH;
+	public static final RegistryObject<Item> CARNIVORE_INTESTINE;
+	public static final RegistryObject<Item> HERBIVORE_RUMEN;
+	public static final RegistryObject<Item> HERBIVORE_STOMACH;
+	public static final RegistryObject<Item> HERBIVORE_INTESTINE;
+	public static final RegistryObject<Item> BRUTISH_MUSCLE;
+	public static final RegistryObject<Item> SWIFT_MUSCLE;
+	public static final RegistryObject<Item> SPRINGY_MUSCLE;
+	public static final RegistryObject<Item> FIREPROOF_APPENDIX;
+	public static final RegistryObject<Item> FIREPROOF_HEART;
+	public static final RegistryObject<Item> FIREPROOF_INTESTINE;
+	public static final RegistryObject<Item> FIREPROOF_KIDNEY;
+	public static final RegistryObject<Item> FIREPROOF_LIVER;
+	public static final RegistryObject<Item> FIREPROOF_LUNG;
+	public static final RegistryObject<Item> FIREPROOF_MUSCLE;
+	public static final RegistryObject<Item> FIREPROOF_RIB;
+	public static final RegistryObject<Item> FIREPROOF_SPINE;
+	public static final RegistryObject<Item> FIREPROOF_SPLEEN;
+	public static final RegistryObject<Item> FIREPROOF_STOMACH;
+	public static final RegistryObject<Item> SMALL_ANIMAL_APPENDIX;
+	public static final RegistryObject<Item> SMALL_ANIMAL_HEART;
+	public static final RegistryObject<Item> SMALL_ANIMAL_INTESTINE;
+	public static final RegistryObject<Item> SMALL_ANIMAL_KIDNEY;
+	public static final RegistryObject<Item> SMALL_ANIMAL_LIVER;
+	public static final RegistryObject<Item> SMALL_ANIMAL_LUNG;
+	public static final RegistryObject<Item> SMALL_ANIMAL_MUSCLE;
+	public static final RegistryObject<Item> SMALL_ANIMAL_RIB;
+	public static final RegistryObject<Item> SMALL_ANIMAL_SPINE;
+	public static final RegistryObject<Item> SMALL_ANIMAL_SPLEEN;
+	public static final RegistryObject<Item> SMALL_ANIMAL_STOMACH;
+	public static final RegistryObject<Item> RABBIT_HEART;
+	public static final RegistryObject<Item> SMALL_AQUATIC_MUSCLE;
+	public static final RegistryObject<Item> SMALL_FISH_MUSCLE;
+	public static final RegistryObject<Item> SMALL_SPRINGY_MUSCLE;
+	public static final RegistryObject<Item> SMALL_GILLS;
+	public static final RegistryObject<Item> SMALL_CARNIVORE_STOMACH;
+	public static final RegistryObject<Item> SMALL_CARNIVORE_INTESTINE;
+	public static final RegistryObject<Item> SMALL_HERBIVORE_STOMACH;
+	public static final RegistryObject<Item> SMALL_HERBIVORE_INTESTINE;
+	public static final RegistryObject<Item> INSECT_HEART;
+	public static final RegistryObject<Item> INSECT_INTESTINE;
+	public static final RegistryObject<Item> INSECT_LUNG;
+	public static final RegistryObject<Item> INSECT_MUSCLE;
+	public static final RegistryObject<Item> INSECT_STOMACH;
+	public static final RegistryObject<Item> INSECT_CAECA;
+	public static final RegistryObject<Item> SILK_GLAND;
+	public static final RegistryObject<VenomGland> VENOM_GLAND;
+	public static final RegistryObject<Item> ENDER_APPENDIX;
+	public static final RegistryObject<Item> ENDER_HEART;
+	public static final RegistryObject<Item> ENDER_INTESTINE;
+	public static final RegistryObject<Item> ENDER_KIDNEY;
+	public static final RegistryObject<Item> ENDER_LIVER;
+	public static final RegistryObject<Item> ENDER_LUNG;
+	public static final RegistryObject<Item> ENDER_MUSCLE;
+	public static final RegistryObject<Item> ENDER_RIB;
+	public static final RegistryObject<Item> ENDER_SPINE;
+	public static final RegistryObject<Item> ENDER_SPLEEN;
+	public static final RegistryObject<Item> ENDER_STOMACH;
+	public static final RegistryObject<Item> DRAGON_APPENDIX;
+	public static final RegistryObject<Item> DRAGON_HEART;
+	public static final RegistryObject<Item> DRAGON_KIDNEY;
+	public static final RegistryObject<Item> DRAGON_LIVER;
+	public static final RegistryObject<Item> DRAGON_LUNG;
+	public static final RegistryObject<Item> DRAGON_MUSCLE;
+	public static final RegistryObject<Item> DRAGON_RIB;
+	public static final RegistryObject<Item> DRAGON_SPINE;
+	public static final RegistryObject<Item> DRAGON_SPLEEN;
+	public static final RegistryObject<Item> MANA_REACTOR;
+	public static final RegistryObject<Item> ACTIVE_BLAZE_ROD;
+	public static final RegistryObject<Item> BLAZE_SHELL;
+	public static final RegistryObject<Item> BLAZE_CORE;
+	public static final RegistryObject<Item> GAS_BLADDER;
+	public static final RegistryObject<Item> VOLATILE_STOMACH;
+	public static final RegistryObject<Item> GOLEM_CABLE;
+	public static final RegistryObject<Item> GOLEM_PLATING;
+	public static final RegistryObject<Item> GOLEM_CORE;
+	public static final RegistryObject<Item> INNER_FURNACE;
+	public static final RegistryObject<Item> PISTON_MUSCLE;
+	public static final RegistryObject<Item> IRON_SCRAP;
+	public static final RegistryObject<Item> SALTWATER_HEART;
+	public static final RegistryObject<Item> SALTWATER_LUNG;
+	public static final RegistryObject<Item> SALTWATER_MUSCLE;
+	public static final RegistryObject<Item> CREEPER_APPENDIX;
+	public static final RegistryObject<Item> SHIFTING_LEAVES;
+	public static final RegistryObject<Item> SHULKER_SPLEEN;
+	public static final RegistryObject<Item> SAUSAGE_SKIN;
+	public static final RegistryObject<Item> MINI_SAUSAGE_SKIN;
+	public static final RegistryObject<Item> BURNT_MEAT_CHUNK;
+	public static final RegistryObject<Item> RAW_ORGAN_MEAT;
+	public static final RegistryObject<Item> COOKED_ORGAN_MEAT;
+	public static final RegistryObject<Item> RAW_BUTCHERED_MEAT;
+	public static final RegistryObject<Item> COOKED_BUTCHERED_MEAT;
+	public static final RegistryObject<Item> RAW_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_SAUSAGE;
+	public static final RegistryObject<Item> RAW_MINI_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_MINI_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_MINI_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_MINI_SAUSAGE;
+	public static final RegistryObject<Item> ROTTEN_SAUSAGE;
+	public static final RegistryObject<Item> RAW_TOXIC_ORGAN_MEAT;
+	public static final RegistryObject<Item> COOKED_TOXIC_ORGAN_MEAT;
+	public static final RegistryObject<Item> RAW_TOXIC_MEAT;
+	public static final RegistryObject<Item> COOKED_TOXIC_MEAT;
+	public static final RegistryObject<Item> RAW_TOXIC_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_TOXIC_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_TOXIC_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_TOXIC_SAUSAGE;
+	public static final RegistryObject<Item> RAW_HUMAN_ORGAN_MEAT;
+	public static final RegistryObject<Item> COOKED_HUMAN_ORGAN_MEAT;
+	public static final RegistryObject<Item> RAW_MAN_MEAT;
+	public static final RegistryObject<Item> COOKED_MAN_MEAT;
+	public static final RegistryObject<Item> RAW_HUMAN_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_HUMAN_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_HUMAN_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_HUMAN_SAUSAGE;
+	public static final RegistryObject<Item> RAW_ALIEN_ORGAN_MEAT;
+	public static final RegistryObject<Item> COOKED_ALIEN_ORGAN_MEAT;
+	public static final RegistryObject<Item> RAW_ALIEN_MEAT;
+	public static final RegistryObject<Item> COOKED_ALIEN_MEAT;
+	public static final RegistryObject<Item> RAW_ALIEN_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_ALIEN_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_ALIEN_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_ALIEN_SAUSAGE;
+	public static final RegistryObject<Item> RAW_DRAGON_ORGAN_MEAT;
+	public static final RegistryObject<Item> COOKED_DRAGON_ORGAN_MEAT;
+	public static final RegistryObject<Item> RAW_DRAGON_MEAT;
+	public static final RegistryObject<Item> COOKED_DRAGON_MEAT;
+	public static final RegistryObject<Item> RAW_DRAGON_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_DRAGON_SAUSAGE;
+	public static final RegistryObject<Item> RAW_RICH_DRAGON_SAUSAGE;
+	public static final RegistryObject<Item> COOKED_RICH_DRAGON_SAUSAGE;
+	public static final RegistryObject<Item> CUD;
+	public static final RegistryObject<Item> FURNACE_POWER;
 
-
-	public static final Item.Settings CHEST_OPENER_SETTINGS = new Item.Settings().maxCount(1);
-	public static final Item.Settings FOOD_ITEM_SETTINGS = new Item.Settings().maxCount(64);
-
-	public static final Item CHEST_OPENER = new ChestOpener();
-	public static final SwordItem WOODEN_CLEAVER = new SwordItem(ToolMaterials.WOOD,6,-3.2f,new Item.Settings());
-	public static final SwordItem GOLD_CLEAVER = new SwordItem(ToolMaterials.GOLD,6,-3.0f,new Item.Settings());
-	public static final SwordItem STONE_CLEAVER = new SwordItem(ToolMaterials.STONE,7,-3.2f,new Item.Settings());
-	public static final SwordItem IRON_CLEAVER = new SwordItem(ToolMaterials.IRON,6,-3.1f,new Item.Settings());
-	public static final SwordItem DIAMOND_CLEAVER = new SwordItem(ToolMaterials.DIAMOND,5,-3.0f,new Item.Settings());
-	public static final SwordItem NETHERITE_CLEAVER = new SwordItem(ToolMaterials.NETHERITE,5,-3.0f,new Item.Settings().fireproof());
-
-	public static final Item HUMAN_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.HUMAN_MUSCLE_FOOD_COMPONENT));
-	public static final Item HUMAN_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item HUMAN_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item HUMAN_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HUMAN_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-
-	public static final Item ROTTEN_APPENDIX = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_HEART = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_INTESTINE = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_KIDNEY = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_LIVER = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_LUNG = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ROTTEN_MUSCLE_FOOD_COMPONENT));
-	public static final Item ROTTEN_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item ROTTEN_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item ROTTEN_SPLEEN = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item ROTTEN_STOMACH = new Item(new Item.Settings().maxCount(1).food(FoodComponents.ROTTEN_FLESH));
-	public static final Item WITHERED_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item WITHERED_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item WRITHING_SOULSAND = new Item(new Item.Settings().maxCount(16));
-
-	public static final Item ANIMAL_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item ANIMAL_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item ANIMAL_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item ANIMAL_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ANIMAL_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item AQUATIC_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item FISH_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item GILLS = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item LLAMA_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item CARNIVORE_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item CARNIVORE_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HERBIVORE_RUMEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HERBIVORE_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item HERBIVORE_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item BRUTISH_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SWIFT_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SPRINGY_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-
-	public static final Item FIREPROOF_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item FIREPROOF_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item FIREPROOF_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item FIREPROOF_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item FIREPROOF_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	
-	public static final Item SMALL_ANIMAL_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item SMALL_ANIMAL_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item SMALL_ANIMAL_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_ANIMAL_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item RABBIT_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_AQUATIC_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_FISH_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_SPRINGY_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_GILLS = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_CARNIVORE_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_CARNIVORE_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_HERBIVORE_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-	public static final Item SMALL_HERBIVORE_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-
-	public static final Item INSECT_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item INSECT_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item INSECT_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item INSECT_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.INSECT_MUSCLE_FOOD_COMPONENT));
-	public static final Item INSECT_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item INSECT_CAECA = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item SILK_GLAND = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final VenomGland VENOM_GLAND = new VenomGland();//.setOrganQuality(CCOrganScores.VENOMOUS,1f);
-
-	public static final Item ENDER_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_INTESTINE = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.ALIEN_MUSCLE_FOOD_COMPONENT));
-	public static final Item ENDER_RIB = new Item(new Item.Settings().maxCount(4));
-	public static final Item ENDER_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item ENDER_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item ENDER_STOMACH = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-
-	public static final Item DRAGON_APPENDIX = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item DRAGON_HEART = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.DRAGON_HEART_FOOD_COMPONENT));
-	public static final Item DRAGON_KIDNEY = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item DRAGON_LIVER = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item DRAGON_LUNG = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item DRAGON_MUSCLE = new Item(new Item.Settings().maxCount(16).food(CCFoodComponents.DRAGON_MUSCLE_FOOD_COMPONENT));
-	public static final Item DRAGON_RIB = new Item(new Item.Settings().maxCount(4));
-	//TODO: Destructive Collisions
-	public static final Item DRAGON_SPINE = new Item(new Item.Settings().maxCount(1));
-	public static final Item DRAGON_SPLEEN = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item MANA_REACTOR = new Item(new Item.Settings().maxCount(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-
-	public static final Item ACTIVE_BLAZE_ROD = new Item(new Item.Settings().maxCount(3));
-	public static final Item BLAZE_SHELL = new Item(new Item.Settings().maxCount(4));
-	public static final Item BLAZE_CORE = new Item(new Item.Settings().maxCount(1));
-
-	public static final Item GAS_BLADDER = new Item(new Item.Settings().maxCount(1));
-	public static final Item VOLATILE_STOMACH = new Item(new Item.Settings().maxCount(1));
-
-	public static final Item GOLEM_CABLE = new Item(new Item.Settings().maxCount(1));
-	public static final Item GOLEM_PLATING = new Item(new Item.Settings().maxCount(4));
-	public static final Item GOLEM_CORE = new Item(new Item.Settings().maxCount(1));
-	public static final Item INNER_FURNACE = new Item(new Item.Settings().maxCount(1));
-	public static final Item PISTON_MUSCLE = new Item(new Item.Settings().maxCount(16));
-	public static final Item IRON_SCRAP = new Item(new Item.Settings());
-
-	public static final Item SALTWATER_HEART = new Item(new Item.Settings().maxCount(1));
-	public static final Item SALTWATER_LUNG = new Item(new Item.Settings().maxCount(1));
-	public static final Item SALTWATER_MUSCLE = new Item(new Item.Settings().maxCount(16));
-	public static final Item CREEPER_APPENDIX = new CreeperAppendix();
-	public static final Item SHIFTING_LEAVES = new Item(new Item.Settings().maxCount(16));
-	public static final Item SHULKER_SPLEEN = new Item(new Item.Settings().maxCount(1));
-
-	public static final Item SAUSAGE_SKIN = new Item(new Item.Settings().maxCount(64));
-	public static final Item MINI_SAUSAGE_SKIN = new Item(new Item.Settings().maxCount(64));
-
-	public static final Item BURNT_MEAT_CHUNK = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.BURNT_MEAT_CHUNK_COMPONENT));
-	public static final Item RAW_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_BUTCHERED_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_BUTCHERED_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_BUTCHERED_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_BUTCHERED_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_MINI_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_MINI_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_MINI_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_MINI_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_MINI_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_MINI_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
-
-	public static final Item ROTTEN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.ROTTEN_SAUSAGE_FOOD_COMPONENT));
-
-	public static final Item RAW_TOXIC_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_TOXIC_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_TOXIC_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_TOXIC_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_TOXIC_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_TOXIC_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_TOXIC_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_TOXIC_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
-	
-	public static final Item RAW_HUMAN_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_HUMAN_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_MAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_MAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_MAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_MAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_HUMAN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_HUMAN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_HUMAN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_HUMAN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_HUMAN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_HUMAN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
-
-	public static final Item RAW_ALIEN_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_ALIEN_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_ALIEN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_ALIEN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_ALIEN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_ALIEN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_ALIEN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_ALIEN_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
-
-	public static final Item RAW_DRAGON_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_DRAGON_ORGAN_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_DRAGON_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_MEAT_FOOD_COMPONENT));
-	public static final Item COOKED_DRAGON_MEAT = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_MEAT_FOOD_COMPONENT));
-	public static final Item RAW_DRAGON_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_DRAGON_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_SAUSAGE_FOOD_COMPONENT));
-	public static final Item RAW_RICH_DRAGON_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
-	public static final Item COOKED_RICH_DRAGON_SAUSAGE = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
-
-	public static final Item CUD = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.CUD_FOOD_COMPONENT));
-	public static final Item FURNACE_POWER = new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.FURNACE_POWER_FOOD_COMPONENT));
-
-	public static final ItemGroup ORGAN_ITEM_GROUP = FabricItemGroup.builder()
-			.icon(() -> new ItemStack(CCItems.HUMAN_STOMACH))
-			.displayName(Text.translatable("itemGroup.chestcavity.organs"))
-			.entries((context, entries) -> {
-				entries.add(HUMAN_APPENDIX);
-				entries.add(HUMAN_HEART);
-				entries.add(HUMAN_INTESTINE);
-				entries.add(HUMAN_KIDNEY);
-				entries.add(HUMAN_LIVER);
-				entries.add(HUMAN_LUNG);
-				entries.add(HUMAN_MUSCLE);
-				entries.add(HUMAN_RIB);
-				entries.add(HUMAN_SPINE);
-				entries.add(HUMAN_SPLEEN);
-				entries.add(HUMAN_STOMACH);
-
-				entries.add(ROTTEN_APPENDIX);
-				entries.add(ROTTEN_HEART);
-				entries.add(ROTTEN_INTESTINE);
-				entries.add(ROTTEN_KIDNEY);
-				entries.add(ROTTEN_LIVER);
-				entries.add(ROTTEN_LUNG);
-				entries.add(ROTTEN_MUSCLE);
-				entries.add(ROTTEN_RIB);
-				entries.add(ROTTEN_SPINE);
-				entries.add(ROTTEN_SPLEEN);
-				entries.add(ROTTEN_STOMACH);
-				entries.add(WITHERED_RIB);
-				entries.add(WITHERED_SPINE);
-				entries.add(WRITHING_SOULSAND);
-
-				entries.add(ANIMAL_APPENDIX);
-				entries.add(ANIMAL_HEART);
-				entries.add(ANIMAL_INTESTINE);
-				entries.add(ANIMAL_KIDNEY);
-				entries.add(ANIMAL_LIVER);
-				entries.add(ANIMAL_LUNG);
-				entries.add(ANIMAL_MUSCLE);
-				entries.add(ANIMAL_RIB);
-				entries.add(ANIMAL_SPINE);
-				entries.add(ANIMAL_SPLEEN);
-				entries.add(ANIMAL_STOMACH);
-				entries.add(AQUATIC_MUSCLE);
-				entries.add(FISH_MUSCLE);
-				entries.add(GILLS);
-				entries.add(LLAMA_LUNG);
-				entries.add(CARNIVORE_STOMACH);
-				entries.add(CARNIVORE_INTESTINE);
-				entries.add(HERBIVORE_RUMEN);
-				entries.add(HERBIVORE_STOMACH);
-				entries.add(HERBIVORE_INTESTINE);
-				entries.add(BRUTISH_MUSCLE);
-				entries.add(SWIFT_MUSCLE);
-				entries.add(SPRINGY_MUSCLE);
-
-				entries.add(FIREPROOF_APPENDIX);
-				entries.add(FIREPROOF_HEART);
-				entries.add(FIREPROOF_INTESTINE);
-				entries.add(FIREPROOF_KIDNEY);
-				entries.add(FIREPROOF_LIVER);
-				entries.add(FIREPROOF_LUNG);
-				entries.add(FIREPROOF_MUSCLE);
-				entries.add(FIREPROOF_RIB);
-				entries.add(FIREPROOF_SPINE);
-				entries.add(FIREPROOF_SPLEEN);
-				entries.add(FIREPROOF_STOMACH);
-
-				entries.add(SMALL_ANIMAL_APPENDIX);
-				entries.add(SMALL_ANIMAL_HEART);
-				entries.add(SMALL_ANIMAL_INTESTINE);
-				entries.add(SMALL_ANIMAL_KIDNEY);
-				entries.add(SMALL_ANIMAL_LIVER);
-				entries.add(SMALL_ANIMAL_LUNG);
-				entries.add(SMALL_ANIMAL_MUSCLE);
-				entries.add(SMALL_ANIMAL_RIB);
-				entries.add(SMALL_ANIMAL_SPINE);
-				entries.add(SMALL_ANIMAL_SPLEEN);
-				entries.add(SMALL_ANIMAL_STOMACH);
-				entries.add(RABBIT_HEART);
-				entries.add(SMALL_AQUATIC_MUSCLE);
-				entries.add(SMALL_FISH_MUSCLE);
-				entries.add(SMALL_SPRINGY_MUSCLE);
-				entries.add(SMALL_GILLS);
-				entries.add(SMALL_CARNIVORE_STOMACH);
-				entries.add(SMALL_CARNIVORE_INTESTINE);
-				entries.add(SMALL_HERBIVORE_STOMACH);
-				entries.add(SMALL_HERBIVORE_INTESTINE);
-
-				entries.add(INSECT_HEART);
-				entries.add(INSECT_INTESTINE);
-				entries.add(INSECT_LUNG);
-				entries.add(INSECT_MUSCLE);
-				entries.add(INSECT_STOMACH);
-				entries.add(INSECT_CAECA);
-				entries.add(SILK_GLAND);
-				entries.add(VENOM_GLAND);
-
-				entries.add(ENDER_APPENDIX);
-				entries.add(ENDER_HEART);
-				entries.add(ENDER_INTESTINE);
-				entries.add(ENDER_KIDNEY);
-				entries.add(ENDER_LIVER);
-				entries.add(ENDER_LUNG);
-				entries.add(ENDER_MUSCLE);
-				entries.add(ENDER_RIB);
-				entries.add(ENDER_SPINE);
-				entries.add(ENDER_SPLEEN);
-				entries.add(ENDER_STOMACH);
-
-				entries.add(DRAGON_APPENDIX);
-				entries.add(DRAGON_HEART);
-				entries.add(DRAGON_KIDNEY);
-				entries.add(DRAGON_LIVER);
-				entries.add(DRAGON_LUNG);
-				entries.add(DRAGON_MUSCLE);
-				entries.add(DRAGON_RIB);
-				entries.add(DRAGON_SPINE);
-				entries.add(DRAGON_SPLEEN);
-				entries.add(MANA_REACTOR);
-
-				entries.add(ACTIVE_BLAZE_ROD);
-				entries.add(BLAZE_SHELL);
-				entries.add(BLAZE_CORE);
-
-				entries.add(GAS_BLADDER);
-				entries.add(VOLATILE_STOMACH);
-
-				entries.add(GOLEM_CABLE);
-				entries.add(GOLEM_PLATING);
-				entries.add(GOLEM_CORE);
-				entries.add(INNER_FURNACE);
-				entries.add(PISTON_MUSCLE);
-
-				entries.add(SALTWATER_HEART);
-				entries.add(SALTWATER_LUNG);
-				entries.add(SALTWATER_MUSCLE);
-				entries.add(CREEPER_APPENDIX);
-				entries.add(SHIFTING_LEAVES);
-				entries.add(SHULKER_SPLEEN);
-			})
-			.build();
-
-	public static void register() {
-		registerItem("chest_opener", CHEST_OPENER);
-		registerItem("wooden_cleaver", WOODEN_CLEAVER);
-		registerItem("stone_cleaver", STONE_CLEAVER);
-		registerItem("gold_cleaver", GOLD_CLEAVER);
-		registerItem("iron_cleaver", IRON_CLEAVER);
-		registerItem("diamond_cleaver", DIAMOND_CLEAVER);
-		registerItem("netherite_cleaver", NETHERITE_CLEAVER);
-
-		registerItem("appendix", HUMAN_APPENDIX);
-		registerItem("heart", HUMAN_HEART);
-		registerItem("intestine", HUMAN_INTESTINE);
-		registerItem("kidney", HUMAN_KIDNEY);
-		registerItem("liver", HUMAN_LIVER);
-		registerItem("lung", HUMAN_LUNG);
-		registerItem("muscle", HUMAN_MUSCLE);
-		registerItem("rib", HUMAN_RIB);
-		registerItem("spine", HUMAN_SPINE);
-		registerItem("spleen", HUMAN_SPLEEN);
-		registerItem("stomach", HUMAN_STOMACH);
-		
-		registerItem("rotten_appendix", ROTTEN_APPENDIX);
-		registerItem("rotten_heart", ROTTEN_HEART);
-		registerItem("rotten_intestine", ROTTEN_INTESTINE);
-		registerItem("rotten_kidney", ROTTEN_KIDNEY);
-		registerItem("rotten_liver", ROTTEN_LIVER);
-		registerItem("rotten_lung", ROTTEN_LUNG);
-		registerItem("rotten_muscle", ROTTEN_MUSCLE);
-		registerItem("rotten_rib", ROTTEN_RIB);
-		registerItem("rotten_spine", ROTTEN_SPINE);
-		registerItem("rotten_spleen", ROTTEN_SPLEEN);
-		registerItem("rotten_stomach", ROTTEN_STOMACH);
-		registerItem("withered_rib", WITHERED_RIB);
-		registerItem("withered_spine", WITHERED_SPINE);
-		registerItem("writhing_soulsand", WRITHING_SOULSAND);
-
-		registerItem("animal_appendix", ANIMAL_APPENDIX);
-		registerItem("animal_heart", ANIMAL_HEART);
-		registerItem("animal_intestine", ANIMAL_INTESTINE);
-		registerItem("animal_kidney", ANIMAL_KIDNEY);
-		registerItem("animal_liver", ANIMAL_LIVER);
-		registerItem("animal_lung", ANIMAL_LUNG);
-		registerItem("animal_muscle", ANIMAL_MUSCLE);
-		registerItem("animal_rib", ANIMAL_RIB);
-		registerItem("animal_spine", ANIMAL_SPINE);
-		registerItem("animal_spleen", ANIMAL_SPLEEN);
-		registerItem("animal_stomach", ANIMAL_STOMACH);
-		registerItem("aquatic_muscle", AQUATIC_MUSCLE);
-		registerItem("fish_muscle", FISH_MUSCLE);
-		registerItem("gills", GILLS);
-		registerItem("llama_lung", LLAMA_LUNG);
-		registerItem("carnivore_stomach",CARNIVORE_STOMACH);
-		registerItem("carnivore_intestine",CARNIVORE_INTESTINE);
-		registerItem("herbivore_rumen",HERBIVORE_RUMEN);
-		registerItem("herbivore_stomach",HERBIVORE_STOMACH);
-		registerItem("herbivore_intestine",HERBIVORE_INTESTINE);
-		registerItem("brutish_muscle", BRUTISH_MUSCLE);
-		registerItem("swift_muscle", SWIFT_MUSCLE);
-		registerItem("springy_muscle", SPRINGY_MUSCLE);
-
-		registerItem("fireproof_appendix", FIREPROOF_APPENDIX);
-		registerItem("fireproof_heart", FIREPROOF_HEART);
-		registerItem("fireproof_intestine", FIREPROOF_INTESTINE);
-		registerItem("fireproof_kidney", FIREPROOF_KIDNEY);
-		registerItem("fireproof_liver", FIREPROOF_LIVER);
-		registerItem("fireproof_lung", FIREPROOF_LUNG);
-		registerItem("fireproof_muscle", FIREPROOF_MUSCLE);
-		registerItem("fireproof_rib", FIREPROOF_RIB);
-		registerItem("fireproof_spine", FIREPROOF_SPINE);
-		registerItem("fireproof_spleen", FIREPROOF_SPLEEN);
-		registerItem("fireproof_stomach", FIREPROOF_STOMACH);
-		
-		registerItem("small_animal_appendix", SMALL_ANIMAL_APPENDIX);
-		registerItem("small_animal_heart", SMALL_ANIMAL_HEART);
-		registerItem("small_animal_intestine", SMALL_ANIMAL_INTESTINE);
-		registerItem("small_animal_kidney", SMALL_ANIMAL_KIDNEY);
-		registerItem("small_animal_liver", SMALL_ANIMAL_LIVER);
-		registerItem("small_animal_lung", SMALL_ANIMAL_LUNG);
-		registerItem("small_animal_muscle", SMALL_ANIMAL_MUSCLE);
-		registerItem("small_animal_rib", SMALL_ANIMAL_RIB);
-		registerItem("small_animal_spine", SMALL_ANIMAL_SPINE);
-		registerItem("small_animal_spleen", SMALL_ANIMAL_SPLEEN);
-		registerItem("small_animal_stomach", SMALL_ANIMAL_STOMACH);
-		registerItem("rabbit_heart", RABBIT_HEART);
-		registerItem("small_aquatic_muscle", SMALL_AQUATIC_MUSCLE);
-		registerItem("small_fish_muscle", SMALL_FISH_MUSCLE);
-		registerItem("small_springy_muscle", SMALL_SPRINGY_MUSCLE);
-		registerItem("small_gills", SMALL_GILLS);
-		registerItem("small_carnivore_stomach",SMALL_CARNIVORE_STOMACH);
-		registerItem("small_carnivore_intestine",SMALL_CARNIVORE_INTESTINE);
-		registerItem("small_herbivore_stomach",SMALL_HERBIVORE_STOMACH);
-		registerItem("small_herbivore_intestine",SMALL_HERBIVORE_INTESTINE);
-
-		registerItem("insect_heart", INSECT_HEART);
-		registerItem("insect_intestine", INSECT_INTESTINE);
-		registerItem("insect_lung", INSECT_LUNG);
-		registerItem("insect_muscle", INSECT_MUSCLE);
-		registerItem("insect_stomach", INSECT_STOMACH);
-		registerItem("insect_caeca", INSECT_CAECA);
-		registerItem("silk_gland", SILK_GLAND);
-		registerItem("venom_gland", VENOM_GLAND);
-
-		registerItem("ender_appendix", ENDER_APPENDIX);
-		registerItem("ender_heart", ENDER_HEART);
-		registerItem("ender_intestine", ENDER_INTESTINE);
-		registerItem("ender_kidney", ENDER_KIDNEY);
-		registerItem("ender_liver", ENDER_LIVER);
-		registerItem("ender_lung", ENDER_LUNG);
-		registerItem("ender_muscle", ENDER_MUSCLE);
-		registerItem("ender_rib", ENDER_RIB);
-		registerItem("ender_spine", ENDER_SPINE);
-		registerItem("ender_spleen", ENDER_SPLEEN);
-		registerItem("ender_stomach", ENDER_STOMACH);
-
-		registerItem("dragon_appendix", DRAGON_APPENDIX);
-		registerItem("dragon_heart", DRAGON_HEART);
-		registerItem("dragon_kidney", DRAGON_KIDNEY);
-		registerItem("dragon_liver", DRAGON_LIVER);
-		registerItem("dragon_lung", DRAGON_LUNG);
-		registerItem("dragon_muscle", DRAGON_MUSCLE);
-		registerItem("dragon_rib", DRAGON_RIB);
-		registerItem("dragon_spine", DRAGON_SPINE);
-		registerItem("dragon_spleen", DRAGON_SPLEEN);
-		registerItem("mana_reactor", MANA_REACTOR);
-
-		registerItem("active_blaze_rod", ACTIVE_BLAZE_ROD);
-		registerItem("blaze_shell", BLAZE_SHELL);
-		registerItem("blaze_core", BLAZE_CORE);
-
-		registerItem("gas_bladder", GAS_BLADDER);
-		registerItem("volatile_stomach", VOLATILE_STOMACH);
-
-		registerItem("golem_cable", GOLEM_CABLE);
-		registerItem("golem_plating", GOLEM_PLATING);
-		registerItem("golem_core", GOLEM_CORE);
-		registerItem("inner_furnace", INNER_FURNACE);
-		registerItem("piston_muscle", PISTON_MUSCLE);
-		registerItem("iron_scrap", IRON_SCRAP);
-
-		registerItem("saltwater_heart", SALTWATER_HEART);
-		registerItem("saltwater_lung", SALTWATER_LUNG);
-		registerItem("saltwater_muscle", SALTWATER_MUSCLE);
-		registerItem("creeper_appendix", CREEPER_APPENDIX);
-		registerItem("shifting_leaves", SHIFTING_LEAVES);
-		registerItem("shulker_spleen", SHULKER_SPLEEN);
-
-		registerItem("sausage_skin", SAUSAGE_SKIN);
-		registerItem("mini_sausage_skin", MINI_SAUSAGE_SKIN);
-
-		registerItem("burnt_meat_chunk", BURNT_MEAT_CHUNK);
-		registerItem("raw_organ_meat", RAW_ORGAN_MEAT);
-		registerItem("cooked_organ_meat", COOKED_ORGAN_MEAT);
-		registerItem("raw_butchered_meat", RAW_BUTCHERED_MEAT);
-		registerItem("cooked_butchered_meat", COOKED_BUTCHERED_MEAT);
-		registerItem("raw_sausage", RAW_SAUSAGE);
-		registerItem("sausage", COOKED_SAUSAGE);
-		registerItem("raw_rich_sausage", RAW_RICH_SAUSAGE);
-		registerItem("rich_sausage", COOKED_RICH_SAUSAGE);
-		registerItem("raw_mini_sausage", RAW_MINI_SAUSAGE);
-		registerItem("mini_sausage", COOKED_MINI_SAUSAGE);
-		registerItem("raw_rich_mini_sausage", RAW_RICH_MINI_SAUSAGE);
-		registerItem("rich_mini_sausage", COOKED_RICH_MINI_SAUSAGE);
-
-		registerItem("rotten_sausage", ROTTEN_SAUSAGE);
-
-		registerItem("raw_toxic_organ_meat", RAW_TOXIC_ORGAN_MEAT);
-		registerItem("cooked_toxic_organ_meat", COOKED_TOXIC_ORGAN_MEAT);
-		registerItem("raw_toxic_meat", RAW_TOXIC_MEAT);
-		registerItem("cooked_toxic_meat", COOKED_TOXIC_MEAT);
-		registerItem("raw_toxic_sausage", RAW_TOXIC_SAUSAGE);
-		registerItem("toxic_sausage", COOKED_TOXIC_SAUSAGE);
-		registerItem("raw_rich_toxic_sausage", RAW_RICH_TOXIC_SAUSAGE);
-		registerItem("rich_toxic_sausage", COOKED_RICH_TOXIC_SAUSAGE);
-		
-		registerItem("raw_human_organ_meat", RAW_HUMAN_ORGAN_MEAT);
-		registerItem("cooked_human_organ_meat", COOKED_HUMAN_ORGAN_MEAT);
-		registerItem("raw_man_meat", RAW_MAN_MEAT);
-		registerItem("cooked_man_meat", COOKED_MAN_MEAT);
-		registerItem("raw_human_sausage", RAW_HUMAN_SAUSAGE);
-		registerItem("human_sausage", COOKED_HUMAN_SAUSAGE);
-		registerItem("raw_rich_human_sausage", RAW_RICH_HUMAN_SAUSAGE);
-		registerItem("rich_human_sausage", COOKED_RICH_HUMAN_SAUSAGE);
-
-		registerItem("raw_alien_organ_meat", RAW_ALIEN_ORGAN_MEAT);
-		registerItem("cooked_alien_organ_meat", COOKED_ALIEN_ORGAN_MEAT);
-		registerItem("raw_alien_meat", RAW_ALIEN_MEAT);
-		registerItem("cooked_alien_meat", COOKED_ALIEN_MEAT);
-		registerItem("raw_alien_sausage", RAW_ALIEN_SAUSAGE);
-		registerItem("alien_sausage", COOKED_ALIEN_SAUSAGE);
-		registerItem("raw_rich_alien_sausage", RAW_RICH_ALIEN_SAUSAGE);
-		registerItem("rich_alien_sausage", COOKED_RICH_ALIEN_SAUSAGE);
-
-		registerItem("raw_dragon_organ_meat", RAW_DRAGON_ORGAN_MEAT);
-		registerItem("cooked_dragon_organ_meat", COOKED_DRAGON_ORGAN_MEAT);
-		registerItem("raw_dragon_meat", RAW_DRAGON_MEAT);
-		registerItem("cooked_dragon_meat", COOKED_DRAGON_MEAT);
-		registerItem("raw_dragon_sausage", RAW_DRAGON_SAUSAGE);
-		registerItem("dragon_sausage", COOKED_DRAGON_SAUSAGE);
-		registerItem("raw_rich_dragon_sausage", RAW_RICH_DRAGON_SAUSAGE);
-		registerItem("rich_dragon_sausage", COOKED_RICH_DRAGON_SAUSAGE);
-
-		registerItem("cud",CUD);
-		registerItem("furnace_power",FURNACE_POWER);
-
-		registerItemGroups();
+	public CCItems() {
 	}
-	
-	private static void registerItem(String name, Item item) {
-		Registry.register(Registries.ITEM, ChestCavity.MODID + ":" + name, item);
-    }
 
-	private static void registerItemGroups(){
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> {
-			entries.add(CHEST_OPENER);
+	static {
+		ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "chestcavity");
+		CHEST_OPENER_SETTINGS = (new Item.Properties()).m_41487_(1);
+		FOOD_ITEM_SETTINGS = (new Item.Properties()).m_41487_(64);
+		CHEST_OPENER = ITEMS.register("chest_opener", ChestOpener::new);
+		WOODEN_CLEAVER = ITEMS.register("wooden_cleaver", () -> {
+			return new SwordItem(Tiers.WOOD, 6, -3.2F, new Item.Properties());
 		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(entries -> {
-			entries.add(WOODEN_CLEAVER);
-			entries.add(STONE_CLEAVER);
-			entries.add(IRON_CLEAVER);
-			entries.add(DIAMOND_CLEAVER);
-			entries.add(NETHERITE_CLEAVER);
+		GOLD_CLEAVER = ITEMS.register("stone_cleaver", () -> {
+			return new SwordItem(Tiers.GOLD, 6, -3.0F, new Item.Properties());
 		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(entries -> {
-			entries.add(BURNT_MEAT_CHUNK);
-			entries.add(RAW_ORGAN_MEAT);
-			entries.add(COOKED_ORGAN_MEAT);
-			entries.add(RAW_BUTCHERED_MEAT);
-			entries.add(COOKED_BUTCHERED_MEAT);
-			entries.add(RAW_SAUSAGE);
-			entries.add(COOKED_SAUSAGE);
-			entries.add(RAW_RICH_SAUSAGE);
-			entries.add(COOKED_RICH_SAUSAGE);
-			entries.add(RAW_MINI_SAUSAGE);
-			entries.add(COOKED_MINI_SAUSAGE);
-			entries.add(RAW_RICH_MINI_SAUSAGE);
-			entries.add(COOKED_RICH_MINI_SAUSAGE);
-
-			entries.add(ROTTEN_SAUSAGE);
-
-			entries.add(RAW_TOXIC_ORGAN_MEAT);
-			entries.add(COOKED_TOXIC_ORGAN_MEAT);
-			entries.add(RAW_TOXIC_MEAT);
-			entries.add(COOKED_TOXIC_MEAT);
-			entries.add(RAW_TOXIC_SAUSAGE);
-			entries.add(COOKED_TOXIC_SAUSAGE);
-			entries.add(RAW_RICH_TOXIC_SAUSAGE);
-			entries.add(COOKED_RICH_TOXIC_SAUSAGE);
-
-			entries.add(RAW_HUMAN_ORGAN_MEAT);
-			entries.add(COOKED_HUMAN_ORGAN_MEAT);
-			entries.add(RAW_MAN_MEAT);
-			entries.add(COOKED_MAN_MEAT);
-			entries.add(RAW_HUMAN_SAUSAGE);
-			entries.add(COOKED_HUMAN_SAUSAGE);
-			entries.add(RAW_RICH_HUMAN_SAUSAGE);
-			entries.add(COOKED_RICH_HUMAN_SAUSAGE);
-
-			entries.add(RAW_ALIEN_ORGAN_MEAT);
-			entries.add(COOKED_ALIEN_ORGAN_MEAT);
-			entries.add(RAW_ALIEN_MEAT);
-			entries.add(COOKED_ALIEN_MEAT);
-			entries.add(RAW_ALIEN_SAUSAGE);
-			entries.add(COOKED_ALIEN_SAUSAGE);
-			entries.add(RAW_RICH_ALIEN_SAUSAGE);
-			entries.add(COOKED_RICH_ALIEN_SAUSAGE);
-
-			entries.add(RAW_DRAGON_ORGAN_MEAT);
-			entries.add(COOKED_DRAGON_ORGAN_MEAT);
-			entries.add(RAW_DRAGON_MEAT);
-			entries.add(COOKED_DRAGON_MEAT);
-			entries.add(RAW_DRAGON_SAUSAGE);
-			entries.add(COOKED_DRAGON_SAUSAGE);
-			entries.add(RAW_RICH_DRAGON_SAUSAGE);
-			entries.add(COOKED_RICH_DRAGON_SAUSAGE);
+		STONE_CLEAVER = ITEMS.register("gold_cleaver", () -> {
+			return new SwordItem(Tiers.STONE, 7, -3.2F, new Item.Properties());
 		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {
-			entries.add(SAUSAGE_SKIN);
-			entries.add(MINI_SAUSAGE_SKIN);
-			entries.add(IRON_SCRAP);
+		IRON_CLEAVER = ITEMS.register("iron_cleaver", () -> {
+			return new SwordItem(Tiers.IRON, 6, -3.1F, new Item.Properties());
 		});
-		Registry.register(Registries.ITEM_GROUP, Identifier.of(ChestCavity.MODID,"organ_item_group"), ORGAN_ITEM_GROUP);
+		DIAMOND_CLEAVER = ITEMS.register("diamond_cleaver", () -> {
+			return new SwordItem(Tiers.DIAMOND, 5, -3.0F, new Item.Properties());
+		});
+		NETHERITE_CLEAVER = ITEMS.register("netherite_cleaver", () -> {
+			return new SwordItem(Tiers.NETHERITE, 5, -3.0F, (new Item.Properties()).m_41486_());
+		});
+		HUMAN_APPENDIX = ITEMS.register("appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_HEART = ITEMS.register("heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_INTESTINE = ITEMS.register("intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_KIDNEY = ITEMS.register("kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_LIVER = ITEMS.register("liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_LUNG = ITEMS.register("lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_MUSCLE = ITEMS.register("muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.HUMAN_MUSCLE_FOOD_COMPONENT));
+		});
+		HUMAN_RIB = ITEMS.register("rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		HUMAN_SPINE = ITEMS.register("spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		HUMAN_SPLEEN = ITEMS.register("spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HUMAN_STOMACH = ITEMS.register("stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ROTTEN_APPENDIX = ITEMS.register("rotten_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_HEART = ITEMS.register("rotten_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_INTESTINE = ITEMS.register("rotten_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_KIDNEY = ITEMS.register("rotten_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_LIVER = ITEMS.register("rotten_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_LUNG = ITEMS.register("rotten_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_MUSCLE = ITEMS.register("rotten_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ROTTEN_MUSCLE_FOOD_COMPONENT));
+		});
+		ROTTEN_RIB = ITEMS.register("rotten_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		ROTTEN_SPINE = ITEMS.register("rotten_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		ROTTEN_SPLEEN = ITEMS.register("rotten_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		ROTTEN_STOMACH = ITEMS.register("rotten_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(Foods.f_38804_));
+		});
+		WITHERED_RIB = ITEMS.register("withered_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		WITHERED_SPINE = ITEMS.register("withered_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		WRITHING_SOULSAND = ITEMS.register("writhing_soulsand", () -> {
+			return new Item((new Item.Properties()).m_41487_(16));
+		});
+		ANIMAL_APPENDIX = ITEMS.register("animal_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_HEART = ITEMS.register("animal_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_INTESTINE = ITEMS.register("animal_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_KIDNEY = ITEMS.register("animal_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_LIVER = ITEMS.register("animal_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_LUNG = ITEMS.register("animal_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_MUSCLE = ITEMS.register("animal_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		ANIMAL_RIB = ITEMS.register("animal_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		ANIMAL_SPINE = ITEMS.register("animal_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		ANIMAL_SPLEEN = ITEMS.register("animal_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_STOMACH = ITEMS.register("animal_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		AQUATIC_MUSCLE = ITEMS.register("aquatic_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FISH_MUSCLE = ITEMS.register("fish_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		GILLS = ITEMS.register("gills", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		LLAMA_LUNG = ITEMS.register("llama_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		CARNIVORE_STOMACH = ITEMS.register("carnivore_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		CARNIVORE_INTESTINE = ITEMS.register("carnivore_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_RUMEN = ITEMS.register("herbivore_rumen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_STOMACH = ITEMS.register("herbivore_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_INTESTINE = ITEMS.register("herbivore_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		BRUTISH_MUSCLE = ITEMS.register("brutish_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SWIFT_MUSCLE = ITEMS.register("swift_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SPRINGY_MUSCLE = ITEMS.register("springy_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FIREPROOF_APPENDIX = ITEMS.register("fireproof_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_HEART = ITEMS.register("fireproof_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_INTESTINE = ITEMS.register("fireproof_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_KIDNEY = ITEMS.register("fireproof_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_LIVER = ITEMS.register("fireproof_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_LUNG = ITEMS.register("fireproof_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_MUSCLE = ITEMS.register("fireproof_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FIREPROOF_RIB = ITEMS.register("fireproof_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		FIREPROOF_SPINE = ITEMS.register("fireproof_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		FIREPROOF_SPLEEN = ITEMS.register("fireproof_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_STOMACH = ITEMS.register("fireproof_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_APPENDIX = ITEMS.register("small_animal_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_HEART = ITEMS.register("small_animal_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_INTESTINE = ITEMS.register("small_animal_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_KIDNEY = ITEMS.register("small_animal_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_LIVER = ITEMS.register("small_animal_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_LUNG = ITEMS.register("small_animal_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_MUSCLE = ITEMS.register("small_animal_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_RIB = ITEMS.register("small_animal_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		SMALL_ANIMAL_SPINE = ITEMS.register("small_animal_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		SMALL_ANIMAL_SPLEEN = ITEMS.register("small_animal_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_STOMACH = ITEMS.register("small_animal_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		RABBIT_HEART = ITEMS.register("rabbit_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_AQUATIC_MUSCLE = ITEMS.register("small_aquatic_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_FISH_MUSCLE = ITEMS.register("small_fish_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_SPRINGY_MUSCLE = ITEMS.register("small_springy_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_GILLS = ITEMS.register("small_gills", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_CARNIVORE_STOMACH = ITEMS.register("small_carnivore_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_CARNIVORE_INTESTINE = ITEMS.register("small_carnivore_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_HERBIVORE_STOMACH = ITEMS.register("small_herbivore_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_HERBIVORE_INTESTINE = ITEMS.register("small_herbivore_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		INSECT_HEART = ITEMS.register("insect_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		INSECT_INTESTINE = ITEMS.register("insect_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		INSECT_LUNG = ITEMS.register("insect_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		INSECT_MUSCLE = ITEMS.register("insect_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.INSECT_MUSCLE_FOOD_COMPONENT));
+		});
+		INSECT_STOMACH = ITEMS.register("insect_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		INSECT_CAECA = ITEMS.register("insect_caeca", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		SILK_GLAND = ITEMS.register("silk_gland", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		VENOM_GLAND = ITEMS.register("venom_gland", VenomGland::new);
+		ENDER_APPENDIX = ITEMS.register("ender_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_HEART = ITEMS.register("ender_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_INTESTINE = ITEMS.register("ender_intestine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_KIDNEY = ITEMS.register("ender_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_LIVER = ITEMS.register("ender_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_LUNG = ITEMS.register("ender_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_MUSCLE = ITEMS.register("ender_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.ALIEN_MUSCLE_FOOD_COMPONENT));
+		});
+		ENDER_RIB = ITEMS.register("ender_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		ENDER_SPINE = ITEMS.register("ender_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		ENDER_SPLEEN = ITEMS.register("ender_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ENDER_STOMACH = ITEMS.register("ender_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		DRAGON_APPENDIX = ITEMS.register("dragon_appendix", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		DRAGON_HEART = ITEMS.register("dragon_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.DRAGON_HEART_FOOD_COMPONENT));
+		});
+		DRAGON_KIDNEY = ITEMS.register("dragon_kidney", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		DRAGON_LIVER = ITEMS.register("dragon_liver", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		DRAGON_LUNG = ITEMS.register("dragon_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		DRAGON_MUSCLE = ITEMS.register("dragon_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16).m_41489_(CCFoodComponents.DRAGON_MUSCLE_FOOD_COMPONENT));
+		});
+		DRAGON_RIB = ITEMS.register("dragon_rib", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		DRAGON_SPINE = ITEMS.register("dragon_spine", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		DRAGON_SPLEEN = ITEMS.register("dragon_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		MANA_REACTOR = ITEMS.register("mana_reactor", () -> {
+			return new Item((new Item.Properties()).m_41487_(1).m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ACTIVE_BLAZE_ROD = ITEMS.register("active_blaze_rod", () -> {
+			return new Item((new Item.Properties()).m_41487_(3));
+		});
+		BLAZE_SHELL = ITEMS.register("blaze_shell", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		BLAZE_CORE = ITEMS.register("blaze_core", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		GAS_BLADDER = ITEMS.register("gas_bladder", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		VOLATILE_STOMACH = ITEMS.register("volatile_stomach", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		GOLEM_CABLE = ITEMS.register("golem_cable", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		GOLEM_PLATING = ITEMS.register("golem_plating", () -> {
+			return new Item((new Item.Properties()).m_41487_(4));
+		});
+		GOLEM_CORE = ITEMS.register("golem_core", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		INNER_FURNACE = ITEMS.register("inner_furnace", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		PISTON_MUSCLE = ITEMS.register("piston_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16));
+		});
+		IRON_SCRAP = ITEMS.register("iron_scrap", () -> {
+			return new Item(new Item.Properties());
+		});
+		SALTWATER_HEART = ITEMS.register("saltwater_heart", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		SALTWATER_LUNG = ITEMS.register("saltwater_lung", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		SALTWATER_MUSCLE = ITEMS.register("saltwater_muscle", () -> {
+			return new Item((new Item.Properties()).m_41487_(16));
+		});
+		CREEPER_APPENDIX = ITEMS.register("creeper_appendix", CreeperAppendix::new);
+		SHIFTING_LEAVES = ITEMS.register("shifting_leaves", () -> {
+			return new Item((new Item.Properties()).m_41487_(16));
+		});
+		SHULKER_SPLEEN = ITEMS.register("shulker_spleen", () -> {
+			return new Item((new Item.Properties()).m_41487_(1));
+		});
+		SAUSAGE_SKIN = ITEMS.register("sausage_skin", () -> {
+			return new Item((new Item.Properties()).m_41487_(64));
+		});
+		MINI_SAUSAGE_SKIN = ITEMS.register("mini_sausage_skin", () -> {
+			return new Item((new Item.Properties()).m_41487_(64));
+		});
+		BURNT_MEAT_CHUNK = ITEMS.register("burnt_meat_chunk", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.BURNT_MEAT_CHUNK_COMPONENT));
+		});
+		RAW_ORGAN_MEAT = ITEMS.register("raw_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_ORGAN_MEAT = ITEMS.register("cooked_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_BUTCHERED_MEAT = ITEMS.register("raw_butchered_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_BUTCHERED_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_BUTCHERED_MEAT = ITEMS.register("cooked_butchered_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_BUTCHERED_MEAT_FOOD_COMPONENT));
+		});
+		RAW_SAUSAGE = ITEMS.register("raw_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_SAUSAGE = ITEMS.register("sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_SAUSAGE = ITEMS.register("raw_rich_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_SAUSAGE = ITEMS.register("rich_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_MINI_SAUSAGE = ITEMS.register("raw_mini_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_MINI_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_MINI_SAUSAGE = ITEMS.register("mini_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_MINI_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_MINI_SAUSAGE = ITEMS.register("raw_rich_mini_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_MINI_SAUSAGE = ITEMS.register("rich_mini_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
+		});
+		ROTTEN_SAUSAGE = ITEMS.register("rotten_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.ROTTEN_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_TOXIC_ORGAN_MEAT = ITEMS.register("raw_toxic_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_TOXIC_ORGAN_MEAT = ITEMS.register("cooked_toxic_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_TOXIC_MEAT = ITEMS.register("raw_toxic_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_TOXIC_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_TOXIC_MEAT = ITEMS.register("cooked_toxic_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_TOXIC_MEAT_FOOD_COMPONENT));
+		});
+		RAW_TOXIC_SAUSAGE = ITEMS.register("raw_toxic_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_TOXIC_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_TOXIC_SAUSAGE = ITEMS.register("toxic_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_TOXIC_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_TOXIC_SAUSAGE = ITEMS.register("raw_rich_toxic_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_TOXIC_SAUSAGE = ITEMS.register("rich_toxic_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_HUMAN_ORGAN_MEAT = ITEMS.register("raw_human_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_HUMAN_ORGAN_MEAT = ITEMS.register("cooked_human_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_MAN_MEAT = ITEMS.register("raw_man_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_MAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_MAN_MEAT = ITEMS.register("cooked_man_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_MAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_HUMAN_SAUSAGE = ITEMS.register("raw_human_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_HUMAN_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_HUMAN_SAUSAGE = ITEMS.register("human_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_HUMAN_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_HUMAN_SAUSAGE = ITEMS.register("raw_rich_human_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_HUMAN_SAUSAGE = ITEMS.register("rich_human_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_ALIEN_ORGAN_MEAT = ITEMS.register("raw_alien_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_ALIEN_ORGAN_MEAT = ITEMS.register("cooked_alien_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_ALIEN_MEAT = ITEMS.register("raw_alien_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_ALIEN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_ALIEN_MEAT = ITEMS.register("cooked_alien_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_ALIEN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_ALIEN_SAUSAGE = ITEMS.register("raw_alien_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_ALIEN_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_ALIEN_SAUSAGE = ITEMS.register("alien_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_ALIEN_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_ALIEN_SAUSAGE = ITEMS.register("raw_rich_alien_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_ALIEN_SAUSAGE = ITEMS.register("rich_alien_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_DRAGON_ORGAN_MEAT = ITEMS.register("raw_dragon_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_DRAGON_ORGAN_MEAT = ITEMS.register("cooked_dragon_organ_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		RAW_DRAGON_MEAT = ITEMS.register("raw_dragon_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_DRAGON_MEAT_FOOD_COMPONENT));
+		});
+		COOKED_DRAGON_MEAT = ITEMS.register("cooked_dragon_meat", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_DRAGON_MEAT_FOOD_COMPONENT));
+		});
+		RAW_DRAGON_SAUSAGE = ITEMS.register("raw_dragon_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_DRAGON_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_DRAGON_SAUSAGE = ITEMS.register("dragon_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_DRAGON_SAUSAGE_FOOD_COMPONENT));
+		});
+		RAW_RICH_DRAGON_SAUSAGE = ITEMS.register("raw_rich_dragon_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.RAW_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
+		});
+		COOKED_RICH_DRAGON_SAUSAGE = ITEMS.register("rich_dragon_sausage", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.COOKED_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
+		});
+		CUD = ITEMS.register("cud", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.CUD_FOOD_COMPONENT));
+		});
+		FURNACE_POWER = ITEMS.register("furnace_power", () -> {
+			return new Item(FOOD_ITEM_SETTINGS.m_41489_(CCFoodComponents.FURNACE_POWER_FOOD_COMPONENT));
+		});
 	}
 }
