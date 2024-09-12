@@ -21,7 +21,7 @@ public class OrganFoodListeners {
     }
 
     private static EffectiveFoodScores applyHerbivorousCarnivorous(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if (!foodComponent.m_38746_() && !food.m_7968_().is(CCTags.CARNIVORE_FOOD)) {
+        if (!foodComponent.isMeat() && !food.getDefaultInstance().is(CCTags.CARNIVORE_FOOD)) {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
         } else {
@@ -33,7 +33,7 @@ public class OrganFoodListeners {
     }
 
     private static EffectiveFoodScores applyRot(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if (food.m_7968_().is(CCTags.ROTTEN_FOOD)) {
+        if (food.getDefaultInstance().is(CCTags.ROTTEN_FOOD)) {
             efs.digestion += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROT_DIGESTION);
             efs.nutrition += cce.getChestCavityInstance().getOrganScore(CCOrganScores.ROTGUT);
         }

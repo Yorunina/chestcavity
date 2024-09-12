@@ -12,31 +12,31 @@ public class MalpracticeCurseEnchantment extends Enchantment {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
-    public int m_6183_(int level) {
+    public int getMinCost(int level) {
         return 25;
     }
 
-    public int m_6175_(int level) {
+    public int getMaxCost(int level) {
         return 50;
     }
 
-    public int m_6586_() {
+    public int getMaxLevel() {
         return 1;
     }
 
-    public boolean m_6081_(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         return true;
     }
 
-    public boolean m_6591_() {
+    public boolean isTreasureOnly() {
         return true;
     }
 
-    public boolean m_5975_(Enchantment other) {
+    public boolean checkCompatibility(Enchantment other) {
         return super.isCompatibleWith(other) && other != CCEnchantments.TOMOPHOBIA.get();
     }
 
-    public boolean m_6589_() {
+    public boolean isCurse() {
         return true;
     }
 }

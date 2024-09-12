@@ -31,7 +31,7 @@ public class MixinEntity {
     )
     public double chestCavityEntityFallMixin(double finalHeightDifference, double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
         if (heightDifference < 0.0) {
-            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((Entity)this);
+            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((Entity)(Object)this);
             if (cce.isPresent()) {
                 finalHeightDifference = heightDifference * (double)(1.0F - ((ChestCavityEntity)cce.get()).getChestCavityInstance().getOrganScore(CCOrganScores.BUOYANT) / 3.0F);
             }
@@ -46,12 +46,12 @@ public class MixinEntity {
             cancellable = true
     )
     public void chestCavityEntityInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-        if (info.getReturnValue() == InteractionResult.PASS && (Entity)this instanceof EnderDragonPart) {
-            ChestCavity.LOGGER.info("Attempting to open dragon's " + ((EnderDragonPart)this).f_31011_);
-            EnderDragon dragon = ((EnderDragonPart)this).f_31010_;
+        if (info.getReturnValue() == InteractionResult.PASS && ((Entity)(Object)this) instanceof EnderDragonPart) {
+            ChestCavity.LOGGER.info("Attempting to open dragon's " + ((EnderDragonPart)(Object)this).name);
+            EnderDragon dragon = ((EnderDragonPart)(Object)this).parentMob;
             if (dragon != null) {
                 ChestCavity.LOGGER.info("Dragon was not null");
-                info.setReturnValue(dragon.m_6096_(player, hand));
+                info.setReturnValue(dragon.interact(player, hand));
             }
         }
 

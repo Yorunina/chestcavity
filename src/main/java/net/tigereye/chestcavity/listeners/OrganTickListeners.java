@@ -39,13 +39,13 @@ public class OrganTickListeners {
     public static void TickBuoyant(LivingEntity entity, ChestCavityInstance chestCavity) {
         float buoyancy = chestCavity.getOrganScore(CCOrganScores.BUOYANT) - chestCavity.getChestCavityType().getDefaultOrganScore(CCOrganScores.BUOYANT);
         if (entity instanceof Player ent) {
-            if (ent.m_7500_() && ent.m_150110_().f_35935_) {
+            if (ent.isCreative() && ent.getAbilities().flying) {
                 return;
             }
         }
 
-        if (!entity.m_20096_() && !entity.m_20068_() && buoyancy != 0.0F) {
-            entity.m_5997_(0.0, (double)buoyancy * 0.02, 0.0);
+        if (!entity.onGround() && !entity.isNoGravity() && buoyancy != 0.0F) {
+            entity.absMoveTo(0.0, (double)buoyancy * 0.02, 0.0);
         }
 
     }
@@ -53,27 +53,27 @@ public class OrganTickListeners {
     public static void TickCrystalsynthesis(LivingEntity entity, ChestCavityInstance cc) {
         float crystalsynthesis = cc.getOrganScore(CCOrganScores.CRYSTALSYNTHESIS);
         if (cc.connectedCrystal != null) {
-            if (cc.connectedCrystal.m_213877_()) {
-                entity.m_6469_(entity.m_269291_().m_269064_(), crystalsynthesis * 2.0F);
+            if (cc.connectedCrystal.isRemoved()) {
+                entity.hurt(entity.damageSources().starve(), crystalsynthesis * 2.0F);
                 cc.connectedCrystal = null;
             } else if (crystalsynthesis != 0.0F) {
-                cc.connectedCrystal.m_31052_(entity.blockPosition().m_6625_(2));
+                cc.connectedCrystal.setBeamTarget(entity.blockPosition().below(2));
             } else {
-                cc.connectedCrystal.m_31052_((BlockPos)null);
+                cc.connectedCrystal.setBeamTarget((BlockPos)null);
                 cc.connectedCrystal = null;
             }
         }
 
-        if (crystalsynthesis != 0.0F && entity.level().m_46467_() % (long)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY == 0L && !(entity instanceof EnderDragon)) {
+        if (crystalsynthesis != 0.0F && entity.level().getGameTime() % (long)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY == 0L && !(entity instanceof EnderDragon)) {
             EndCrystal oldcrystal = cc.connectedCrystal;
-            List<EndCrystal> list = entity.level().m_45976_(EndCrystal.class, entity.m_20191_().m_82400_((double)ChestCavity.config.CRYSTALSYNTHESIS_RANGE));
+            List<EndCrystal> list = entity.level().getEntitiesOfClass(EndCrystal.class, entity.getBoundingBox().inflate((double)ChestCavity.config.CRYSTALSYNTHESIS_RANGE));
             EndCrystal endCrystalEntity = null;
             double d = Double.MAX_VALUE;
             Iterator<EndCrystal> var8 = list.iterator();
 
             while(var8.hasNext()) {
                 EndCrystal endCrystalEntity2 = (EndCrystal)var8.next();
-                double e = endCrystalEntity2.m_20280_(entity);
+                double e = endCrystalEntity2.distanceToSqr(entity);
                 if (e < d) {
                     d = e;
                     endCrystalEntity = endCrystalEntity2;
@@ -82,19 +82,19 @@ public class OrganTickListeners {
 
             cc.connectedCrystal = endCrystalEntity;
             if (oldcrystal != null && oldcrystal != cc.connectedCrystal) {
-                oldcrystal.m_31052_((BlockPos)null);
+                oldcrystal.setBeamTarget((BlockPos)null);
             }
 
             if (cc.connectedCrystal != null) {
                 if (entity instanceof Player) {
                     Player playerEntity = (Player)entity;
-                    FoodData hungerManager = playerEntity.m_36324_();
-                    if (hungerManager.m_38721_()) {
-                        if (crystalsynthesis >= 5.0F || (float)(entity.level().m_46467_() % ((long)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * 5L)) < (float)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * crystalsynthesis) {
-                            hungerManager.m_38707_(1, 0.0F);
+                    FoodData hungerManager = playerEntity.getFoodData();
+                    if (hungerManager.needsFood()) {
+                        if (crystalsynthesis >= 5.0F || (float)(entity.level().getGameTime() % ((long)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * 5L)) < (float)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * crystalsynthesis) {
+                            hungerManager.eat(1, 0.0F);
                         }
-                    } else if (hungerManager.m_38722_() < (float)hungerManager.m_38702_()) {
-                        hungerManager.m_38707_(1, crystalsynthesis / 10.0F);
+                    } else if (hungerManager.getSaturationLevel() < (float)hungerManager.getFoodLevel()) {
+                        hungerManager.eat(1, crystalsynthesis / 10.0F);
                     } else {
                         playerEntity.heal(crystalsynthesis / 5.0F);
                     }
@@ -107,19 +107,19 @@ public class OrganTickListeners {
     }
 
     public static void TickPhotosynthesis(LivingEntity entity, ChestCavityInstance cc) {
-        if (!entity.level().m_5776_()) {
+        if (!entity.level().isClientSide()) {
             float photosynthesis = cc.getOrganScore(CCOrganScores.PHOTOSYNTHESIS) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.PHOTOSYNTHESIS);
             if (photosynthesis > 0.0F) {
-                cc.photosynthesisProgress = (int)((float)cc.photosynthesisProgress + photosynthesis * (float)entity.level().m_46803_(entity.blockPosition()));
+                cc.photosynthesisProgress = (int)((float)cc.photosynthesisProgress + photosynthesis * (float)entity.level().getLightEmission(entity.blockPosition()));
                 if (cc.photosynthesisProgress > ChestCavity.config.PHOTOSYNTHESIS_FREQUENCY * 8 * 15) {
                     cc.photosynthesisProgress = 0;
                     if (entity instanceof Player) {
                         Player playerEntity = (Player)entity;
-                        FoodData hungerManager = playerEntity.m_36324_();
-                        if (hungerManager.m_38721_()) {
-                            hungerManager.m_38707_(1, 0.0F);
-                        } else if (hungerManager.m_38722_() < (float)hungerManager.m_38702_()) {
-                            hungerManager.m_38707_(1, 0.5F);
+                        FoodData hungerManager = playerEntity.getFoodData();
+                        if (hungerManager.needsFood()) {
+                            hungerManager.eat(1, 0.0F);
+                        } else if (hungerManager.getSaturationLevel() < (float)hungerManager.getFoodLevel()) {
+                            hungerManager.eat(1, 0.5F);
                         } else {
                             playerEntity.heal(1.0F);
                         }
@@ -134,9 +134,9 @@ public class OrganTickListeners {
 
     public static void TickHealth(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0.0F && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH) != 0.0F) {
-            if (entity.level().m_46467_() % (long)ChestCavity.config.HEARTBLEED_RATE == 0L) {
+            if (entity.level().getGameTime() % (long)ChestCavity.config.HEARTBLEED_RATE == 0L) {
                 ++cc.heartBleedTimer;
-                entity.m_6469_(CCDamageSources.of(entity.level(), CCDamageSources.HEARTBLEED), Math.min((float)cc.heartBleedTimer, cc.getChestCavityType().getHeartBleedCap()));
+                entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.HEARTBLEED), Math.min((float)cc.heartBleedTimer, cc.getChestCavityType().getHeartBleedCap()));
             }
         } else {
             cc.heartBleedTimer = 0;
@@ -145,12 +145,12 @@ public class OrganTickListeners {
     }
 
     public static void TickFiltration(LivingEntity entity, ChestCavityInstance cc) {
-        if (!entity.m_20193_().m_5776_() && !(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION) <= 0.0F)) {
+        if (!entity.level().isClientSide() && !(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION) <= 0.0F)) {
             float KidneyRatio = cc.getOrganScore(CCOrganScores.FILTRATION) / cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION);
             if (KidneyRatio < 1.0F) {
                 ++cc.bloodPoisonTimer;
                 if (cc.bloodPoisonTimer >= ChestCavity.config.KIDNEY_RATE) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.f_19614_, (int)Math.max(1.0F, 48.0F * (1.0F - KidneyRatio))));
+                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, (int)Math.max(1.0F, 48.0F * (1.0F - KidneyRatio))));
                     cc.bloodPoisonTimer = 0;
                 }
             }
@@ -169,16 +169,16 @@ public class OrganTickListeners {
     }
 
     private static void TickHydroallergenic(LivingEntity entity, ChestCavityInstance cc) {
-        if (!entity.m_20193_().m_5776_()) {
+        if (!entity.level().isClientSide()) {
             float Hydroallergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
             if (!(Hydroallergy <= 0.0F)) {
-                if (entity.m_5842_()) {
+                if (entity.isInWater()) {
                     if (!entity.hasEffect((MobEffect)CCStatusEffects.WATER_VULNERABILITY.get())) {
-                        entity.m_6469_(entity.m_269291_().m_269425_(), 10.0F);
+                        entity.hurt(entity.damageSources().magic(), 10.0F);
                         entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.WATER_VULNERABILITY.get(), (int)(260.0F / Hydroallergy), 0, false, false, true));
                     }
-                } else if (entity.m_20070_() && !entity.hasEffect((MobEffect)CCStatusEffects.WATER_VULNERABILITY.get())) {
-                    entity.m_6469_(entity.m_269291_().m_269425_(), 1.0F);
+                } else if (entity.isInWaterOrRain() && !entity.hasEffect((MobEffect)CCStatusEffects.WATER_VULNERABILITY.get())) {
+                    entity.hurt(entity.damageSources().magic(), 1.0F);
                     entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.WATER_VULNERABILITY.get(), (int)(260.0F / Hydroallergy), 0, false, false, true));
                 }
             }
@@ -188,14 +188,14 @@ public class OrganTickListeners {
 
     public static void TickHydrophobia(LivingEntity entity, ChestCavityInstance cc) {
         float hydrophobia = cc.getOrganScore(CCOrganScores.HYDROPHOBIA);
-        if (!(hydrophobia <= 0.0F) && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HYDROPHOBIA) == 0.0F && entity.m_20070_()) {
+        if (!(hydrophobia <= 0.0F) && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HYDROPHOBIA) == 0.0F && entity.isInWaterOrRain()) {
             OrganUtil.teleportRandomly(entity, hydrophobia * 32.0F);
         }
 
     }
 
     public static void TickIncompatibility(LivingEntity entity, ChestCavityInstance chestCavity) {
-        if (!entity.m_20193_().m_5776_() && !ChestCavity.config.DISABLE_ORGAN_REJECTION) {
+        if (!entity.level().isClientSide() && !ChestCavity.config.DISABLE_ORGAN_REJECTION) {
             float incompatibility = chestCavity.getOrganScore(CCOrganScores.INCOMPATIBILITY);
             if (incompatibility > 0.0F && !entity.hasEffect((MobEffect)CCStatusEffects.ORGAN_REJECTION.get())) {
                 entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.ORGAN_REJECTION.get(), (int)((float)ChestCavity.config.ORGAN_REJECTION_RATE / incompatibility), 0, false, true, true));
@@ -205,10 +205,10 @@ public class OrganTickListeners {
     }
 
     public static void TickGlowing(LivingEntity entity, ChestCavityInstance chestCavity) {
-        if (!entity.m_20193_().m_5776_()) {
+        if (!entity.level().isClientSide()) {
             float glowing = chestCavity.getOrganScore(CCOrganScores.GLOWING);
-            if (glowing > 0.0F && !entity.hasEffect(MobEffects.f_19619_)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.f_19619_, 200, 0, false, true, true));
+            if (glowing > 0.0F && !entity.hasEffect(MobEffects.GLOWING)) {
+                entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 200, 0, false, true, true));
             }
         }
 

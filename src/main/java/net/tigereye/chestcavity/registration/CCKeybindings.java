@@ -34,11 +34,10 @@ public class CCKeybindings {
     }
 
     public static KeyMapping register(ResourceLocation id, String category, int defaultKey) {
-        String var10000 = id.m_135827_();
-        String var10002 = "key." + var10000 + "." + id.m_135815_();
-        InputConstants.Type var10003 = Type.KEYSYM;
-        String var10005 = id.m_135827_();
-        return new KeyMapping(var10002, var10003, defaultKey, "category." + var10005 + "." + category);
+        String namespace = id.getNamespace();
+        return new KeyMapping("key." + namespace + "." + id.getPath(),
+                Type.KEYSYM, defaultKey,
+                "category." + namespace + "." + category);
     }
 
     public static KeyMapping register(ResourceLocation id, String category, int defaultKey, boolean isAttack) {

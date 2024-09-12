@@ -59,8 +59,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     @Unique
     private ChestCavityInstance chestCavityInstance;
 
-    @Shadow
-    protected abstract int m_7305_(int var1);
+    @Shadow protected abstract int increaseAirSupply(int p_21307_);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -71,7 +70,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"<init>"}
     )
     public void chestCavityLivingEntityConstructorMixin(EntityType<? extends LivingEntity> entityType, Level world, CallbackInfo info) {
-        this.chestCavityInstance = ChestCavityInstanceFactory.newChestCavityInstance(entityType, (LivingEntity)this);
+        this.chestCavityInstance = ChestCavityInstanceFactory.newChestCavityInstance(entityType, (LivingEntity)(Object)this);
     }
 
     @Inject(
@@ -87,8 +86,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"baseTick"}
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
-        if (!this.m_204029_(FluidTags.f_13131_) || this.level().getBlockState(this.blockPosition()).is(Blocks.f_50628_)) {
-            this.m_20301_(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.m_20146_(), this.m_7305_(0)));
+        if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
+            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
 
     }
@@ -104,10 +103,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             argsOnly = true
     )
     public float chestCavityLivingEntityOnHitMixin(float amount, DamageSource source) {
-        if (source.m_7639_() instanceof LivingEntity) {
-            Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.m_7639_());
+        if (source.getEntity() instanceof LivingEntity) {
+            Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.getEntity());
             if (cce.isPresent()) {
-                amount = ChestCavityUtil.onHit(((ChestCavityEntity)cce.get()).getChestCavityInstance(), source, (LivingEntity)this, amount);
+                amount = ChestCavityUtil.onHit(((ChestCavityEntity)cce.get()).getChestCavityInstance(), source, (LivingEntity)(Object)this, amount);
             }
         }
 
@@ -158,7 +157,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"addEatEffect"}
     )
     public List<Pair<MobEffectInstance, Float>> chestCavityLivingEntityApplyFoodEffectsMixin(FoodProperties instance, ItemStack stack, Level world, LivingEntity targetEntity) {
-        List<Pair<MobEffectInstance, Float>> list = instance.m_38749_();
+        List<Pair<MobEffectInstance, Float>> list = instance.getEffects();
         Optional<ChestCavityEntity> option = ChestCavityEntity.of(targetEntity);
         if (option.isPresent()) {
             list = new LinkedList((Collection)list);
@@ -203,7 +202,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             at = {@At("TAIL")}
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
-        this.chestCavityInstance.fromTag(tag, (LivingEntity)this);
+        this.chestCavityInstance.fromTag(tag, (LivingEntity)(Object)this);
     }
 
     @Inject(
@@ -226,8 +225,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 cancellable = true
         )
         protected void chestCavityLivingEntityInteractMobMixin(net.minecraft.world.entity.player.Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-            if (player.m_21120_(hand).m_41720_() == CCItems.CHEST_OPENER.get() && !(this instanceof net.minecraft.world.entity.player.Player)) {
-                ((ChestOpener)player.m_21120_(hand).m_41720_()).openChestCavity(player, this);
+            if (player.getItemInHand(hand).getItem() == CCItems.CHEST_OPENER.get() && !(((LivingEntity)(Object)this) instanceof net.minecraft.world.entity.player.Player)) {
+                ((ChestOpener)player.getItemInHand(hand).getItem()).openChestCavity(player, this);
                 info.setReturnValue(InteractionResult.SUCCESS);
             }
 
@@ -251,8 +250,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 argsOnly = true
         )
         public float chestCavityPlayerEntityOnHitMixin(float amount, DamageSource source) {
-            if (source.m_7639_() instanceof LivingEntity) {
-                Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.m_7639_());
+            if (source.getEntity() instanceof LivingEntity) {
+                Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.getEntity());
                 if (cce.isPresent()) {
                     amount = ChestCavityUtil.onHit(((ChestCavityEntity)cce.get()).getChestCavityInstance(), source, this, amount);
                 }
@@ -268,10 +267,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         )
         void chestCavityPlayerEntityInteractPlayerMixin(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
             if (entity instanceof LivingEntity && ChestCavity.config.CAN_OPEN_OTHER_PLAYERS) {
-                net.minecraft.world.entity.player.Player player = (net.minecraft.world.entity.player.Player)this;
-                ItemStack stack = player.m_21120_(hand);
-                if (stack.m_41720_() == CCItems.CHEST_OPENER.get()) {
-                    ((ChestOpener)stack.m_41720_()).openChestCavity(player, (LivingEntity)entity);
+                net.minecraft.world.entity.player.Player player = (net.minecraft.world.entity.player.Player)(Object)this;
+                ItemStack stack = player.getItemInHand(hand);
+                if (stack.getItem() == CCItems.CHEST_OPENER.get()) {
+                    ((ChestOpener)stack.getItem()).openChestCavity(player, (LivingEntity)entity);
                     info.setReturnValue(InteractionResult.SUCCESS);
                     info.cancel();
                 }
@@ -310,7 +309,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     @Mixin({net.minecraft.world.entity.monster.Creeper.class})
     private abstract static class Creeper extends Monster {
         @Shadow
-        private int f_32270_;
+        private int swell;
 
         protected Creeper(EntityType<? extends Monster> entityType, Level world) {
             super(entityType, world);
@@ -321,10 +320,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 method = {"tick"}
         )
         protected void chestCavityCreeperTickMixin(CallbackInfo info) {
-            if (this.m_6084_() && this.f_32270_ > 1) {
+            if (this.isAlive() && this.swell > 1) {
                 ChestCavityEntity.of(this).ifPresent((cce) -> {
                     if (cce.getChestCavityInstance().opened && cce.getChestCavityInstance().getOrganScore(CCOrganScores.CREEPY) <= 0.0F) {
-                        this.f_32270_ = 1;
+                        this.swell = 1;
                     }
 
                 });
@@ -358,7 +357,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         )
         public void chestCavityEntityMoveToWorldMixin(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> info) {
             Entity entity = (Entity)info.getReturnValue();
-            if (entity instanceof ChestCavityEntity && !entity.level().f_46443_) {
+            if (entity instanceof ChestCavityEntity && !entity.level().isClientSide) {
                 NetworkUtil.SendS2CChestCavityUpdatePacket(((ChestCavityEntity)entity).getChestCavityInstance());
             }
 
@@ -398,7 +397,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             Optional<ChestCavityEntity> chestCavityEntity = ChestCavityEntity.of(this);
             if (chestCavityEntity.isPresent()) {
                 ChestCavityInstance cc = ((ChestCavityEntity)chestCavityEntity.get()).getChestCavityInstance();
-                if (cc.opened && cc.inventory.m_18947_(Items.f_42686_) == 0) {
+                if (cc.opened && cc.inventory.countItem(Items.NETHER_STAR) == 0) {
                     info.cancel();
                 }
             }

@@ -37,16 +37,16 @@ public class SalvageRecipe implements CraftingRecipe {
     }
 
     public NonNullList<Ingredient> m_7527_() {
-        return NonNullList.m_122780_(this.required, this.input);
+        return NonNullList.withSize(this.required, this.input);
     }
 
     public boolean matches(CraftingContainer inv, Level world) {
         int count = 0;
 
-        for(int i = 0; i < inv.m_6643_(); ++i) {
-            ItemStack target = inv.m_8020_(i);
-            if (target != null && target != ItemStack.f_41583_ && target.m_41720_() != Items.f_41852_) {
-                if (!this.input.test(inv.m_8020_(i))) {
+        for(int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack target = inv.getItem(i);
+            if (target != null && target != ItemStack.EMPTY && target.getItem() != Items.AIR) {
+                if (!this.input.test(inv.getItem(i))) {
                     return false;
                 }
 
@@ -60,11 +60,11 @@ public class SalvageRecipe implements CraftingRecipe {
     public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         int count = 0;
 
-        for(int i = 0; i < inv.m_6643_(); ++i) {
-            ItemStack target = inv.m_8020_(i);
-            if (target != null && target != ItemStack.f_41583_ && target.m_41720_() != Items.f_41852_) {
-                if (!this.input.test(inv.m_8020_(i))) {
-                    return ItemStack.f_41583_;
+        for(int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack target = inv.getItem(i);
+                if (target != null && target != ItemStack.EMPTY && target.getItem() != Items.AIR) {
+                if (!this.input.test(inv.getItem(i))) {
+                    return ItemStack.EMPTY;
                 }
 
                 ++count;
@@ -72,36 +72,37 @@ public class SalvageRecipe implements CraftingRecipe {
         }
 
         if (count != 0 && count % this.required == 0) {
-            count = count / this.required * this.outputStack.m_41613_();
-            if (count > this.outputStack.m_41741_()) {
-                return ItemStack.f_41583_;
+            count = count / this.required * this.outputStack.getCount();
+            if (count > this.outputStack.getMaxStackSize()) {
+                return ItemStack.EMPTY;
             } else {
-                ItemStack out = this.m_8043_(registryAccess);
-                out.m_41764_(count);
+                ItemStack out = this.getResultItem(registryAccess);
+                out.setCount(count);
                 return out;
             }
         } else {
-            return ItemStack.f_41583_;
+            return ItemStack.EMPTY;
         }
     }
 
-    public boolean m_8004_(int width, int height) {
+
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
-    public ItemStack m_8043_(RegistryAccess registryAccess) {
-        return this.outputStack.m_41777_();
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return this.outputStack.copy();
     }
 
-    public ResourceLocation m_6423_() {
+    public ResourceLocation getId() {
         return this.id;
     }
-
-    public RecipeSerializer<?> m_7707_() {
+    public RecipeSerializer<?> getSerializer() {
         return (RecipeSerializer)CCRecipes.SALVAGE_RECIPE_SERIALIZER.get();
     }
 
-    public CraftingBookCategory m_245232_() {
+    public CraftingBookCategory category() {
         return this.category;
     }
+
 }

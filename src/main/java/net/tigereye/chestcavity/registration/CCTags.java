@@ -16,10 +16,10 @@ public class CCTags {
     }
 
     static {
-        BUTCHERING_TOOL = TagKey.m_203882_(Registries.f_256913_, new ResourceLocation("chestcavity", "butchering_tool"));
-        ROTTEN_FOOD = TagKey.m_203882_(Registries.f_256913_, new ResourceLocation("chestcavity", "rotten_food"));
-        CARNIVORE_FOOD = TagKey.m_203882_(Registries.f_256913_, new ResourceLocation("chestcavity", "carnivore_food"));
-        SALVAGEABLE = TagKey.m_203882_(Registries.f_256913_, new ResourceLocation("chestcavity", "salvageable"));
-        IRON_REPAIR_MATERIAL = TagKey.m_203882_(Registries.f_256913_, new ResourceLocation("chestcavity", "iron_repair_material"));
+        BUTCHERING_TOOL = TagKey.create(Registries.ITEM, new ResourceLocation("chestcavity", "butchering_tool"));
+        ROTTEN_FOOD = TagKey.create(Registries.ITEM, new ResourceLocation("chestcavity", "rotten_food"));
+        CARNIVORE_FOOD = TagKey.create(Registries.ITEM, new ResourceLocation("chestcavity", "carnivore_food"));
+        SALVAGEABLE = TagKey.create(Registries.ITEM, new ResourceLocation("chestcavity", "salvageable"));
+        IRON_REPAIR_MATERIAL = TagKey.create(Registries.ITEM, new ResourceLocation("chestcavity", "iron_repair_material"));
     }
 }

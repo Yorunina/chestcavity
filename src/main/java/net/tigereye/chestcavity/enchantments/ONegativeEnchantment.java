@@ -11,27 +11,27 @@ public class ONegativeEnchantment extends Enchantment {
         super(Rarity.RARE, EnchantmentCategory.VANISHABLE, new EquipmentSlot[0]);
     }
 
-    public int m_6183_(int level) {
+    public int getMinCost(int level) {
         return 50 * level;
     }
 
-    public int m_6175_(int level) {
+    public int getMaxCost(int level) {
         return 100 * level;
     }
 
-    public int m_6586_() {
+    public int getMaxLevel() {
         return 2;
     }
 
-    public boolean m_6081_(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         return true;
     }
 
-    public boolean m_6591_() {
+    public boolean isAllowedOnBooks() {
         return true;
     }
 
-    public boolean m_6594_() {
+    public boolean isCurse() {
         return false;
     }
 }

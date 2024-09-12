@@ -14,17 +14,16 @@ public class CCDamageSources {
 
     public CCDamageSources() {
     }
-
     public static DamageSource of(Level world, ResourceKey<DamageType> key) {
-        return new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key));
+        return new DamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key));
     }
 
     public static DamageSource of(Level world, ResourceKey<DamageType> key, Entity attacker) {
-        return attacker != null ? new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key), attacker) : new DamageSource(world.m_9598_().m_175515_(Registries.f_268580_).m_246971_(key));
+        return attacker != null ? new DamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key), attacker) : new DamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key));
     }
 
     static {
-        HEARTBLEED = ResourceKey.m_135785_(Registries.f_268580_, new ResourceLocation("chestcavity", "cc_heartbleed"));
-        ORGAN_REJECTION = ResourceKey.m_135785_(Registries.f_268580_, new ResourceLocation("chestcavity", "cc_organ_rejection"));
+        HEARTBLEED = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("chestcavity", "cc_heartbleed"));
+        ORGAN_REJECTION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("chestcavity", "cc_organ_rejection"));
     }
 }

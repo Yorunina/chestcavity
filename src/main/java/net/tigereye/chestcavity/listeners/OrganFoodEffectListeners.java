@@ -23,7 +23,7 @@ public class OrganFoodEffectListeners {
         float rotten = cc.getOrganScore(CCOrganScores.ROTGUT) + cc.getOrganScore(CCOrganScores.ROT_DIGESTION);
         if (rotten > 0.0F && itemStack.is(CCTags.ROTTEN_FOOD)) {
             list.removeIf((pair) -> {
-                return ((MobEffectInstance)pair.getFirst()).m_19544_() == MobEffects.f_19612_;
+                return ((MobEffectInstance)pair.getFirst()).getEffect() == MobEffects.HUNGER;
             });
         }
 

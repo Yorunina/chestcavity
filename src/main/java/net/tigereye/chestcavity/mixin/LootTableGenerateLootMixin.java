@@ -50,13 +50,13 @@ public class LootTableGenerateLootMixin {
             ChestCavity.LOGGER.debug("modifying " + this.interceptedLoot.size() + " drops");
         }
 
-        this.interceptedLoot.addAll(Listeners.addLoot(((LootTable)this).m_79122_(), context));
-        this.interceptedLoot = Listeners.modifyLoot(((LootTable)this).m_79122_(), context, this.interceptedLoot);
+        this.interceptedLoot.addAll(Listeners.addLoot(((LootTable)(Object)this).getParamSet(), context));
+        this.interceptedLoot = Listeners.modifyLoot(((LootTable)(Object)this).getParamSet(), context, this.interceptedLoot);
         if (ChestCavity.config.DEBUG_MODE) {
             ChestCavity.LOGGER.debug(this.interceptedLoot.size() + " itemStacks returned");
         }
 
-        Consumer<ItemStack> processedConsumer = LootTable.m_246283_(context.m_78952_(), this.interceptedConsumer);
+        Consumer<ItemStack> processedConsumer = LootTable.createStackSplitter(context.getLevel(), this.interceptedConsumer);
         Iterator var5 = this.interceptedLoot.iterator();
 
         while(var5.hasNext()) {

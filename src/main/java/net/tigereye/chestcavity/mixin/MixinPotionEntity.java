@@ -20,9 +20,8 @@ public class MixinPotionEntity extends ThrowableItemProjectile {
     public MixinPotionEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level world) {
         super(entityType, world);
     }
-
     @Shadow
-    protected Item m_7881_() {
+    protected Item getDefaultItem() {
         return null;
     }
 
@@ -31,6 +30,6 @@ public class MixinPotionEntity extends ThrowableItemProjectile {
             method = {"applyWater"}
     )
     private void ChestCavityPotionEntityDamageEntitiesHurtByWaterMixin(CallbackInfo info) {
-        ChestCavityUtil.splashHydrophobicWithWater((ThrownPotion)this);
+        ChestCavityUtil.splashHydrophobicWithWater((ThrownPotion) (Object)this);
     }
 }

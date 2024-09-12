@@ -29,7 +29,7 @@ public class SalvageRecipeSerializer implements RecipeSerializer<SalvageRecipe> 
                 recipeJson.count = 1;
             }
 
-            Ingredient input = Ingredient.m_43917_(recipeJson.ingredient);
+            Ingredient input = Ingredient.fromJson(recipeJson.ingredient);
             Item outputItem = (Item)Optional.ofNullable((Item)ForgeRegistries.ITEMS.getValue(new ResourceLocation(recipeJson.result))).orElseThrow(() -> {
                 return new JsonSyntaxException("No such item " + recipeJson.result);
             });
@@ -41,15 +41,15 @@ public class SalvageRecipeSerializer implements RecipeSerializer<SalvageRecipe> 
     }
 
     public SalvageRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-        Ingredient input = Ingredient.m_43940_(buf);
+        Ingredient input = Ingredient.fromNetwork(buf);
         int required = buf.readInt();
-        ItemStack output = buf.m_130267_();
+        ItemStack output = buf.readItem();
         return new SalvageRecipe(input, required, CraftingBookCategory.MISC, output, id);
     }
 
     public void toNetwork(FriendlyByteBuf buf, SalvageRecipe recipe) {
-        recipe.getInput().m_43923_(buf);
+        recipe.getInput().toNetwork(buf);
         buf.writeInt(recipe.getRequired());
-        buf.m_130055_(recipe.outputStack.m_41777_());
+        buf.writeItem(recipe.outputStack.copy());
     }
 }

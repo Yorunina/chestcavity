@@ -96,27 +96,27 @@ public class OrganUtil {
                 tier = "quality.chestcavity.greatly_reduces";
             }
 
-            Component text = Component.m_237110_("organscore." + organ.m_135827_() + "." + organ.m_135815_(), new Object[]{Component.m_237115_(tier)});
+            Component text = Component.translatable("organscore." + organ.getNamespace() + "." + organ.getPath(), new Object[]{Component.translatable(tier)});
             tooltip.add(text);
         });
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void displayCompatibility(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
-        CompoundTag tag = itemStack.m_41784_();
+        CompoundTag tag = itemStack.getOrCreateTag();
         boolean uuidMatch = false;
         int compatLevel = 0;
         MinecraftServer server = null;
         if (world != null) {
-            server = world.m_7654_();
+            server = world.getServer();
         }
 
         if (server == null) {
-            server = Minecraft.m_91087_().m_91092_();
+            server = Minecraft.getInstance().getSingleplayerServer();
         }
 
         if (server != null) {
-            Player serverPlayer = ((MinecraftServer)server).m_6846_().m_11255_(Minecraft.m_91087_().f_91074_.m_6302_());
+            Player serverPlayer = ((MinecraftServer)server).getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
             if (serverPlayer instanceof ChestCavityEntity) {
                 ChestCavityEntity ccPlayer = (ChestCavityEntity)serverPlayer;
                 UUID ccID = ccPlayer.getChestCavityInstance().compatibility_id;
@@ -127,48 +127,48 @@ public class OrganUtil {
         }
 
         String textString;
-        if (EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
+        if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
             textString = "Unsafe to use";
-        } else if (tag != null && tag.m_128441_(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
+        } else if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-            String name = tag.m_128461_("name");
+            String name = tag.getString("name");
             textString = "Only Compatible With: " + name;
         } else {
             textString = "Safe to Use";
         }
 
-        MutableComponent text = MutableComponent.m_237204_(ComponentContents.f_237124_);
+        MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
         if (compatLevel > 0) {
-            text.m_130940_(ChatFormatting.GREEN);
+            text.withStyle(ChatFormatting.GREEN);
         } else if (compatLevel == 0) {
-            text.m_130940_(ChatFormatting.RED);
+            text.withStyle(ChatFormatting.RED);
         } else {
-            text.m_130940_(ChatFormatting.YELLOW);
+            text.withStyle(ChatFormatting.YELLOW);
         }
 
-        text.m_130946_(textString);
+        text.append(textString);
         tooltip.add(text);
     }
 
     public static void explode(LivingEntity entity, float explosionYield) {
-        if (!entity.level().f_46443_) {
-            entity.level().m_254849_((Entity)null, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), (float)Math.sqrt((double)explosionYield), ExplosionInteraction.MOB);
+        if (!entity.level().isClientSide) {
+            entity.level().explode((Entity)null, entity.getX(), entity.getY(), entity.getZ(), (float)Math.sqrt((double)explosionYield), ExplosionInteraction.MOB);
             spawnEffectsCloud(entity);
         }
 
     }
 
     public static List<MobEffectInstance> getStatusEffects(ItemStack organ) {
-        CompoundTag tag = organ.m_41784_();
-        if (!tag.m_128425_("CustomPotionEffects", 9)) {
+        CompoundTag tag = organ.getOrCreateTag();
+        if (!tag.contains("CustomPotionEffects", 9)) {
             return new ArrayList();
         } else {
-            ListTag NbtList = tag.m_128437_("CustomPotionEffects", 10);
+            ListTag NbtList = tag.getList("CustomPotionEffects", 10);
             List<MobEffectInstance> list = new ArrayList();
 
             for(int i = 0; i < NbtList.size(); ++i) {
-                CompoundTag NbtCompound = NbtList.m_128728_(i);
-                MobEffectInstance statusEffectInstance = MobEffectInstance.m_19560_(NbtCompound);
+                CompoundTag NbtCompound = NbtList.getCompound(i);
+                MobEffectInstance statusEffectInstance = MobEffectInstance.load(NbtCompound);
                 if (statusEffectInstance != null) {
                     list.add(statusEffectInstance);
                 }
@@ -196,7 +196,7 @@ public class OrganUtil {
 
     public static void queueDragonBombs(LivingEntity entity, ChestCavityInstance cc, int bombs) {
         if (entity instanceof Player) {
-            ((Player)entity).m_36399_((float)bombs * 0.6F);
+            ((Player)entity).causeFoodExhaustion((float)bombs * 0.6F);
         }
 
         for(int i = 0; i < bombs; ++i) {
@@ -208,7 +208,7 @@ public class OrganUtil {
 
     public static void queueForcefulSpit(LivingEntity entity, ChestCavityInstance cc, int projectiles) {
         if (entity instanceof Player) {
-            ((Player)entity).m_36399_((float)projectiles * 0.1F);
+            ((Player)entity).causeFoodExhaustion((float)projectiles * 0.1F);
         }
 
         for(int i = 0; i < projectiles; ++i) {
@@ -220,7 +220,7 @@ public class OrganUtil {
 
     public static void queueGhastlyFireballs(LivingEntity entity, ChestCavityInstance cc, int ghastly) {
         if (entity instanceof Player) {
-            ((Player)entity).m_36399_((float)ghastly * 0.3F);
+            ((Player)entity).causeFoodExhaustion((float)ghastly * 0.3F);
         }
 
         for(int i = 0; i < ghastly; ++i) {
@@ -232,7 +232,7 @@ public class OrganUtil {
 
     public static void queuePyromancyFireballs(LivingEntity entity, ChestCavityInstance cc, int pyromancy) {
         if (entity instanceof Player) {
-            ((Player)entity).m_36399_((float)pyromancy * 0.1F);
+            ((Player)entity).causeFoodExhaustion((float)pyromancy * 0.1F);
         }
 
         for(int i = 0; i < pyromancy; ++i) {
@@ -244,7 +244,7 @@ public class OrganUtil {
 
     public static void queueShulkerBullets(LivingEntity entity, ChestCavityInstance cc, int shulkerBullets) {
         if (entity instanceof Player) {
-            ((Player)entity).m_36399_((float)shulkerBullets * 0.3F);
+            ((Player)entity).causeFoodExhaustion((float)shulkerBullets * 0.3F);
         }
 
         for(int i = 0; i < shulkerBullets; ++i) {
@@ -255,14 +255,14 @@ public class OrganUtil {
     }
 
     public static void setStatusEffects(ItemStack organ, ItemStack potion) {
-        List<MobEffectInstance> potionList = PotionUtils.m_43547_(potion);
+        List<MobEffectInstance> potionList = PotionUtils.getCustomEffects(potion);
         List<MobEffectInstance> list = new ArrayList();
         Iterator<MobEffectInstance> var4 = potionList.iterator();
 
         while(var4.hasNext()) {
             MobEffectInstance effect = (MobEffectInstance)var4.next();
             MobEffectInstance effectCopy = new MobEffectInstance(effect);
-            ((CCStatusEffectInstance)effectCopy).CC_setDuration(Math.max(1, effectCopy.m_19557_() / 4));
+            ((CCStatusEffectInstance)effectCopy).CC_setDuration(Math.max(1, effectCopy.getDuration() / 4));
             list.add(effectCopy);
         }
 
@@ -270,7 +270,7 @@ public class OrganUtil {
     }
 
     public static void setStatusEffects(ItemStack organ, List<MobEffectInstance> list) {
-        CompoundTag tag = organ.m_41784_();
+        CompoundTag tag = organ.getOrCreateTag();
         ListTag NbtList = new ListTag();
 
         for(int i = 0; i < list.size(); ++i) {
@@ -281,7 +281,7 @@ public class OrganUtil {
             }
         }
 
-        tag.m_128365_("CustomPotionEffects", NbtList);
+        tag.put("CustomPotionEffects", NbtList);
     }
 
     public static void shearSilk(LivingEntity entity) {
@@ -292,15 +292,15 @@ public class OrganUtil {
                     ItemStack stack;
                     ItemEntity itemEntity;
                     if (silk >= 2.0F) {
-                        stack = new ItemStack(Items.f_41863_, (int)silk / 2);
-                        itemEntity = new ItemEntity(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
-                        entity.level().m_7967_(itemEntity);
+                        stack = new ItemStack(Items.COBWEB, (int)silk / 2);
+                        itemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack);
+                        entity.level().addFreshEntity(itemEntity);
                     }
 
                     if (silk % 2.0F >= 1.0F) {
-                        stack = new ItemStack(Items.f_42401_);
-                        itemEntity = new ItemEntity(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), stack);
-                        entity.level().m_7967_(itemEntity);
+                        stack = new ItemStack(Items.STRING);
+                        itemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack);
+                        entity.level().addFreshEntity(itemEntity);
                     }
                 }
             }
@@ -309,52 +309,52 @@ public class OrganUtil {
     }
 
     public static void spawnEffectsCloud(LivingEntity entity) {
-        Collection<MobEffectInstance> collection = entity.m_21220_();
+        Collection<MobEffectInstance> collection = entity.getActiveEffects();
         if (!collection.isEmpty()) {
-            AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.m_20185_(), entity.m_20186_(), entity.m_20189_());
-            areaEffectCloudEntity.m_19712_(2.5F);
-            areaEffectCloudEntity.m_19732_(-0.5F);
-            areaEffectCloudEntity.m_19740_(10);
-            areaEffectCloudEntity.m_19734_(areaEffectCloudEntity.m_19748_() / 2);
-            areaEffectCloudEntity.m_19738_(-areaEffectCloudEntity.m_19743_() / (float)areaEffectCloudEntity.m_19748_());
+            AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
+            areaEffectCloudEntity.setRadius(2.5F);
+            areaEffectCloudEntity.setRadiusOnUse(-0.5F);
+            areaEffectCloudEntity.setWaitTime(10);
+            areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
+            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
             Iterator<MobEffectInstance> var3 = collection.iterator();
 
             while(var3.hasNext()) {
                 MobEffectInstance statusEffectInstance = (MobEffectInstance)var3.next();
-                areaEffectCloudEntity.m_19716_(new MobEffectInstance(statusEffectInstance));
+                areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
             }
 
-            entity.level().m_7967_(areaEffectCloudEntity);
+            entity.level().addFreshEntity(areaEffectCloudEntity);
         }
 
     }
 
     public static void spawnSilk(LivingEntity entity) {
-        entity.m_19998_(Items.f_42401_);
+        entity.spawnAtLocation(Items.STRING);
     }
 
     public static void spawnSpit(LivingEntity entity) {
-        Vec3 entityFacing = entity.m_20154_().m_82541_();
-        Llama fakeLlama = new Llama(EntityType.f_20466_, entity.level());
-        fakeLlama.m_20343_(entity.m_20185_(), entity.m_20186_(), entity.m_20189_());
-        fakeLlama.m_146926_(entity.m_146909_());
-        fakeLlama.m_146922_(entity.m_146908_());
-        fakeLlama.f_20883_ = entity.f_20883_;
+        Vec3 entityFacing = entity.getLookAngle().normalize();
+        Llama fakeLlama = new Llama(EntityType.LLAMA, entity.level());
+        fakeLlama.setPos(entity.getX(), entity.getY(), entity.getZ());
+        fakeLlama.setDeltaMovement(entity.getDeltaMovement());
+        fakeLlama.setYHeadRot(entity.getYHeadRot());
+        fakeLlama.yBodyRot = entity.yBodyRot;
         LlamaSpit llamaSpitEntity = new LlamaSpit(entity.level(), fakeLlama);
-        llamaSpitEntity.m_5602_(entity);
-        llamaSpitEntity.m_20334_(entityFacing.f_82479_ * 2.0, entityFacing.f_82480_ * 2.0, entityFacing.f_82481_ * 2.0);
-        entity.level().m_7967_(llamaSpitEntity);
-        entityFacing = entityFacing.m_82490_(-0.1);
-        entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
+        llamaSpitEntity.setOwner(entity);
+        llamaSpitEntity.absMoveTo(entityFacing.x * 2.0, entityFacing.y * 2.0, entityFacing.z * 2.0);
+        entity.level().addFreshEntity(llamaSpitEntity);
+        entityFacing = entityFacing.scale(-0.1);
+        entity.absMoveTo(entityFacing.x, entityFacing.y, entityFacing.z);
     }
 
     public static void spawnDragonBomb(LivingEntity entity) {
-        Vec3 entityFacing = entity.m_20154_().m_82541_();
-        DragonFireball fireballEntity = new DragonFireball(entity.level(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
-        fireballEntity.m_20248_(fireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, fireballEntity.m_20189_());
-        entity.level().m_7967_(fireballEntity);
-        entityFacing = entityFacing.m_82490_(-0.2);
-        entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
+        Vec3 entityFacing = entity.getLookAngle().normalize();
+        DragonFireball fireballEntity = new DragonFireball(entity.level(), entity, entityFacing.x, entityFacing.y, entityFacing.z);
+        fireballEntity.syncPacketPositionCodec(fireballEntity.getX(), entity.getY(0.5) + 0.3, fireballEntity.getZ());
+        entity.level().addFreshEntity(fireballEntity);
+        entityFacing = entityFacing.scale(-0.2);
+        entity.absMoveTo(entityFacing.x, entityFacing.y, entityFacing.z);
     }
 
     public static void spawnDragonBreath(LivingEntity entity) {
@@ -364,83 +364,86 @@ public class OrganUtil {
             ChestCavityInstance cc = cce.getChestCavityInstance();
             float breath = cc.getOrganScore(CCOrganScores.DRAGON_BREATH);
             double range = Math.sqrt((double)(breath / 2.0F)) * 5.0;
-            HitResult result = entity.m_19907_(range, 0.0F, false);
-            Vec3 pos = result.m_82450_();
-            double x = pos.f_82479_;
-            double y = pos.f_82480_;
-            double z = pos.f_82481_;
+            HitResult result = entity.pick(range, 0.0F, false);
+            Vec3 pos = result.getLocation();
+            double x = pos.x;
+            double y = pos.y;
+            double z = pos.z;
             BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, y, z);
 
-            while(entity.level().m_46859_(mutable)) {
+            while(entity.level().isEmptyBlock(mutable)) {
                 --y;
                 if (y < 0.0) {
                     return;
                 }
 
-                mutable.m_122169_(x, y, z);
+                mutable.set(x, y, z);
             }
 
-            y = (double)(Mth.m_14107_(y) + 1);
+            y = (double)(Mth.floor(y) + 1);
             AreaEffectCloud breathEntity = new AreaEffectCloud(entity.level(), x, y, z);
-            breathEntity.m_19718_(entity);
-            breathEntity.m_19712_((float)Math.max(range / 2.0, Math.min(range, (double)MathUtil.horizontalDistanceTo(breathEntity, entity))));
-            breathEntity.m_19734_(200);
-            breathEntity.m_19724_(ParticleTypes.f_123799_);
-            breathEntity.m_19716_(new MobEffectInstance(MobEffects.f_19602_));
-            entity.level().m_7967_(breathEntity);
+            breathEntity.setOwner(entity);
+            breathEntity.setRadius((float)Math.max(range / 2.0, Math.min(range, (double)MathUtil.horizontalDistanceTo(breathEntity, entity))));
+            breathEntity.setDuration(200);
+            breathEntity.setParticle(ParticleTypes.DRAGON_BREATH);
+            breathEntity.addEffect(new MobEffectInstance(MobEffects.HARM));
+            entity.level().addFreshEntity(breathEntity);
         }
 
     }
 
     public static void spawnGhastlyFireball(LivingEntity entity) {
-        Vec3 entityFacing = entity.m_20154_().m_82541_();
-        LargeFireball fireballEntity = new LargeFireball(entity.level(), entity, entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_, 1);
-        fireballEntity.m_20248_(fireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, fireballEntity.m_20189_());
-        entity.level().m_7967_(fireballEntity);
-        entityFacing = entityFacing.m_82490_(-0.8);
-        entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
+        Vec3 entityFacing = entity.getLookAngle().normalize();
+        LargeFireball fireballEntity = new LargeFireball(entity.level(), entity, entityFacing.x, entityFacing.y, entityFacing.z, 1);
+        fireballEntity.syncPacketPositionCodec(fireballEntity.getX(), entity.getY(0.5) + 0.3, fireballEntity.getZ());
+        entity.level().addFreshEntity(fireballEntity);
+        entityFacing = entityFacing.scale(-0.8);
+        entity.absMoveTo(entityFacing.x, entityFacing.y, entityFacing.z);
     }
 
     public static void spawnPyromancyFireball(LivingEntity entity) {
-        Vec3 entityFacing = entity.m_20154_().m_82541_();
-        SmallFireball smallFireballEntity = new SmallFireball(entity.level(), entity, entityFacing.f_82479_ + entity.m_217043_().m_188583_() * 0.1, entityFacing.f_82480_, entityFacing.f_82481_ + entity.m_217043_().m_188583_() * 0.1);
-        smallFireballEntity.m_20248_(smallFireballEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, smallFireballEntity.m_20189_());
-        entity.level().m_7967_(smallFireballEntity);
-        entityFacing = entityFacing.m_82490_(-0.2);
-        entity.m_5997_(entityFacing.f_82479_, entityFacing.f_82480_, entityFacing.f_82481_);
+        Vec3 entityFacing = entity.getLookAngle().normalize();
+        SmallFireball smallFireballEntity = new SmallFireball(entity.level(), entity, entityFacing.x + entity.getRandom().nextGaussian() * 0.1, entityFacing.y, entityFacing.z + entity.getRandom().nextGaussian() * 0.1);
+        smallFireballEntity.syncPacketPositionCodec(smallFireballEntity.getX(), entity.getY(0.5) + 0.3, smallFireballEntity.getZ());
+        entity.level().addFreshEntity(smallFireballEntity);
+        entityFacing = entityFacing.scale(-0.2);
+        entity.absMoveTo(entityFacing.x, entityFacing.y, entityFacing.z);
     }
 
     public static void spawnShulkerBullet(LivingEntity entity) {
-        TargetingConditions targetPredicate = TargetingConditions.m_148352_();
-        targetPredicate.m_26883_((double)(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2));
-        LivingEntity target = entity.level().m_45963_(LivingEntity.class, targetPredicate, entity, entity.m_20185_(), entity.m_20186_(), entity.m_20189_(), new AABB(entity.m_20185_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20185_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20186_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.m_20189_() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
+        TargetingConditions targetPredicate = TargetingConditions.forCombat();
+        targetPredicate.range((double)(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2));
+        LivingEntity target = entity.level().getNearestEntity(LivingEntity.class, targetPredicate, entity, entity.getX(), entity.getY(), entity.getZ(), new AABB(entity.getX() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getX() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
         if (target != null) {
             ShulkerBullet shulkerBulletEntity = new ShulkerBullet(entity.level(), entity, target, Axis.Y);
-            shulkerBulletEntity.m_20248_(shulkerBulletEntity.m_20185_(), entity.m_20227_(0.5) + 0.3, shulkerBulletEntity.m_20189_());
-            entity.level().m_7967_(shulkerBulletEntity);
+            shulkerBulletEntity.syncPacketPositionCodec(shulkerBulletEntity.getX(), entity.getY(0.5) + 0.3, shulkerBulletEntity.getZ());
+            entity.level().addFreshEntity(shulkerBulletEntity);
         }
 
     }
 
     public static boolean spinWeb(LivingEntity entity, ChestCavityInstance cc, float silkScore) {
         int hungerCost = 0;
-        if (entity instanceof Player player) {
-            if (player.m_36324_().m_38702_() < 6) {
+        Player player = null;
+        if (entity instanceof Player) {
+            player = (Player) entity;
+            if (player.getFoodData().getFoodLevel() < 6) {
                 return false;
             }
         }
 
         if (silkScore >= 2.0F) {
-            BlockPos pos = entity.blockPosition().m_121945_(entity.m_6350_().m_122424_());
-            if (entity.m_20193_().getBlockState(pos).m_60795_()) {
+            // todo check
+            BlockPos pos = entity.blockPosition().offset(entity.getDirection().getNormal());
+            if (entity.level().getBlockState(pos).isAir()) {
                 if (silkScore >= 3.0F) {
                     hungerCost = 16;
                     silkScore -= 3.0F;
-                    entity.m_20193_().m_7731_(pos, Blocks.f_50041_.m_49966_(), 2);
+                    entity.level().setBlock(pos, Blocks.WHITE_WOOL.defaultBlockState(), 2);
                 } else {
                     hungerCost = 8;
                     silkScore -= 2.0F;
-                    entity.m_20193_().m_7731_(pos, Blocks.f_50033_.m_49966_(), 2);
+                    entity.level().setBlock(pos, Blocks.COBWEB.defaultBlockState(), 2);
                 }
             }
         }
@@ -452,57 +455,56 @@ public class OrganUtil {
         }
 
         if (player != null) {
-            player.m_36324_().m_38703_((float)hungerCost);
+            player.getFoodData().addExhaustion((float)hungerCost);
         }
 
         return hungerCost > 0;
     }
 
     public static boolean teleportRandomly(LivingEntity entity, float range) {
-        if (!entity.level().m_5776_() && entity.m_6084_()) {
+        if (!entity.level().isClientSide() && entity.isAlive()) {
             for(int i = 0; i < ChestCavity.config.MAX_TELEPORT_ATTEMPTS; ++i) {
-                double d = entity.m_20185_() + (entity.m_217043_().m_188500_() - 0.5) * (double)range;
-                double e = Math.max(1.0, entity.m_20186_() + (entity.m_217043_().m_188500_() - 0.5) * (double)range);
-                double f = entity.m_20189_() + (entity.m_217043_().m_188500_() - 0.5) * (double)range;
+                double d = entity.getX() + (entity.getRandom().nextDouble() - 0.5) * (double)range;
+                double e = Math.max(1.0, entity.getY() + (entity.getRandom().nextDouble() - 0.5) * (double)range);
+                double f = entity.getZ() + (entity.getRandom().nextDouble() - 0.5) * (double)range;
                 if (teleportTo(entity, d, e, f)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
     public static boolean teleportTo(LivingEntity entity, double x, double y, double z) {
-        if (entity.m_20159_()) {
-            entity.m_8127_();
+        if (entity.isVehicle()) {
+            entity.stopRiding();
         }
 
         BlockPos.MutableBlockPos targetPos = new BlockPos.MutableBlockPos(x, y, z);
 
         BlockState blockState;
-        for(blockState = entity.level().getBlockState(targetPos); targetPos.m_123342_() > 0 && !blockState.m_280555_() && !blockState.m_278721_(); blockState = entity.level().getBlockState(targetPos)) {
-            targetPos.m_122173_(Direction.DOWN);
+        for(blockState = entity.level().getBlockState(targetPos); targetPos.getY() > 0 && !blockState.blocksMotion() && !blockState.liquid(); blockState = entity.level().getBlockState(targetPos)) {
+            targetPos.move(Direction.DOWN);
         }
 
-        if (targetPos.m_123342_() <= 0) {
+        if (targetPos.getY() <= 0) {
             return false;
         } else {
-            targetPos.m_122173_(Direction.UP);
+            targetPos.move(Direction.UP);
             blockState = entity.level().getBlockState(targetPos);
 
-            for(BlockState blockState2 = entity.level().getBlockState(targetPos.m_7494_()); blockState.m_280555_() || blockState.m_278721_() || blockState2.m_280555_() || blockState2.m_278721_(); blockState2 = entity.level().getBlockState(targetPos.m_7494_())) {
-                targetPos.m_122173_(Direction.UP);
+            for(BlockState blockState2 = entity.level().getBlockState(targetPos.above()); blockState.liquid() || blockState.blocksMotion() || blockState2.liquid() || blockState2.blocksMotion(); blockState2 = entity.level().getBlockState(targetPos.above())) {
+                targetPos.move(Direction.UP);
                 blockState = entity.level().getBlockState(targetPos);
             }
 
-            if (entity.level().m_6042_().f_63856_() && targetPos.m_123342_() >= entity.level().m_141928_()) {
+            if (entity.level().dimensionType().hasCeiling() && targetPos.getY() >= entity.level().getHeight()) {
                 return false;
             } else {
-                entity.m_20324_(x, (double)targetPos.m_123342_() + 0.1, z);
-                if (!entity.m_20067_()) {
-                    entity.level().m_6263_((Player)null, entity.f_19854_, entity.f_19855_, entity.f_19856_, SoundEvents.f_11852_, entity.m_5720_(), 1.0F, 1.0F);
-                    entity.playSound(SoundEvents.f_11852_, 1.0F, 1.0F);
+                entity.teleportTo(x, (double)targetPos.getY() + 0.1, z);
+                if (!entity.isSilent()) {
+                    entity.level().playSound((Player)null, entity.xOld, entity.yOld, entity.zOld, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
+                    entity.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
                 }
 
                 return true;

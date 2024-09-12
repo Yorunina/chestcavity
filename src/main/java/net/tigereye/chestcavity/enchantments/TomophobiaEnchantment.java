@@ -11,22 +11,22 @@ public class TomophobiaEnchantment extends Enchantment {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
-    public int m_6183_(int level) {
+    public int getMinCost(int level) {
         return 25;
     }
 
-    public int m_6175_(int level) {
+    public int getMaxCost(int level) {
         return 50;
     }
 
-    public int m_6586_() {
+    public int getMaxLevel() {
         return 1;
     }
 
-    public boolean m_6591_() {
+    public boolean isTreasureOnly() {
         return true;
     }
-    public boolean isCompatibleWith(Enchantment other) {
+    public boolean checkCompatibility(Enchantment other) {
         return super.isCompatibleWith(other) && other != CCEnchantments.SURGICAL.get() && other != CCEnchantments.MALPRACTICE.get();
     }
 }

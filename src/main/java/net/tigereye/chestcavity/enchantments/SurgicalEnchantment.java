@@ -13,19 +13,19 @@ public class SurgicalEnchantment extends LootBonusEnchantment {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
-    public int m_6183_(int level) {
+    public int getMinCost(int level) {
         return 15 + (level - 1) * 9;
     }
 
-    public int m_6175_(int level) {
+    public int getMaxCost(int level) {
         return super.getMinCost(level) + 50;
     }
 
-    public int m_6586_() {
+    public int getMaxLevel() {
         return 3;
     }
 
-    public boolean m_5975_(Enchantment other) {
+    public boolean checkCompatibility(Enchantment other) {
         return super.isCompatibleWith(other) && other.isCompatibleWith(Enchantments.MOB_LOOTING) && other != CCEnchantments.TOMOPHOBIA.get();
     }
 }

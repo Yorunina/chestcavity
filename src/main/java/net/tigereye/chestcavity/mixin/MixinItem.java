@@ -27,7 +27,7 @@ public class MixinItem {
     public void chestCavityItemAppendTooltip(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context, CallbackInfo info) {
         if (world != null) {
             OrganData data = ChestCavityUtil.lookupOrgan(stack, (ChestCavityType)null);
-            if (data != null && !data.pseudoOrgan && world.f_46443_) {
+            if (data != null && !data.pseudoOrgan && world.isClientSide) {
                 OrganUtil.displayOrganQuality(data.organScores, tooltip);
                 OrganUtil.displayCompatibility(stack, world, tooltip, context);
             }

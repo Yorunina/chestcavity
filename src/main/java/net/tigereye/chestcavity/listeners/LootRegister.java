@@ -104,7 +104,7 @@ public class LootRegister {
                             do {
                                 if (!i.hasNext()) {
                                     salvageResults.forEach((recipexx, count) -> {
-                                        ItemStack out = recipexx.m_8043_(killer.getServer().registryAccess());
+                                        ItemStack out = recipexx.getResultItem(killer.getServer().registryAccess());
                                         out.setCount(out.getCount() * (count / recipexx.getRequired()));
                                         loot.add(out);
                                     });

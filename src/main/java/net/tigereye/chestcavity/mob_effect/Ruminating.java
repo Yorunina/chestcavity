@@ -20,8 +20,8 @@ public class Ruminating extends CCStatusEffect {
     }
 
     public void m_6742_(LivingEntity entity, int amplifier) {
-        if (entity instanceof Player && !entity.level().f_46443_) {
-            FoodData hungerManager = ((Player)entity).m_36324_();
+        if (entity instanceof Player && !entity.level().isClientSide) {
+            FoodData hungerManager = ((Player)entity).getFoodData();
             hungerManager.eat((Item)CCItems.CUD.get(), new ItemStack((ItemLike)CCItems.CUD.get()), entity);
         }
 

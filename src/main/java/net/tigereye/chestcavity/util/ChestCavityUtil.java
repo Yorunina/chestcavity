@@ -69,7 +69,7 @@ public class ChestCavityUtil {
         } else {
             float airLoss = 1.0F;
             float waterBreath = cc.getOrganScore(CCOrganScores.WATERBREATH);
-            if (cc.owner.m_20142_()) {
+            if (cc.owner.isSprinting()) {
                 waterBreath /= 4.0F;
             }
 
@@ -95,11 +95,11 @@ public class ChestCavityUtil {
             }
 
             cc.lungRemainder = airLoss % 1.0F;
-            int airResult = Math.min(oldAir - (int)airLoss, cc.owner.m_6062_());
+            int airResult = Math.min(oldAir - (int)airLoss, cc.owner.getMaxAirSupply());
             if (airResult <= -20) {
                 airResult = 0;
                 cc.lungRemainder = 0.0F;
-                cc.owner.m_6469_(cc.owner.m_269291_().m_269063_(), 2.0F);
+                cc.owner.hurt(cc.owner.damageSources().drown(), 2.0F);
             }
 
             return airResult;
@@ -111,18 +111,18 @@ public class ChestCavityUtil {
             return oldAir;
         } else {
             float airLoss;
-            if (!cc.owner.hasEffect(MobEffects.f_19608_) && !cc.owner.hasEffect(MobEffects.f_19592_)) {
+            if (!cc.owner.hasEffect(MobEffects.WATER_BREATHING) && !cc.owner.hasEffect(MobEffects.CONDUIT_POWER)) {
                 airLoss = 1.0F;
             } else {
                 airLoss = 0.0F;
             }
 
             float breath = cc.getOrganScore(CCOrganScores.BREATH_RECOVERY);
-            if (cc.owner.m_20142_()) {
+            if (cc.owner.isSprinting()) {
                 breath /= 4.0F;
             }
 
-            if (cc.owner.m_20070_()) {
+            if (cc.owner.isInWaterOrRain()) {
                 breath += cc.getOrganScore(CCOrganScores.WATERBREATH) / 4.0F;
             }
 
@@ -132,8 +132,8 @@ public class ChestCavityUtil {
 
             int airResult;
             if (airLoss > 0.0F) {
-                airResult = EnchantmentHelper.m_44918_(cc.owner);
-                if (cc.owner.m_217043_().m_188503_(airResult + 1) != 0) {
+                airResult = EnchantmentHelper.getRespiration(cc.owner);
+                if (cc.owner.getRandom().nextInt(airResult + 1) != 0) {
                     airLoss = 0.0F;
                 } else {
                     float capacity = cc.getOrganScore(CCOrganScores.BREATH_CAPACITY);
@@ -144,16 +144,16 @@ public class ChestCavityUtil {
 
                     airLoss = airLoss * breathRatio + cc.lungRemainder;
                 }
-            } else if (oldAir == cc.owner.m_6062_()) {
+            } else if (oldAir == cc.owner.getMaxAirSupply()) {
                 return oldAir;
             }
 
             cc.lungRemainder = airLoss % 1.0F;
-            airResult = Math.min(oldAir - (int)airLoss - airGain, cc.owner.m_6062_());
+            airResult = Math.min(oldAir - (int)airLoss - airGain, cc.owner.getMaxAirSupply());
             if (airResult <= -20) {
                 airResult = 0;
                 cc.lungRemainder = 0.0F;
-                cc.owner.m_6469_(cc.owner.m_269291_().m_269063_(), 2.0F);
+                cc.owner.hurt(cc.owner.damageSources().drown(), 2.0F);
             }
 
             return airResult;
@@ -166,19 +166,19 @@ public class ChestCavityUtil {
         } else if (attemptArrowDodging(cc, source)) {
             return 0.0F;
         } else {
-            if (!source.m_269533_(DamageTypeTags.f_268490_)) {
+            if (!source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                 damage = applyBoneDefense(cc, damage);
             }
 
-            if (source.m_269533_(DamageTypeTags.f_268549_)) {
+            if (source.is(DamageTypeTags.IS_FALL)) {
                 damage = applyLeapingToFallDamage(cc, damage);
             }
 
-            if (source.m_269533_(DamageTypeTags.f_268549_) || source.m_276093_(DamageTypes.f_268576_)) {
+            if (source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypes.FLY_INTO_WALL)) {
                 damage = applyImpactResistant(cc, damage);
             }
 
-            if (source.m_269533_(DamageTypeTags.f_268745_)) {
+            if (source.is(DamageTypeTags.IS_FIRE)) {
                 damage = applyFireResistant(cc, damage);
             }
 
@@ -190,7 +190,7 @@ public class ChestCavityUtil {
         if (digestion == 1.0F) {
             return hunger;
         } else if (digestion < 0.0F) {
-            cc.owner.addEffect(new MobEffectInstance(MobEffects.f_19604_, (int)((float)(-hunger) * digestion * 400.0F)));
+            cc.owner.addEffect(new MobEffectInstance(MobEffects.CONFUSION, (int)((float)(-hunger) * digestion * 400.0F)));
             return 0;
         } else {
             return Math.max((int)((float)hunger * digestion), 1);
@@ -222,7 +222,7 @@ public class ChestCavityUtil {
         if (nutrition == 4.0F) {
             return saturation;
         } else if (nutrition < 0.0F) {
-            cc.owner.addEffect(new MobEffectInstance(MobEffects.f_19612_, (int)(saturation * nutrition * 800.0F)));
+            cc.owner.addEffect(new MobEffectInstance(MobEffects.HUNGER, (int)(saturation * nutrition * 800.0F)));
             return 0.0F;
         } else {
             return saturation * nutrition / 4.0F;
@@ -262,7 +262,7 @@ public class ChestCavityUtil {
     }
 
     public static float applySwimSpeedInWater(ChestCavityInstance cc) {
-        if (cc.opened && cc.owner.m_20069_()) {
+        if (cc.opened && cc.owner.isInWaterOrRain()) {
             float speedDiff = cc.getOrganScore(CCOrganScores.SWIM_SPEED) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.SWIM_SPEED);
             return speedDiff == 0.0F ? 1.0F : Math.max(0.0F, 1.0F + speedDiff * ChestCavity.config.SWIMSPEED_FACTOR / 8.0F);
         } else {
@@ -276,7 +276,7 @@ public class ChestCavityUtil {
             return false;
         } else if (cc.owner.hasEffect((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get())) {
             return false;
-        } else if (!source.m_269533_(DamageTypeTags.f_268524_)) {
+        } else if (!source.is(DamageTypeTags.IS_PROJECTILE)) {
             return false;
         } else if (!OrganUtil.teleportRandomly(cc.owner, (float)ChestCavity.config.ARROW_DODGE_DISTANCE / dodge)) {
             return false;
@@ -288,31 +288,31 @@ public class ChestCavityUtil {
 
     public static void clearForbiddenSlots(ChestCavityInstance cc) {
         try {
-            cc.inventory.m_19181_(cc);
+            cc.inventory.removeListener(cc);
         } catch (NullPointerException var2) {
         }
 
-        for(int i = 0; i < cc.inventory.m_6643_(); ++i) {
+        for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
             if (cc.getChestCavityType().isSlotForbidden(i)) {
-                cc.owner.m_19983_(cc.inventory.m_8016_(i));
+                cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(i));
             }
         }
 
-        cc.inventory.m_19164_(cc);
+        cc.inventory.addListener(cc);
     }
 
     public static void destroyOrgansWithKey(ChestCavityInstance cc, ResourceLocation organ) {
-        for(int i = 0; i < cc.inventory.m_6643_(); ++i) {
-            ItemStack slot = cc.inventory.m_8020_(i);
-            if (slot != null && slot != ItemStack.f_41583_) {
+        for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
+            ItemStack slot = cc.inventory.getItem(i);
+            if (slot != null && slot != ItemStack.EMPTY) {
                 OrganData organData = lookupOrgan(slot, cc.getChestCavityType());
                 if (organData != null && organData.organScores.containsKey(organ)) {
-                    cc.inventory.m_8016_(i);
+                    cc.inventory.removeItemNoUpdate(i);
                 }
             }
         }
 
-        cc.inventory.m_6596_();
+        cc.inventory.setChanged();
     }
 
     public static boolean determineDefaultOrganScores(ChestCavityType chestCavityType) {
@@ -320,14 +320,14 @@ public class ChestCavityUtil {
         chestCavityType.loadBaseOrganScores(organScores);
 
         try {
-            for(int i = 0; i < chestCavityType.getDefaultChestCavity().m_6643_(); ++i) {
-                ItemStack itemStack = chestCavityType.getDefaultChestCavity().m_8020_(i);
-                if (itemStack != null && itemStack != ItemStack.f_41583_) {
-                    Item slotitem = itemStack.m_41720_();
+            for(int i = 0; i < chestCavityType.getDefaultChestCavity().getContainerSize(); ++i) {
+                ItemStack itemStack = chestCavityType.getDefaultChestCavity().getItem(i);
+                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                    Item slotitem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, chestCavityType);
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
-                            addOrganScore(key, value * Math.min((float)itemStack.m_41613_() / (float)itemStack.m_41741_(), 1.0F), organScores);
+                            addOrganScore(key, value * Math.min((float)itemStack.getCount() / (float)itemStack.getMaxStackSize(), 1.0F), organScores);
                         });
                     }
                 }
@@ -342,37 +342,37 @@ public class ChestCavityUtil {
 
     public static void drawOrgansFromPile(List<ItemStack> organPile, int rolls, RandomSource random, List<ItemStack> loot) {
         for(int i = 0; i < rolls && !organPile.isEmpty(); ++i) {
-            int roll = random.m_188503_(organPile.size());
+            int roll = random.nextInt(organPile.size());
             int count = 1;
-            ItemStack rolledItem = ((ItemStack)organPile.remove(roll)).m_41777_();
-            if (rolledItem.m_41613_() > 1) {
-                count += random.m_188503_(rolledItem.m_41741_());
+            ItemStack rolledItem = ((ItemStack)organPile.remove(roll)).copy();
+            if (rolledItem.getCount() > 1) {
+                count += random.nextInt(rolledItem.getMaxStackSize());
             }
 
-            rolledItem.m_41764_(count);
+            rolledItem.setCount(count);
             loot.add(rolledItem);
         }
 
     }
 
     public static void dropUnboundOrgans(ChestCavityInstance cc) {
-        if (!ChestCavity.config.REQUIEM_INTEGRATION || ForgeRegistries.ENTITY_TYPES.getKey(cc.owner.m_6095_()).compareTo(CCRequiem.PLAYER_SHELL_ID) != 0) {
+        if (!ChestCavity.config.REQUIEM_INTEGRATION || ForgeRegistries.ENTITY_TYPES.getKey(cc.owner.getType()).compareTo(CCRequiem.PLAYER_SHELL_ID) != 0) {
             try {
-                cc.inventory.m_19181_(cc);
+                cc.inventory.removeListener(cc);
             } catch (NullPointerException var4) {
             }
 
-            for(int i = 0; i < cc.inventory.m_6643_(); ++i) {
-                ItemStack itemStack = cc.inventory.m_8020_(i);
-                if (itemStack != null && itemStack != ItemStack.f_41583_) {
+            for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
+                ItemStack itemStack = cc.inventory.getItem(i);
+                if (itemStack != null && itemStack != ItemStack.EMPTY) {
                     int compatibility = getCompatibilityLevel(cc, itemStack);
                     if (compatibility < 2) {
-                        cc.owner.m_19983_(cc.inventory.m_8016_(i));
+                        cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(i));
                     }
                 }
             }
 
-            cc.inventory.m_19164_(cc);
+            cc.inventory.addListener(cc);
             evaluateChestCavity(cc);
         }
 
@@ -389,14 +389,14 @@ public class ChestCavityUtil {
             cc.onHitListeners.clear();
             cc.getChestCavityType().loadBaseOrganScores(organScores);
 
-            for(int i = 0; i < cc.inventory.m_6643_(); ++i) {
-                ItemStack itemStack = cc.inventory.m_8020_(i);
-                if (itemStack != null && itemStack != ItemStack.f_41583_) {
-                    Item slotitem = itemStack.m_41720_();
+            for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
+                ItemStack itemStack = cc.inventory.getItem(i);
+                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                    Item slotitem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
-                            addOrganScore(key, value * Math.min((float)itemStack.m_41613_() / (float)itemStack.m_41741_(), 1.0F), organScores);
+                            addOrganScore(key, value * Math.min((float)itemStack.getCount() / (float)itemStack.getMaxStackSize(), 1.0F), organScores);
                         });
                         if (slotitem instanceof OrganOnHitListener) {
                             cc.onHitListeners.add(new OrganOnHitContext(itemStack, (OrganOnHitListener)slotitem));
@@ -417,17 +417,17 @@ public class ChestCavityUtil {
     }
 
     public static void forcefullyAddStack(ChestCavityInstance cc, ItemStack stack, int slot) {
-        if (!cc.inventory.m_19183_(stack)) {
-            if (cc.owner.m_20193_().m_46469_().m_46207_(GameRules.f_46133_) && cc.owner instanceof Player) {
-                if (!((Player)cc.owner).m_150109_().m_36054_(stack)) {
-                    cc.owner.m_19983_(cc.inventory.m_8016_(slot));
+        if (!cc.inventory.canAddItem(stack)) {
+            if (cc.owner.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && cc.owner instanceof Player) {
+                if (!((Player)cc.owner).getInventory().add(stack)) {
+                    cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(slot));
                 }
             } else {
-                cc.owner.m_19983_(cc.inventory.m_8016_(slot));
+                cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(slot));
             }
         }
 
-        cc.inventory.m_19173_(stack);
+        cc.inventory.addItem(stack);
     }
 
     public static void generateChestCavityIfOpened(ChestCavityInstance cc) {
@@ -439,16 +439,16 @@ public class ChestCavityUtil {
     }
 
     public static int getCompatibilityLevel(ChestCavityInstance cc, ItemStack itemStack) {
-        if (itemStack != null && itemStack != ItemStack.f_41583_) {
-            if (EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
+        if (itemStack != null && itemStack != ItemStack.EMPTY) {
+            if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
                 return 0;
             } else {
-                int oNegative = EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack);
+                int oNegative = EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack);
                 int ownership = 0;
-                CompoundTag tag = itemStack.m_41783_();
-                if (tag != null && tag.m_128441_(ChestCavity.COMPATIBILITY_TAG.toString())) {
+                CompoundTag tag = itemStack.getTag();
+                if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
                     tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-                    if (tag.m_128342_("owner").equals(cc.compatibility_id)) {
+                    if (tag.getUUID("owner").equals(cc.compatibility_id)) {
                         ownership = 2;
                     }
                 } else {
@@ -476,7 +476,7 @@ public class ChestCavityUtil {
         }
 
         if (cc.getOrganScore(CCOrganScores.STRENGTH) <= 0.0F) {
-            forcefullyAddStack(cc, new ItemStack(Items.f_42583_, 16), 0);
+            forcefullyAddStack(cc, new ItemStack(Items.ROTTEN_FLESH, 16), 0);
         }
 
     }
@@ -504,12 +504,12 @@ public class ChestCavityUtil {
             if (organData != null) {
                 return organData;
             } else {
-                Item var4 = itemStack.m_41720_();
+                Item var4 = itemStack.getItem();
                 if (var4 instanceof CCOrganItem) {
                     CCOrganItem oItem = (CCOrganItem)var4;
                     return oItem.getOrganData(itemStack);
-                } else if (OrganManager.hasEntry(itemStack.m_41720_())) {
-                    return OrganManager.getEntry(itemStack.m_41720_());
+                } else if (OrganManager.hasEntry(itemStack.getItem())) {
+                    return OrganManager.getEntry(itemStack.getItem());
                 } else {
                     Iterator<TagKey<Item>> var6 = CCTagOrgans.tagMap.keySet().iterator();
 
@@ -540,10 +540,10 @@ public class ChestCavityUtil {
             if (!ChestCavity.config.KEEP_CHEST_CAVITY) {
                 Map<Integer, ItemStack> organsToKeep = new HashMap();
 
-                for(int i = 0; i < ccinstance.inventory.m_6643_(); ++i) {
-                    ItemStack organ = ccinstance.inventory.m_8020_(i);
-                    if (EnchantmentHelper.m_44843_((Enchantment)CCEnchantments.O_NEGATIVE.get(), organ) >= 2) {
-                        organsToKeep.put(i, organ.m_41777_());
+                for(int i = 0; i < ccinstance.inventory.getContainerSize(); ++i) {
+                    ItemStack organ = ccinstance.inventory.getItem(i);
+                    if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.O_NEGATIVE.get(), organ) >= 2) {
+                        organsToKeep.put(i, organ.copy());
                     }
                 }
 
@@ -553,7 +553,7 @@ public class ChestCavityUtil {
 
                 while(var6.hasNext()) {
                     Map.Entry<Integer, ItemStack> entry = (Map.Entry)var6.next();
-                    ccinstance.inventory.m_6836_((Integer)entry.getKey(), (ItemStack)entry.getValue());
+                    ccinstance.inventory.setItem((Integer)entry.getKey(), (ItemStack)entry.getValue());
                 }
             }
 
@@ -590,13 +590,13 @@ public class ChestCavityUtil {
     public static ChestCavityInventory openChestCavity(ChestCavityInstance cc) {
         if (!cc.opened) {
             try {
-                cc.inventory.m_19181_(cc);
+                cc.inventory.removeListener(cc);
             } catch (NullPointerException var2) {
             }
 
             cc.opened = true;
             generateChestCavityIfOpened(cc);
-            cc.inventory.m_19164_(cc);
+            cc.inventory.addListener(cc);
         }
 
         return cc.inventory;
@@ -615,27 +615,27 @@ public class ChestCavityUtil {
 
     public static void outputOrganScoresString(Consumer<String> output, ChestCavityInstance cc) {
         try {
-            Component name = cc.owner.m_5446_();
+            Component name = cc.owner.getDisplayName();
             output.accept("[Chest Cavity] Displaying " + name.getString() + "'s organ scores:");
         } catch (Exception var3) {
             output.accept("[Chest Cavity] Displaying organ scores:");
         }
 
         cc.getOrganScores().forEach((key, value) -> {
-            String var10001 = key.m_135815_();
+            String var10001 = key.getPath();
             output.accept(var10001 + ": " + value + " ");
         });
     }
 
     public static void splashHydrophobicWithWater(ThrownPotion splash) {
-        AABB box = splash.m_20191_().m_82377_(4.0, 2.0, 4.0);
-        List<LivingEntity> list = splash.level().m_6443_(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
+        AABB box = splash.getBoundingBox().expandTowards(4.0, 2.0, 4.0);
+        List<LivingEntity> list = splash.level().getEntitiesOfClass(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
         if (!list.isEmpty()) {
             Iterator var3 = list.iterator();
 
             while(var3.hasNext()) {
                 LivingEntity livingEntity = (LivingEntity)var3.next();
-                double d = splash.m_20280_(livingEntity);
+                double d = splash.distanceToSqr(livingEntity);
                 if (d < 16.0) {
                     Optional<ChestCavityEntity> optional = ChestCavityEntity.of(livingEntity);
                     if (optional.isPresent()) {
@@ -643,7 +643,7 @@ public class ChestCavityUtil {
                         float allergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
                         float phobia = cc.getOrganScore(CCOrganScores.HYDROPHOBIA);
                         if (allergy > 0.0F) {
-                            livingEntity.m_6469_(livingEntity.m_269291_().m_269104_(splash, splash.m_19749_()), allergy / 26.0F);
+                            livingEntity.hurt(livingEntity.damageSources().indirectMagic(splash, splash.getOwner()), allergy / 26.0F);
                         }
 
                         if (phobia > 0.0F) {

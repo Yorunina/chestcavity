@@ -22,7 +22,7 @@ public class FurnacePower extends CCStatusEffect {
     }
 
     public void m_6742_(LivingEntity entity, int amplifier) {
-        if (entity instanceof Player && !entity.level().f_46443_) {
+        if (entity instanceof Player && !entity.level().isClientSide) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
             if (optional.isPresent()) {
                 ChestCavityEntity cce = (ChestCavityEntity)optional.get();
@@ -30,7 +30,7 @@ public class FurnacePower extends CCStatusEffect {
                 ++cc.furnaceProgress;
                 if (cc.furnaceProgress >= 200) {
                     cc.furnaceProgress = 0;
-                    FoodData hungerManager = ((Player)entity).m_36324_();
+                    FoodData hungerManager = ((Player)entity).getFoodData();
                     ItemStack furnaceFuel = new ItemStack((ItemLike)CCItems.FURNACE_POWER.get());
 
                     for(int i = 0; i <= amplifier; ++i) {

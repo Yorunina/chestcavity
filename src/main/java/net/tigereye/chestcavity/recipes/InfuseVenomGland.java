@@ -22,18 +22,17 @@ public class InfuseVenomGland extends CustomRecipe {
         boolean foundVenomGland = false;
         boolean foundPotion = false;
 
-        for(int i = 0; i < craftingInventory.m_39347_(); ++i) {
-            for(int j = 0; j < craftingInventory.m_39346_(); ++j) {
-                ItemStack itemStack = craftingInventory.m_8020_(i + j * craftingInventory.m_39347_());
-                if (itemStack.m_41720_() == CCItems.VENOM_GLAND.get()) {
+        for(int i = 0; i < craftingInventory.getWidth(); ++i) {
+            for(int j = 0; j < craftingInventory.getHeight(); ++j) {
+                ItemStack itemStack = craftingInventory.getItem(i + j * craftingInventory.getWidth());
+                if (itemStack.getItem() == CCItems.VENOM_GLAND.get()) {
                     if (foundVenomGland) {
                         return false;
                     }
 
                     foundVenomGland = true;
-                } else if (itemStack.m_41720_() == Items.f_42589_ || itemStack.m_41720_() == Items.f_42736_ || itemStack.m_41720_() == Items.f_42739_) {
+                } else if (itemStack.getItem() == Items.POTION || itemStack.getItem() == Items.SPLASH_POTION || itemStack.getItem() == Items.LINGERING_POTION) {
                     if (foundPotion) {
-                        return false;
                     }
 
                     foundPotion = true;
@@ -49,18 +48,18 @@ public class InfuseVenomGland extends CustomRecipe {
         ItemStack potion = null;
         ItemStack output = null;
 
-        for(int i = 0; i < craftingInventory.m_39347_(); ++i) {
-            for(int j = 0; j < craftingInventory.m_39346_(); ++j) {
-                ItemStack itemStack = craftingInventory.m_8020_(i + j * craftingInventory.m_39347_());
-                if (itemStack.m_41720_() == CCItems.VENOM_GLAND.get()) {
+        for(int i = 0; i < craftingInventory.getWidth(); ++i) {
+            for(int j = 0; j < craftingInventory.getHeight(); ++j) {
+                ItemStack itemStack = craftingInventory.getItem(i + j * craftingInventory.getWidth());
+                if (itemStack.getItem() == CCItems.VENOM_GLAND.get()) {
                     if (venomGland != null) {
-                        return ItemStack.f_41583_;
+                        return ItemStack.EMPTY;
                     }
 
                     venomGland = itemStack;
-                } else if (itemStack.m_41720_() == Items.f_42589_ || itemStack.m_41720_() == Items.f_42736_ || itemStack.m_41720_() == Items.f_42739_) {
+                } else if (itemStack.getItem() == Items.POTION || itemStack.getItem() == Items.SPLASH_POTION || itemStack.getItem() == Items.LINGERING_POTION) {
                     if (potion != null) {
-                        return ItemStack.f_41583_;
+                        return ItemStack.EMPTY;
                     }
 
                     potion = itemStack;
@@ -69,19 +68,20 @@ public class InfuseVenomGland extends CustomRecipe {
         }
 
         if (venomGland != null && potion != null) {
-            output = venomGland.m_41777_();
+            output = venomGland.copy();
             OrganUtil.setStatusEffects(output, potion);
             return output;
         } else {
-            return ItemStack.f_41583_;
+            return ItemStack.EMPTY;
         }
     }
 
-    public boolean m_8004_(int width, int height) {
+
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 2;
     }
 
-    public RecipeSerializer<?> m_7707_() {
+    public RecipeSerializer<?> getSerializer() {
         return (RecipeSerializer)CCRecipes.INFUSE_VENOM_GLAND.get();
     }
 }
