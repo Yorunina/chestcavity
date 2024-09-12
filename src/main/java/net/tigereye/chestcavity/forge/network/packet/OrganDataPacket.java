@@ -57,7 +57,7 @@ public class OrganDataPacket {
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
         AtomicBoolean success = new AtomicBoolean(false);
-        ((NetworkEvent.Context)contextSupplier.get()).enqueueWork(() -> {
+        contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
                 return () -> {
                     OrganManager.GeneratedOrganData.clear();
@@ -67,7 +67,7 @@ public class OrganDataPacket {
                 };
             });
         });
-        ((NetworkEvent.Context)contextSupplier.get()).setPacketHandled(true);
+        contextSupplier.get().setPacketHandled(true);
         return success.get();
     }
 }

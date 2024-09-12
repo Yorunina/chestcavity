@@ -53,7 +53,7 @@ public class ChestCavityUpdatePacket {
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         AtomicBoolean success = new AtomicBoolean(false);
-        ((NetworkEvent.Context)ctx.get()).enqueueWork(() -> {
+        ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
                 return () -> {
                     Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.getInstance().player);
@@ -67,7 +67,7 @@ public class ChestCavityUpdatePacket {
                 };
             });
         });
-        ((NetworkEvent.Context)ctx.get()).setPacketHandled(true);
+        ctx.get().setPacketHandled(true);
         return success.get();
     }
 }

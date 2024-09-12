@@ -21,14 +21,14 @@ public class ReceivedChestCavityUpdatePacket {
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
         AtomicBoolean success = new AtomicBoolean(false);
-        ((NetworkEvent.Context)contextSupplier.get()).enqueueWork(() -> {
-            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(((NetworkEvent.Context)contextSupplier.get()).getSender());
+        contextSupplier.get().enqueueWork(() -> {
+            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(contextSupplier.get().getSender());
             optional.ifPresent((chestCavityEntity) -> {
                 NetworkUtil.ReadChestCavityReceivedUpdatePacket(chestCavityEntity.getChestCavityInstance());
                 success.set(true);
             });
         });
-        ((NetworkEvent.Context)contextSupplier.get()).setPacketHandled(true);
+        contextSupplier.get().setPacketHandled(true);
         return success.get();
     }
 }

@@ -3,7 +3,6 @@ package net.tigereye.chestcavity.ui;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
@@ -23,7 +22,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     }
 
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityInventory inventory) {
-        super((MenuType)ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
+        super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
         this.size = inventory.getContainerSize();
         this.inventory = inventory;
         this.rows = (this.size - 1) / 9 + 1;
@@ -52,7 +51,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
 
     public ItemStack quickMoveStack(Player player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
-        Slot slot = (Slot)this.slots.get(invSlot);
+        Slot slot = this.slots.get(invSlot);
         if (slot != null && slot.hasItem()) {
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();

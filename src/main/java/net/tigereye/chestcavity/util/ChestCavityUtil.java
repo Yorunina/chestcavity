@@ -36,6 +36,8 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
+import net.tigereye.chestcavity.compat.kubejs.CCEvents;
+import net.tigereye.chestcavity.compat.kubejs.EvaluateChestCavityJS;
 import net.tigereye.chestcavity.compat.requiem.CCRequiem;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -380,6 +382,10 @@ public class ChestCavityUtil {
 
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
+
+        var e = new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level());
+        CCEvents.EVAL_CC.post(e);
+
         if (!cc.opened) {
             organScores.clear();
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {
@@ -464,15 +470,15 @@ public class ChestCavityUtil {
 
     public static void insertWelfareOrgans(ChestCavityInstance cc) {
         if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0.0F) {
-            forcefullyAddStack(cc, new ItemStack((ItemLike)CCItems.ROTTEN_HEART.get()), 4);
+            forcefullyAddStack(cc, new ItemStack(CCItems.ROTTEN_HEART.get()), 4);
         }
 
         if (cc.getOrganScore(CCOrganScores.BREATH_RECOVERY) <= 0.0F) {
-            forcefullyAddStack(cc, new ItemStack((ItemLike)CCItems.ROTTEN_LUNG.get()), 3);
+            forcefullyAddStack(cc, new ItemStack(CCItems.ROTTEN_LUNG.get()), 3);
         }
 
         if (cc.getOrganScore(CCOrganScores.NERVES) <= 0.0F) {
-            forcefullyAddStack(cc, new ItemStack((ItemLike)CCItems.ROTTEN_SPINE.get()), 13);
+            forcefullyAddStack(cc, new ItemStack(CCItems.ROTTEN_SPINE.get()), 13);
         }
 
         if (cc.getOrganScore(CCOrganScores.STRENGTH) <= 0.0F) {
@@ -486,7 +492,7 @@ public class ChestCavityUtil {
         if (optional.isEmpty()) {
             return false;
         } else {
-            ChestCavityInstance cc = ((ChestCavityEntity)optional.get()).getChestCavityInstance();
+            ChestCavityInstance cc = optional.get().getChestCavityInstance();
             return cc.getOrganScore(CCOrganScores.HYDROALLERGENIC) > 0.0F || cc.getOrganScore(CCOrganScores.HYDROPHOBIA) > 0.0F;
         }
     }
@@ -511,14 +517,13 @@ public class ChestCavityUtil {
                 } else if (OrganManager.hasEntry(itemStack.getItem())) {
                     return OrganManager.getEntry(itemStack.getItem());
                 } else {
-                    Iterator<TagKey<Item>> var6 = CCTagOrgans.tagMap.keySet().iterator();
 
-                    while(var6.hasNext()) {
-                        TagKey<Item> itemTag = (TagKey)var6.next();
+                    for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
+                        TagKey<Item> itemTag = (TagKey) itemTagKey;
                         if (itemStack.is(itemTag)) {
                             organData = new OrganData();
                             organData.pseudoOrgan = true;
-                            organData.organScores = (Map)CCTagOrgans.tagMap.get(itemTag);
+                            organData.organScores = (Map) CCTagOrgans.tagMap.get(itemTag);
                             return organData;
                         }
                     }
@@ -549,11 +554,10 @@ public class ChestCavityUtil {
 
                 ccinstance.compatibility_id = UUID.randomUUID();
                 generateChestCavityIfOpened(ccinstance);
-                Iterator var6 = organsToKeep.entrySet().iterator();
 
-                while(var6.hasNext()) {
-                    Map.Entry<Integer, ItemStack> entry = (Map.Entry)var6.next();
-                    ccinstance.inventory.setItem((Integer)entry.getKey(), (ItemStack)entry.getValue());
+                for (Map.Entry<Integer, ItemStack> integerItemStackEntry : organsToKeep.entrySet()) {
+                    Map.Entry<Integer, ItemStack> entry = (Map.Entry) integerItemStackEntry;
+                    ccinstance.inventory.setItem((Integer) entry.getKey(), (ItemStack) entry.getValue());
                 }
             }
 
