@@ -24,7 +24,7 @@ public class OrganDataPacket {
 
     public static OrganDataPacket decode(FriendlyByteBuf buf) {
         int organCount = buf.readInt();
-        Map<ResourceLocation, OrganData> organMap = new HashMap();
+        Map<ResourceLocation, OrganData> organMap = new HashMap<>();
 
         for(int i = 0; i < organCount; ++i) {
             ResourceLocation organID = buf.readResourceLocation();

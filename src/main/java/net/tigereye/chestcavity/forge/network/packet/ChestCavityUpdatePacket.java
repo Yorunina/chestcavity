@@ -31,7 +31,7 @@ public class ChestCavityUpdatePacket {
     }
 
     public static ChestCavityUpdatePacket decode(FriendlyByteBuf buf) {
-        Map<ResourceLocation, Float> organScores = new HashMap();
+        Map<ResourceLocation, Float> organScores = new HashMap<>();
         boolean open = buf.readBoolean();
         int entries = buf.readInt();
 

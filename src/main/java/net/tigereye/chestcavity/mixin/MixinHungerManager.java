@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({FoodData.class})
 public abstract class MixinHungerManager {
         @Shadow
-        private int f_38699_;
+        private int foodLevel;
         @Shadow
-        private int f_38696_;
+        private int lastFoodLevel;
         @Shadow
-        private float f_38697_;
+        private float saturationLevel;
         @Shadow
-        private float f_38698_;
+        private float exhaustionLevel;
         @Unique
         private ChestCavityEntity CC_player = null;
 
@@ -38,7 +38,7 @@ public abstract class MixinHungerManager {
         }
 
         @Shadow
-        public abstract void m_38707_(int var1, float var2);
+        public abstract void eat(int var1, float var2);
 
         @Inject(
                 at = {@At("HEAD")},
@@ -51,7 +51,7 @@ public abstract class MixinHungerManager {
                         });
                 }
 
-                this.f_38699_ = ChestCavityUtil.applySpleenMetabolism(this.CC_player.getChestCavityInstance(), this.f_38699_);
+                this.foodLevel = ChestCavityUtil.applySpleenMetabolism(this.CC_player.getChestCavityInstance(), this.foodLevel);
         }
 
         @Redirect(
@@ -70,7 +70,7 @@ public abstract class MixinHungerManager {
                                 float saturationGain = ChestCavityUtil.applyNutrition(this.CC_player.getChestCavityInstance(), efs.nutrition, item.getFoodProperties().getSaturationModifier()) * (float)item.getFoodProperties().getNutrition() * 2.0F;
                                 int hungerGain = ChestCavityUtil.applyDigestion(this.CC_player.getChestCavityInstance(), efs.digestion, item.getFoodProperties().getNutrition());
                                 float newSaturation = saturationGain / (float)(hungerGain * 2);
-                                this.m_38707_(hungerGain, newSaturation);
+                                this.eat(hungerGain, newSaturation);
                         }
                 }
 
@@ -84,8 +84,8 @@ public abstract class MixinHungerManager {
         )
         public float chestCavityAddExhaustionMixin(float exhaustion) {
                 if (this.CC_player != null) {
-                        if (this.f_38698_ != this.f_38698_) {
-                                this.f_38698_ = 0.0F;
+                        if (this.exhaustionLevel != this.exhaustionLevel) {
+                                this.exhaustionLevel = 0.0F;
                         }
 
                         float enduranceDif = this.CC_player.getChestCavityInstance().getOrganScore(CCOrganScores.ENDURANCE) - this.CC_player.getChestCavityInstance().getChestCavityType().getDefaultOrganScore(CCOrganScores.ENDURANCE);

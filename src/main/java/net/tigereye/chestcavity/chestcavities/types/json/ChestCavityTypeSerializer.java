@@ -105,14 +105,11 @@ public class ChestCavityTypeSerializer {
     }
 
     private Map<Ingredient, Map<ResourceLocation, Float>> readExceptionalOrgansFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrgans = new HashMap();
+        Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrgans = new HashMap<>();
         int i = 0;
-        Iterator<JsonElement> var5 = cctJson.exceptionalOrgans.iterator();
 
-        while(var5.hasNext()) {
-            JsonElement entry = (JsonElement)var5.next();
+        for (JsonElement entry : cctJson.exceptionalOrgans) {
             ++i;
-
             try {
                 JsonObject obj = entry.getAsJsonObject();
                 if (!obj.has("ingredient")) {
@@ -133,11 +130,8 @@ public class ChestCavityTypeSerializer {
 
     private Map<ResourceLocation, Float> readOrganScoresFromJson(ResourceLocation id, JsonArray json) {
         Map<ResourceLocation, Float> organScores = new HashMap();
-        Iterator<JsonElement> var4 = json.iterator();
 
-        while(var4.hasNext()) {
-            JsonElement entry = (JsonElement)var4.next();
-
+        for (JsonElement entry : json) {
             try {
                 JsonObject obj = entry.getAsJsonObject();
                 if (!obj.has("id")) {
@@ -158,11 +152,8 @@ public class ChestCavityTypeSerializer {
 
     private List<Integer> readForbiddenSlotsFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
         ArrayList<Integer> list = new ArrayList();
-        Iterator<JsonElement> var4 = cctJson.forbiddenSlots.iterator();
 
-        while(var4.hasNext()) {
-            JsonElement entry = (JsonElement)var4.next();
-
+        for (JsonElement entry : cctJson.forbiddenSlots) {
             try {
                 int slot = entry.getAsInt();
                 list.add(slot);

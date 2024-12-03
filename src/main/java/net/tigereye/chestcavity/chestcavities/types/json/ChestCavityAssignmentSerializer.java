@@ -18,13 +18,11 @@ public class ChestCavityAssignmentSerializer {
         } else if (ccaJson.entities == null) {
             throw new JsonSyntaxException("Chest cavity assignment " + id + " must have a list of entities");
         } else {
-            Map<ResourceLocation, ResourceLocation> assignments = new HashMap();
+            Map<ResourceLocation, ResourceLocation> assignments = new HashMap<>();
             ResourceLocation chestcavitytype = new ResourceLocation(ccaJson.chestcavity);
             int i = 0;
-            Iterator<JsonElement> var6 = ccaJson.entities.iterator();
 
-            while(var6.hasNext()) {
-                JsonElement entry = (JsonElement)var6.next();
+            for (JsonElement entry : ccaJson.entities) {
                 ++i;
 
                 try {

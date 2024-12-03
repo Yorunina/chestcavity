@@ -324,7 +324,7 @@ public class ChestCavityUtil {
         try {
             for(int i = 0; i < chestCavityType.getDefaultChestCavity().getContainerSize(); ++i) {
                 ItemStack itemStack = chestCavityType.getDefaultChestCavity().getItem(i);
-                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                if (itemStack != ItemStack.EMPTY) {
                     Item slotitem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, chestCavityType);
                     if (data != null) {
@@ -395,9 +395,9 @@ public class ChestCavityUtil {
             cc.onHitListeners.clear();
             cc.getChestCavityType().loadBaseOrganScores(organScores);
 
-            for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
+            for(int i = 0; i < cc.inventory.getContainerSize(); i++) {
                 ItemStack itemStack = cc.inventory.getItem(i);
-                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                if (itemStack != ItemStack.EMPTY) {
                     Item slotitem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
                     if (data != null) {
@@ -595,8 +595,7 @@ public class ChestCavityUtil {
         if (!cc.opened) {
             try {
                 cc.inventory.removeListener(cc);
-            } catch (NullPointerException var2) {
-            }
+            } catch (NullPointerException var2) {}
 
             cc.opened = true;
             generateChestCavityIfOpened(cc);

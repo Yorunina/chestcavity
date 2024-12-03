@@ -14,13 +14,13 @@ import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListen
 public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousResourceReloadListener {
     private static final String RESOURCE_LOCATION = "entity_assignment";
     private final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
-    public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap();
+    public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap<>();
 
     public GeneratedChestCavityAssignmentManager() {
     }
 
     public ResourceLocation getFabricId() {
-        return new ResourceLocation("chestcavity", "entity_assignment");
+        return new ResourceLocation("chestcavity", RESOURCE_LOCATION);
     }
 
     public void onResourceManagerReload(ResourceManager manager) {
@@ -36,20 +36,16 @@ public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousR
                     Reader reader = new InputStreamReader(stream);
                     GeneratedChestCavityAssignments.putAll(this.SERIALIZER.read(id, (ChestCavityAssignmentJsonFormat)(new Gson()).fromJson(reader, ChestCavityAssignmentJsonFormat.class)));
                 } catch (Throwable var7) {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        } catch (Throwable var6) {
-                            var7.addSuppressed(var6);
-                        }
+                    try {
+                        stream.close();
+                    } catch (Throwable var6) {
+                        var7.addSuppressed(var6);
                     }
 
                     throw var7;
                 }
 
-                if (stream != null) {
-                    stream.close();
-                }
+                stream.close();
             } catch (Exception var8) {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
             }

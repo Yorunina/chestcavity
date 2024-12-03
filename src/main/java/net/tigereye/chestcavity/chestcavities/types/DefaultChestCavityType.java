@@ -26,10 +26,10 @@ import net.tigereye.chestcavity.util.ChestCavityUtil;
 public class DefaultChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> defaultOrganScores = null;
     private ChestCavityInventory defaultChestCavity = new ChestCavityInventory();
-    private Map<ResourceLocation, Float> baseOrganScores = new HashMap();
-    private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = new HashMap();
-    private List<ItemStack> droppableOrgans = new LinkedList();
-    private List<Integer> forbiddenSlots = new ArrayList();
+    private Map<ResourceLocation, Float> baseOrganScores = new HashMap<>();
+    private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = new HashMap<>();
+    private List<ItemStack> droppableOrgans = new LinkedList<>();
+    private List<Integer> forbiddenSlots = new ArrayList<>();
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
 
@@ -46,7 +46,7 @@ public class DefaultChestCavityType implements ChestCavityType {
 
     public Map<ResourceLocation, Float> getDefaultOrganScores() {
         if (this.defaultOrganScores == null) {
-            this.defaultOrganScores = new HashMap();
+            this.defaultOrganScores = new HashMap<>();
             if (!ChestCavityUtil.determineDefaultOrganScores(this)) {
                 this.defaultOrganScores = null;
             }

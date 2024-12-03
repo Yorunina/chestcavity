@@ -30,10 +30,10 @@ public class ChestCavityInstance implements ContainerListener {
     public UUID compatibility_id;
     public boolean opened = false;
     public ChestCavityInventory inventory = new ChestCavityInventory();
-    public Map<ResourceLocation, Float> oldOrganScores = new HashMap();
-    protected Map<ResourceLocation, Float> organScores = new HashMap();
-    public List<OrganOnHitContext> onHitListeners = new ArrayList();
-    public LinkedList<Consumer<LivingEntity>> projectileQueue = new LinkedList();
+    public Map<ResourceLocation, Float> oldOrganScores = new HashMap<>();
+    protected Map<ResourceLocation, Float> organScores = new HashMap<>();
+    public List<OrganOnHitContext> onHitListeners = new ArrayList<>();
+    public LinkedList<Consumer<LivingEntity>> projectileQueue = new LinkedList<>();
     public int heartBleedTimer = 0;
     public int bloodPoisonTimer = 0;
     public int liverTimer = 0;
@@ -161,7 +161,7 @@ public class ChestCavityInstance implements ContainerListener {
 
         try {
             this.inventory.removeListener(this);
-        } catch (NullPointerException var3) {
+        } catch (NullPointerException ignored) {
         }
 
         for(int i = 0; i < this.inventory.getContainerSize(); ++i) {

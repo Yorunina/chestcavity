@@ -30,12 +30,9 @@ public class OrganSerializer {
     }
 
     private Map<ResourceLocation, Float> readOrganScoresFromJson(ResourceLocation id, JsonArray json) {
-        Map<ResourceLocation, Float> organScores = new HashMap();
-        Iterator<JsonElement> var4 = json.iterator();
+        Map<ResourceLocation, Float> organScores = new HashMap<>();
 
-        while(var4.hasNext()) {
-            JsonElement entry = (JsonElement)var4.next();
-
+        for (JsonElement entry : json) {
             try {
                 JsonObject obj = entry.getAsJsonObject();
                 if (!obj.has("id")) {

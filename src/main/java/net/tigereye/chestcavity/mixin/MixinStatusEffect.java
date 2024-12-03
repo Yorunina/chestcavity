@@ -11,16 +11,16 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinStatusEffect implements CCStatusEffect {
     @Final
     @Shadow
-    private MobEffectCategory f_19447_;
+    private MobEffectCategory category;
 
     public MixinStatusEffect() {
     }
 
     public boolean CC_IsHarmful() {
-        return this.f_19447_ == MobEffectCategory.HARMFUL;
+        return this.category == MobEffectCategory.HARMFUL;
     }
 
     public boolean CC_IsBeneficial() {
-        return this.f_19447_ == MobEffectCategory.BENEFICIAL;
+        return this.category == MobEffectCategory.BENEFICIAL;
     }
 }

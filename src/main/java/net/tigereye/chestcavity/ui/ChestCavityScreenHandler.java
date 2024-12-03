@@ -74,6 +74,6 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     }
 
     public boolean stillValid(Player player) {
-        return this.inventory.m_6542_(player);
+        return this.inventory.stillValid(player);
     }
 }

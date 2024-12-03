@@ -35,7 +35,7 @@ public class ChestCavityInventory extends SimpleContainer {
             CompoundTag NbtCompound = tags.getCompound(j);
             int k = NbtCompound.getByte("Slot") & 255;
             boolean f = NbtCompound.getBoolean("Forbidden");
-            if (k >= 0 && k < this.getContainerSize()) {
+            if (k < this.getContainerSize()) {
                 this.setItem(k, ItemStack.of(NbtCompound));
             }
         }
@@ -50,7 +50,7 @@ public class ChestCavityInventory extends SimpleContainer {
             if (!itemStack.isEmpty()) {
                 CompoundTag NbtCompound = new CompoundTag();
                 NbtCompound.putByte("Slot", (byte)i);
-                itemStack.setTag(NbtCompound);
+                itemStack.save(NbtCompound);
                 list.add(NbtCompound);
             }
         }
@@ -58,7 +58,7 @@ public class ChestCavityInventory extends SimpleContainer {
         return list;
     }
 
-    public boolean m_6542_(Player player) {
+    public boolean stillValid(Player player) {
         if (this.instance == null) {
             return true;
         } else if (this.instance.owner.isDeadOrDying()) {

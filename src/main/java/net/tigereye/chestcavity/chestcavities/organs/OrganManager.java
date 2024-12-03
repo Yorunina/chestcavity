@@ -45,20 +45,16 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
                     Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat)(new Gson()).fromJson(reader, OrganJsonFormat.class));
                     GeneratedOrganData.put((ResourceLocation)organDataPair.getA(), (OrganData)organDataPair.getB());
                 } catch (Throwable var7) {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        } catch (Throwable var6) {
-                            var7.addSuppressed(var6);
-                        }
+                    try {
+                        stream.close();
+                    } catch (Throwable var6) {
+                        var7.addSuppressed(var6);
                     }
 
                     throw var7;
                 }
 
-                if (stream != null) {
-                    stream.close();
-                }
+                stream.close();
             } catch (Exception var8) {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
             }

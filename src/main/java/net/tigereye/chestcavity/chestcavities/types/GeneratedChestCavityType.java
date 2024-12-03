@@ -28,7 +28,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> baseOrganScores = null;
     private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = null;
     private List<ItemStack> droppableOrgans = null;
-    private List<Integer> forbiddenSlots = new ArrayList();
+    private List<Integer> forbiddenSlots = new ArrayList<>();
     private float dropRateMultiplier = 1.0F;
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
@@ -38,7 +38,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
 
     public Map<ResourceLocation, Float> getDefaultOrganScores() {
         if (this.defaultOrganScores == null) {
-            this.defaultOrganScores = new HashMap();
+            this.defaultOrganScores = new HashMap<>();
             if (!ChestCavityUtil.determineDefaultOrganScores(this)) {
                 this.defaultOrganScores = null;
             }
@@ -80,10 +80,8 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     public Map<ResourceLocation, Float> getExceptionalOrganScore(ItemStack itemStack) {
-        Iterator<Ingredient> var2 = this.getExceptionalOrganList().keySet().iterator();
 
-        while(var2.hasNext()) {
-            Ingredient ingredient = (Ingredient)var2.next();
+        for (Ingredient ingredient : this.getExceptionalOrganList().keySet()) {
             if (ingredient.test(itemStack)) {
                 return (Map)this.getExceptionalOrganList().get(ingredient);
             }
@@ -113,7 +111,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     private void deriveDroppableOrgans() {
-        this.droppableOrgans = new LinkedList();
+        this.droppableOrgans = new LinkedList<>();
 
         for(int i = 0; i < this.defaultChestCavity.getContainerSize(); ++i) {
             ItemStack stack = this.defaultChestCavity.getItem(i);
@@ -198,7 +196,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     public List<ItemStack> generateLootDrops(RandomSource random, int looting) {
-        List<ItemStack> loot = new ArrayList();
+        List<ItemStack> loot = new ArrayList<>();
         if (this.playerChestCavity) {
             return loot;
         } else if (this.bossChestCavity) {
@@ -214,13 +212,13 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     public void generateRareOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
-        LinkedList<ItemStack> organPile = new LinkedList(this.getDroppableOrgans());
+        LinkedList<ItemStack> organPile = new LinkedList<>(this.getDroppableOrgans());
         int rolls = 1 + random.nextInt(3) + random.nextInt(3);
         ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
     }
 
     public void generateGuaranteedOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
-        LinkedList<ItemStack> organPile = new LinkedList(this.getDroppableOrgans());
+        LinkedList<ItemStack> organPile = new LinkedList<>(this.getDroppableOrgans());
         int rolls = 3 + random.nextInt(2 + looting) + random.nextInt(2 + looting);
         ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
     }
@@ -231,7 +229,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
         int universalOrgans;
         for(universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
             ItemStack itemStack = chestCavity.getItem(universalOrgans);
-            if (itemStack != null && itemStack != ItemStack.EMPTY) {
+            if (itemStack != ItemStack.EMPTY) {
                 CompoundTag tag = new CompoundTag();
                 tag.putUUID("owner", instance.compatibility_id);
                 tag.putString("name", instance.owner.getDisplayName().getString());
@@ -251,7 +249,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
             for(; universalOrgans > 0; --universalOrgans) {
                 int i = random.nextInt(chestCavity.getContainerSize());
                 ItemStack itemStack = chestCavity.getItem(i);
-                if (itemStack != null && itemStack != ItemStack.EMPTY && OrganManager.isTrueOrgan(itemStack.getItem())) {
+                if (itemStack != ItemStack.EMPTY && OrganManager.isTrueOrgan(itemStack.getItem())) {
                     itemStack.removeTagKey(ChestCavity.COMPATIBILITY_TAG.toString());
                 }
             }

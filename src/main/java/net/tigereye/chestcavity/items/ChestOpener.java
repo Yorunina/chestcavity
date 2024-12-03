@@ -26,7 +26,7 @@ public class ChestOpener extends Item {
 		super(CCItems.CHEST_OPENER_SETTINGS);
 	}
 
-	public InteractionResultHolder<ItemStack> m_7203_(Level world, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		LivingEntity target = null;
 		if (target == null) {
 			target = player;

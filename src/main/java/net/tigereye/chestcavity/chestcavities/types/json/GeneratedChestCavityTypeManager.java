@@ -15,7 +15,7 @@ import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListen
 public class GeneratedChestCavityTypeManager implements SimpleSynchronousResourceReloadListener {
     private static final String RESOURCE_LOCATION = "types";
     private final ChestCavityTypeSerializer SERIALIZER = new ChestCavityTypeSerializer();
-    public static Map<ResourceLocation, GeneratedChestCavityType> GeneratedChestCavityTypes = new HashMap();
+    public static Map<ResourceLocation, GeneratedChestCavityType> GeneratedChestCavityTypes = new HashMap<>();
 
     public GeneratedChestCavityTypeManager() {
     }
@@ -39,7 +39,7 @@ public class GeneratedChestCavityTypeManager implements SimpleSynchronousResourc
                 } catch (Throwable var7) {
                     if (stream != null) {
                         try {
-                            stream.close();
+                           stream.close();
                         } catch (Throwable var6) {
                             var7.addSuppressed(var6);
                         }

@@ -88,7 +88,7 @@ public class ChestCavity {
 	static {
 		MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, "chestcavity");
 		CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> {
-			return new MenuType(ChestCavityScreenHandler::new, FeatureFlags.DEFAULT_FLAGS);
+			return new MenuType(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET);
 		});
 		CHEST_CAVITY_SCREEN_ID = new ResourceLocation("chestcavity", "chest_cavity_screen");
 		COMPATIBILITY_TAG = new ResourceLocation("chestcavity", "organ_compatibility");
