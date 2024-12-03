@@ -59,7 +59,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     @Unique
     private ChestCavityInstance chestCavityInstance;
 
-    @Shadow protected abstract int increaseAirSupply(int p_21307_);
+    @Shadow
+    protected abstract int decreaseAirSupply(int var1);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -87,7 +88,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
         if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
-            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
+            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.decreaseAirSupply(0)));
         }
 
     }

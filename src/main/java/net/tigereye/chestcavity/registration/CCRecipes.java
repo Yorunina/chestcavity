@@ -31,13 +31,13 @@ public class CCRecipes {
             return new SimpleCraftingRecipeSerializer(InfuseVenomGland::new);
         });
         SALVAGE_RECIPE_ID = new ResourceLocation("chestcavity", "crafting_salvage");
-        SALVAGE_RECIPE_TYPE = RECIPE_TYPES.register(SALVAGE_RECIPE_ID.toString(), () -> {
+        SALVAGE_RECIPE_TYPE = RECIPE_TYPES.register(SALVAGE_RECIPE_ID.getPath(), () -> {
             return new RecipeType<SalvageRecipe>() {
                 public String toString() {
                     return CCRecipes.SALVAGE_RECIPE_ID.toString();
                 }
             };
         });
-        SALVAGE_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register(SALVAGE_RECIPE_ID.toString(), SalvageRecipeSerializer::new);
+        SALVAGE_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register(SALVAGE_RECIPE_ID.getPath(), SalvageRecipeSerializer::new);
     }
 }
