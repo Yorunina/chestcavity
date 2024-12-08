@@ -27,7 +27,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
@@ -383,9 +382,6 @@ public class ChestCavityUtil {
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
 
-        var e = new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level());
-        CCEvents.EVAL_CC.post(e);
-
         if (!cc.opened) {
             organScores.clear();
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {
@@ -418,6 +414,9 @@ public class ChestCavityUtil {
                 }
             }
         }
+        // kubejs接入点：胸腔属性计算节点，取代激活属性计算
+        var e = new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level());
+        CCEvents.EVAL_CC.post(e);
 
         organUpdate(cc);
     }
@@ -441,7 +440,6 @@ public class ChestCavityUtil {
             cc.inventory.readTags(cc.getChestCavityType().getDefaultChestCavity().getTags());
             cc.getChestCavityType().setOrganCompatibility(cc);
         }
-
     }
 
     public static int getCompatibilityLevel(ChestCavityInstance cc, ItemStack itemStack) {
@@ -595,8 +593,7 @@ public class ChestCavityUtil {
         if (!cc.opened) {
             try {
                 cc.inventory.removeListener(cc);
-            } catch (NullPointerException var2) {}
-
+            } catch (NullPointerException ignored) {}
             cc.opened = true;
             generateChestCavityIfOpened(cc);
             cc.inventory.addListener(cc);
@@ -634,15 +631,13 @@ public class ChestCavityUtil {
         AABB box = splash.getBoundingBox().expandTowards(4.0, 2.0, 4.0);
         List<LivingEntity> list = splash.level().getEntitiesOfClass(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
         if (!list.isEmpty()) {
-            Iterator var3 = list.iterator();
 
-            while(var3.hasNext()) {
-                LivingEntity livingEntity = (LivingEntity)var3.next();
+            for (LivingEntity livingEntity : list) {
                 double d = splash.distanceToSqr(livingEntity);
                 if (d < 16.0) {
                     Optional<ChestCavityEntity> optional = ChestCavityEntity.of(livingEntity);
                     if (optional.isPresent()) {
-                        ChestCavityInstance cc = ((ChestCavityEntity)optional.get()).getChestCavityInstance();
+                        ChestCavityInstance cc = ((ChestCavityEntity) optional.get()).getChestCavityInstance();
                         float allergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
                         float phobia = cc.getOrganScore(CCOrganScores.HYDROPHOBIA);
                         if (allergy > 0.0F) {

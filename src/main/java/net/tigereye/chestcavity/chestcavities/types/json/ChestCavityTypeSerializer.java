@@ -4,12 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -47,19 +44,18 @@ public class ChestCavityTypeSerializer {
             cct.setDropRateMultiplier(cctJson.dropRateMultiplier);
             cct.setPlayerChestCavity(cctJson.playerChestCavity);
             cct.setBossChestCavity(cctJson.bossChestCavity);
+            cct.setInventorySize(cctJson.inventorySize);
             return cct;
         }
     }
 
     private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson, List<Integer> forbiddenSlots) {
-        ChestCavityInventory inv = new ChestCavityInventory();
+        int invSize = cctJson.inventorySize;
+        ChestCavityInventory inv = new ChestCavityInventory(invSize);
         int i = 0;
-        Iterator<JsonElement> var6 = cctJson.defaultChestCavity.iterator();
 
-        while(var6.hasNext()) {
-            JsonElement entry = (JsonElement)var6.next();
+        for (JsonElement entry : cctJson.defaultChestCavity) {
             ++i;
-
             try {
                 JsonObject obj = entry.getAsJsonObject();
                 if (!obj.has("item")) {
@@ -68,9 +64,9 @@ public class ChestCavityTypeSerializer {
                     ChestCavity.LOGGER.error("Missing position component in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                 } else {
                     ResourceLocation itemID = new ResourceLocation(obj.get("item").getAsString());
-                    Optional<Item> itemOptional = Optional.ofNullable((Item)ForgeRegistries.ITEMS.getValue(new ResourceLocation(obj.get("item").getAsString())));
+                    Optional<Item> itemOptional = Optional.ofNullable(ForgeRegistries.ITEMS.getValue(new ResourceLocation(obj.get("item").getAsString())));
                     if (itemOptional.isPresent()) {
-                        Item item = (Item)itemOptional.get();
+                        Item item = itemOptional.get();
                         ItemStack stack;
                         int pos;
                         if (obj.has("count")) {
@@ -89,7 +85,7 @@ public class ChestCavityTypeSerializer {
                             inv.setItem(pos, stack);
                         }
                     } else {
-                        ChestCavity.LOGGER.error("Unknown " + itemID.toString() + " in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
+                        ChestCavity.LOGGER.error("Unknown " + itemID + " in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                     }
                 }
             } catch (Exception var14) {
@@ -129,7 +125,7 @@ public class ChestCavityTypeSerializer {
     }
 
     private Map<ResourceLocation, Float> readOrganScoresFromJson(ResourceLocation id, JsonArray json) {
-        Map<ResourceLocation, Float> organScores = new HashMap();
+        Map<ResourceLocation, Float> organScores = new HashMap<>();
 
         for (JsonElement entry : json) {
             try {

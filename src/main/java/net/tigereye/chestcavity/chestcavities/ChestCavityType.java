@@ -37,4 +37,6 @@ public interface ChestCavityType {
     boolean isOpenable(ChestCavityInstance var1);
 
     void onDeath(ChestCavityInstance var1);
+
+    int getInventorySize();
 }

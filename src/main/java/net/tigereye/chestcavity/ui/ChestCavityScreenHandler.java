@@ -7,6 +7,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
@@ -14,6 +16,14 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final int rows;
 
     private static ChestCavityInventory getOrCreateChestCavityInventory(Inventory playerInventory) {
+        ChestCavityInstance playerCC = ((ChestCavityEntity)playerInventory.player).getChestCavityInstance();
+        ChestCavityInstance targetCCI = playerCC.ccBeingOpened;
+        if(targetCCI != null){
+            ChestCavity.LOGGER.info("Found CCI");
+            ChestCavity.LOGGER.error("cc 5inv: " + targetCCI.inventory.getContainerSize());
+            return targetCCI.inventory;
+        }
+        ChestCavity.LOGGER.info("Missed CCI");
         return new ChestCavityInventory();
     }
 
@@ -24,6 +34,8 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityInventory inventory) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
         this.size = inventory.getContainerSize();
+        ChestCavity.LOGGER.error("cc 3inv items: " + inventory.getItem(0));
+        ChestCavity.LOGGER.error("cc 3inv: " + size);
         this.inventory = inventory;
         this.rows = (this.size - 1) / 9 + 1;
         inventory.startOpen(playerInventory.player);

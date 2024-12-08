@@ -32,6 +32,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     private float dropRateMultiplier = 1.0F;
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
+    private int inventorySize = 27;
 
     public GeneratedChestCavityType() {
     }
@@ -256,7 +257,12 @@ public class GeneratedChestCavityType implements ChestCavityType {
         }
 
     }
-
+    public int getInventorySize() {
+        return this.inventorySize;
+    }
+    public void setInventorySize(int size) {
+        this.inventorySize = size;
+    }
     public float getHeartBleedCap() {
         return this.bossChestCavity ? 5.0F : Float.MAX_VALUE;
     }

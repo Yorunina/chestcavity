@@ -21,17 +21,14 @@ public class ChestCavityAssignmentSerializer {
             Map<ResourceLocation, ResourceLocation> assignments = new HashMap<>();
             ResourceLocation chestcavitytype = new ResourceLocation(ccaJson.chestcavity);
             int i = 0;
-
             for (JsonElement entry : ccaJson.entities) {
                 ++i;
-
                 try {
                     assignments.put(new ResourceLocation(entry.getAsString()), chestcavitytype);
                 } catch (Exception var9) {
                     ChestCavity.LOGGER.error("Error parsing entry no. " + i + " in " + id.toString() + "'s entity list");
                 }
             }
-
             return assignments;
         }
     }

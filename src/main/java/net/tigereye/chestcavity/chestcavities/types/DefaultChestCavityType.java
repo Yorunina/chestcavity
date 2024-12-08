@@ -32,7 +32,7 @@ public class DefaultChestCavityType implements ChestCavityType {
     private List<Integer> forbiddenSlots = new ArrayList<>();
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
-
+    private int inventorySize = 27;
     public DefaultChestCavityType() {
         this.prepareDefaultChestCavity();
     }
@@ -195,6 +195,13 @@ public class DefaultChestCavityType implements ChestCavityType {
         } else {
             return null;
         }
+    }
+
+    public int getInventorySize() {
+        return this.inventorySize;
+    }
+    public void setInventorySize(int size) {
+        this.inventorySize = size;
     }
 
     public List<ItemStack> generateLootDrops(RandomSource random, int looting) {

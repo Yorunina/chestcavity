@@ -19,19 +19,19 @@ public class CCCommands {
     public static int getScoresNoArgs(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = ((CommandSourceStack)context.getSource()).getEntity();
+            entity = context.getSource().getEntity();
         } catch (Exception var3) {
-            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getScores failed to get entity"));
+            context.getSource().sendFailure(Component.translatable("getScores failed to get entity"));
             return -1;
         }
 
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
         if (optional.isPresent()) {
             ChestCavityUtil.outputOrganScoresString((string) -> {
-                ((CommandSourceStack)context.getSource()).sendSuccess(() -> {
+                context.getSource().sendSuccess(() -> {
                     return Component.translatable(string);
                 }, false);
-            }, ((ChestCavityEntity)optional.get()).getChestCavityInstance());
+            }, optional.get().getChestCavityInstance());
             return 1;
         } else {
             return 0;
@@ -43,17 +43,17 @@ public class CCCommands {
         try {
             entity = EntityArgument.getEntity(context, "entity");
         } catch (Exception var3) {
-            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getScores failed to get entity"));
+            context.getSource().sendFailure(Component.translatable("getScores failed to get entity"));
             return -1;
         }
 
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
         if (optional.isPresent()) {
             ChestCavityUtil.outputOrganScoresString((string) -> {
-                ((CommandSourceStack)context.getSource()).sendSuccess(() -> {
+                context.getSource().sendSuccess(() -> {
                     return Component.translatable(string);
                 }, false);
-            }, ((ChestCavityEntity)optional.get()).getChestCavityInstance());
+            }, optional.get().getChestCavityInstance());
             return 1;
         } else {
             return 0;
@@ -63,15 +63,15 @@ public class CCCommands {
     public static int resetChestCavityNoArgs(CommandContext<CommandSourceStack> context) {
         Entity entity;
         try {
-            entity = ((CommandSourceStack)context.getSource()).getEntity();
+            entity = context.getSource().getEntity();
         } catch (Exception var3) {
-            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("resetChestCavity failed to get entity"));
+            context.getSource().sendFailure(Component.translatable("resetChestCavity failed to get entity"));
             return -1;
         }
 
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
         if (optional.isPresent()) {
-            ChestCavityUtil.generateChestCavityIfOpened(((ChestCavityEntity)optional.get()).getChestCavityInstance());
+            ChestCavityUtil.generateChestCavityIfOpened(optional.get().getChestCavityInstance());
             return 1;
         } else {
             return 0;
@@ -83,13 +83,13 @@ public class CCCommands {
         try {
             entity = EntityArgument.getEntity(context, "entity");
         } catch (Exception var3) {
-            ((CommandSourceStack)context.getSource()).sendFailure(Component.translatable("getChestCavity failed to get entity"));
+            context.getSource().sendFailure(Component.translatable("getChestCavity failed to get entity"));
             return -1;
         }
 
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
         if (optional.isPresent()) {
-            ChestCavityUtil.generateChestCavityIfOpened(((ChestCavityEntity)optional.get()).getChestCavityInstance());
+            ChestCavityUtil.generateChestCavityIfOpened(optional.get().getChestCavityInstance());
             return 1;
         } else {
             return 0;

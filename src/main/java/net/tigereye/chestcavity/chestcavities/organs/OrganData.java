@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class OrganData {
     public boolean pseudoOrgan;
-    public Map<ResourceLocation, Float> organScores = new HashMap();
+    public Map<ResourceLocation, Float> organScores = new HashMap<>();
 
     public OrganData() {
     }

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -27,10 +28,10 @@ public class ChestOpener extends Item {
 	}
 
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		LivingEntity target = null;
-		if (target == null) {
-			target = player;
-		}
+		LivingEntity target = player;
+//		if (!player.isShiftKeyDown()) {
+//			return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), false);
+//		}
 
 		return this.openChestCavity(player, target, false) ? InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), false) : InteractionResultHolder.fail(player.getItemInHand(hand));
 	}
@@ -42,8 +43,9 @@ public class ChestOpener extends Item {
 	public boolean openChestCavity(Player player, LivingEntity target, boolean shouldKnockback) {
 		Optional<ChestCavityEntity> optional = ChestCavityEntity.of(target);
 		if (optional.isPresent()) {
-			ChestCavityEntity chestCavityEntity = (ChestCavityEntity)optional.get();
+			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
+			ChestCavity.LOGGER.error("cc inv: " + cc.inventory.getContainerSize());
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
@@ -78,11 +80,10 @@ public class ChestOpener extends Item {
 
 					ChestCavityInventory inv = ChestCavityUtil.openChestCavity(cc);
 					((ChestCavityEntity)player).getChestCavityInstance().ccBeingOpened = cc;
-					player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> {
-						return new ChestCavityScreenHandler(i, playerInventory, inv);
-					}, Component.translatable(name + "Chest Cavity")));
+					ChestCavity.LOGGER.error("cc 2inv: " + inv.getContainerSize());
+					// 界面渲染
+					player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, inv), Component.translatable(name + "Chest Cavity")));
 				}
-
 				return true;
 			}
 		} else {

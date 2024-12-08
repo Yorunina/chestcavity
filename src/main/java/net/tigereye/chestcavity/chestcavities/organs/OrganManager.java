@@ -19,8 +19,6 @@ import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListen
 import org.jetbrains.annotations.NotNull;
 
 public class OrganManager implements SimpleSynchronousResourceReloadListener {
-    private static final String RESOURCE_LOCATION = "organs";
-    private static final String NBT_KEY = "organData";
     private final OrganSerializer SERIALIZER = new OrganSerializer();
     public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap();
 
@@ -44,21 +42,18 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
                     Reader reader = new InputStreamReader(stream);
                     Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat)(new Gson()).fromJson(reader, OrganJsonFormat.class));
                     GeneratedOrganData.put((ResourceLocation)organDataPair.getA(), (OrganData)organDataPair.getB());
-                } catch (Throwable var7) {
+                } catch (Throwable readError) {
                     try {
                         stream.close();
-                    } catch (Throwable var6) {
-                        var7.addSuppressed(var6);
+                    } catch (Throwable closeError) {
+                        readError.addSuppressed(closeError);
                     }
-
-                    throw var7;
+                    throw readError;
                 }
-
                 stream.close();
-            } catch (Exception var8) {
-                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
+            } catch (Exception openError) {
+                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
             }
-
         });
         ChestCavity.LOGGER.info("Loaded " + GeneratedOrganData.size() + " organs.");
     }
