@@ -2,12 +2,11 @@ package net.tigereye.chestcavity.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -43,13 +42,14 @@ import net.tigereye.chestcavity.util.OrganUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Mixin(
         value = {LivingEntity.class},
@@ -58,6 +58,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinLivingEntity extends Entity implements ChestCavityEntity {
     @Unique
     private ChestCavityInstance chestCavityInstance;
+
+    @Unique
+    private static final EntityDataAccessor<Integer> DATA_ADDITIONAL_SLOT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
 
     @Shadow
     protected abstract int decreaseAirSupply(int var1);
@@ -73,6 +76,15 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     public void chestCavityLivingEntityConstructorMixin(EntityType<? extends LivingEntity> entityType, Level world, CallbackInfo info) {
         this.chestCavityInstance = ChestCavityInstanceFactory.newChestCavityInstance(entityType, (LivingEntity)(Object)this);
     }
+
+    @Inject(
+            at = {@At("TAIL")},
+            method = {"defineSynchedData"}
+    )
+    public void chestCavityLivingEntitySyncDataMixin(CallbackInfo info) {
+        this.entityData.define(DATA_ADDITIONAL_SLOT, 0);
+    }
+
 
     @Inject(
             at = {@At("HEAD")},
@@ -204,6 +216,12 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.fromTag(tag, (LivingEntity)(Object)this);
+        if (tag.contains("ChestCavity")) {
+            CompoundTag chestCavityTag = tag.getCompound("ChestCavity");
+            if (chestCavityTag.contains("AdditionalSlot")) {
+                this.entityData.set(DATA_ADDITIONAL_SLOT, chestCavityTag.getInt("AdditionalSlot"));
+            }
+        }
     }
 
     @Inject(
@@ -212,6 +230,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void writeCustomDataToNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.toTag(tag);
+        if (tag.contains("ChestCavity")) {
+            CompoundTag chestCavityTag = tag.getCompound("ChestCavity");
+            chestCavityTag.putInt("AdditionalSlot", this.entityData.get(DATA_ADDITIONAL_SLOT));
+        }
     }
 
     @Mixin({net.minecraft.world.entity.Mob.class})

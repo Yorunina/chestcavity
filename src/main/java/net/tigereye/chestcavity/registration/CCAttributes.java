@@ -17,12 +17,12 @@ public class CCAttributes {
     public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);
     }
-    public static final RegistryObject<Attribute> ADDITIONAL_SLOT = ATTRIBUTES.register("additional_slot", () -> (new RangedAttribute("attribute.chestcavity.additional_slot", 0, -256, 256).setSyncable(true)));
+//    public static final RegistryObject<Attribute> ADDITIONAL_SLOT = ATTRIBUTES.register("additional_slot", () -> (new RangedAttribute("attribute.chestcavity.additional_slot", 0, -256, 256).setSyncable(true)));
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
-            e.add(entity, ADDITIONAL_SLOT.get());
+//            e.add(entity, ADDITIONAL_SLOT.get());
         });
     }
 }

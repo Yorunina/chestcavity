@@ -1,14 +1,11 @@
 package net.tigereye.chestcavity.chestcavities.instance;
 
-import java.util.*;
-import java.util.function.Consumer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
@@ -19,7 +16,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import static net.tigereye.chestcavity.registration.CCAttributes.ADDITIONAL_SLOT;
+import java.util.*;
+import java.util.function.Consumer;
+
 
 
 public class ChestCavityInstance implements ContainerListener {
@@ -102,12 +101,6 @@ public class ChestCavityInstance implements ContainerListener {
             } else {
                 this.compatibility_id = owner.getUUID();
             }
-            int slotSize = type.getInventorySize();
-            if (Objects.nonNull(owner.getAttribute(ADDITIONAL_SLOT.get()))) {
-                slotSize = slotSize + (int) owner.getAttributeValue(ADDITIONAL_SLOT.get());
-            }
-            ChestCavity.LOGGER.error("[Chest Cavity] Created ChestCavityManager with " + slotSize + " slots");
-            this.inventory = new ChestCavityInventory(slotSize);
             try {
                 this.inventory.removeListener(this);
             } catch (NullPointerException ignored) {
@@ -122,24 +115,6 @@ public class ChestCavityInstance implements ContainerListener {
             }
 
             this.inventory.addListener(this);
-        } else if (tag.contains("cardinal_components")) {
-            ccTag = tag.getCompound("cardinal_components");
-            if (ccTag.contains("chestcavity:inventorycomponent")) {
-                ccTag = tag.getCompound("chestcavity:inventorycomponent");
-                if (ccTag.contains("chestcavity")) {
-                    LOGGER.info("[Chest Cavity] Found " + owner.getName().getString() + "'s old [Cardinal Components] Chest Cavity.");
-                    this.opened = true;
-                    NbtList = ccTag.getList("Inventory", 10);
-
-                    try {
-                        this.inventory.removeListener(this);
-                    } catch (NullPointerException ignored) {
-                    }
-
-                    this.inventory.readTags(NbtList);
-                    this.inventory.addListener(this);
-                }
-            }
         }
 
         ChestCavityUtil.evaluateChestCavity(this);
