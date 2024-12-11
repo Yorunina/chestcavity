@@ -58,10 +58,8 @@ import java.util.Optional;
 public abstract class MixinLivingEntity extends Entity implements ChestCavityEntity {
     @Unique
     private ChestCavityInstance chestCavityInstance;
-
     @Unique
-    private static final EntityDataAccessor<Integer> DATA_ADDITIONAL_SLOT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
-
+    private static final EntityDataAccessor<Integer> DATA_ADDITIONAL_SLOT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);;
     @Shadow
     protected abstract int decreaseAirSupply(int var1);
 
@@ -83,6 +81,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     public void chestCavityLivingEntitySyncDataMixin(CallbackInfo info) {
         this.entityData.define(DATA_ADDITIONAL_SLOT, 0);
+    }
+
+    public int getAdditionalSlot(){
+        return this.getEntityData().get(DATA_ADDITIONAL_SLOT);
     }
 
 
@@ -216,12 +218,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.fromTag(tag, (LivingEntity)(Object)this);
-        if (tag.contains("ChestCavity")) {
-            CompoundTag chestCavityTag = tag.getCompound("ChestCavity");
-            if (chestCavityTag.contains("AdditionalSlot")) {
-                this.entityData.set(DATA_ADDITIONAL_SLOT, chestCavityTag.getInt("AdditionalSlot"));
-            }
-        }
+        this.entityData.set(DATA_ADDITIONAL_SLOT, this.chestCavityInstance.additionalSlot);
     }
 
     @Inject(
@@ -229,11 +226,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             at = {@At("TAIL")}
     )
     private void writeCustomDataToNbt(CompoundTag tag, CallbackInfo callbackInfo) {
-        this.chestCavityInstance.toTag(tag);
-        if (tag.contains("ChestCavity")) {
-            CompoundTag chestCavityTag = tag.getCompound("ChestCavity");
-            chestCavityTag.putInt("AdditionalSlot", this.entityData.get(DATA_ADDITIONAL_SLOT));
-        }
+        this.chestCavityInstance.toTag(tag, (LivingEntity)(Object)this);
     }
 
     @Mixin({net.minecraft.world.entity.Mob.class})

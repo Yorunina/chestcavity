@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
-import net.tigereye.chestcavity.chestcavities.organs.OrganData;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.OrganUtil;
 import org.spongepowered.asm.mixin.Mixin;

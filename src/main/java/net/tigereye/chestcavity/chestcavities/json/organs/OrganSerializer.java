@@ -1,11 +1,10 @@
-package net.tigereye.chestcavity.chestcavities.organs;
+package net.tigereye.chestcavity.chestcavities.json.organs;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;

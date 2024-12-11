@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
-import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.recipes.SalvageRecipe;
 import net.tigereye.chestcavity.registration.CCEnchantments;

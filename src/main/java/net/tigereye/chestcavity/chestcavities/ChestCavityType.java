@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
-import net.tigereye.chestcavity.chestcavities.organs.OrganData;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 
 public interface ChestCavityType {
     Map<ResourceLocation, Float> getDefaultOrganScores();

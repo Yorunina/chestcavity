@@ -43,6 +43,7 @@ public class ChestCavityInstance implements ContainerListener {
     public EndCrystal connectedCrystal = null;
     public boolean updatePacket = false;
     public ChestCavityInstance ccBeingOpened = null;
+    public int additionalSlot = 0;
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -96,6 +97,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.lungRemainder = ccTag.getFloat("LungRemainder");
             this.furnaceProgress = ccTag.getInt("FurnaceProgress");
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
+            this.additionalSlot = ccTag.getInt("AdditionalSlot");
             if (ccTag.contains("compatibility_id")) {
                 this.compatibility_id = ccTag.getUUID("compatibility_id");
             } else {
@@ -103,9 +105,9 @@ public class ChestCavityInstance implements ContainerListener {
             }
             try {
                 this.inventory.removeListener(this);
+                this.inventory = new ChestCavityInventory(this.additionalSlot + this.type.getInventorySize());
             } catch (NullPointerException ignored) {
             }
-
             if (ccTag.contains("Inventory")) {
                 NbtList = ccTag.getList("Inventory", 10);
                 this.inventory.readTags(NbtList);
@@ -120,7 +122,7 @@ public class ChestCavityInstance implements ContainerListener {
         ChestCavityUtil.evaluateChestCavity(this);
     }
 
-    public void toTag(CompoundTag tag) {
+    public void toTag(CompoundTag tag, LivingEntity owner) {
         CompoundTag ccTag = new CompoundTag();
         ccTag.putBoolean("opened", this.opened);
         ccTag.putUUID("compatibility_id", this.compatibility_id);
@@ -132,6 +134,7 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putInt("FurnaceProgress", this.furnaceProgress);
         ccTag.putInt("PhotosynthesisProgress", this.photosynthesisProgress);
         ccTag.put("Inventory", this.inventory.getTags());
+        ccTag.putInt("AdditionalSlot", this.additionalSlot);
         tag.put("ChestCavity",ccTag);
     }
 
@@ -139,6 +142,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.opened = other.opened;
         this.type = other.type;
         this.compatibility_id = other.compatibility_id;
+        this.additionalSlot = other.additionalSlot;
         try {
             this.inventory.removeListener(this);
         } catch (NullPointerException ignored) {

@@ -1,5 +1,6 @@
 package net.tigereye.chestcavity.ui;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -10,6 +11,8 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
+import java.util.Optional;
+
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
     private final int size;
@@ -18,12 +21,15 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private static ChestCavityInventory getOrCreateChestCavityInventory(Inventory playerInventory) {
         ChestCavityInstance playerCC = ((ChestCavityEntity)playerInventory.player).getChestCavityInstance();
         ChestCavityInstance targetCCI = playerCC.ccBeingOpened;
-        if(targetCCI != null){
-            ChestCavity.LOGGER.info("Found CCI");
-            ChestCavity.LOGGER.error("cc 5inv: " + targetCCI.inventory.getContainerSize());
-            return targetCCI.inventory;
+
+        if(targetCCI != null) {
+            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(targetCCI.owner);
+            if (optional.isPresent()) {
+                ChestCavityEntity chestCavityEntity = optional.get();
+                int slotSize = chestCavityEntity.getAdditionalSlot() + targetCCI.inventory.getContainerSize();
+                return new ChestCavityInventory(slotSize);
+            }
         }
-        ChestCavity.LOGGER.info("Missed CCI");
         return new ChestCavityInventory();
     }
 
@@ -34,8 +40,6 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityInventory inventory) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
         this.size = inventory.getContainerSize();
-        ChestCavity.LOGGER.error("cc 3inv items: " + inventory.getItem(0));
-        ChestCavity.LOGGER.error("cc 3inv: " + size);
         this.inventory = inventory;
         this.rows = (this.size - 1) / 9 + 1;
         inventory.startOpen(playerInventory.player);

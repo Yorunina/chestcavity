@@ -1,11 +1,10 @@
-package net.tigereye.chestcavity.chestcavities.organs;
+package net.tigereye.chestcavity.chestcavities.json.organs;
 
 import com.google.gson.Gson;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OrganManager implements SimpleSynchronousResourceReloadListener {
     private final OrganSerializer SERIALIZER = new OrganSerializer();
-    public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap();
+    public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap<>();
 
     public OrganManager() {
     }

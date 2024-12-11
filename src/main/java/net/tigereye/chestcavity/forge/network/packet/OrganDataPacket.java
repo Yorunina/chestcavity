@@ -10,8 +10,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.ChestCavity;
-import net.tigereye.chestcavity.chestcavities.organs.OrganData;
-import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 
 public class OrganDataPacket {
     private final int organDataSize;

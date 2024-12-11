@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.network.Connection;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
-import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.forge.network.packet.OrganDataPacket;
 import org.spongepowered.asm.mixin.Mixin;

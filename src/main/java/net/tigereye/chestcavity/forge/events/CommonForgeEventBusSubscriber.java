@@ -10,9 +10,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.tigereye.chestcavity.chestcavities.organs.OrganManager;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityAssignmentManager;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityTypeManager;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
+import net.tigereye.chestcavity.chestcavities.json.ccAssignment.GeneratedChestCavityAssignmentManager;
+import net.tigereye.chestcavity.chestcavities.json.ccType.GeneratedChestCavityTypeManager;
 import net.tigereye.chestcavity.registration.CCCommands;
 
 @EventBusSubscriber(

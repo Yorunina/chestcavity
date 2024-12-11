@@ -3,15 +3,13 @@ package net.tigereye.chestcavity.chestcavities.instance;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.types.DefaultChestCavityType;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityAssignmentManager;
-import net.tigereye.chestcavity.chestcavities.types.json.GeneratedChestCavityTypeManager;
+import net.tigereye.chestcavity.chestcavities.json.ccAssignment.GeneratedChestCavityAssignmentManager;
+import net.tigereye.chestcavity.chestcavities.json.ccType.GeneratedChestCavityTypeManager;
 
 public class ChestCavityInstanceFactory {
     private static final Map<ResourceLocation, ChestCavityType> entityIdentifierMap = new HashMap<>();

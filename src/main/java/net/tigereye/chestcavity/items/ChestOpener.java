@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +46,8 @@ public class ChestOpener extends Item {
 		if (optional.isPresent()) {
 			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
-			ChestCavity.LOGGER.error("cc inv: " + cc.inventory.getContainerSize());
+			ChestCavity.LOGGER.error("cc ADD inv: " + cc.additionalSlot);
+			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getAdditionalSlot());
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {

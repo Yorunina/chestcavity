@@ -1,4 +1,4 @@
-package net.tigereye.chestcavity.chestcavities.organs;
+package net.tigereye.chestcavity.chestcavities.json.organs;
 
 import java.util.HashMap;
 import java.util.Map;

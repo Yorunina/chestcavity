@@ -12,4 +12,6 @@ public interface ChestCavityEntity {
     ChestCavityInstance getChestCavityInstance();
 
     void setChestCavityInstance(ChestCavityInstance var1);
+
+    int getAdditionalSlot();
 }

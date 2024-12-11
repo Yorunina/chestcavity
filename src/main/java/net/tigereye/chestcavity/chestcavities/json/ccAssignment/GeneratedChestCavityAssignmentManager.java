@@ -1,4 +1,4 @@
-package net.tigereye.chestcavity.chestcavities.types.json;
+package net.tigereye.chestcavity.chestcavities.json.ccAssignment;
 
 import com.google.gson.Gson;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListen
 public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousResourceReloadListener {
     private final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
     public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap<>();
-
+    public static Map<ResourceLocation, ResourceLocation> GeneratedScreenTypeAssignments = new HashMap<>();
     public GeneratedChestCavityAssignmentManager() {
     }
 
@@ -24,6 +24,7 @@ public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousR
 
     public void onResourceManagerReload(ResourceManager manager) {
         GeneratedChestCavityAssignments.clear();
+        GeneratedScreenTypeAssignments.clear();
         ChestCavity.LOGGER.info("Loading chest cavity assignments.");
         manager.listResources("entity_assignment", (path) -> {
             return path.getPath().endsWith(".json");
@@ -33,7 +34,9 @@ public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousR
 
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    GeneratedChestCavityAssignments.putAll(this.SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityAssignmentJsonFormat.class)));
+                    ChestCavityAssignmentResult assignmentResult = this.SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityAssignmentJsonFormat.class));
+                    GeneratedChestCavityAssignments.putAll(assignmentResult.getChestcavityMap());
+                    GeneratedScreenTypeAssignments.putAll(assignmentResult.getScreenTypeMap());
                 } catch (Throwable var7) {
                     try {
                         stream.close();
