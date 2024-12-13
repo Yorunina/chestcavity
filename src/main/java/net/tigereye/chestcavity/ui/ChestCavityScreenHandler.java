@@ -1,6 +1,6 @@
 package net.tigereye.chestcavity.ui;
 
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -9,57 +9,71 @@ import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotPosition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.util.ChestCavityUtil;
 
+import java.util.List;
 import java.util.Optional;
+
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData.DEFAULT_INVENTORY_TYPE;
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData.getDefaultInventoryTypeSlotPositions;
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.GeneratedInventoryTypeData;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
     private final int size;
-    private final int rows;
 
-    private static ChestCavityInventory getOrCreateChestCavityInventory(Inventory playerInventory) {
-        ChestCavityInstance playerCC = ((ChestCavityEntity)playerInventory.player).getChestCavityInstance();
+    private static ChestCavityEntity getChestCavityEntity(Inventory playerInventory) {
+        ChestCavityEntity playerCCEntity = (ChestCavityEntity) playerInventory.player;
+        ChestCavityInstance playerCC = playerCCEntity.getChestCavityInstance();
         ChestCavityInstance targetCCI = playerCC.ccBeingOpened;
 
-        if(targetCCI != null) {
+        if (targetCCI != null) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(targetCCI.owner);
             if (optional.isPresent()) {
-                ChestCavityEntity chestCavityEntity = optional.get();
-                int slotSize = chestCavityEntity.getAdditionalSlot() + targetCCI.inventory.getContainerSize();
-                return new ChestCavityInventory(slotSize);
+                return optional.get();
             }
         }
-        return new ChestCavityInventory();
+        return playerCCEntity;
     }
 
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
-        this(syncId, playerInventory, getOrCreateChestCavityInventory(playerInventory));
+        this(syncId, playerInventory, getChestCavityEntity(playerInventory));
     }
 
-    public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityInventory inventory) {
+    public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity chestCavityEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
-        this.size = inventory.getContainerSize();
-        this.inventory = inventory;
-        this.rows = (this.size - 1) / 9 + 1;
-        inventory.startOpen(playerInventory.player);
-        int i = (this.rows - 4) * 18;
 
+        ResourceLocation inventoryType = chestCavityEntity.getInventoryType();
+        int slotSize = 27;
+        List<SlotPosition> slotPositionList = getDefaultInventoryTypeSlotPositions();
+        if (GeneratedInventoryTypeData.containsKey(inventoryType)) {
+            InventoryTypeData inventoryTypeData = GeneratedInventoryTypeData.getOrDefault(inventoryType, DEFAULT_INVENTORY_TYPE);
+            slotSize = inventoryTypeData.getSlotSize();
+            slotPositionList = inventoryTypeData.getSlotPosition();
+        }
+        ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
+        this.size = slotSize;
+        this.inventory = inventory;
+        inventory.startOpen(playerInventory.player);
+        // todo i的取值
+        int i = 0;
         int n;
         int m;
-        for(n = 0; n < this.rows; ++n) {
-            for(m = 0; m < 9 && n * 9 + m < this.size; ++m) {
-                this.addSlot(new Slot(inventory, m + n * 9, 8 + m * 18, 18 + n * 18));
-            }
+        // 组装自定义胸腔界面
+        for (int j = 0; j < this.size; ++j) {
+            this.addSlot(new Slot(inventory, j, slotPositionList.get(j).x, slotPositionList.get(j).y));
         }
-
-        for(n = 0; n < 3; ++n) {
-            for(m = 0; m < 9; ++m) {
+        // 组装玩家背包
+        for (n = 0; n < 3; ++n) {
+            for (m = 0; m < 9; ++m) {
                 this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 102 + n * 18 + i));
             }
         }
-
-        for(n = 0; n < 9; ++n) {
+        // 组装玩家快捷栏
+        for (n = 0; n < 9; ++n) {
             this.addSlot(new Slot(playerInventory, n, 8 + n * 18, 160 + i));
         }
 

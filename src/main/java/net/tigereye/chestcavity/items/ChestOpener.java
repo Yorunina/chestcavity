@@ -47,7 +47,7 @@ public class ChestOpener extends Item {
 			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
 			ChestCavity.LOGGER.error("cc ADD inv: " + cc.additionalSlot);
-			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getAdditionalSlot());
+			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getInventoryType());
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
@@ -79,12 +79,9 @@ public class ChestOpener extends Item {
 					} catch (Exception var9) {
 						name = "";
 					}
-
-					ChestCavityInventory inv = ChestCavityUtil.openChestCavity(cc);
 					((ChestCavityEntity)player).getChestCavityInstance().ccBeingOpened = cc;
-					ChestCavity.LOGGER.error("cc 2inv: " + inv.getContainerSize());
 					// 界面渲染
-					player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, inv), Component.translatable(name + "Chest Cavity")));
+					player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable(name + "Chest Cavity")));
 				}
 				return true;
 			}

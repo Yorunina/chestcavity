@@ -1,6 +1,8 @@
 package net.tigereye.chestcavity.interfaces;
 
 import java.util.Optional;
+
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
@@ -13,5 +15,5 @@ public interface ChestCavityEntity {
 
     void setChestCavityInstance(ChestCavityInstance var1);
 
-    int getAdditionalSlot();
+    ResourceLocation getInventoryType();
 }

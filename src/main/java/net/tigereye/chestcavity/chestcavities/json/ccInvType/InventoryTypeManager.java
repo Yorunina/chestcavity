@@ -1,16 +1,10 @@
-package net.tigereye.chestcavity.chestcavities.json.screen;
+package net.tigereye.chestcavity.chestcavities.json.ccInvType;
 
 import com.google.gson.Gson;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListener;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,11 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScreenTypeManager implements SimpleSynchronousResourceReloadListener {
-    private final ScreenTypeSerializer SERIALIZER = new ScreenTypeSerializer();
-    public static Map<ResourceLocation, List<SlotPosition>> GeneratedScreenTypeData = new HashMap<>();
+public class InventoryTypeManager implements SimpleSynchronousResourceReloadListener {
+    private final InventoryTypeSerializer SERIALIZER = new InventoryTypeSerializer();
+    public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
 
-    public ScreenTypeManager() {
+    public InventoryTypeManager() {
     }
 
     public ResourceLocation getFabricId() {
@@ -31,7 +25,7 @@ public class ScreenTypeManager implements SimpleSynchronousResourceReloadListene
     }
 
     public void onResourceManagerReload(ResourceManager manager) {
-        GeneratedScreenTypeData.clear();
+        GeneratedInventoryTypeData.clear();
         ChestCavity.LOGGER.info("Loading screenType.");
         manager.listResources("organs", (path) -> {
             return path.getPath().endsWith(".json");
@@ -40,8 +34,8 @@ public class ScreenTypeManager implements SimpleSynchronousResourceReloadListene
                 InputStream stream = resource.open();
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    List<SlotPosition> slotPositions = this.SERIALIZER.read(id, (ScreenTypeJsonFormat)(new Gson()).fromJson(reader, ScreenTypeJsonFormat.class));
-                    GeneratedScreenTypeData.put(id, slotPositions);
+                    InventoryTypeData inventoryTypeData = this.SERIALIZER.read(id, (InventoryTypeJsonFormat)(new Gson()).fromJson(reader, InventoryTypeJsonFormat.class));
+                    GeneratedInventoryTypeData.put(id, inventoryTypeData);
                 } catch (Throwable readError) {
                     try {
                         stream.close();
@@ -55,6 +49,6 @@ public class ScreenTypeManager implements SimpleSynchronousResourceReloadListene
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
             }
         });
-        ChestCavity.LOGGER.info("Loaded " + GeneratedScreenTypeData.size() + " organs.");
+        ChestCavity.LOGGER.info("Loaded " + GeneratedInventoryTypeData.size() + " organs.");
     }
 }
