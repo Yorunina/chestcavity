@@ -10,8 +10,9 @@ import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
 import java.util.Optional;
 
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_TEXTURE;
+
 public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainerMenu> {
-    private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("minecraft", "textures/gui/container/shulker_box.png");
 
     public ChestCavityScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
@@ -25,7 +26,7 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(this.minecraft.player);
             if (optional.isPresent()) {
                 ChestCavityEntity chestCavityEntity = optional.get();
-                backgroundTexture = chestCavityEntity.getInventoryType();
+                backgroundTexture = chestCavityEntity.getInventoryTypeData().getBackgroundTexture();
             }
             context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         }

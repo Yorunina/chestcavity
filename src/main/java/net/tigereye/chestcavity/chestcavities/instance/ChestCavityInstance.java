@@ -10,6 +10,8 @@ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.listeners.OrganOnHitContext;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
 
 public class ChestCavityInstance implements ContainerListener {
@@ -43,14 +46,13 @@ public class ChestCavityInstance implements ContainerListener {
     public EndCrystal connectedCrystal = null;
     public boolean updatePacket = false;
     public ChestCavityInstance ccBeingOpened = null;
-    public int additionalSlot = 0;
+    public String inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
         this.owner = owner;
         this.compatibility_id = owner.getUUID();
-        int slotSize = type.getInventorySize();
-        this.inventory = new ChestCavityInventory(slotSize);
+        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.inventoryType)).getSlotSize());
         ChestCavityUtil.evaluateChestCavity(this);
     }
 
@@ -67,13 +69,16 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public float getOrganScore(ResourceLocation id) {
-        return (Float)this.organScores.getOrDefault(id, 0.0F);
+        return this.organScores.getOrDefault(id, 0.0F);
     }
 
     public float getOldOrganScore(ResourceLocation id) {
-        return (Float)this.oldOrganScores.getOrDefault(id, 0.0F);
+        return this.oldOrganScores.getOrDefault(id, 0.0F);
     }
 
+    public String getInventoryType() {
+        return this.inventoryType;
+    }
     public void containerChanged(@NotNull Container sender) {
         ChestCavityUtil.clearForbiddenSlots(this);
         ChestCavityUtil.evaluateChestCavity(this);
@@ -97,7 +102,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.lungRemainder = ccTag.getFloat("LungRemainder");
             this.furnaceProgress = ccTag.getInt("FurnaceProgress");
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
-            this.additionalSlot = ccTag.getInt("AdditionalSlot");
+            this.inventoryType = ccTag.getString("InventoryType");
             if (ccTag.contains("compatibility_id")) {
                 this.compatibility_id = ccTag.getUUID("compatibility_id");
             } else {
@@ -105,7 +110,7 @@ public class ChestCavityInstance implements ContainerListener {
             }
             try {
                 this.inventory.removeListener(this);
-                this.inventory = new ChestCavityInventory(this.additionalSlot + this.type.getInventorySize());
+                this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.inventoryType)).getSlotSize());
             } catch (NullPointerException ignored) {
             }
             if (ccTag.contains("Inventory")) {
@@ -125,6 +130,7 @@ public class ChestCavityInstance implements ContainerListener {
     public void toTag(CompoundTag tag, LivingEntity owner) {
         CompoundTag ccTag = new CompoundTag();
         ccTag.putBoolean("opened", this.opened);
+        ccTag.putString("InventoryType", this.inventoryType);
         ccTag.putUUID("compatibility_id", this.compatibility_id);
         ccTag.putInt("HeartTimer", this.heartBleedTimer);
         ccTag.putInt("KidneyTimer", this.bloodPoisonTimer);
@@ -134,7 +140,6 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putInt("FurnaceProgress", this.furnaceProgress);
         ccTag.putInt("PhotosynthesisProgress", this.photosynthesisProgress);
         ccTag.put("Inventory", this.inventory.getTags());
-        ccTag.putInt("AdditionalSlot", this.additionalSlot);
         tag.put("ChestCavity",ccTag);
     }
 
@@ -142,7 +147,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.opened = other.opened;
         this.type = other.type;
         this.compatibility_id = other.compatibility_id;
-        this.additionalSlot = other.additionalSlot;
+        this.inventoryType = other.inventoryType;
         try {
             this.inventory.removeListener(this);
         } catch (NullPointerException ignored) {

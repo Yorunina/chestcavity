@@ -46,8 +46,7 @@ public class ChestOpener extends Item {
 		if (optional.isPresent()) {
 			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
-			ChestCavity.LOGGER.error("cc ADD inv: " + cc.additionalSlot);
-			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getInventoryType());
+			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getInventoryTypeData().getSlotSize());
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {

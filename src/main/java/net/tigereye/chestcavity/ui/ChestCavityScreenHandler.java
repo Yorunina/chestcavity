@@ -17,8 +17,7 @@ import net.tigereye.chestcavity.util.ChestCavityUtil;
 import java.util.List;
 import java.util.Optional;
 
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData.DEFAULT_INVENTORY_TYPE;
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData.getDefaultInventoryTypeSlotPositions;
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_DATA;
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.GeneratedInventoryTypeData;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
@@ -46,35 +45,30 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity chestCavityEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
 
-        ResourceLocation inventoryType = chestCavityEntity.getInventoryType();
-        int slotSize = 27;
-        List<SlotPosition> slotPositionList = getDefaultInventoryTypeSlotPositions();
-        if (GeneratedInventoryTypeData.containsKey(inventoryType)) {
-            InventoryTypeData inventoryTypeData = GeneratedInventoryTypeData.getOrDefault(inventoryType, DEFAULT_INVENTORY_TYPE);
-            slotSize = inventoryTypeData.getSlotSize();
-            slotPositionList = inventoryTypeData.getSlotPosition();
-        }
+        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
+        int slotSize = inventoryTypeData.getSlotSize();
+        List<SlotPosition> slotPositionList = inventoryTypeData.getSlotPosition();
+
         ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
         this.size = slotSize;
         this.inventory = inventory;
         inventory.startOpen(playerInventory.player);
-        // todo i的取值
-        int i = 0;
+        SlotPosition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
         // 组装自定义胸腔界面
         for (int j = 0; j < this.size; ++j) {
-            this.addSlot(new Slot(inventory, j, slotPositionList.get(j).x, slotPositionList.get(j).y));
+            this.addSlot(new Slot(inventory, j, slotPositionList.get(j).getX(), slotPositionList.get(j).getY()));
         }
         // 组装玩家背包
         for (n = 0; n < 3; ++n) {
             for (m = 0; m < 9; ++m) {
-                this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 102 + n * 18 + i));
+                this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY()));
             }
         }
         // 组装玩家快捷栏
         for (n = 0; n < 9; ++n) {
-            this.addSlot(new Slot(playerInventory, n, 8 + n * 18, 160 + i));
+            this.addSlot(new Slot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
         }
 
     }

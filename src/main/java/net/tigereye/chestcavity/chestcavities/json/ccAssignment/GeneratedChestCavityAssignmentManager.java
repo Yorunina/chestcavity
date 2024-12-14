@@ -14,7 +14,6 @@ import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListen
 public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousResourceReloadListener {
     private final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
     public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap<>();
-    public static Map<ResourceLocation, ResourceLocation> GeneratedScreenTypeAssignments = new HashMap<>();
     public GeneratedChestCavityAssignmentManager() {
     }
 
@@ -24,19 +23,16 @@ public class GeneratedChestCavityAssignmentManager implements SimpleSynchronousR
 
     public void onResourceManagerReload(ResourceManager manager) {
         GeneratedChestCavityAssignments.clear();
-        GeneratedScreenTypeAssignments.clear();
         ChestCavity.LOGGER.info("Loading chest cavity assignments.");
         manager.listResources("entity_assignment", (path) -> {
             return path.getPath().endsWith(".json");
         }).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
-
                 try {
                     Reader reader = new InputStreamReader(stream);
                     ChestCavityAssignmentResult assignmentResult = this.SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityAssignmentJsonFormat.class));
                     GeneratedChestCavityAssignments.putAll(assignmentResult.getChestcavityMap());
-                    GeneratedScreenTypeAssignments.putAll(assignmentResult.getScreenTypeMap());
                 } catch (Throwable var7) {
                     try {
                         stream.close();

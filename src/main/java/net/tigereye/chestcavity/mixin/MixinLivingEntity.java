@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -31,6 +32,8 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstanceFactory;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.listeners.OrganFoodEffectListeners;
@@ -51,6 +54,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
+
 @Mixin(
         value = {LivingEntity.class},
         priority = 900
@@ -59,12 +64,16 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     @Unique
     private ChestCavityInstance chestCavityInstance;
     @Unique
-    private static final EntityDataAccessor<Integer> DATA_ADDITIONAL_SLOT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);;
+    private static final EntityDataAccessor<String> DATA_INVENTORY_TYPE = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.STRING);;
     @Shadow
     protected abstract int decreaseAirSupply(int var1);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
+    }
+
+    public InventoryTypeData getInventoryTypeData() {
+        return InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.chestCavityInstance.getInventoryType()));
     }
 
     @Inject(
@@ -80,12 +89,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"defineSynchedData"}
     )
     public void chestCavityLivingEntitySyncDataMixin(CallbackInfo info) {
-        this.entityData.define(DATA_ADDITIONAL_SLOT, 0);
+        this.entityData.define(DATA_INVENTORY_TYPE, DEFAULT_INVENTORY_TYPE_STRING);
     }
 
-    public int getAdditionalSlot(){
-        return this.getEntityData().get(DATA_ADDITIONAL_SLOT);
-    }
 
 
     @Inject(
@@ -175,8 +181,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         List<Pair<MobEffectInstance, Float>> list = instance.getEffects();
         Optional<ChestCavityEntity> option = ChestCavityEntity.of(targetEntity);
         if (option.isPresent()) {
-            list = new LinkedList((Collection)list);
-            OrganFoodEffectListeners.call((List)list, stack, world, targetEntity, ((ChestCavityEntity)option.get()).getChestCavityInstance());
+            list = new LinkedList(list);
+            OrganFoodEffectListeners.call(list, stack, world, targetEntity, option.get().getChestCavityInstance());
         }
 
         return (List)list;
@@ -218,7 +224,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.fromTag(tag, (LivingEntity)(Object)this);
-        this.entityData.set(DATA_ADDITIONAL_SLOT, this.chestCavityInstance.additionalSlot);
+        this.entityData.set(DATA_INVENTORY_TYPE, this.chestCavityInstance.getInventoryType());
     }
 
     @Inject(

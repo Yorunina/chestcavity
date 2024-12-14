@@ -44,14 +44,12 @@ public class ChestCavityTypeSerializer {
             cct.setDropRateMultiplier(cctJson.dropRateMultiplier);
             cct.setPlayerChestCavity(cctJson.playerChestCavity);
             cct.setBossChestCavity(cctJson.bossChestCavity);
-            cct.setInventorySize(cctJson.inventorySize);
             return cct;
         }
     }
 
     private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson, List<Integer> forbiddenSlots) {
-        int invSize = cctJson.inventorySize;
-        ChestCavityInventory inv = new ChestCavityInventory(invSize);
+        ChestCavityInventory inv = new ChestCavityInventory(27);
         int i = 0;
 
         for (JsonElement entry : cctJson.defaultChestCavity) {

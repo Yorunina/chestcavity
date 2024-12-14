@@ -38,5 +38,4 @@ public interface ChestCavityType {
 
     void onDeath(ChestCavityInstance var1);
 
-    int getInventorySize();
 }
