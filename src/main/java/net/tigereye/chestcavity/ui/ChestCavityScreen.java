@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
 import java.util.Optional;
@@ -25,8 +26,12 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
         if (this.minecraft != null) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(this.minecraft.player);
             if (optional.isPresent()) {
-                ChestCavityEntity chestCavityEntity = optional.get();
-                backgroundTexture = chestCavityEntity.getInventoryTypeData().getBackgroundTexture();
+                ChestCavityEntity chestCavityPlayer = optional.get();
+                ChestCavityInstance targetCCI = chestCavityPlayer.getChestCavityInstance();
+                if (targetCCI.ccBeingOpened != null) {
+                    targetCCI = targetCCI.ccBeingOpened;
+                }
+                backgroundTexture = ((ChestCavityEntity) targetCCI.owner).getInventoryTypeData().getBackgroundTexture();
             }
             context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         }

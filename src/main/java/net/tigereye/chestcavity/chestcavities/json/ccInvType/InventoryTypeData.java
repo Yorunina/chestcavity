@@ -1,9 +1,7 @@
 package net.tigereye.chestcavity.chestcavities.json.ccInvType;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryTypeData {
@@ -32,7 +30,6 @@ public class InventoryTypeData {
     public void setPlayerInventoryPosition(SlotPosition playerInventoryPosition) {
         this.playerInventoryPosition = playerInventoryPosition;
     }
-
 
     public InventoryTypeData(ResourceLocation backgroundTexture, List<SlotPosition> slotPositions, SlotPosition playerInventoryPosition) {
         this.backgroundTexture = backgroundTexture;

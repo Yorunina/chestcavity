@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.ui;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -16,9 +15,6 @@ import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 import java.util.List;
 import java.util.Optional;
-
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_DATA;
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.GeneratedInventoryTypeData;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;

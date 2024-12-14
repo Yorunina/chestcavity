@@ -12,6 +12,7 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
+import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganOnHitContext;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.apache.logging.log4j.LogManager;
@@ -20,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
-
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
 
 public class ChestCavityInstance implements ContainerListener {
@@ -44,15 +43,19 @@ public class ChestCavityInstance implements ContainerListener {
     public int furnaceProgress = 0;
     public int photosynthesisProgress = 0;
     public EndCrystal connectedCrystal = null;
-    public boolean updatePacket = false;
+    public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
-    public String inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
+    public ResourceLocation inventoryType;
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
         this.owner = owner;
         this.compatibility_id = owner.getUUID();
-        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.inventoryType)).getSlotSize());
+        this.inventoryType = type.getInventoryType();
+        if (owner instanceof ChestCavityEntity ccEntity) {
+            ccEntity.setInventoryTypeData(this.inventoryType);
+        }
+        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize());
         ChestCavityUtil.evaluateChestCavity(this);
     }
 
@@ -76,8 +79,11 @@ public class ChestCavityInstance implements ContainerListener {
         return this.oldOrganScores.getOrDefault(id, 0.0F);
     }
 
-    public String getInventoryType() {
+    public ResourceLocation getInventoryType() {
         return this.inventoryType;
+    }
+    public InventoryTypeData getInventoryTypeData() {
+        return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
     }
     public void containerChanged(@NotNull Container sender) {
         ChestCavityUtil.clearForbiddenSlots(this);
@@ -102,7 +108,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.lungRemainder = ccTag.getFloat("LungRemainder");
             this.furnaceProgress = ccTag.getInt("FurnaceProgress");
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
-            this.inventoryType = ccTag.getString("InventoryType");
+            this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
             if (ccTag.contains("compatibility_id")) {
                 this.compatibility_id = ccTag.getUUID("compatibility_id");
             } else {
@@ -110,7 +116,7 @@ public class ChestCavityInstance implements ContainerListener {
             }
             try {
                 this.inventory.removeListener(this);
-                this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.inventoryType)).getSlotSize());
+                this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize());
             } catch (NullPointerException ignored) {
             }
             if (ccTag.contains("Inventory")) {
@@ -130,7 +136,7 @@ public class ChestCavityInstance implements ContainerListener {
     public void toTag(CompoundTag tag, LivingEntity owner) {
         CompoundTag ccTag = new CompoundTag();
         ccTag.putBoolean("opened", this.opened);
-        ccTag.putString("InventoryType", this.inventoryType);
+        ccTag.putString("InventoryType", this.inventoryType.toString());
         ccTag.putUUID("compatibility_id", this.compatibility_id);
         ccTag.putInt("HeartTimer", this.heartBleedTimer);
         ccTag.putInt("KidneyTimer", this.bloodPoisonTimer);

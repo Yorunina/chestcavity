@@ -4,9 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-
-import java.util.*;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +11,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.types.GeneratedChestCavityType;
+
+import java.util.*;
+
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.GeneratedInventoryTypeData;
 
 public class ChestCavityTypeSerializer {
     public ChestCavityTypeSerializer() {
@@ -42,6 +45,7 @@ public class ChestCavityTypeSerializer {
             cct.setBaseOrganScores(this.readBaseOrganScoresFromJson(id, cctJson));
             cct.setExceptionalOrganList(this.readExceptionalOrgansFromJson(id, cctJson));
             cct.setDropRateMultiplier(cctJson.dropRateMultiplier);
+            cct.setInventoryType(new ResourceLocation(cctJson.inventoryType));
             cct.setPlayerChestCavity(cctJson.playerChestCavity);
             cct.setBossChestCavity(cctJson.bossChestCavity);
             return cct;
@@ -49,7 +53,8 @@ public class ChestCavityTypeSerializer {
     }
 
     private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson, List<Integer> forbiddenSlots) {
-        ChestCavityInventory inv = new ChestCavityInventory(27);
+        InventoryTypeData inventoryTypeData = GeneratedInventoryTypeData.getOrDefault(new ResourceLocation(cctJson.inventoryType), InventoryTypeManager.getDefaultInventoryTypeData());
+        ChestCavityInventory inv = new ChestCavityInventory(inventoryTypeData.getSlotSize());
         int i = 0;
 
         for (JsonElement entry : cctJson.defaultChestCavity) {

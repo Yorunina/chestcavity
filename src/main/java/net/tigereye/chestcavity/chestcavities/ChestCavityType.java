@@ -5,13 +5,14 @@
 
 package net.tigereye.chestcavity.chestcavities;
 
-import java.util.List;
-import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ChestCavityType {
     Map<ResourceLocation, Float> getDefaultOrganScores();
@@ -37,5 +38,7 @@ public interface ChestCavityType {
     boolean isOpenable(ChestCavityInstance var1);
 
     void onDeath(ChestCavityInstance var1);
+    void setInventoryType(ResourceLocation id);
+    ResourceLocation getInventoryType();
 
 }

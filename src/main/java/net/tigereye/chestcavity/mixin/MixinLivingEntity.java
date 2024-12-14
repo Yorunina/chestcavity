@@ -49,7 +49,6 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -67,13 +66,19 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     private static final EntityDataAccessor<String> DATA_INVENTORY_TYPE = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.STRING);;
     @Shadow
     protected abstract int decreaseAirSupply(int var1);
+    @Shadow
+    public abstract void addAdditionalSaveData(CompoundTag pCompound);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     public InventoryTypeData getInventoryTypeData() {
-        return InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.chestCavityInstance.getInventoryType()));
+        return InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.entityData.get(DATA_INVENTORY_TYPE)));
+    }
+
+    public void setInventoryTypeData(ResourceLocation id) {
+        this.entityData.set(DATA_INVENTORY_TYPE, id.toString());
     }
 
     @Inject(
@@ -130,7 +135,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 amount = ChestCavityUtil.onHit(cce.get().getChestCavityInstance(), source, (LivingEntity)(Object)this, amount);
             }
         }
-
         return amount;
     }
 
@@ -224,7 +228,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.fromTag(tag, (LivingEntity)(Object)this);
-        this.entityData.set(DATA_INVENTORY_TYPE, this.chestCavityInstance.getInventoryType());
+        this.entityData.set(DATA_INVENTORY_TYPE, this.chestCavityInstance.getInventoryType().toString());
     }
 
     @Inject(

@@ -1,11 +1,11 @@
 package net.tigereye.chestcavity.interfaces;
 
-import java.util.Optional;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+
+import java.util.Optional;
 
 public interface ChestCavityEntity {
     static Optional<ChestCavityEntity> of(Entity entity) {
@@ -17,4 +17,5 @@ public interface ChestCavityEntity {
     void setChestCavityInstance(ChestCavityInstance var1);
 
     InventoryTypeData getInventoryTypeData();
+    void setInventoryTypeData(ResourceLocation id);
 }

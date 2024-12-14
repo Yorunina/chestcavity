@@ -1,10 +1,5 @@
 package net.tigereye.chestcavity.chestcavities.types;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +16,10 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
+import java.util.*;
+
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
+
 public class GeneratedChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> defaultOrganScores = null;
     private ChestCavityInventory defaultChestCavity = null;
@@ -31,6 +30,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     private float dropRateMultiplier = 1.0F;
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
+    private ResourceLocation inventoryType = new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING);
 
     public GeneratedChestCavityType() {
     }
@@ -64,6 +64,12 @@ public class GeneratedChestCavityType implements ChestCavityType {
 
     public float getBaseOrganScore(ResourceLocation id) {
         return (Float)this.getBaseOrganScores().getOrDefault(id, 0.0F);
+    }
+    public void setInventoryType(ResourceLocation id) {
+        this.inventoryType = id;
+    }
+    public ResourceLocation getInventoryType() {
+        return this.inventoryType;
     }
 
     public void setBaseOrganScores(Map<ResourceLocation, Float> organScores) {
