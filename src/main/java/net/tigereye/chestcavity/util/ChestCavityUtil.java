@@ -56,12 +56,12 @@ public class ChestCavityUtil {
     }
 
     public static void addOrganScore(ResourceLocation id, float value, Map<ResourceLocation, Float> organScores) {
-        organScores.put(id, (Float)organScores.getOrDefault(id, 0.0F) + value);
+        organScores.put(id, organScores.getOrDefault(id, 0.0F) + value);
     }
 
     public static float applyBoneDefense(ChestCavityInstance cc, float damage) {
-        float boneDiff = (cc.getOrganScore(CCOrganScores.DEFENSE) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DEFENSE)) / 4.0F;
-        return (float)((double)damage * Math.pow((double)(1.0F - ChestCavity.config.BONE_DEFENSE), (double)boneDiff));
+        float boneDiff = cc.getOrganScore(CCOrganScores.DEFENSE) / 4.0F;
+        return (float)((double)damage * Math.pow(1.0F - ChestCavity.config.BONE_DEFENSE, boneDiff));
     }
 
     public static int applyBreathInWater(ChestCavityInstance cc, int oldAir, int newAir) {
@@ -324,7 +324,6 @@ public class ChestCavityUtil {
             for(int i = 0; i < chestCavityType.getDefaultChestCavity().getContainerSize(); ++i) {
                 ItemStack itemStack = chestCavityType.getDefaultChestCavity().getItem(i);
                 if (itemStack != ItemStack.EMPTY) {
-                    Item slotitem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, chestCavityType);
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
@@ -345,7 +344,7 @@ public class ChestCavityUtil {
         for(int i = 0; i < rolls && !organPile.isEmpty(); ++i) {
             int roll = random.nextInt(organPile.size());
             int count = 1;
-            ItemStack rolledItem = ((ItemStack)organPile.remove(roll)).copy();
+            ItemStack rolledItem = organPile.remove(roll).copy();
             if (rolledItem.getCount() > 1) {
                 count += random.nextInt(rolledItem.getMaxStackSize());
             }
