@@ -19,7 +19,6 @@ public class CCKeybindings {
     public static KeyMapping DRAGON_BREATH;
     public static KeyMapping DRAGON_BOMBS;
     public static KeyMapping FORCEFUL_SPIT;
-    public static KeyMapping FURNACE_POWERED;
     public static KeyMapping IRON_REPAIR;
     public static KeyMapping PYROMANCY;
     public static KeyMapping GHASTLY;
@@ -60,7 +59,6 @@ public class CCKeybindings {
         DRAGON_BREATH = register(CCOrganScores.DRAGON_BREATH, "organ_abilities", 330, true);
         DRAGON_BOMBS = register(CCOrganScores.DRAGON_BOMBS, "organ_abilities", 330, true);
         FORCEFUL_SPIT = register(CCOrganScores.FORCEFUL_SPIT, "organ_abilities", 330, true);
-        FURNACE_POWERED = register(CCOrganScores.FURNACE_POWERED, "organ_abilities", 330, false);
         IRON_REPAIR = register(CCOrganScores.IRON_REPAIR, "organ_abilities", 330, false);
         PYROMANCY = register(CCOrganScores.PYROMANCY, "organ_abilities", 330, true);
         GHASTLY = register(CCOrganScores.GHASTLY, "organ_abilities", 330, true);

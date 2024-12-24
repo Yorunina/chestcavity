@@ -16,7 +16,6 @@ public class OrganFoodListeners {
     public static EffectiveFoodScores call(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
         efs = applyHerbivorousCarnivorous(food, foodComponent, cce, efs);
         efs = applyRot(food, foodComponent, cce, efs);
-        efs = applyFurnacePower(food, foodComponent, cce, efs);
         return efs;
     }
 
@@ -41,18 +40,4 @@ public class OrganFoodListeners {
         return efs;
     }
 
-    private static EffectiveFoodScores applyFurnacePower(Item food, FoodProperties foodComponent, ChestCavityEntity cce, EffectiveFoodScores efs) {
-        if (food == CCItems.FURNACE_POWER.get()) {
-            int power = 0;
-            if (cce.getChestCavityInstance().owner.hasEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
-                power = cce.getChestCavityInstance().owner.getEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get()).getAmplifier() + 1;
-            }
-
-            efs.digestion -= cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_DIGESTION);
-            efs.nutrition -= cce.getChestCavityInstance().getOrganScore(CCOrganScores.HERBIVOROUS_NUTRITION);
-            efs.nutrition += (float)power;
-        }
-
-        return efs;
-    }
 }

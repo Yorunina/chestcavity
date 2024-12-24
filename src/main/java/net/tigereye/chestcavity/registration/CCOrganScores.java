@@ -48,7 +48,6 @@ public class CCOrganScores {
     public static final ResourceLocation PHOTOSYNTHESIS = new ResourceLocation("chestcavity", "photosynthesis");
     public static final ResourceLocation CARNIVOROUS_DIGESTION = new ResourceLocation("chestcavity", "carnivorous_digestion");
     public static final ResourceLocation CARNIVOROUS_NUTRITION = new ResourceLocation("chestcavity", "carnivorous_nutrition");
-    public static final ResourceLocation FURNACE_POWERED = new ResourceLocation("chestcavity", "furnace_powered");
     public static final ResourceLocation HERBIVOROUS_DIGESTION = new ResourceLocation("chestcavity", "herbivorous_digestion");
     public static final ResourceLocation HERBIVOROUS_NUTRITION = new ResourceLocation("chestcavity", "herbivorous_nutrition");
     public static final ResourceLocation IRON_REPAIR = new ResourceLocation("chestcavity", "iron_repair");

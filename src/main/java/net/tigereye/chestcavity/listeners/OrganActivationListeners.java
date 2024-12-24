@@ -40,7 +40,6 @@ public class OrganActivationListeners {
         register(CCOrganScores.DRAGON_BREATH, OrganActivationListeners::ActivateDragonBreath);
         register(CCOrganScores.DRAGON_BOMBS, OrganActivationListeners::ActivateDragonBombs);
         register(CCOrganScores.FORCEFUL_SPIT, OrganActivationListeners::ActivateForcefulSpit);
-        register(CCOrganScores.FURNACE_POWERED, OrganActivationListeners::ActivateFurnacePowered);
         register(CCOrganScores.IRON_REPAIR, OrganActivationListeners::ActivateIronRepair);
         register(CCOrganScores.PYROMANCY, OrganActivationListeners::ActivatePyromancy);
         register(CCOrganScores.GHASTLY, OrganActivationListeners::ActivateGhastly);
@@ -99,68 +98,6 @@ public class OrganActivationListeners {
         float projectiles = cc.getOrganScore(CCOrganScores.FORCEFUL_SPIT);
         if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get())) {
             OrganUtil.queueForcefulSpit(entity, cc, (int)projectiles);
-        }
-
-    }
-
-    public static void ActivateFurnacePowered(LivingEntity entity, ChestCavityInstance cc) {
-        int furnacePowered = Math.round(cc.getOrganScore(CCOrganScores.FURNACE_POWERED));
-        if (furnacePowered >= 1) {
-            int fuelValue = 0;
-            ItemStack itemStack = cc.owner.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (itemStack != null && itemStack != ItemStack.EMPTY) {
-                try {
-                    fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType)null);
-                } catch (Exception var13) {
-                }
-            }
-
-            if (fuelValue == 0) {
-                itemStack = cc.owner.getItemBySlot(EquipmentSlot.OFFHAND);
-                if (itemStack != null && itemStack != ItemStack.EMPTY) {
-                    try {
-                        fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType)null);
-                    } catch (Exception var12) {
-                    }
-                }
-            }
-
-            if (fuelValue != 0) {
-                MobEffectInstance newSEI = null;
-                if (!cc.owner.hasEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
-                    newSEI = new MobEffectInstance((MobEffect)CCStatusEffects.FURNACE_POWER.get(), fuelValue, 0, false, false, true);
-                } else {
-                    MobEffectInstance oldPower = cc.owner.getEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get());
-                    if (oldPower.getAmplifier() >= furnacePowered - 1) {
-                        return;
-                    }
-
-                    CompoundTag oldTag = new CompoundTag();
-                    List<Integer> durations = new ArrayList();
-                    durations.add(fuelValue);
-                    oldPower.save(oldTag);
-
-                    while(true) {
-                        durations.add(oldTag.getInt("Duration"));
-                        if (!oldTag.contains("HiddenEffect")) {
-                            durations.sort(IntComparators.OPPOSITE_COMPARATOR);
-                            int amplifier = 0;
-
-                            for(Iterator<Integer> var10 = durations.iterator(); var10.hasNext(); ++amplifier) {
-                                Integer duration = (Integer)var10.next();
-                                newSEI = new MobEffectInstance((MobEffect)CCStatusEffects.FURNACE_POWER.get(), duration, amplifier, false, false, true, newSEI, Optional.empty());
-                            }
-                            break;
-                        }
-
-                        oldTag = oldTag.getCompound("HiddenEffect");
-                    }
-                }
-
-                entity.removeEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get());
-                entity.addEffect(newSEI);
-                itemStack.shrink(1);
-            }
         }
 
     }

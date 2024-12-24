@@ -61,7 +61,6 @@ public class CCFoodComponents {
     public static final FoodProperties RAW_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT;
     public static final FoodProperties COOKED_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT;
     public static final FoodProperties CUD_FOOD_COMPONENT;
-    public static final FoodProperties FURNACE_POWER_FOOD_COMPONENT;
 
     public CCFoodComponents() {
     }
@@ -107,6 +106,5 @@ public class CCFoodComponents {
         RAW_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT = (new FoodProperties.Builder()).nutrition(5).saturationMod(0.6F).meat().effect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 24000, 1), ChestCavity.config.RISK_OF_PRIONS).effect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 24000, 1), ChestCavity.config.RISK_OF_PRIONS).effect(new MobEffectInstance(MobEffects.WEAKNESS, 24000, 1), ChestCavity.config.RISK_OF_PRIONS).build();
         COOKED_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT = (new FoodProperties.Builder()).nutrition(9).saturationMod(1.2F).meat().effect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 24000, 0), ChestCavity.config.RISK_OF_PRIONS).effect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 24000, 0), ChestCavity.config.RISK_OF_PRIONS).effect(new MobEffectInstance(MobEffects.WEAKNESS, 24000, 0), ChestCavity.config.RISK_OF_PRIONS).build();
         CUD_FOOD_COMPONENT = (new FoodProperties.Builder()).nutrition(1).saturationMod(0.1F).build();
-        FURNACE_POWER_FOOD_COMPONENT = (new FoodProperties.Builder()).nutrition(1).saturationMod(0.6F).build();
     }
 }

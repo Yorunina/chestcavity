@@ -6,7 +6,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.mob_effect.CCStatusEffect;
-import net.tigereye.chestcavity.mob_effect.FurnacePower;
 import net.tigereye.chestcavity.mob_effect.OrganRejection;
 import net.tigereye.chestcavity.mob_effect.Ruminating;
 
@@ -18,7 +17,6 @@ public class CCStatusEffects {
     public static final RegistryObject<MobEffect> DRAGON_BREATH_COOLDOWN;
     public static final RegistryObject<MobEffect> EXPLOSION_COOLDOWN;
     public static final RegistryObject<MobEffect> FORCEFUL_SPIT_COOLDOWN;
-    public static final RegistryObject<MobEffect> FURNACE_POWER;
     public static final RegistryObject<MobEffect> GHASTLY_COOLDOWN;
     public static final RegistryObject<MobEffect> IRON_REPAIR_COOLDOWN;
     public static final RegistryObject<MobEffect> PYROMANCY_COOLDOWN;
@@ -49,7 +47,6 @@ public class CCStatusEffects {
         FORCEFUL_SPIT_COOLDOWN = MOB_EFFECTS.register("forceful_spit_cooldown", () -> {
             return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
         });
-        FURNACE_POWER = MOB_EFFECTS.register("furnace_power", FurnacePower::new);
         GHASTLY_COOLDOWN = MOB_EFFECTS.register("ghastly_cooldown", () -> {
             return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
         });

@@ -196,7 +196,6 @@ public class CCItems {
 	public static final RegistryObject<Item> RAW_RICH_DRAGON_SAUSAGE;
 	public static final RegistryObject<Item> COOKED_RICH_DRAGON_SAUSAGE;
 	public static final RegistryObject<Item> CUD;
-	public static final RegistryObject<Item> FURNACE_POWER;
 
 	public CCItems() {
 	}
@@ -741,9 +740,6 @@ public class CCItems {
 		});
 		CUD = ITEMS.register("cud", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.CUD_FOOD_COMPONENT));
-		});
-		FURNACE_POWER = ITEMS.register("furnace_power", () -> {
-			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.FURNACE_POWER_FOOD_COMPONENT));
 		});
 	}
 }
