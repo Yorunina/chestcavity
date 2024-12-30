@@ -16,7 +16,6 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +34,6 @@ import net.tigereye.chestcavity.listeners.OrganOnHitContext;
 import net.tigereye.chestcavity.listeners.OrganOnHitListener;
 import net.tigereye.chestcavity.listeners.OrganTickListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
-import net.tigereye.chestcavity.registration.CCEnchantments;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
@@ -441,7 +439,6 @@ public class ChestCavityUtil {
 
     public static int getCompatibilityLevel(ChestCavityInstance cc, ItemStack itemStack) {
         if (itemStack != null && itemStack != ItemStack.EMPTY) {
-            int oNegative = EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.O_NEGATIVE.get(), itemStack);
             int ownership = 0;
             CompoundTag tag = itemStack.getTag();
             if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
@@ -452,7 +449,7 @@ public class ChestCavityUtil {
             } else {
                 ownership = 1;
             }
-            return Math.max(oNegative, ownership);
+            return ownership;
         } else {
             return 1;
         }
@@ -536,9 +533,6 @@ public class ChestCavityUtil {
 
                 for (int i = 0; i < ccinstance.inventory.getContainerSize(); ++i) {
                     ItemStack organ = ccinstance.inventory.getItem(i);
-                    if (EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.O_NEGATIVE.get(), organ) >= 2) {
-                        organsToKeep.put(i, organ.copy());
-                    }
                 }
 
                 ccinstance.compatibility_id = UUID.randomUUID();

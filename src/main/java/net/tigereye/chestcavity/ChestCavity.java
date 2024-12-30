@@ -23,7 +23,6 @@ import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCCommands;
-import net.tigereye.chestcavity.registration.CCEnchantments;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCListeners;
 import net.tigereye.chestcavity.registration.CCNetworkingPackets;
@@ -58,7 +57,6 @@ public class ChestCavity {
 		CCRecipes.RECIPE_SERIALIZERS.register(eventBus);
 		CCRecipes.MCRECIPE_SERIALIZERS.register(eventBus);
 		CCRecipes.RECIPE_TYPES.register(eventBus);
-		CCEnchantments.ENCHANTMENTS.register(eventBus);
 		CCListeners.register();
 		CCStatusEffects.MOB_EFFECTS.register(eventBus);
 		CCTagOrgans.init();
