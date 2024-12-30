@@ -16,12 +16,6 @@ public class CCItems {
 	public static final Item.Properties CHEST_OPENER_SETTINGS;
 	public static final Item.Properties FOOD_ITEM_SETTINGS;
 	public static final RegistryObject<Item> CHEST_OPENER;
-	public static final RegistryObject<SwordItem> WOODEN_CLEAVER;
-	public static final RegistryObject<SwordItem> GOLD_CLEAVER;
-	public static final RegistryObject<SwordItem> STONE_CLEAVER;
-	public static final RegistryObject<SwordItem> IRON_CLEAVER;
-	public static final RegistryObject<SwordItem> DIAMOND_CLEAVER;
-	public static final RegistryObject<SwordItem> NETHERITE_CLEAVER;
 	public static final RegistryObject<Item> HUMAN_APPENDIX;
 	public static final RegistryObject<Item> HUMAN_HEART;
 	public static final RegistryObject<Item> HUMAN_INTESTINE;
@@ -206,24 +200,6 @@ public class CCItems {
 		CHEST_OPENER_SETTINGS = (new Item.Properties()).stacksTo(1);
 		FOOD_ITEM_SETTINGS = (new Item.Properties()).stacksTo(64);
 		CHEST_OPENER = ITEMS.register("chest_opener", ChestOpener::new);
-		WOODEN_CLEAVER = ITEMS.register("wooden_cleaver", () -> {
-			return new SwordItem(Tiers.WOOD, 6, -3.2F, new Item.Properties());
-		});
-		GOLD_CLEAVER = ITEMS.register("stone_cleaver", () -> {
-			return new SwordItem(Tiers.GOLD, 6, -3.0F, new Item.Properties());
-		});
-		STONE_CLEAVER = ITEMS.register("gold_cleaver", () -> {
-			return new SwordItem(Tiers.STONE, 7, -3.2F, new Item.Properties());
-		});
-		IRON_CLEAVER = ITEMS.register("iron_cleaver", () -> {
-			return new SwordItem(Tiers.IRON, 6, -3.1F, new Item.Properties());
-		});
-		DIAMOND_CLEAVER = ITEMS.register("diamond_cleaver", () -> {
-			return new SwordItem(Tiers.DIAMOND, 5, -3.0F, new Item.Properties());
-		});
-		NETHERITE_CLEAVER = ITEMS.register("netherite_cleaver", () -> {
-			return new SwordItem(Tiers.NETHERITE, 5, -3.0F, (new Item.Properties()).fireResistant());
-		});
 		HUMAN_APPENDIX = ITEMS.register("appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});

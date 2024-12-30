@@ -40,12 +40,6 @@ public class ClientModEventBusSubscriber {
     public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(CCItems.CHEST_OPENER);
-        } else if (event.getTabKey() == CreativeModeTabs.COMBAT) {
-            event.accept(CCItems.WOODEN_CLEAVER);
-            event.accept(CCItems.STONE_CLEAVER);
-            event.accept(CCItems.IRON_CLEAVER);
-            event.accept(CCItems.DIAMOND_CLEAVER);
-            event.accept(CCItems.NETHERITE_CLEAVER);
         } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(CCItems.BURNT_MEAT_CHUNK);
             event.accept(CCItems.RAW_ORGAN_MEAT);

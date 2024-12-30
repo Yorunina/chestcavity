@@ -27,6 +27,6 @@ public class TomophobiaEnchantment extends Enchantment {
         return true;
     }
     public boolean checkCompatibility(Enchantment other) {
-        return super.isCompatibleWith(other) && other != CCEnchantments.SURGICAL.get() && other != CCEnchantments.MALPRACTICE.get();
+        return super.isCompatibleWith(other);
     }
 }

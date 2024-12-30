@@ -124,9 +124,7 @@ public class OrganUtil {
         }
 
         String textString;
-        if (EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
-            textString = "Unsafe to use";
-        } else if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.getTagEnchantmentLevel((Enchantment) CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
+         if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.getTagEnchantmentLevel((Enchantment) CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
             String name = tag.getString("name");
             textString = "Only Compatible With: " + name;
