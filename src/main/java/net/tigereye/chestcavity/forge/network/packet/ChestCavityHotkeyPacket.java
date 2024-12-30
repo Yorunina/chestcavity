@@ -27,15 +27,15 @@ public class ChestCavityHotkeyPacket {
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
         AtomicBoolean success = new AtomicBoolean(false);
-        ((NetworkEvent.Context)contextSupplier.get()).enqueueWork(() -> {
-            Player player = ((NetworkEvent.Context)contextSupplier.get()).getSender();
+        contextSupplier.get().enqueueWork(() -> {
+            Player player = contextSupplier.get().getSender();
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(player);
             optional.ifPresent((chestCavityEntity) -> {
                 OrganActivationListeners.activate(this.location, chestCavityEntity.getChestCavityInstance());
                 success.set(true);
             });
         });
-        ((NetworkEvent.Context)contextSupplier.get()).setPacketHandled(true);
+        contextSupplier.get().setPacketHandled(true);
         return success.get();
     }
 }

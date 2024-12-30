@@ -189,7 +189,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             OrganFoodEffectListeners.call(list, stack, world, targetEntity, option.get().getChestCavityInstance());
         }
 
-        return (List)list;
+        return list;
     }
 
     @ModifyArg(
@@ -279,7 +279,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             if (source.getEntity() instanceof LivingEntity) {
                 Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.getEntity());
                 if (cce.isPresent()) {
-                    amount = ChestCavityUtil.onHit(((ChestCavityEntity)cce.get()).getChestCavityInstance(), source, this, amount);
+                    amount = ChestCavityUtil.onHit(cce.get().getChestCavityInstance(), source, this, amount);
                 }
             }
 
@@ -382,7 +382,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 remap = false
         )
         public void chestCavityEntityMoveToWorldMixin(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> info) {
-            Entity entity = (Entity)info.getReturnValue();
+            Entity entity = info.getReturnValue();
             if (entity instanceof ChestCavityEntity && !entity.level().isClientSide) {
                 NetworkUtil.SendS2CChestCavityUpdatePacket(((ChestCavityEntity)entity).getChestCavityInstance());
             }
@@ -422,7 +422,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         protected void chestCavityPreventNetherStarDrop(DamageSource source, int lootingMultiplier, boolean allowDrops, CallbackInfo info) {
             Optional<ChestCavityEntity> chestCavityEntity = ChestCavityEntity.of(this);
             if (chestCavityEntity.isPresent()) {
-                ChestCavityInstance cc = ((ChestCavityEntity)chestCavityEntity.get()).getChestCavityInstance();
+                ChestCavityInstance cc = chestCavityEntity.get().getChestCavityInstance();
                 if (cc.opened && cc.inventory.countItem(Items.NETHER_STAR) == 0) {
                     info.cancel();
                 }

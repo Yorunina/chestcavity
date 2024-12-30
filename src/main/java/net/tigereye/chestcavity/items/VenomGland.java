@@ -30,7 +30,7 @@ public class VenomGland extends Item implements OrganOnHitListener {
 
     public float onHit(DamageSource source, LivingEntity attacker, LivingEntity target, ChestCavityInstance cc, ItemStack organ, float damage) {
         if (attacker.getItemInHand(attacker.getUsedItemHand()).isEmpty() || source.is(DamageTypeTags.IS_PROJECTILE) && source.getEntity() instanceof LlamaSpit) {
-            if (attacker.hasEffect((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get())) {
+            if (attacker.hasEffect(CCStatusEffects.VENOM_COOLDOWN.get())) {
                 MobEffectInstance cooldown = attacker.getEffect((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get());
                 if (cooldown.getDuration() != ChestCavity.config.VENOM_COOLDOWN) {
                     return damage;
@@ -42,14 +42,14 @@ public class VenomGland extends Item implements OrganOnHitListener {
                 Iterator<MobEffectInstance> var8 = effects.iterator();
 
                 while(var8.hasNext()) {
-                    MobEffectInstance effect = (MobEffectInstance)var8.next();
+                    MobEffectInstance effect = var8.next();
                     target.addEffect(effect);
                 }
             } else {
                 target.addEffect(new MobEffectInstance(MobEffects.POISON, 200, 0));
             }
 
-            attacker.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get(), ChestCavity.config.VENOM_COOLDOWN, 0));
+            attacker.addEffect(new MobEffectInstance(CCStatusEffects.VENOM_COOLDOWN.get(), ChestCavity.config.VENOM_COOLDOWN, 0));
             if (attacker instanceof Player) {
                 ((Player)attacker).causeFoodExhaustion(0.1F);
             }

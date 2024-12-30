@@ -1,12 +1,5 @@
 package net.tigereye.chestcavity.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Consumer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +8,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,7 +20,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
@@ -37,7 +28,6 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.compat.kubejs.EvaluateChestCavityJS;
-import net.tigereye.chestcavity.compat.requiem.CCRequiem;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
@@ -50,6 +40,14 @@ import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ChestCavityUtil {
     public ChestCavityUtil() {
@@ -356,7 +354,7 @@ public class ChestCavityUtil {
     }
 
     public static void dropUnboundOrgans(ChestCavityInstance cc) {
-        if (!ChestCavity.config.REQUIEM_INTEGRATION || ForgeRegistries.ENTITY_TYPES.getKey(cc.owner.getType()).compareTo(CCRequiem.PLAYER_SHELL_ID) != 0) {
+        if (!ChestCavity.config.REQUIEM_INTEGRATION) {
             try {
                 cc.inventory.removeListener(cc);
             } catch (NullPointerException ignored) {
@@ -515,7 +513,7 @@ public class ChestCavityUtil {
                 } else {
 
                     for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
-                        TagKey<Item> itemTag = (TagKey) itemTagKey;
+                        TagKey<Item> itemTag = itemTagKey;
                         if (itemStack.is(itemTag)) {
                             organData = new OrganData();
                             organData.pseudoOrgan = true;

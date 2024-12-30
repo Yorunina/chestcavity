@@ -60,7 +60,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.STRENGTH) != cc.getOrganScore(CCOrganScores.STRENGTH)) {
             AttributeInstance att = entity.getAttribute(Attributes.ATTACK_DAMAGE);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(MUSCLE_STRENGTH_ID, "ChestCavityMuscleAttackDamage", (double)((cc.getOrganScore(CCOrganScores.STRENGTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.STRENGTH)) * ChestCavity.config.MUSCLE_STRENGTH / 8.0F), Operation.MULTIPLY_BASE);
+                AttributeModifier mod = new AttributeModifier(MUSCLE_STRENGTH_ID, "ChestCavityMuscleAttackDamage", (cc.getOrganScore(CCOrganScores.STRENGTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.STRENGTH)) * ChestCavity.config.MUSCLE_STRENGTH / 8.0F, Operation.MULTIPLY_BASE);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -71,7 +71,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.SPEED) != cc.getOrganScore(CCOrganScores.SPEED)) {
             AttributeInstance att = entity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(MUSCLE_SPEED_ID, "ChestCavityMovementSpeed", (double)((cc.getOrganScore(CCOrganScores.SPEED) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.SPEED)) * ChestCavity.config.MUSCLE_SPEED / 8.0F), Operation.MULTIPLY_BASE);
+                AttributeModifier mod = new AttributeModifier(MUSCLE_SPEED_ID, "ChestCavityMovementSpeed", (cc.getOrganScore(CCOrganScores.SPEED) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.SPEED)) * ChestCavity.config.MUSCLE_SPEED / 8.0F, Operation.MULTIPLY_BASE);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -89,7 +89,7 @@ public class OrganUpdateListeners {
 
             att = entity.getAttribute(Attributes.ATTACK_SPEED);
             if (att != null) {
-                mod = new AttributeModifier(SPINE_ATTACK_SPEED_ID, "ChestCavitySpineAttackSpeed", (double)((cc.getOrganScore(CCOrganScores.NERVES) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NERVES)) * ChestCavity.config.NERVES_HASTE), Operation.MULTIPLY_BASE);
+                mod = new AttributeModifier(SPINE_ATTACK_SPEED_ID, "ChestCavitySpineAttackSpeed", (cc.getOrganScore(CCOrganScores.NERVES) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NERVES)) * ChestCavity.config.NERVES_HASTE, Operation.MULTIPLY_BASE);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -111,7 +111,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.INCOMPATIBILITY) != cc.getOrganScore(CCOrganScores.INCOMPATIBILITY)) {
             try {
                 entity.removeEffect((MobEffect)CCStatusEffects.ORGAN_REJECTION.get());
-            } catch (Exception var3) {
+            } catch (Exception ignored) {
             }
         }
 

@@ -1,10 +1,5 @@
 package net.tigereye.chestcavity.mixin;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -16,6 +11,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 @Mixin({LootTable.class})
 public class LootTableGenerateLootMixin {
@@ -36,7 +36,7 @@ public class LootTableGenerateLootMixin {
     public Consumer<ItemStack> generateUnprocessedLootMixin_InterceptConsumerReplaceWithList(Consumer<ItemStack> lootConsumer) {
         this.interceptedLoot.clear();
         this.interceptedConsumer = lootConsumer;
-        List var10000 = this.interceptedLoot;
+        List<ItemStack> var10000 = this.interceptedLoot;
         Objects.requireNonNull(var10000);
         return var10000::add;
     }

@@ -103,12 +103,6 @@ public class CCConfig implements ConfigData {
     @Category("cooldown")
     public int VENOM_COOLDOWN = 40;
     @Category("integration")
-    public boolean BACKROOMS_INTEGRATION = true;
-    @Category("integration")
-    public int BACKROOMS_CHEST_ORGAN_LOOT_ATTEMPTS = 2;
-    @Category("integration")
-    public float BACKROOMS_CHEST_ORGAN_LOOT_CHANCE = 0.2F;
-    @Category("integration")
     public boolean REQUIEM_INTEGRATION = true;
 
     public CCConfig() {

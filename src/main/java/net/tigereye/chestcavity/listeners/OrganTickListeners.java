@@ -69,10 +69,8 @@ public class OrganTickListeners {
             List<EndCrystal> list = entity.level().getEntitiesOfClass(EndCrystal.class, entity.getBoundingBox().inflate((double)ChestCavity.config.CRYSTALSYNTHESIS_RANGE));
             EndCrystal endCrystalEntity = null;
             double d = Double.MAX_VALUE;
-            Iterator<EndCrystal> var8 = list.iterator();
 
-            while(var8.hasNext()) {
-                EndCrystal endCrystalEntity2 = (EndCrystal)var8.next();
+            for (EndCrystal endCrystalEntity2 : list) {
                 double e = endCrystalEntity2.distanceToSqr(entity);
                 if (e < d) {
                     d = e;
@@ -86,8 +84,7 @@ public class OrganTickListeners {
             }
 
             if (cc.connectedCrystal != null) {
-                if (entity instanceof Player) {
-                    Player playerEntity = (Player)entity;
+                if (entity instanceof Player playerEntity) {
                     FoodData hungerManager = playerEntity.getFoodData();
                     if (hungerManager.needsFood()) {
                         if (crystalsynthesis >= 5.0F || (float)(entity.level().getGameTime() % ((long)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * 5L)) < (float)ChestCavity.config.CRYSTALSYNTHESIS_FREQUENCY * crystalsynthesis) {
