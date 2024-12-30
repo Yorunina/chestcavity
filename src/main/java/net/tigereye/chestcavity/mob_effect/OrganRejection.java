@@ -10,11 +10,11 @@ public class OrganRejection extends CCStatusEffect {
         super(MobEffectCategory.NEUTRAL, 13172480);
     }
 
-    public boolean m_6584_(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration <= 1;
     }
 
-    public void m_6742_(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide) {
             entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float)ChestCavity.config.ORGAN_REJECTION_DAMAGE);
         }

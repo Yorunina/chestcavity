@@ -17,11 +17,11 @@ public class FurnacePower extends CCStatusEffect {
         super(MobEffectCategory.BENEFICIAL, 13172480);
     }
 
-    public boolean m_6584_(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
-    public void m_6742_(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (entity instanceof Player && !entity.level().isClientSide) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
             if (optional.isPresent()) {

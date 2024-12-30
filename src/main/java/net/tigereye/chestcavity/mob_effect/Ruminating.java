@@ -15,11 +15,11 @@ public class Ruminating extends CCStatusEffect {
         super(MobEffectCategory.BENEFICIAL, 13172480);
     }
 
-    public boolean m_6584_(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration % ChestCavity.config.RUMINATION_TIME == 1;
     }
 
-    public void m_6742_(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (entity instanceof Player && !entity.level().isClientSide) {
             FoodData hungerManager = ((Player)entity).getFoodData();
             hungerManager.eat((Item)CCItems.CUD.get(), new ItemStack((ItemLike)CCItems.CUD.get()), entity);
