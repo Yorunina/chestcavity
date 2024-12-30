@@ -29,7 +29,7 @@ public class KeybindingClientListeners {
                             continue label20;
                         }
 
-                        ResourceLocation i = (ResourceLocation)var1.next();
+                        ResourceLocation i = var1.next();
                         NetworkUtil.SendC2SChestCavityHotkeyPacket(i);
                     }
                 }
@@ -52,7 +52,7 @@ public class KeybindingClientListeners {
                             continue label20;
                         }
 
-                        ResourceLocation i = (ResourceLocation)var1.next();
+                        ResourceLocation i = var1.next();
                         NetworkUtil.SendC2SChestCavityHotkeyPacket(i);
                     }
                 }

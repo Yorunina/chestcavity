@@ -55,7 +55,7 @@ public class OrganActivationListeners {
 
     public static boolean activate(ResourceLocation id, ChestCavityInstance cc) {
         if (abilityIDMap.containsKey(id)) {
-            ((BiConsumer)abilityIDMap.get(id)).accept(cc.owner, cc);
+            (abilityIDMap.get(id)).accept(cc.owner, cc);
             return true;
         } else {
             return false;

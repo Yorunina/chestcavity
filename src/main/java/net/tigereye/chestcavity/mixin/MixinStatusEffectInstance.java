@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin({MobEffectInstance.class})
 public abstract class MixinStatusEffectInstance implements CCStatusEffectInstance {
 	@Shadow
-	int duration;
+	private int duration;
 
 	public MixinStatusEffectInstance() {
 	}

@@ -57,10 +57,8 @@ public class LootTableGenerateLootMixin {
         }
 
         Consumer<ItemStack> processedConsumer = LootTable.createStackSplitter(context.getLevel(), this.interceptedConsumer);
-        Iterator var5 = this.interceptedLoot.iterator();
 
-        while(var5.hasNext()) {
-            ItemStack stack = (ItemStack)var5.next();
+        for (ItemStack stack : this.interceptedLoot) {
             processedConsumer.accept(stack);
         }
 

@@ -22,16 +22,12 @@ public class NetworkUtil {
     public static boolean SendS2CChestCavityUpdatePacket(ChestCavityInstance cc, boolean buf) {
         if (!cc.owner.level().isClientSide()) {
             LivingEntity var3 = cc.owner;
-            if (var3 instanceof ServerPlayer) {
-                ServerPlayer spe = (ServerPlayer)var3;
-                if (spe.connection != null) {
-                    ChestCavityNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> {
-                        return spe;
-                    }), new ChestCavityUpdatePacket(cc));
-                    return true;
-                }
+            if (var3 instanceof ServerPlayer spe) {
+                ChestCavityNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> {
+                    return spe;
+                }), new ChestCavityUpdatePacket(cc));
+                return true;
 
-                return false;
             }
         }
 

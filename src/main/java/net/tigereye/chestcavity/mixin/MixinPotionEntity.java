@@ -6,6 +6,7 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +22,7 @@ public class MixinPotionEntity extends ThrowableItemProjectile {
         super(entityType, world);
     }
     @Shadow
-    protected Item getDefaultItem() {
+    protected @NotNull Item getDefaultItem() {
         return null;
     }
 

@@ -37,28 +37,28 @@ public class LootRegister {
     public static List<ItemStack> addEntityLoot(LootContextParamSet type, LootContext lootContext) {
         List<ItemStack> loot = new ArrayList();
         if (lootContext.hasParam(LootContextParams.LAST_DAMAGE_PLAYER)) {
-            Entity entity = (Entity)lootContext.getParam(LootContextParams.THIS_ENTITY);
+            Entity entity = lootContext.getParam(LootContextParams.THIS_ENTITY);
             Optional<ChestCavityEntity> chestCavityEntity = ChestCavityEntity.of(entity);
             if (!chestCavityEntity.isPresent()) {
                 return loot;
             }
 
-            ChestCavityInstance cc = ((ChestCavityEntity)chestCavityEntity.get()).getChestCavityInstance();
+            ChestCavityInstance cc = chestCavityEntity.get().getChestCavityInstance();
             if (cc.opened) {
                 return loot;
             }
 
-            Entity killer_ = (Entity)lootContext.getParam(LootContextParams.KILLER_ENTITY);
+            Entity killer_ = lootContext.getParam(LootContextParams.KILLER_ENTITY);
             int lootingLevel;
             RandomSource random;
             if (killer_ instanceof LivingEntity) {
                 LivingEntity killer = (LivingEntity)killer_;
-                if (EnchantmentHelper.getEnchantmentLevel((Enchantment)CCEnchantments.TOMOPHOBIA.get(), killer) > 0) {
+                if (EnchantmentHelper.getEnchantmentLevel(CCEnchantments.TOMOPHOBIA.get(), killer) > 0) {
                     return loot;
                 }
 
                 lootingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.MOB_LOOTING, killer);
-                lootingLevel += EnchantmentHelper.getEnchantmentLevel((Enchantment)CCEnchantments.SURGICAL.get(), killer) * 2;
+                lootingLevel += EnchantmentHelper.getEnchantmentLevel(CCEnchantments.SURGICAL.get(), killer) * 2;
                 if (killer.getItemInHand(killer.getUsedItemHand()).is(CCTags.BUTCHERING_TOOL)) {
                     lootingLevel = 10 + 10 * lootingLevel;
                 }
@@ -77,7 +77,7 @@ public class LootRegister {
 
     public static List<ItemStack> modifyEntityLoot(LootContextParamSet type, LootContext lootContext, List<ItemStack> loot) {
         if (lootContext.hasParam(LootContextParams.KILLER_ENTITY)) {
-            Entity killer_ = (Entity)lootContext.getParam(LootContextParams.KILLER_ENTITY);
+            Entity killer_ = lootContext.getParam(LootContextParams.KILLER_ENTITY);
             if (killer_ instanceof LivingEntity) {
                 LivingEntity killer = (LivingEntity)killer_;
                 if (killer.getItemInHand(killer.getUsedItemHand()).is(CCTags.BUTCHERING_TOOL)) {
@@ -111,7 +111,7 @@ public class LootRegister {
                                     break label53;
                                 }
 
-                                stackx = (ItemStack)i.next();
+                                stackx = i.next();
                             } while(!stackx.is(CCTags.SALVAGEABLE));
 
                             var8 = salvageRecipeList.iterator();
@@ -119,7 +119,7 @@ public class LootRegister {
                             while(var8.hasNext()) {
                                 SalvageRecipe recipe = (SalvageRecipe)var8.next();
                                 if (recipe.getInput().test(stackx)) {
-                                    salvageResults.put(recipe, (Integer)salvageResults.getOrDefault(recipe, 0) + stackx.getCount());
+                                    salvageResults.put(recipe, salvageResults.getOrDefault(recipe, 0) + stackx.getCount());
                                     i.remove();
                                     break;
                                 }
@@ -128,13 +128,11 @@ public class LootRegister {
                     }
                 }
 
-                if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.MALPRACTICE.get(), killer.getItemInHand(killer.getUsedItemHand())) > 0) {
-                    Iterator<ItemStack> var10 = loot.iterator();
+                if (EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.MALPRACTICE.get(), killer.getItemInHand(killer.getUsedItemHand())) > 0) {
 
-                    while(var10.hasNext()) {
-                        ItemStack stack = (ItemStack)var10.next();
+                    for (ItemStack stack : loot) {
                         if (OrganManager.isTrueOrgan(stack.getItem())) {
-                            stack.enchant((Enchantment)CCEnchantments.MALPRACTICE.get(), 1);
+                            stack.enchant(CCEnchantments.MALPRACTICE.get(), 1);
                         }
                     }
                 }

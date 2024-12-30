@@ -104,7 +104,6 @@ public class OrganUtil {
     @OnlyIn(Dist.CLIENT)
     public static void displayCompatibility(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
         CompoundTag tag = itemStack.getOrCreateTag();
-        boolean uuidMatch = false;
         int compatLevel = 0;
         MinecraftServer server = null;
         if (world != null) {
@@ -116,10 +115,8 @@ public class OrganUtil {
         }
 
         if (server != null) {
-            Player serverPlayer = ((MinecraftServer)server).getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
-            if (serverPlayer instanceof ChestCavityEntity) {
-                ChestCavityEntity ccPlayer = (ChestCavityEntity)serverPlayer;
-                UUID ccID = ccPlayer.getChestCavityInstance().compatibility_id;
+            Player serverPlayer = server.getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
+            if (serverPlayer instanceof ChestCavityEntity ccPlayer) {
                 compatLevel = ChestCavityUtil.getCompatibilityLevel(ccPlayer.getChestCavityInstance(), itemStack);
             }
         } else {
@@ -127,9 +124,9 @@ public class OrganUtil {
         }
 
         String textString;
-        if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
+        if (EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.MALPRACTICE.get(), itemStack) > 0) {
             textString = "Unsafe to use";
-        } else if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
+        } else if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString()) && EnchantmentHelper.getTagEnchantmentLevel((Enchantment) CCEnchantments.O_NEGATIVE.get(), itemStack) <= 0) {
             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
             String name = tag.getString("name");
             textString = "Only Compatible With: " + name;
@@ -152,7 +149,7 @@ public class OrganUtil {
 
     public static void explode(LivingEntity entity, float explosionYield) {
         if (!entity.level().isClientSide) {
-            entity.level().explode((Entity)null, entity.getX(), entity.getY(), entity.getZ(), (float)Math.sqrt((double)explosionYield), ExplosionInteraction.MOB);
+            entity.level().explode(null, entity.getX(), entity.getY(), entity.getZ(), (float)Math.sqrt(explosionYield), ExplosionInteraction.MOB);
             spawnEffectsCloud(entity);
         }
 

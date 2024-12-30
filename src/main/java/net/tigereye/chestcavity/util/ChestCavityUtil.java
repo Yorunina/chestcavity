@@ -275,14 +275,14 @@ public class ChestCavityUtil {
         float dodge = cc.getOrganScore(CCOrganScores.ARROW_DODGING);
         if (dodge == 0.0F) {
             return false;
-        } else if (cc.owner.hasEffect((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get())) {
+        } else if (cc.owner.hasEffect(CCStatusEffects.ARROW_DODGE_COOLDOWN.get())) {
             return false;
         } else if (!source.is(DamageTypeTags.IS_PROJECTILE)) {
             return false;
         } else if (!OrganUtil.teleportRandomly(cc.owner, (float)ChestCavity.config.ARROW_DODGE_DISTANCE / dodge)) {
             return false;
         } else {
-            cc.owner.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.ARROW_DODGE_COOLDOWN.get(), (int)((float)ChestCavity.config.ARROW_DODGE_COOLDOWN / dodge), 0, false, false, true));
+            cc.owner.addEffect(new MobEffectInstance(CCStatusEffects.ARROW_DODGE_COOLDOWN.get(), (int)((float)ChestCavity.config.ARROW_DODGE_COOLDOWN / dodge), 0, false, false, true));
             return true;
         }
     }
@@ -290,7 +290,7 @@ public class ChestCavityUtil {
     public static void clearForbiddenSlots(ChestCavityInstance cc) {
         try {
             cc.inventory.removeListener(cc);
-        } catch (NullPointerException var2) {
+        } catch (NullPointerException ignored) {
         }
 
         for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
@@ -305,7 +305,7 @@ public class ChestCavityUtil {
     public static void destroyOrgansWithKey(ChestCavityInstance cc, ResourceLocation organ) {
         for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
             ItemStack slot = cc.inventory.getItem(i);
-            if (slot != null && slot != ItemStack.EMPTY) {
+            if (slot != ItemStack.EMPTY) {
                 OrganData organData = lookupOrgan(slot, cc.getChestCavityType());
                 if (organData != null && organData.organScores.containsKey(organ)) {
                     cc.inventory.removeItemNoUpdate(i);
@@ -359,12 +359,12 @@ public class ChestCavityUtil {
         if (!ChestCavity.config.REQUIEM_INTEGRATION || ForgeRegistries.ENTITY_TYPES.getKey(cc.owner.getType()).compareTo(CCRequiem.PLAYER_SHELL_ID) != 0) {
             try {
                 cc.inventory.removeListener(cc);
-            } catch (NullPointerException var4) {
+            } catch (NullPointerException ignored) {
             }
 
             for(int i = 0; i < cc.inventory.getContainerSize(); ++i) {
                 ItemStack itemStack = cc.inventory.getItem(i);
-                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                if (itemStack != ItemStack.EMPTY) {
                     int compatibility = getCompatibilityLevel(cc, itemStack);
                     if (compatibility < 2) {
                         cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(i));
@@ -507,9 +507,8 @@ public class ChestCavityUtil {
             if (organData != null) {
                 return organData;
             } else {
-                Item var4 = itemStack.getItem();
-                if (var4 instanceof CCOrganItem) {
-                    CCOrganItem oItem = (CCOrganItem)var4;
+                Item item = itemStack.getItem();
+                if (item instanceof CCOrganItem oItem) {
                     return oItem.getOrganData(itemStack);
                 } else if (OrganManager.hasEntry(itemStack.getItem())) {
                     return OrganManager.getEntry(itemStack.getItem());
@@ -520,7 +519,7 @@ public class ChestCavityUtil {
                         if (itemStack.is(itemTag)) {
                             organData = new OrganData();
                             organData.pseudoOrgan = true;
-                            organData.organScores = (Map) CCTagOrgans.tagMap.get(itemTag);
+                            organData.organScores = CCTagOrgans.tagMap.get(itemTag);
                             return organData;
                         }
                     }
@@ -540,11 +539,11 @@ public class ChestCavityUtil {
         ccinstance.getChestCavityType().onDeath(ccinstance);
         if (entity instanceof Player playerEntity) {
             if (!ChestCavity.config.KEEP_CHEST_CAVITY) {
-                Map<Integer, ItemStack> organsToKeep = new HashMap();
+                Map<Integer, ItemStack> organsToKeep = new HashMap<>();
 
                 for(int i = 0; i < ccinstance.inventory.getContainerSize(); ++i) {
                     ItemStack organ = ccinstance.inventory.getItem(i);
-                    if (EnchantmentHelper.getTagEnchantmentLevel((Enchantment)CCEnchantments.O_NEGATIVE.get(), organ) >= 2) {
+                    if (EnchantmentHelper.getTagEnchantmentLevel(CCEnchantments.O_NEGATIVE.get(), organ) >= 2) {
                         organsToKeep.put(i, organ.copy());
                     }
                 }
@@ -553,8 +552,8 @@ public class ChestCavityUtil {
                 generateChestCavityIfOpened(ccinstance);
 
                 for (Map.Entry<Integer, ItemStack> integerItemStackEntry : organsToKeep.entrySet()) {
-                    Map.Entry<Integer, ItemStack> entry = (Map.Entry) integerItemStackEntry;
-                    ccinstance.inventory.setItem((Integer) entry.getKey(), (ItemStack) entry.getValue());
+                    Map.Entry<Integer, ItemStack> entry = integerItemStackEntry;
+                    ccinstance.inventory.setItem(entry.getKey(), entry.getValue());
                 }
             }
 
@@ -567,7 +566,7 @@ public class ChestCavityUtil {
         if (cc.opened) {
             OrganOnHitContext e;
             for(Iterator<OrganOnHitContext> var4 = cc.onHitListeners.iterator(); var4.hasNext(); damage = e.listener.onHit(source, cc.owner, target, cc, e.organ, damage)) {
-                e = (OrganOnHitContext)var4.next();
+                e = var4.next();
             }
 
             organUpdate(cc);
@@ -578,7 +577,7 @@ public class ChestCavityUtil {
 
     public static void onTick(ChestCavityInstance cc) {
         if (cc.updatePacket) {
-            NetworkUtil.SendS2CChestCavityUpdatePacket(cc, cc.updatePacket);
+            NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
         }
 
         if (cc.opened) {
@@ -636,7 +635,7 @@ public class ChestCavityUtil {
                 if (d < 16.0) {
                     Optional<ChestCavityEntity> optional = ChestCavityEntity.of(livingEntity);
                     if (optional.isPresent()) {
-                        ChestCavityInstance cc = ((ChestCavityEntity) optional.get()).getChestCavityInstance();
+                        ChestCavityInstance cc = optional.get().getChestCavityInstance();
                         float allergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
                         float phobia = cc.getOrganScore(CCOrganScores.HYDROPHOBIA);
                         if (allergy > 0.0F) {

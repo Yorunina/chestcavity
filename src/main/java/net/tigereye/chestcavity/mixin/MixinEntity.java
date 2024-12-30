@@ -39,21 +39,4 @@ public class MixinEntity {
 
         return finalHeightDifference;
     }
-
-    @Inject(
-            at = {@At("RETURN")},
-            method = {"interact"},
-            cancellable = true
-    )
-    public void chestCavityEntityInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-        if (info.getReturnValue() == InteractionResult.PASS && ((Entity)(Object)this) instanceof EnderDragonPart) {
-            ChestCavity.LOGGER.info("Attempting to open dragon's " + ((EnderDragonPart)(Object)this).name);
-            EnderDragon dragon = ((EnderDragonPart)(Object)this).parentMob;
-            if (dragon != null) {
-                ChestCavity.LOGGER.info("Dragon was not null");
-                info.setReturnValue(dragon.interact(player, hand));
-            }
-        }
-
-    }
 }

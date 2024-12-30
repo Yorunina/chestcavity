@@ -76,9 +76,9 @@ public class ChestCavity {
 
 	public void lootTableLoad(LootTableLoadEvent event) {
 		if (DESERT_PYRAMID_LOOT_TABLE_ID.equals(event.getName())) {
-			LootPool.Builder poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(4, 0.25F)).add(LootItem.lootTableItem((ItemLike)CCItems.ROTTEN_RIB.get()));
+			LootPool.Builder poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(4, 0.25F)).add(LootItem.lootTableItem(CCItems.ROTTEN_RIB.get()));
 			event.getTable().addPool(poolBuilder.build());
-			poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(1, 0.3F)).add(LootItem.lootTableItem((ItemLike)CCItems.ROTTEN_RIB.get()));
+			poolBuilder = LootPool.lootPool().setRolls(BinomialDistributionGenerator.binomial(1, 0.3F)).add(LootItem.lootTableItem(CCItems.ROTTEN_RIB.get()));
 			event.getTable().addPool(poolBuilder.build());
 		}
 
