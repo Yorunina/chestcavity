@@ -24,7 +24,6 @@ public class CCStatusEffects {
     public static final RegistryObject<MobEffect> PYROMANCY_COOLDOWN;
     public static final RegistryObject<MobEffect> RUMINATING;
     public static final RegistryObject<MobEffect> SHULKER_BULLET_COOLDOWN;
-    public static final RegistryObject<MobEffect> SILK_COOLDOWN;
     public static final RegistryObject<MobEffect> VENOM_COOLDOWN;
     public static final RegistryObject<MobEffect> WATER_VULNERABILITY;
 
@@ -61,9 +60,6 @@ public class CCStatusEffects {
         });
         RUMINATING = MOB_EFFECTS.register("ruminating", Ruminating::new);
         SHULKER_BULLET_COOLDOWN = MOB_EFFECTS.register("shulker_bullet_cooldown", () -> {
-            return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
-        });
-        SILK_COOLDOWN = MOB_EFFECTS.register("silk_cooldown", () -> {
             return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
         });
         VENOM_COOLDOWN = MOB_EFFECTS.register("venom_cooldown", () -> {

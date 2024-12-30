@@ -33,7 +33,6 @@ public class ClientModEventBusSubscriber {
         event.register(CCKeybindings.GHASTLY);
         event.register(CCKeybindings.GRAZING);
         event.register(CCKeybindings.SHULKER_BULLETS);
-        event.register(CCKeybindings.SILK);
     }
 
     @SubscribeEvent

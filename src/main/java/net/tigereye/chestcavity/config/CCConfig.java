@@ -99,8 +99,6 @@ public class CCConfig implements ConfigData {
     @Category("cooldown")
     public int SHULKER_BULLET_COOLDOWN = 100;
     @Category("cooldown")
-    public int SILK_COOLDOWN = 20;
-    @Category("cooldown")
     public int VENOM_COOLDOWN = 40;
 
     public CCConfig() {

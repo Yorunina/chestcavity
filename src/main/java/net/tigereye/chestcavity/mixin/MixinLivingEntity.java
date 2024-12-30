@@ -314,24 +314,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         }
     }
 
-    @Mixin({net.minecraft.world.entity.animal.Cow.class})
-    private abstract static class Cow extends Animal {
-        protected Cow(EntityType<? extends Animal> entityType, Level world) {
-            super(entityType, world);
-        }
-
-        @Inject(
-                method = {"mobInteract"},
-                at = {@At(
-                        value = "RETURN",
-                        ordinal = 0
-                )}
-        )
-        protected void interactMob(net.minecraft.world.entity.player.Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-            OrganUtil.milkSilk(this);
-        }
-    }
-
     @Mixin({net.minecraft.world.entity.monster.Creeper.class})
     private abstract static class Creeper extends Monster {
         @Shadow
@@ -390,20 +372,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         }
     }
 
-    @Mixin({net.minecraft.world.entity.animal.Sheep.class})
-    private abstract static class Sheep extends Animal {
-        protected Sheep(EntityType<? extends Animal> entityType, Level world) {
-            super(entityType, world);
-        }
-
-        @Inject(
-                method = {"shear"},
-                at = {@At("HEAD")}
-        )
-        protected void chestCavitySheared(SoundSource shearedSoundCategory, CallbackInfo info) {
-            OrganUtil.shearSilk(this);
-        }
-    }
 
     @Mixin({WitherBoss.class})
     private abstract static class Wither extends Monster {

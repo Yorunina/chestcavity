@@ -59,7 +59,7 @@ public class OrganTickListeners {
             } else if (crystalsynthesis != 0.0F) {
                 cc.connectedCrystal.setBeamTarget(entity.blockPosition().below(2));
             } else {
-                cc.connectedCrystal.setBeamTarget((BlockPos)null);
+                cc.connectedCrystal.setBeamTarget(null);
                 cc.connectedCrystal = null;
             }
         }
@@ -80,7 +80,7 @@ public class OrganTickListeners {
 
             cc.connectedCrystal = endCrystalEntity;
             if (oldcrystal != null && oldcrystal != cc.connectedCrystal) {
-                oldcrystal.setBeamTarget((BlockPos)null);
+                oldcrystal.setBeamTarget(null);
             }
 
             if (cc.connectedCrystal != null) {

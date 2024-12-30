@@ -1,11 +1,8 @@
 package net.tigereye.chestcavity.items;
 
-import java.util.Iterator;
-import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +20,8 @@ import net.tigereye.chestcavity.registration.CCFoodComponents;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.util.OrganUtil;
 
+import java.util.List;
+
 public class VenomGland extends Item implements OrganOnHitListener {
     public VenomGland() {
         super((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
@@ -31,7 +30,7 @@ public class VenomGland extends Item implements OrganOnHitListener {
     public float onHit(DamageSource source, LivingEntity attacker, LivingEntity target, ChestCavityInstance cc, ItemStack organ, float damage) {
         if (attacker.getItemInHand(attacker.getUsedItemHand()).isEmpty() || source.is(DamageTypeTags.IS_PROJECTILE) && source.getEntity() instanceof LlamaSpit) {
             if (attacker.hasEffect(CCStatusEffects.VENOM_COOLDOWN.get())) {
-                MobEffectInstance cooldown = attacker.getEffect((MobEffect)CCStatusEffects.VENOM_COOLDOWN.get());
+                MobEffectInstance cooldown = attacker.getEffect(CCStatusEffects.VENOM_COOLDOWN.get());
                 if (cooldown.getDuration() != ChestCavity.config.VENOM_COOLDOWN) {
                     return damage;
                 }
@@ -39,10 +38,8 @@ public class VenomGland extends Item implements OrganOnHitListener {
 
             List<MobEffectInstance> effects = OrganUtil.getStatusEffects(organ);
             if (!effects.isEmpty()) {
-                Iterator<MobEffectInstance> var8 = effects.iterator();
 
-                while(var8.hasNext()) {
-                    MobEffectInstance effect = var8.next();
+                for (MobEffectInstance effect : effects) {
                     target.addEffect(effect);
                 }
             } else {

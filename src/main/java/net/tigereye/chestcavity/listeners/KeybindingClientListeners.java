@@ -70,7 +70,6 @@ public class KeybindingClientListeners {
         register(CCKeybindings.GRAZING, CCOrganScores.GRAZING);
         register(CCKeybindings.PYROMANCY, CCOrganScores.PYROMANCY);
         register(CCKeybindings.SHULKER_BULLETS, CCOrganScores.SHULKER_BULLETS);
-        register(CCKeybindings.SILK, CCOrganScores.SILK);
     }
 
     public static void register(KeyMapping keybinding, ResourceLocation id) {

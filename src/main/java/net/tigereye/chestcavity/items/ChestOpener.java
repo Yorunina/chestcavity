@@ -46,10 +46,10 @@ public class ChestOpener extends Item {
 		if (optional.isPresent()) {
 			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
-			ChestCavity.LOGGER.error("cc inv: " + chestCavityEntity.getInventoryTypeData().getSlotSize());
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+						// todo 本地化
 						player.displayClientMessage(Component.translatable("Target's chest is obstructed"), true);
 						player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
 					} else {
@@ -74,6 +74,7 @@ public class ChestOpener extends Item {
 					String name;
 					try {
 						name = target.getDisplayName().getString();
+						// todo 本地化提取
 						name = name.concat("'s ");
 					} catch (Exception var9) {
 						name = "";

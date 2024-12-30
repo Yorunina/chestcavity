@@ -164,22 +164,6 @@ public class OrganUtil {
         }
     }
 
-    public static void milkSilk(LivingEntity entity) {
-        if (!entity.hasEffect(CCStatusEffects.SILK_COOLDOWN.get())) {
-            ChestCavityEntity.of(entity).ifPresent((cce) -> {
-                if (cce.getChestCavityInstance().opened) {
-                    ChestCavityInstance cc = cce.getChestCavityInstance();
-                    float silk = cc.getOrganScore(CCOrganScores.SILK);
-                    if (silk > 0.0F && spinWeb(entity, cc, silk)) {
-                        entity.addEffect(new MobEffectInstance(CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
-                    }
-                }
-
-            });
-        }
-
-    }
-
     public static void queueDragonBombs(LivingEntity entity, ChestCavityInstance cc, int bombs) {
         if (entity instanceof Player) {
             ((Player)entity).causeFoodExhaustion((float)bombs * 0.6F);
@@ -267,30 +251,6 @@ public class OrganUtil {
         tag.put("CustomPotionEffects", NbtList);
     }
 
-    public static void shearSilk(LivingEntity entity) {
-        ChestCavityEntity.of(entity).ifPresent((cce) -> {
-            if (cce.getChestCavityInstance().opened) {
-                float silk = cce.getChestCavityInstance().getOrganScore(CCOrganScores.SILK);
-                if (silk > 0.0F) {
-                    ItemStack stack;
-                    ItemEntity itemEntity;
-                    if (silk >= 2.0F) {
-                        stack = new ItemStack(Items.COBWEB, (int)silk / 2);
-                        itemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack);
-                        entity.level().addFreshEntity(itemEntity);
-                    }
-
-                    if (silk % 2.0F >= 1.0F) {
-                        stack = new ItemStack(Items.STRING);
-                        itemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack);
-                        entity.level().addFreshEntity(itemEntity);
-                    }
-                }
-            }
-
-        });
-    }
-
     public static void spawnEffectsCloud(LivingEntity entity) {
         Collection<MobEffectInstance> collection = entity.getActiveEffects();
         if (!collection.isEmpty()) {
@@ -308,10 +268,6 @@ public class OrganUtil {
             entity.level().addFreshEntity(areaEffectCloudEntity);
         }
 
-    }
-
-    public static void spawnSilk(LivingEntity entity) {
-        entity.spawnAtLocation(Items.STRING);
     }
 
     public static void spawnSpit(LivingEntity entity) {
@@ -403,44 +359,6 @@ public class OrganUtil {
 
     }
 
-    public static boolean spinWeb(LivingEntity entity, ChestCavityInstance cc, float silkScore) {
-        int hungerCost = 0;
-        Player player = null;
-        if (entity instanceof Player) {
-            player = (Player) entity;
-            if (player.getFoodData().getFoodLevel() < 6) {
-                return false;
-            }
-        }
-
-        if (silkScore >= 2.0F) {
-            // todo check
-            BlockPos pos = entity.blockPosition().offset(entity.getDirection().getNormal());
-            if (entity.level().getBlockState(pos).isAir()) {
-                if (silkScore >= 3.0F) {
-                    hungerCost = 16;
-                    silkScore -= 3.0F;
-                    entity.level().setBlock(pos, Blocks.WHITE_WOOL.defaultBlockState(), 2);
-                } else {
-                    hungerCost = 8;
-                    silkScore -= 2.0F;
-                    entity.level().setBlock(pos, Blocks.COBWEB.defaultBlockState(), 2);
-                }
-            }
-        }
-
-        while(silkScore >= 1.0F) {
-            --silkScore;
-            hungerCost += 4;
-            cc.projectileQueue.add(OrganUtil::spawnSilk);
-        }
-
-        if (player != null) {
-            player.getFoodData().addExhaustion((float)hungerCost);
-        }
-
-        return hungerCost > 0;
-    }
 
     public static boolean teleportRandomly(LivingEntity entity, float range) {
         if (!entity.level().isClientSide() && entity.isAlive()) {

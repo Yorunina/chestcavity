@@ -46,7 +46,6 @@ public class OrganActivationListeners {
         register(CCOrganScores.GHASTLY, OrganActivationListeners::ActivateGhastly);
         register(CCOrganScores.GRAZING, OrganActivationListeners::ActivateGrazing);
         register(CCOrganScores.SHULKER_BULLETS, OrganActivationListeners::ActivateShulkerBullets);
-        register(CCOrganScores.SILK, OrganActivationListeners::ActivateSilk);
     }
 
     public static void register(ResourceLocation id, BiConsumer<LivingEntity, ChestCavityInstance> ability) {
@@ -117,20 +116,20 @@ public class OrganActivationListeners {
 
             if (fuelValue == 0) {
                 itemStack = cc.owner.getItemBySlot(EquipmentSlot.OFFHAND);
-                if (itemStack != null && itemStack != ItemStack.EMPTY) {
+                if (itemStack != ItemStack.EMPTY) {
                     try {
-                        fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType)null);
-                    } catch (Exception var12) {
+                        fuelValue = ForgeHooks.getBurnTime(itemStack, null);
+                    } catch (Exception ignored) {
                     }
                 }
             }
 
             if (fuelValue != 0) {
                 MobEffectInstance newSEI = null;
-                if (!cc.owner.hasEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get())) {
-                    newSEI = new MobEffectInstance((MobEffect)CCStatusEffects.FURNACE_POWER.get(), fuelValue, 0, false, false, true);
+                if (!cc.owner.hasEffect(CCStatusEffects.FURNACE_POWER.get())) {
+                    newSEI = new MobEffectInstance(CCStatusEffects.FURNACE_POWER.get(), fuelValue, 0, false, false, true);
                 } else {
-                    MobEffectInstance oldPower = cc.owner.getEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get());
+                    MobEffectInstance oldPower = cc.owner.getEffect(CCStatusEffects.FURNACE_POWER.get());
                     if (oldPower.getAmplifier() >= furnacePowered - 1) {
                         return;
                     }
@@ -147,8 +146,8 @@ public class OrganActivationListeners {
                             int amplifier = 0;
 
                             for(Iterator<Integer> var10 = durations.iterator(); var10.hasNext(); ++amplifier) {
-                                Integer duration = (Integer)var10.next();
-                                newSEI = new MobEffectInstance((MobEffect)CCStatusEffects.FURNACE_POWER.get(), duration, amplifier, false, false, true, newSEI, Optional.empty());
+                                Integer duration = var10.next();
+                                newSEI = new MobEffectInstance(CCStatusEffects.FURNACE_POWER.get(), duration, amplifier, false, false, true, newSEI, Optional.empty());
                             }
                             break;
                         }
@@ -157,7 +156,7 @@ public class OrganActivationListeners {
                     }
                 }
 
-                entity.removeEffect((MobEffect)CCStatusEffects.FURNACE_POWER.get());
+                entity.removeEffect(CCStatusEffects.FURNACE_POWER.get());
                 entity.addEffect(newSEI);
                 itemStack.shrink(1);
             }
@@ -167,11 +166,11 @@ public class OrganActivationListeners {
 
     public static void ActivateIronRepair(LivingEntity entity, ChestCavityInstance cc) {
         float ironRepair = cc.getOrganScore(CCOrganScores.IRON_REPAIR) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.IRON_REPAIR);
-        if (!(ironRepair <= 0.0F) && !cc.owner.hasEffect((MobEffect)CCStatusEffects.IRON_REPAIR_COOLDOWN.get()) && !(cc.owner.getHealth() >= cc.owner.getMaxHealth())) {
+        if (!(ironRepair <= 0.0F) && !cc.owner.hasEffect(CCStatusEffects.IRON_REPAIR_COOLDOWN.get()) && !(cc.owner.getHealth() >= cc.owner.getMaxHealth())) {
             ItemStack itemStack = cc.owner.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (itemStack == null || !itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
+            if (!itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
                 itemStack = cc.owner.getItemBySlot(EquipmentSlot.OFFHAND);
-                if (itemStack == null || !itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
+                if (!itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
                     return;
                 }
             }
@@ -209,14 +208,14 @@ public class OrganActivationListeners {
 
             if (ateGrass) {
                 int duration;
-                if (entity.hasEffect((MobEffect)CCStatusEffects.RUMINATING.get())) {
-                    MobEffectInstance ruminating = entity.getEffect((MobEffect)CCStatusEffects.RUMINATING.get());
+                if (entity.hasEffect(CCStatusEffects.RUMINATING.get())) {
+                    MobEffectInstance ruminating = entity.getEffect(CCStatusEffects.RUMINATING.get());
                     duration = (int)Math.min((float)(ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE * ChestCavity.config.RUMINATION_SQUARES_PER_STOMACH) * grazing, (float)(ruminating.getDuration() + ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE));
                 } else {
                     duration = ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE;
                 }
 
-                entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.RUMINATING.get(), duration, 0, false, false, true));
+                entity.addEffect(new MobEffectInstance(CCStatusEffects.RUMINATING.get(), duration, 0, false, false, true));
             }
         }
 
@@ -224,7 +223,7 @@ public class OrganActivationListeners {
 
     public static void ActivatePyromancy(LivingEntity entity, ChestCavityInstance cc) {
         float pyromancy = cc.getOrganScore(CCOrganScores.PYROMANCY);
-        if (!(pyromancy < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.PYROMANCY_COOLDOWN.get())) {
+        if (pyromancy >= 1.0F && !entity.hasEffect(CCStatusEffects.PYROMANCY_COOLDOWN.get())) {
             OrganUtil.queuePyromancyFireballs(entity, cc, (int)pyromancy);
         }
 
@@ -232,16 +231,10 @@ public class OrganActivationListeners {
 
     public static void ActivateShulkerBullets(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.SHULKER_BULLETS);
-        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.SHULKER_BULLET_COOLDOWN.get())) {
+        if (!(projectiles < 1.0F) && !entity.hasEffect(CCStatusEffects.SHULKER_BULLET_COOLDOWN.get())) {
             OrganUtil.queueShulkerBullets(entity, cc, (int)projectiles);
         }
 
     }
 
-    public static void ActivateSilk(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOrganScore(CCOrganScores.SILK) != 0.0F && !entity.hasEffect((MobEffect)CCStatusEffects.SILK_COOLDOWN.get()) && OrganUtil.spinWeb(entity, cc, cc.getOrganScore(CCOrganScores.SILK))) {
-            entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
-        }
-
-    }
 }

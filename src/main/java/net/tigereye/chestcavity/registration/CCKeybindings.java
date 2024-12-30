@@ -66,6 +66,5 @@ public class CCKeybindings {
         GHASTLY = register(CCOrganScores.GHASTLY, "organ_abilities", 330, true);
         GRAZING = register(CCOrganScores.GRAZING, "organ_abilities", 330, false);
         SHULKER_BULLETS = register(CCOrganScores.SHULKER_BULLETS, "organ_abilities", 330, true);
-        SILK = register(CCOrganScores.SILK, "organ_abilities", 330, false);
     }
 }

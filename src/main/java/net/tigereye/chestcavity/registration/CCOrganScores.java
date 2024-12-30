@@ -43,7 +43,6 @@ public class CCOrganScores {
     public static final ResourceLocation GRAZING = new ResourceLocation("chestcavity", "grazing");
     public static final ResourceLocation PYROMANCY = new ResourceLocation("chestcavity", "pyromancy");
     public static final ResourceLocation SHULKER_BULLETS = new ResourceLocation("chestcavity", "shulker_bullets");
-    public static final ResourceLocation SILK = new ResourceLocation("chestcavity", "silk");
     public static final ResourceLocation CRYSTALSYNTHESIS = new ResourceLocation("chestcavity", "crystalsynthesis");
     public static final ResourceLocation PHOTOSYNTHESIS = new ResourceLocation("chestcavity", "photosynthesis");
     public static final ResourceLocation CARNIVOROUS_DIGESTION = new ResourceLocation("chestcavity", "carnivorous_digestion");
