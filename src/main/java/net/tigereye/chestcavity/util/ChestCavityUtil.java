@@ -351,29 +351,6 @@ public class ChestCavityUtil {
 
     }
 
-    public static void dropUnboundOrgans(ChestCavityInstance cc) {
-        if (!ChestCavity.config.REQUIEM_INTEGRATION) {
-            try {
-                cc.inventory.removeListener(cc);
-            } catch (NullPointerException ignored) {
-            }
-
-            for (int i = 0; i < cc.inventory.getContainerSize(); ++i) {
-                ItemStack itemStack = cc.inventory.getItem(i);
-                if (itemStack != ItemStack.EMPTY) {
-                    int compatibility = getCompatibilityLevel(cc, itemStack);
-                    if (compatibility < 2) {
-                        cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(i));
-                    }
-                }
-            }
-
-            cc.inventory.addListener(cc);
-            evaluateChestCavity(cc);
-        }
-
-    }
-
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
 
@@ -389,19 +366,19 @@ public class ChestCavityUtil {
             for (int i = 0; i < cc.inventory.getContainerSize(); i++) {
                 ItemStack itemStack = cc.inventory.getItem(i);
                 if (itemStack != ItemStack.EMPTY) {
-                    Item slotitem = itemStack.getItem();
+                    Item slotItem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
                             addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), organScores);
                         });
-                        if (slotitem instanceof OrganOnHitListener) {
-                            cc.onHitListeners.add(new OrganOnHitContext(itemStack, (OrganOnHitListener) slotitem));
+                        if (slotItem instanceof OrganOnHitListener) {
+                            cc.onHitListeners.add(new OrganOnHitContext(itemStack, (OrganOnHitListener) slotItem));
                         }
 
                         if (!data.pseudoOrgan) {
-                            int compatibility = getCompatibilityLevel(cc, itemStack);
-                            if (compatibility < 1) {
+                            boolean isCompat = getCompatibility(cc, itemStack);
+                            if (!isCompat) {
                                 addOrganScore(CCOrganScores.INCOMPATIBILITY, 1.0F, organScores);
                             }
                         }
@@ -437,23 +414,24 @@ public class ChestCavityUtil {
         }
     }
 
-    public static int getCompatibilityLevel(ChestCavityInstance cc, ItemStack itemStack) {
-        if (itemStack != null && itemStack != ItemStack.EMPTY) {
-            int ownership = 0;
-            CompoundTag tag = itemStack.getTag();
-            if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
-                tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-                if (tag.getUUID("owner").equals(cc.compatibility_id)) {
-                    ownership = 2;
-                }
-            } else {
-                ownership = 1;
-            }
-            return ownership;
-        } else {
-            return 1;
+    public static boolean getCompatibility(ChestCavityInstance cc, ItemStack itemStack) {
+        if (itemStack == null || itemStack == ItemStack.EMPTY) {
+            return true;
         }
+
+        CompoundTag tag = itemStack.getTag();
+        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
+            return true;
+        }
+
+        boolean isCompat = false;
+        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+        if (tag.getUUID("owner").equals(cc.compatibility_id)) {
+            isCompat = true;
+        }
+        return isCompat;
     }
+
 
     public static void insertWelfareOrgans(ChestCavityInstance cc) {
         if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0.0F) {

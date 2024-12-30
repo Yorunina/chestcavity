@@ -52,7 +52,6 @@ import net.tigereye.chestcavity.registration.CCStatusEffects;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,7 +99,7 @@ public class OrganUtil {
     @OnlyIn(Dist.CLIENT)
     public static void displayCompatibility(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
         CompoundTag tag = itemStack.getOrCreateTag();
-        int compatLevel = 0;
+        boolean isCompat = false;
         MinecraftServer server = null;
         if (world != null) {
             server = world.getServer();
@@ -113,10 +112,8 @@ public class OrganUtil {
         if (server != null) {
             Player serverPlayer = server.getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
             if (serverPlayer instanceof ChestCavityEntity ccPlayer) {
-                compatLevel = ChestCavityUtil.getCompatibilityLevel(ccPlayer.getChestCavityInstance(), itemStack);
+                isCompat = ChestCavityUtil.getCompatibility(ccPlayer.getChestCavityInstance(), itemStack);
             }
-        } else {
-            compatLevel = -1;
         }
 
         String textString;
@@ -129,12 +126,10 @@ public class OrganUtil {
         }
 
         MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
-        if (compatLevel > 0) {
+        if (isCompat) {
             text.withStyle(ChatFormatting.GREEN);
-        } else if (compatLevel == 0) {
-            text.withStyle(ChatFormatting.RED);
         } else {
-            text.withStyle(ChatFormatting.YELLOW);
+            text.withStyle(ChatFormatting.RED);
         }
 
         text.append(textString);
@@ -170,13 +165,13 @@ public class OrganUtil {
     }
 
     public static void milkSilk(LivingEntity entity) {
-        if (!entity.hasEffect((MobEffect)CCStatusEffects.SILK_COOLDOWN.get())) {
+        if (!entity.hasEffect(CCStatusEffects.SILK_COOLDOWN.get())) {
             ChestCavityEntity.of(entity).ifPresent((cce) -> {
                 if (cce.getChestCavityInstance().opened) {
                     ChestCavityInstance cc = cce.getChestCavityInstance();
                     float silk = cc.getOrganScore(CCOrganScores.SILK);
                     if (silk > 0.0F && spinWeb(entity, cc, silk)) {
-                        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
+                        entity.addEffect(new MobEffectInstance(CCStatusEffects.SILK_COOLDOWN.get(), ChestCavity.config.SILK_COOLDOWN, 0, false, false, true));
                     }
                 }
 
@@ -194,7 +189,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnDragonBomb);
         }
 
-        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.DRAGON_BOMB_COOLDOWN.get(), ChestCavity.config.DRAGON_BOMB_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(CCStatusEffects.DRAGON_BOMB_COOLDOWN.get(), ChestCavity.config.DRAGON_BOMB_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueForcefulSpit(LivingEntity entity, ChestCavityInstance cc, int projectiles) {
@@ -206,7 +201,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnSpit);
         }
 
-        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get(), ChestCavity.config.FORCEFUL_SPIT_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get(), ChestCavity.config.FORCEFUL_SPIT_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueGhastlyFireballs(LivingEntity entity, ChestCavityInstance cc, int ghastly) {
@@ -218,7 +213,7 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnGhastlyFireball);
         }
 
-        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.GHASTLY_COOLDOWN.get(), ChestCavity.config.GHASTLY_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(CCStatusEffects.GHASTLY_COOLDOWN.get(), ChestCavity.config.GHASTLY_COOLDOWN, 0, false, false, true));
     }
 
     public static void queuePyromancyFireballs(LivingEntity entity, ChestCavityInstance cc, int pyromancy) {
@@ -242,30 +237,27 @@ public class OrganUtil {
             cc.projectileQueue.add(OrganUtil::spawnShulkerBullet);
         }
 
-        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.SHULKER_BULLET_COOLDOWN.get(), ChestCavity.config.SHULKER_BULLET_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(CCStatusEffects.SHULKER_BULLET_COOLDOWN.get(), ChestCavity.config.SHULKER_BULLET_COOLDOWN, 0, false, false, true));
     }
 
     public static void setStatusEffects(ItemStack organ, ItemStack potion) {
         List<MobEffectInstance> potionList = PotionUtils.getCustomEffects(potion);
         List<MobEffectInstance> list = new ArrayList();
-        Iterator<MobEffectInstance> var4 = potionList.iterator();
 
-        while(var4.hasNext()) {
-            MobEffectInstance effect = (MobEffectInstance)var4.next();
+        for (MobEffectInstance effect : potionList) {
             MobEffectInstance effectCopy = new MobEffectInstance(effect);
-            ((CCStatusEffectInstance)effectCopy).CC_setDuration(Math.max(1, effectCopy.getDuration() / 4));
+            ((CCStatusEffectInstance) effectCopy).CC_setDuration(Math.max(1, effectCopy.getDuration() / 4));
             list.add(effectCopy);
         }
 
-        setStatusEffects(organ, (List)list);
+        setStatusEffects(organ, list);
     }
 
     public static void setStatusEffects(ItemStack organ, List<MobEffectInstance> list) {
         CompoundTag tag = organ.getOrCreateTag();
         ListTag NbtList = new ListTag();
 
-        for(int i = 0; i < list.size(); ++i) {
-            MobEffectInstance effect = (MobEffectInstance)list.get(i);
+        for (MobEffectInstance effect : list) {
             if (effect != null) {
                 CompoundTag NbtCompound = new CompoundTag();
                 NbtList.add(effect.save(NbtCompound));
@@ -308,10 +300,8 @@ public class OrganUtil {
             areaEffectCloudEntity.setWaitTime(10);
             areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
             areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
-            Iterator<MobEffectInstance> var3 = collection.iterator();
 
-            while(var3.hasNext()) {
-                MobEffectInstance statusEffectInstance = (MobEffectInstance)var3.next();
+            for (MobEffectInstance statusEffectInstance : collection) {
                 areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
             }
 
@@ -350,11 +340,11 @@ public class OrganUtil {
 
     public static void spawnDragonBreath(LivingEntity entity) {
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if (!optional.isEmpty()) {
-            ChestCavityEntity cce = (ChestCavityEntity)optional.get();
+        if (optional.isPresent()) {
+            ChestCavityEntity cce = optional.get();
             ChestCavityInstance cc = cce.getChestCavityInstance();
             float breath = cc.getOrganScore(CCOrganScores.DRAGON_BREATH);
-            double range = Math.sqrt((double)(breath / 2.0F)) * 5.0;
+            double range = Math.sqrt(breath / 2.0F) * 5.0;
             HitResult result = entity.pick(range, 0.0F, false);
             Vec3 pos = result.getLocation();
             double x = pos.x;
@@ -371,10 +361,10 @@ public class OrganUtil {
                 mutable.set(x, y, z);
             }
 
-            y = (double)(Mth.floor(y) + 1);
+            y = Mth.floor(y) + 1;
             AreaEffectCloud breathEntity = new AreaEffectCloud(entity.level(), x, y, z);
             breathEntity.setOwner(entity);
-            breathEntity.setRadius((float)Math.max(range / 2.0, Math.min(range, (double)MathUtil.horizontalDistanceTo(breathEntity, entity))));
+            breathEntity.setRadius((float)Math.max(range / 2.0, Math.min(range, MathUtil.horizontalDistanceTo(breathEntity, entity))));
             breathEntity.setDuration(200);
             breathEntity.setParticle(ParticleTypes.DRAGON_BREATH);
             breathEntity.addEffect(new MobEffectInstance(MobEffects.HARM));
@@ -403,7 +393,7 @@ public class OrganUtil {
 
     public static void spawnShulkerBullet(LivingEntity entity) {
         TargetingConditions targetPredicate = TargetingConditions.forCombat();
-        targetPredicate.range((double)(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2));
+        targetPredicate.range(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2);
         LivingEntity target = entity.level().getNearestEntity(LivingEntity.class, targetPredicate, entity, entity.getX(), entity.getY(), entity.getZ(), new AABB(entity.getX() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getX() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
         if (target != null) {
             ShulkerBullet shulkerBulletEntity = new ShulkerBullet(entity.level(), entity, target, Axis.Y);

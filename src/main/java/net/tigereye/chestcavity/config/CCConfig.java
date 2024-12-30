@@ -102,8 +102,6 @@ public class CCConfig implements ConfigData {
     public int SILK_COOLDOWN = 20;
     @Category("cooldown")
     public int VENOM_COOLDOWN = 40;
-    @Category("integration")
-    public boolean REQUIEM_INTEGRATION = true;
 
     public CCConfig() {
     }

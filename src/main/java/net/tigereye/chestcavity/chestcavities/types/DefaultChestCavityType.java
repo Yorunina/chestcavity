@@ -259,12 +259,8 @@ public class DefaultChestCavityType implements ChestCavityType {
     public void onDeath(ChestCavityInstance cc) {
         cc.projectileQueue.clear();
         if (cc.connectedCrystal != null) {
-            cc.connectedCrystal.setBeamTarget((BlockPos)null);
+            cc.connectedCrystal.setBeamTarget(null);
             cc.connectedCrystal = null;
-        }
-
-        if (cc.opened && (!this.playerChestCavity || !ChestCavity.config.KEEP_CHEST_CAVITY)) {
-            ChestCavityUtil.dropUnboundOrgans(cc);
         }
 
         if (this.playerChestCavity) {
