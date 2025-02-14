@@ -27,24 +27,16 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.compat.kubejs.EvaluateChestCavityJS;
+import net.tigereye.chestcavity.compat.kubejs.UpdateOrganScoreJS;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
-import net.tigereye.chestcavity.listeners.OrganOnHitContext;
-import net.tigereye.chestcavity.listeners.OrganOnHitListener;
-import net.tigereye.chestcavity.listeners.OrganTickListeners;
-import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
+import net.tigereye.chestcavity.listeners.*;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ChestCavityUtil {
@@ -283,21 +275,6 @@ public class ChestCavityUtil {
         }
     }
 
-    public static void clearForbiddenSlots(ChestCavityInstance cc) {
-        try {
-            cc.inventory.removeListener(cc);
-        } catch (NullPointerException ignored) {
-        }
-
-        for (int i = 0; i < cc.inventory.getContainerSize(); ++i) {
-            if (cc.getChestCavityType().isSlotForbidden(i)) {
-                cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(i));
-            }
-        }
-
-        cc.inventory.addListener(cc);
-    }
-
     public static void destroyOrgansWithKey(ChestCavityInstance cc, ResourceLocation organ) {
         for (int i = 0; i < cc.inventory.getContainerSize(); ++i) {
             ItemStack slot = cc.inventory.getItem(i);
@@ -387,9 +364,10 @@ public class ChestCavityUtil {
             }
         }
         // kubejs接入点：胸腔属性计算节点，取代激活属性计算
-        var e = new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level());
-        CCEvents.EVAL_CC.post(e);
-
+        if (cc.owner != null && !cc.owner.level().isClientSide()) {
+            var e = new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level());
+            CCEvents.EVAL_CC.post(e);
+        }
         organUpdate(cc);
     }
 
@@ -572,9 +550,12 @@ public class ChestCavityUtil {
             OrganUpdateListeners.call(cc.owner, cc);
             cc.oldOrganScores.clear();
             cc.oldOrganScores.putAll(organScores);
+            if (cc.owner != null && !cc.owner.level().isClientSide()) {
+                var e = new UpdateOrganScoreJS(cc, cc.owner, cc.owner.level());
+                CCEvents.UPDATE_CC_SCORE.post(e);
+            }
             NetworkUtil.SendS2CChestCavityUpdatePacket(cc);
         }
-
     }
 
     public static void outputOrganScoresString(Consumer<String> output, ChestCavityInstance cc) {

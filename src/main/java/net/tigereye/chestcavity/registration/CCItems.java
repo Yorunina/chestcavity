@@ -2,14 +2,16 @@ package net.tigereye.chestcavity.registration;
 
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
 import net.tigereye.chestcavity.items.VenomGland;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Supplier;
 
 public class CCItems {
 	public static final DeferredRegister<Item> ITEMS;
@@ -102,7 +104,7 @@ public class CCItems {
 	public static final RegistryObject<Item> INSECT_STOMACH;
 	public static final RegistryObject<Item> INSECT_CAECA;
 	public static final RegistryObject<Item> SILK_GLAND;
-	public static final RegistryObject<VenomGland> VENOM_GLAND;
+	public static final RegistryObject<Item> VENOM_GLAND;
 	public static final RegistryObject<Item> ENDER_APPENDIX;
 	public static final RegistryObject<Item> ENDER_HEART;
 	public static final RegistryObject<Item> ENDER_INTESTINE;
@@ -192,527 +194,535 @@ public class CCItems {
 	public static final RegistryObject<Item> CUD;
 	public static final RegistryObject<Item> FURNACE_POWER;
 
+	public static final Collection<RegistryObject<Item>> ITEMS_FOR_TAB_LIST = new ArrayList<>();
+
 	public CCItems() {
+	}
+
+	public static RegistryObject<Item> register(final String name, final Supplier<? extends Item> sup) {
+		RegistryObject<Item> newItem = ITEMS.register(name, sup);
+		ITEMS_FOR_TAB_LIST.add(newItem);
+		return newItem;
 	}
 
 	static {
 		ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "chestcavity");
 		CHEST_OPENER_SETTINGS = (new Item.Properties()).stacksTo(1);
 		FOOD_ITEM_SETTINGS = (new Item.Properties()).stacksTo(64);
-		CHEST_OPENER = ITEMS.register("chest_opener", ChestOpener::new);
-		HUMAN_APPENDIX = ITEMS.register("appendix", () -> {
+		CHEST_OPENER = register("chest_opener", ChestOpener::new);
+		HUMAN_APPENDIX = register("appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_HEART = ITEMS.register("heart", () -> {
+		HUMAN_HEART = register("heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_INTESTINE = ITEMS.register("intestine", () -> {
+		HUMAN_INTESTINE = register("intestine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_KIDNEY = ITEMS.register("kidney", () -> {
+		HUMAN_KIDNEY = register("kidney", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_LIVER = ITEMS.register("liver", () -> {
+		HUMAN_LIVER = register("liver", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_LUNG = ITEMS.register("lung", () -> {
+		HUMAN_LUNG = register("lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_MUSCLE = ITEMS.register("muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.HUMAN_MUSCLE_FOOD_COMPONENT));
+		HUMAN_MUSCLE = register("muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.HUMAN_MUSCLE_FOOD_COMPONENT));
 		});
-		HUMAN_RIB = ITEMS.register("rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		HUMAN_SPINE = ITEMS.register("spine", () -> {
+		HUMAN_RIB = register("rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		HUMAN_SPLEEN = ITEMS.register("spleen", () -> {
+		HUMAN_SPINE = register("spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		HUMAN_SPLEEN = register("spleen", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		HUMAN_STOMACH = ITEMS.register("stomach", () -> {
+		HUMAN_STOMACH = register("stomach", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ROTTEN_APPENDIX = ITEMS.register("rotten_appendix", () -> {
+		ROTTEN_APPENDIX = register("rotten_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_HEART = ITEMS.register("rotten_heart", () -> {
+		ROTTEN_HEART = register("rotten_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_INTESTINE = ITEMS.register("rotten_intestine", () -> {
+		ROTTEN_INTESTINE = register("rotten_intestine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_KIDNEY = ITEMS.register("rotten_kidney", () -> {
+		ROTTEN_KIDNEY = register("rotten_kidney", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_LIVER = ITEMS.register("rotten_liver", () -> {
+		ROTTEN_LIVER = register("rotten_liver", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_LUNG = ITEMS.register("rotten_lung", () -> {
+		ROTTEN_LUNG = register("rotten_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_MUSCLE = ITEMS.register("rotten_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ROTTEN_MUSCLE_FOOD_COMPONENT));
+		ROTTEN_MUSCLE = register("rotten_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ROTTEN_MUSCLE_FOOD_COMPONENT));
 		});
-		ROTTEN_RIB = ITEMS.register("rotten_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		ROTTEN_SPINE = ITEMS.register("rotten_spine", () -> {
+		ROTTEN_RIB = register("rotten_rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		ROTTEN_SPLEEN = ITEMS.register("rotten_spleen", () -> {
+		ROTTEN_SPINE = register("rotten_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		ROTTEN_SPLEEN = register("rotten_spleen", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		ROTTEN_STOMACH = ITEMS.register("rotten_stomach", () -> {
+		ROTTEN_STOMACH = register("rotten_stomach", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(Foods.ROTTEN_FLESH));
 		});
-		WITHERED_RIB = ITEMS.register("withered_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		WITHERED_SPINE = ITEMS.register("withered_spine", () -> {
+		WITHERED_RIB = register("withered_rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		WRITHING_SOULSAND = ITEMS.register("writhing_soulsand", () -> {
-			return new Item((new Item.Properties()).stacksTo(16));
-		});
-		ANIMAL_APPENDIX = ITEMS.register("animal_appendix", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_HEART = ITEMS.register("animal_heart", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_INTESTINE = ITEMS.register("animal_intestine", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_KIDNEY = ITEMS.register("animal_kidney", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_LIVER = ITEMS.register("animal_liver", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_LUNG = ITEMS.register("animal_lung", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_MUSCLE = ITEMS.register("animal_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		ANIMAL_RIB = ITEMS.register("animal_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		ANIMAL_SPINE = ITEMS.register("animal_spine", () -> {
+		WITHERED_SPINE = register("withered_spine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		ANIMAL_SPLEEN = ITEMS.register("animal_spleen", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		ANIMAL_STOMACH = ITEMS.register("animal_stomach", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		AQUATIC_MUSCLE = ITEMS.register("aquatic_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		FISH_MUSCLE = ITEMS.register("fish_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		GILLS = ITEMS.register("gills", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		LLAMA_LUNG = ITEMS.register("llama_lung", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		CARNIVORE_STOMACH = ITEMS.register("carnivore_stomach", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		CARNIVORE_INTESTINE = ITEMS.register("carnivore_intestine", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		HERBIVORE_RUMEN = ITEMS.register("herbivore_rumen", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		HERBIVORE_STOMACH = ITEMS.register("herbivore_stomach", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		HERBIVORE_INTESTINE = ITEMS.register("herbivore_intestine", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		BRUTISH_MUSCLE = ITEMS.register("brutish_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SWIFT_MUSCLE = ITEMS.register("swift_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SPRINGY_MUSCLE = ITEMS.register("springy_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		FIREPROOF_APPENDIX = ITEMS.register("fireproof_appendix", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_HEART = ITEMS.register("fireproof_heart", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_INTESTINE = ITEMS.register("fireproof_intestine", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_KIDNEY = ITEMS.register("fireproof_kidney", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_LIVER = ITEMS.register("fireproof_liver", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_LUNG = ITEMS.register("fireproof_lung", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
-		});
-		FIREPROOF_MUSCLE = ITEMS.register("fireproof_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		FIREPROOF_RIB = ITEMS.register("fireproof_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		FIREPROOF_SPINE = ITEMS.register("fireproof_spine", () -> {
+		WRITHING_SOULSAND = register("writhing_soulsand", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		FIREPROOF_SPLEEN = ITEMS.register("fireproof_spleen", () -> {
+		ANIMAL_APPENDIX = register("animal_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		FIREPROOF_STOMACH = ITEMS.register("fireproof_stomach", () -> {
+		ANIMAL_HEART = register("animal_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_APPENDIX = ITEMS.register("small_animal_appendix", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		ANIMAL_INTESTINE = register("animal_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_HEART = ITEMS.register("small_animal_heart", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		ANIMAL_KIDNEY = register("animal_kidney", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_INTESTINE = ITEMS.register("small_animal_intestine", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		ANIMAL_LIVER = register("animal_liver", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_KIDNEY = ITEMS.register("small_animal_kidney", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		ANIMAL_LUNG = register("animal_lung", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_LIVER = ITEMS.register("small_animal_liver", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		ANIMAL_MUSCLE = register("animal_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_LUNG = ITEMS.register("small_animal_lung", () -> {
-			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SMALL_ANIMAL_MUSCLE = ITEMS.register("small_animal_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SMALL_ANIMAL_RIB = ITEMS.register("small_animal_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		SMALL_ANIMAL_SPINE = ITEMS.register("small_animal_spine", () -> {
+		ANIMAL_RIB = register("animal_rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		SMALL_ANIMAL_SPLEEN = ITEMS.register("small_animal_spleen", () -> {
+		ANIMAL_SPINE = register("animal_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		ANIMAL_SPLEEN = register("animal_spleen", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		ANIMAL_STOMACH = register("animal_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		AQUATIC_MUSCLE = register("aquatic_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FISH_MUSCLE = register("fish_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		GILLS = register("gills", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		LLAMA_LUNG = register("llama_lung", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		CARNIVORE_STOMACH = register("carnivore_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		CARNIVORE_INTESTINE = register("carnivore_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_RUMEN = register("herbivore_rumen", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_STOMACH = register("herbivore_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		HERBIVORE_INTESTINE = register("herbivore_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		BRUTISH_MUSCLE = register("brutish_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SWIFT_MUSCLE = register("swift_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SPRINGY_MUSCLE = register("springy_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FIREPROOF_APPENDIX = register("fireproof_appendix", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_HEART = register("fireproof_heart", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_INTESTINE = register("fireproof_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_KIDNEY = register("fireproof_kidney", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_LIVER = register("fireproof_liver", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_LUNG = register("fireproof_lung", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_MUSCLE = register("fireproof_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		FIREPROOF_RIB = register("fireproof_rib", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		FIREPROOF_SPINE = register("fireproof_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		FIREPROOF_SPLEEN = register("fireproof_spleen", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		FIREPROOF_STOMACH = register("fireproof_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
+		});
+		SMALL_ANIMAL_APPENDIX = register("small_animal_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_ANIMAL_STOMACH = ITEMS.register("small_animal_stomach", () -> {
+		SMALL_ANIMAL_HEART = register("small_animal_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		RABBIT_HEART = ITEMS.register("rabbit_heart", () -> {
+		SMALL_ANIMAL_INTESTINE = register("small_animal_intestine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_AQUATIC_MUSCLE = ITEMS.register("small_aquatic_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SMALL_FISH_MUSCLE = ITEMS.register("small_fish_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SMALL_SPRINGY_MUSCLE = ITEMS.register("small_springy_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
-		});
-		SMALL_GILLS = ITEMS.register("small_gills", () -> {
+		SMALL_ANIMAL_KIDNEY = register("small_animal_kidney", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_CARNIVORE_STOMACH = ITEMS.register("small_carnivore_stomach", () -> {
+		SMALL_ANIMAL_LIVER = register("small_animal_liver", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_CARNIVORE_INTESTINE = ITEMS.register("small_carnivore_intestine", () -> {
+		SMALL_ANIMAL_LUNG = register("small_animal_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_HERBIVORE_STOMACH = ITEMS.register("small_herbivore_stomach", () -> {
+		SMALL_ANIMAL_MUSCLE = register("small_animal_muscle", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		SMALL_HERBIVORE_INTESTINE = ITEMS.register("small_herbivore_intestine", () -> {
+		SMALL_ANIMAL_RIB = register("small_animal_rib", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		SMALL_ANIMAL_SPINE = register("small_animal_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		SMALL_ANIMAL_SPLEEN = register("small_animal_spleen", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
 		});
-		INSECT_HEART = ITEMS.register("insect_heart", () -> {
+		SMALL_ANIMAL_STOMACH = register("small_animal_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		RABBIT_HEART = register("rabbit_heart", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_AQUATIC_MUSCLE = register("small_aquatic_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_FISH_MUSCLE = register("small_fish_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_SPRINGY_MUSCLE = register("small_springy_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_GILLS = register("small_gills", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_CARNIVORE_STOMACH = register("small_carnivore_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_CARNIVORE_INTESTINE = register("small_carnivore_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_HERBIVORE_STOMACH = register("small_herbivore_stomach", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		SMALL_HERBIVORE_INTESTINE = register("small_herbivore_intestine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.SMALL_ANIMAL_MUSCLE_FOOD_COMPONENT));
+		});
+		INSECT_HEART = register("insect_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		INSECT_INTESTINE = ITEMS.register("insect_intestine", () -> {
+		INSECT_INTESTINE = register("insect_intestine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		INSECT_LUNG = ITEMS.register("insect_lung", () -> {
+		INSECT_LUNG = register("insect_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		INSECT_MUSCLE = ITEMS.register("insect_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.INSECT_MUSCLE_FOOD_COMPONENT));
+		INSECT_MUSCLE = register("insect_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.INSECT_MUSCLE_FOOD_COMPONENT));
 		});
-		INSECT_STOMACH = ITEMS.register("insect_stomach", () -> {
+		INSECT_STOMACH = register("insect_stomach", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		INSECT_CAECA = ITEMS.register("insect_caeca", () -> {
+		INSECT_CAECA = register("insect_caeca", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		SILK_GLAND = ITEMS.register("silk_gland", () -> {
+		SILK_GLAND = register("silk_gland", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		VENOM_GLAND = ITEMS.register("venom_gland", VenomGland::new);
-		ENDER_APPENDIX = ITEMS.register("ender_appendix", () -> {
+		VENOM_GLAND = register("venom_gland", VenomGland::new);
+		ENDER_APPENDIX = register("ender_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_HEART = ITEMS.register("ender_heart", () -> {
+		ENDER_HEART = register("ender_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_INTESTINE = ITEMS.register("ender_intestine", () -> {
+		ENDER_INTESTINE = register("ender_intestine", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_KIDNEY = ITEMS.register("ender_kidney", () -> {
+		ENDER_KIDNEY = register("ender_kidney", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_LIVER = ITEMS.register("ender_liver", () -> {
+		ENDER_LIVER = register("ender_liver", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_LUNG = ITEMS.register("ender_lung", () -> {
+		ENDER_LUNG = register("ender_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_MUSCLE = ITEMS.register("ender_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.ALIEN_MUSCLE_FOOD_COMPONENT));
+		ENDER_MUSCLE = register("ender_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.ALIEN_MUSCLE_FOOD_COMPONENT));
 		});
-		ENDER_RIB = ITEMS.register("ender_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		ENDER_SPINE = ITEMS.register("ender_spine", () -> {
+		ENDER_RIB = register("ender_rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		ENDER_SPLEEN = ITEMS.register("ender_spleen", () -> {
+		ENDER_SPINE = register("ender_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		ENDER_SPLEEN = register("ender_spleen", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ENDER_STOMACH = ITEMS.register("ender_stomach", () -> {
+		ENDER_STOMACH = register("ender_stomach", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		DRAGON_APPENDIX = ITEMS.register("dragon_appendix", () -> {
+		DRAGON_APPENDIX = register("dragon_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		DRAGON_HEART = ITEMS.register("dragon_heart", () -> {
+		DRAGON_HEART = register("dragon_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.DRAGON_HEART_FOOD_COMPONENT));
 		});
-		DRAGON_KIDNEY = ITEMS.register("dragon_kidney", () -> {
+		DRAGON_KIDNEY = register("dragon_kidney", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		DRAGON_LIVER = ITEMS.register("dragon_liver", () -> {
+		DRAGON_LIVER = register("dragon_liver", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		DRAGON_LUNG = ITEMS.register("dragon_lung", () -> {
+		DRAGON_LUNG = register("dragon_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		DRAGON_MUSCLE = ITEMS.register("dragon_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16).food(CCFoodComponents.DRAGON_MUSCLE_FOOD_COMPONENT));
+		DRAGON_MUSCLE = register("dragon_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.DRAGON_MUSCLE_FOOD_COMPONENT));
 		});
-		DRAGON_RIB = ITEMS.register("dragon_rib", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		DRAGON_SPINE = ITEMS.register("dragon_spine", () -> {
+		DRAGON_RIB = register("dragon_rib", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		DRAGON_SPLEEN = ITEMS.register("dragon_spleen", () -> {
+		DRAGON_SPINE = register("dragon_spine", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		DRAGON_SPLEEN = register("dragon_spleen", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		MANA_REACTOR = ITEMS.register("mana_reactor", () -> {
+		MANA_REACTOR = register("mana_reactor", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		ACTIVE_BLAZE_ROD = ITEMS.register("active_blaze_rod", () -> {
+		ACTIVE_BLAZE_ROD = register("active_blaze_rod", () -> {
 			return new Item((new Item.Properties()).stacksTo(3));
 		});
-		BLAZE_SHELL = ITEMS.register("blaze_shell", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		BLAZE_CORE = ITEMS.register("blaze_core", () -> {
+		BLAZE_SHELL = register("blaze_shell", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		GAS_BLADDER = ITEMS.register("gas_bladder", () -> {
+		BLAZE_CORE = register("blaze_core", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		VOLATILE_STOMACH = ITEMS.register("volatile_stomach", () -> {
+		GAS_BLADDER = register("gas_bladder", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		GOLEM_CABLE = ITEMS.register("golem_cable", () -> {
+		VOLATILE_STOMACH = register("volatile_stomach", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		GOLEM_PLATING = ITEMS.register("golem_plating", () -> {
-			return new Item((new Item.Properties()).stacksTo(4));
-		});
-		GOLEM_CORE = ITEMS.register("golem_core", () -> {
+		GOLEM_CABLE = register("golem_cable", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		INNER_FURNACE = ITEMS.register("inner_furnace", () -> {
+		GOLEM_PLATING = register("golem_plating", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		PISTON_MUSCLE = ITEMS.register("piston_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16));
+		GOLEM_CORE = register("golem_core", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		IRON_SCRAP = ITEMS.register("iron_scrap", () -> {
+		INNER_FURNACE = register("inner_furnace", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		PISTON_MUSCLE = register("piston_muscle", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		IRON_SCRAP = register("iron_scrap", () -> {
 			return new Item(new Item.Properties());
 		});
-		SALTWATER_HEART = ITEMS.register("saltwater_heart", () -> {
+		SALTWATER_HEART = register("saltwater_heart", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		SALTWATER_LUNG = ITEMS.register("saltwater_lung", () -> {
+		SALTWATER_LUNG = register("saltwater_lung", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		SALTWATER_MUSCLE = ITEMS.register("saltwater_muscle", () -> {
-			return new Item((new Item.Properties()).stacksTo(16));
-		});
-		CREEPER_APPENDIX = ITEMS.register("creeper_appendix", CreeperAppendix::new);
-		SHIFTING_LEAVES = ITEMS.register("shifting_leaves", () -> {
-			return new Item((new Item.Properties()).stacksTo(16));
-		});
-		SHULKER_SPLEEN = ITEMS.register("shulker_spleen", () -> {
+		SALTWATER_MUSCLE = register("saltwater_muscle", () -> {
 			return new Item((new Item.Properties()).stacksTo(1));
 		});
-		SAUSAGE_SKIN = ITEMS.register("sausage_skin", () -> {
+		CREEPER_APPENDIX = register("creeper_appendix", CreeperAppendix::new);
+		SHIFTING_LEAVES = register("shifting_leaves", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		SHULKER_SPLEEN = register("shulker_spleen", () -> {
+			return new Item((new Item.Properties()).stacksTo(1));
+		});
+		SAUSAGE_SKIN = register("sausage_skin", () -> {
 			return new Item((new Item.Properties()).stacksTo(64));
 		});
-		MINI_SAUSAGE_SKIN = ITEMS.register("mini_sausage_skin", () -> {
+		MINI_SAUSAGE_SKIN = register("mini_sausage_skin", () -> {
 			return new Item((new Item.Properties()).stacksTo(64));
 		});
-		BURNT_MEAT_CHUNK = ITEMS.register("burnt_meat_chunk", () -> {
+		BURNT_MEAT_CHUNK = register("burnt_meat_chunk", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.BURNT_MEAT_CHUNK_COMPONENT));
 		});
-		RAW_ORGAN_MEAT = ITEMS.register("raw_organ_meat", () -> {
+		RAW_ORGAN_MEAT = register("raw_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_ORGAN_MEAT = ITEMS.register("cooked_organ_meat", () -> {
+		COOKED_ORGAN_MEAT = register("cooked_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_BUTCHERED_MEAT = ITEMS.register("raw_butchered_meat", () -> {
+		RAW_BUTCHERED_MEAT = register("raw_butchered_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_BUTCHERED_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_BUTCHERED_MEAT = ITEMS.register("cooked_butchered_meat", () -> {
+		COOKED_BUTCHERED_MEAT = register("cooked_butchered_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_BUTCHERED_MEAT_FOOD_COMPONENT));
 		});
-		RAW_SAUSAGE = ITEMS.register("raw_sausage", () -> {
+		RAW_SAUSAGE = register("raw_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_SAUSAGE = ITEMS.register("sausage", () -> {
+		COOKED_SAUSAGE = register("sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_SAUSAGE = ITEMS.register("raw_rich_sausage", () -> {
+		RAW_RICH_SAUSAGE = register("raw_rich_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_SAUSAGE = ITEMS.register("rich_sausage", () -> {
+		COOKED_RICH_SAUSAGE = register("rich_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_MINI_SAUSAGE = ITEMS.register("raw_mini_sausage", () -> {
+		RAW_MINI_SAUSAGE = register("raw_mini_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_MINI_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_MINI_SAUSAGE = ITEMS.register("mini_sausage", () -> {
+		COOKED_MINI_SAUSAGE = register("mini_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_MINI_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_MINI_SAUSAGE = ITEMS.register("raw_rich_mini_sausage", () -> {
+		RAW_RICH_MINI_SAUSAGE = register("raw_rich_mini_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_MINI_SAUSAGE = ITEMS.register("rich_mini_sausage", () -> {
+		COOKED_RICH_MINI_SAUSAGE = register("rich_mini_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_MINI_SAUSAGE_FOOD_COMPONENT));
 		});
-		ROTTEN_SAUSAGE = ITEMS.register("rotten_sausage", () -> {
+		ROTTEN_SAUSAGE = register("rotten_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.ROTTEN_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_TOXIC_ORGAN_MEAT = ITEMS.register("raw_toxic_organ_meat", () -> {
+		RAW_TOXIC_ORGAN_MEAT = register("raw_toxic_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_TOXIC_ORGAN_MEAT = ITEMS.register("cooked_toxic_organ_meat", () -> {
+		COOKED_TOXIC_ORGAN_MEAT = register("cooked_toxic_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_TOXIC_MEAT = ITEMS.register("raw_toxic_meat", () -> {
+		RAW_TOXIC_MEAT = register("raw_toxic_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_TOXIC_MEAT = ITEMS.register("cooked_toxic_meat", () -> {
+		COOKED_TOXIC_MEAT = register("cooked_toxic_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_MEAT_FOOD_COMPONENT));
 		});
-		RAW_TOXIC_SAUSAGE = ITEMS.register("raw_toxic_sausage", () -> {
+		RAW_TOXIC_SAUSAGE = register("raw_toxic_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_TOXIC_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_TOXIC_SAUSAGE = ITEMS.register("toxic_sausage", () -> {
+		COOKED_TOXIC_SAUSAGE = register("toxic_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_TOXIC_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_TOXIC_SAUSAGE = ITEMS.register("raw_rich_toxic_sausage", () -> {
+		RAW_RICH_TOXIC_SAUSAGE = register("raw_rich_toxic_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_TOXIC_SAUSAGE = ITEMS.register("rich_toxic_sausage", () -> {
+		COOKED_RICH_TOXIC_SAUSAGE = register("rich_toxic_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_TOXIC_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_HUMAN_ORGAN_MEAT = ITEMS.register("raw_human_organ_meat", () -> {
+		RAW_HUMAN_ORGAN_MEAT = register("raw_human_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_HUMAN_ORGAN_MEAT = ITEMS.register("cooked_human_organ_meat", () -> {
+		COOKED_HUMAN_ORGAN_MEAT = register("cooked_human_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_HUMAN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_MAN_MEAT = ITEMS.register("raw_man_meat", () -> {
+		RAW_MAN_MEAT = register("raw_man_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_MAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_MAN_MEAT = ITEMS.register("cooked_man_meat", () -> {
+		COOKED_MAN_MEAT = register("cooked_man_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_MAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_HUMAN_SAUSAGE = ITEMS.register("raw_human_sausage", () -> {
+		RAW_HUMAN_SAUSAGE = register("raw_human_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_HUMAN_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_HUMAN_SAUSAGE = ITEMS.register("human_sausage", () -> {
+		COOKED_HUMAN_SAUSAGE = register("human_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_HUMAN_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_HUMAN_SAUSAGE = ITEMS.register("raw_rich_human_sausage", () -> {
+		RAW_RICH_HUMAN_SAUSAGE = register("raw_rich_human_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_HUMAN_SAUSAGE = ITEMS.register("rich_human_sausage", () -> {
+		COOKED_RICH_HUMAN_SAUSAGE = register("rich_human_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_HUMAN_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_ALIEN_ORGAN_MEAT = ITEMS.register("raw_alien_organ_meat", () -> {
+		RAW_ALIEN_ORGAN_MEAT = register("raw_alien_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_ALIEN_ORGAN_MEAT = ITEMS.register("cooked_alien_organ_meat", () -> {
+		COOKED_ALIEN_ORGAN_MEAT = register("cooked_alien_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_ALIEN_MEAT = ITEMS.register("raw_alien_meat", () -> {
+		RAW_ALIEN_MEAT = register("raw_alien_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_ALIEN_MEAT = ITEMS.register("cooked_alien_meat", () -> {
+		COOKED_ALIEN_MEAT = register("cooked_alien_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_ALIEN_SAUSAGE = ITEMS.register("raw_alien_sausage", () -> {
+		RAW_ALIEN_SAUSAGE = register("raw_alien_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_ALIEN_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_ALIEN_SAUSAGE = ITEMS.register("alien_sausage", () -> {
+		COOKED_ALIEN_SAUSAGE = register("alien_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_ALIEN_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_ALIEN_SAUSAGE = ITEMS.register("raw_rich_alien_sausage", () -> {
+		RAW_RICH_ALIEN_SAUSAGE = register("raw_rich_alien_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_ALIEN_SAUSAGE = ITEMS.register("rich_alien_sausage", () -> {
+		COOKED_RICH_ALIEN_SAUSAGE = register("rich_alien_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_ALIEN_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_DRAGON_ORGAN_MEAT = ITEMS.register("raw_dragon_organ_meat", () -> {
+		RAW_DRAGON_ORGAN_MEAT = register("raw_dragon_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_DRAGON_ORGAN_MEAT = ITEMS.register("cooked_dragon_organ_meat", () -> {
+		COOKED_DRAGON_ORGAN_MEAT = register("cooked_dragon_organ_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		RAW_DRAGON_MEAT = ITEMS.register("raw_dragon_meat", () -> {
+		RAW_DRAGON_MEAT = register("raw_dragon_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_MEAT_FOOD_COMPONENT));
 		});
-		COOKED_DRAGON_MEAT = ITEMS.register("cooked_dragon_meat", () -> {
+		COOKED_DRAGON_MEAT = register("cooked_dragon_meat", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_MEAT_FOOD_COMPONENT));
 		});
-		RAW_DRAGON_SAUSAGE = ITEMS.register("raw_dragon_sausage", () -> {
+		RAW_DRAGON_SAUSAGE = register("raw_dragon_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_DRAGON_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_DRAGON_SAUSAGE = ITEMS.register("dragon_sausage", () -> {
+		COOKED_DRAGON_SAUSAGE = register("dragon_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_DRAGON_SAUSAGE_FOOD_COMPONENT));
 		});
-		RAW_RICH_DRAGON_SAUSAGE = ITEMS.register("raw_rich_dragon_sausage", () -> {
+		RAW_RICH_DRAGON_SAUSAGE = register("raw_rich_dragon_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.RAW_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
 		});
-		COOKED_RICH_DRAGON_SAUSAGE = ITEMS.register("rich_dragon_sausage", () -> {
+		COOKED_RICH_DRAGON_SAUSAGE = register("rich_dragon_sausage", () -> {
 			return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.COOKED_RICH_DRAGON_SAUSAGE_FOOD_COMPONENT));
 		});
 		CUD = ITEMS.register("cud", () -> {

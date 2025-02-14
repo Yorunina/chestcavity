@@ -7,4 +7,6 @@ public interface CCEvents {
     EventGroup CCGROUP = EventGroup.of("ChestCavityEvents");
     EventHandler EVAL_CC = CCGROUP
             .server("evaluateChestCavity", () -> EvaluateChestCavityJS.class);
+    EventHandler UPDATE_CC_SCORE = CCGROUP
+            .server("updateOrganScore", () -> UpdateOrganScoreJS.class);
 }

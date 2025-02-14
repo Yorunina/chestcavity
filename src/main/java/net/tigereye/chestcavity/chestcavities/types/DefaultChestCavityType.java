@@ -27,7 +27,6 @@ public class DefaultChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> baseOrganScores = new HashMap<>();
     private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = new HashMap<>();
     private List<ItemStack> droppableOrgans = new LinkedList<>();
-    private List<Integer> forbiddenSlots = new ArrayList<>();
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
     private ResourceLocation inventoryType = new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING);
@@ -137,29 +136,6 @@ public class DefaultChestCavityType implements ChestCavityType {
 
     }
 
-    public List<Integer> getForbiddenSlots() {
-        return this.forbiddenSlots;
-    }
-
-    public void setForbiddenSlots(List<Integer> list) {
-        this.forbiddenSlots = list;
-    }
-
-    public void forbidSlot(int slot) {
-        this.forbiddenSlots.add(slot);
-    }
-
-    public void allowSlot(int slot) {
-        int index = this.forbiddenSlots.indexOf(slot);
-        if (index != -1) {
-            this.forbiddenSlots.remove(index);
-        }
-
-    }
-
-    public boolean isSlotForbidden(int index) {
-        return this.forbiddenSlots.contains(index);
-    }
 
     public boolean isBossChestCavity() {
         return this.bossChestCavity;

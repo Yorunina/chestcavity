@@ -35,13 +35,8 @@ public class ChestCavityTypeSerializer {
                 cctJson.baseOrganScores = new JsonArray();
             }
 
-            if (cctJson.forbiddenSlots == null) {
-                cctJson.forbiddenSlots = new JsonArray();
-            }
-
             GeneratedChestCavityType cct = new GeneratedChestCavityType();
-            cct.setForbiddenSlots(this.readForbiddenSlotsFromJson(id, cctJson));
-            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson, cct.getForbiddenSlots()));
+            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson));
             cct.setBaseOrganScores(this.readBaseOrganScoresFromJson(id, cctJson));
             cct.setExceptionalOrganList(this.readExceptionalOrgansFromJson(id, cctJson));
             cct.setDropRateMultiplier(cctJson.dropRateMultiplier);
@@ -52,7 +47,7 @@ public class ChestCavityTypeSerializer {
         }
     }
 
-    private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson, List<Integer> forbiddenSlots) {
+    private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
         InventoryTypeData inventoryTypeData = GeneratedInventoryTypeData.getOrDefault(new ResourceLocation(cctJson.inventoryType), InventoryTypeManager.getDefaultInventoryTypeData());
         ChestCavityInventory inv = new ChestCavityInventory(inventoryTypeData.getSlotSize());
         int i = 0;
@@ -82,8 +77,6 @@ public class ChestCavityTypeSerializer {
                         pos = obj.get("position").getAsInt();
                         if (pos >= inv.getContainerSize()) {
                             ChestCavity.LOGGER.error("Position component is out of bounds in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
-                        } else if (forbiddenSlots.contains(pos)) {
-                            ChestCavity.LOGGER.error("Position component is forbidden in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                         } else {
                             inv.setItem(pos, stack);
                         }
@@ -147,20 +140,5 @@ public class ChestCavityTypeSerializer {
         }
 
         return organScores;
-    }
-
-    private List<Integer> readForbiddenSlotsFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        ArrayList<Integer> list = new ArrayList();
-
-        for (JsonElement entry : cctJson.forbiddenSlots) {
-            try {
-                int slot = entry.getAsInt();
-                list.add(slot);
-            } catch (Exception var7) {
-                ChestCavity.LOGGER.error("Error parsing " + id.toString() + "'s organ scores!");
-            }
-        }
-
-        return list;
     }
 }

@@ -8,7 +8,6 @@ public class ChestCavityTypeJsonFormat {
     JsonArray defaultChestCavity;
     JsonArray baseOrganScores;
     JsonArray exceptionalOrgans;
-    JsonArray forbiddenSlots;
     String inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
     boolean bossChestCavity = false;
     boolean playerChestCavity = false;

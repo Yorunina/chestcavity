@@ -9,8 +9,6 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
 public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
-    boolean test;
-
     public ChestCavityInstance getInstance() {
         return this.instance;
     }
@@ -37,7 +35,6 @@ public class ChestCavityInventory extends SimpleContainer {
         for(int j = 0; j < tags.size(); ++j) {
             CompoundTag NbtCompound = tags.getCompound(j);
             int k = NbtCompound.getByte("Slot") & 255;
-            boolean f = NbtCompound.getBoolean("Forbidden");
             if (k < this.getContainerSize()) {
                 this.setItem(k, ItemStack.of(NbtCompound));
             }
@@ -69,5 +66,13 @@ public class ChestCavityInventory extends SimpleContainer {
         } else {
             return player.distanceTo(this.instance.owner) < 8.0F;
         }
+    }
+
+    public ChestCavityInventory clone() {
+        ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize());
+        for(int i = 0; i < this.getContainerSize(); ++i) {
+            inventory.setItem(i, this.getItem(i).copy());
+        }
+        return inventory;
     }
 }

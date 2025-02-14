@@ -46,6 +46,7 @@ public class ChestCavityInstance implements ContainerListener {
     public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
+    public ChestCavityInventory oldInventory;
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -57,6 +58,7 @@ public class ChestCavityInstance implements ContainerListener {
         }
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize());
         ChestCavityUtil.evaluateChestCavity(this);
+        this.oldInventory = this.inventory.clone();
     }
 
     public ChestCavityType getChestCavityType() {
@@ -86,8 +88,20 @@ public class ChestCavityInstance implements ContainerListener {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
     }
     public void containerChanged(@NotNull Container sender) {
-        ChestCavityUtil.clearForbiddenSlots(this);
-        ChestCavityUtil.evaluateChestCavity(this);
+        if (!isSameAsOldInventory()) {
+            ChestCavityUtil.evaluateChestCavity(this);
+            this.oldInventory = this.inventory.clone();
+        }
+    }
+
+    public boolean isSameAsOldInventory() {
+        int containerSize = this.oldInventory.getContainerSize();
+        for (int i = 0; i < containerSize; i++) {
+            if (!this.oldInventory.getItem(i).equals(this.inventory.getItem(i), true)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {

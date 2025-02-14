@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.chestcavities.types;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -26,7 +25,6 @@ public class GeneratedChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> baseOrganScores = null;
     private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = null;
     private List<ItemStack> droppableOrgans = null;
-    private List<Integer> forbiddenSlots = new ArrayList<>();
     private float dropRateMultiplier = 1.0F;
     private boolean bossChestCavity = false;
     private boolean playerChestCavity = false;
@@ -125,30 +123,6 @@ public class GeneratedChestCavityType implements ChestCavityType {
             }
         }
 
-    }
-
-    public List<Integer> getForbiddenSlots() {
-        return this.forbiddenSlots;
-    }
-
-    public void setForbiddenSlots(List<Integer> list) {
-        this.forbiddenSlots = list;
-    }
-
-    public void forbidSlot(int slot) {
-        this.forbiddenSlots.add(slot);
-    }
-
-    public void allowSlot(int slot) {
-        int index = this.forbiddenSlots.indexOf(slot);
-        if (index != -1) {
-            this.forbiddenSlots.remove(index);
-        }
-
-    }
-
-    public boolean isSlotForbidden(int index) {
-        return this.forbiddenSlots.contains(index);
     }
 
     public boolean isBossChestCavity() {

@@ -18,7 +18,7 @@ public class InventoryTypeManager {
     public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("minecraft", "textures/gui/container/shulker_box.png");
     public static final List<SlotPosition> DEFAULT_SLOT_POSITIONS = getDefaultInventoryTypeSlotPositions();
-    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:default";
+    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:default.json";
     public InventoryTypeManager() {
     }
 

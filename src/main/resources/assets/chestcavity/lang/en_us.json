@@ -1,4 +1,7 @@
 {
+    "tabs.chestcavity.tab": "Chest Cavity",
+    "tooltips.organ.only_compatible_with": "Only Compatible With: %s",
+    "tooltips.organ.safe_to_use": "Safe to Use",
     "death.attack.cc_heartbleed": "%1$s's sacrifice has nourished the sun",
     "death.attack.cc_heartbleed.player": "%2$s witnessed %1$s's sacrifice",
     "death.attack.cc_organ_rejection": "%1$s died of medical complications",

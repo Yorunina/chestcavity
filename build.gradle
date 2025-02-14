@@ -76,7 +76,6 @@ dependencies {
 	compileOnly fg.deobf("curse.maven:architectury-forge-419699:5137938")
 	compileOnly fg.deobf("curse.maven:rhino-416294:4944325")
 	compileOnly fg.deobf("curse.maven:kubejs-forge-238086:5268032")
-	runtimeOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
 }
 
 sourceSets {

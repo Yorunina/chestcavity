@@ -11,7 +11,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -23,20 +22,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.horse.Llama;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.DragonFireball;
-import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.entity.projectile.LlamaSpit;
-import net.minecraft.world.entity.projectile.ShulkerBullet;
-import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -53,47 +45,10 @@ import net.tigereye.chestcavity.registration.CCStatusEffects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class OrganUtil {
     public OrganUtil() {
-    }
-
-    public static void displayOrganQuality(Map<ResourceLocation, Float> organQualityMap, List<Component> tooltip) {
-        organQualityMap.forEach((organ, score) -> {
-            String tier;
-            if (organ.equals(CCOrganScores.HYDROALLERGENIC)) {
-                if (score >= 2.0F) {
-                    tier = "quality.chestcavity.severely";
-                } else {
-                    tier = "";
-                }
-            } else if (score >= 1.5F) {
-                tier = "quality.chestcavity.supernatural";
-            } else if ((double)score >= 1.25) {
-                tier = "quality.chestcavity.exceptional";
-            } else if (score >= 1.0F) {
-                tier = "quality.chestcavity.good";
-            } else if (score >= 0.75F) {
-                tier = "quality.chestcavity.average";
-            } else if (score >= 0.5F) {
-                tier = "quality.chestcavity.poor";
-            } else if (score >= 0.0F) {
-                tier = "quality.chestcavity.pathetic";
-            } else if (score >= -0.25F) {
-                tier = "quality.chestcavity.slightly_reduces";
-            } else if (score >= -0.5F) {
-                tier = "quality.chestcavity.reduces";
-            } else if (score >= -0.75F) {
-                tier = "quality.chestcavity.greatly_reduces";
-            } else {
-                tier = "quality.chestcavity.greatly_reduces";
-            }
-
-            Component text = Component.translatable("organscore." + organ.getNamespace() + "." + organ.getPath(), new Object[]{Component.translatable(tier)});
-            tooltip.add(text);
-        });
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -116,13 +71,14 @@ public class OrganUtil {
             }
         }
 
-        String textString;
+
+        MutableComponent compatibleTooltips;
          if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
-            tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-            String name = tag.getString("name");
-            textString = "Only Compatible With: " + name;
+             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+             String name = tag.getString("name");
+             compatibleTooltips = Component.translatable("tooltips.organ.only_compatible_with", name);
         } else {
-            textString = "Safe to Use";
+             compatibleTooltips = Component.translatable("tooltips.organ.safe_to_use");
         }
 
         MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
@@ -132,7 +88,7 @@ public class OrganUtil {
             text.withStyle(ChatFormatting.RED);
         }
 
-        text.append(textString);
+        text.append(compatibleTooltips);
         tooltip.add(text);
     }
 

@@ -36,4 +36,13 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
             context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         }
     }
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context);
+        super.render(context, mouseX, mouseY, delta);
+        this.renderTooltip(context, mouseX, mouseY);
+    }
+    protected void init() {
+        super.init();
+        this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
+    }
 }
