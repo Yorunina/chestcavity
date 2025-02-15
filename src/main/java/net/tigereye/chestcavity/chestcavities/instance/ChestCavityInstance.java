@@ -130,7 +130,13 @@ public class ChestCavityInstance implements ContainerListener {
             }
             try {
                 this.inventory.removeListener(this);
-                this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize());
+                int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
+                if (newInventorySize < this.inventory.getContainerSize()) {
+                    for (int i = newInventorySize; i < this.inventory.getContainerSize(); i++) {
+                        this.owner.spawnAtLocation(this.inventory.getItem(i));
+                    }
+                }
+                this.inventory = new ChestCavityInventory(newInventorySize);
             } catch (NullPointerException ignored) {
             }
             if (ccTag.contains("Inventory")) {

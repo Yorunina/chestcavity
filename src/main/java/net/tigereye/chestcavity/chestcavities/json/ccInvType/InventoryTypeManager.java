@@ -38,7 +38,7 @@ public class InventoryTypeManager {
     public static void reloadInventoryType(ResourceManager manager) {
         GeneratedInventoryTypeData.clear();
         ChestCavity.LOGGER.info("Loading screenType.");
-        manager.listResources("inventory", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
+        manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
                 try {
