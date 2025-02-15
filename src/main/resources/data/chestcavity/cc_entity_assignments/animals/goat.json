@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/goat.json",
+  "chestcavity": "chestcavity:cc_types/animals/goat.json",
   "entities": [
     "minecraft:goat"
   ]

@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/magical_beasts/dragon.json",
+  "chestcavity": "chestcavity:cc_types/magical_beasts/dragon.json",
   "entities": [
     "adventurez:dragon"
   ]

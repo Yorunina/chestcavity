@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/chicken.json",
+  "chestcavity": "chestcavity:cc_types/animals/chicken.json",
   "entities": [
     "mmorpg:fire_chicken",
     "mmorpg:water_chicken",

@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/omnivore.json",
+  "chestcavity": "chestcavity:cc_types/animals/omnivore.json",
   "entities": [
     "snowpig:snow_pig"
   ]

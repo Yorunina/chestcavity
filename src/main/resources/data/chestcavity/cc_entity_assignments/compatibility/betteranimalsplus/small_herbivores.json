@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/small_herbivore.json",
+  "chestcavity": "chestcavity:cc_types/animals/small_herbivore.json",
   "entities": [
     "betteranimalsplus:goose",
     "betteranimalsplus:squirrel"

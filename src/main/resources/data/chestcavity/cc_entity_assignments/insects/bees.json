@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/insects/bee.json",
+  "chestcavity": "chestcavity:cc_types/insects/bee.json",
   "entities": [
     "minecraft:bee"
   ]

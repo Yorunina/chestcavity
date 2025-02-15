@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/ruminant.json",
+  "chestcavity": "chestcavity:cc_types/animals/ruminant.json",
   "entities": [
     "earthtojavamobs:albino_cow",
     "earthtojavamobs:ashen_cow",

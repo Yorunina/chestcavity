@@ -9,7 +9,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
-import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotPosition;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
@@ -43,18 +43,18 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
 
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
         int slotSize = inventoryTypeData.getSlotSize();
-        List<SlotPosition> slotPositionList = inventoryTypeData.getSlotPosition();
+        List<SlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
         ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
         this.size = slotSize;
         this.inventory = inventory;
         inventory.startOpen(playerInventory.player);
-        SlotPosition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
+        SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
         // 组装自定义胸腔界面
         for (int j = 0; j < this.size; ++j) {
-            this.addSlot(new Slot(inventory, j, slotPositionList.get(j).getX(), slotPositionList.get(j).getY()));
+            this.addSlot(new Slot(inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
         // 组装玩家背包
         for (n = 0; n < 3; ++n) {

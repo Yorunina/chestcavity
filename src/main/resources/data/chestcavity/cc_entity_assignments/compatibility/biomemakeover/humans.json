@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/humanoids/human.json",
+  "chestcavity": "chestcavity:cc_types/humanoids/human.json",
   "entities": [
     "biomemakeover:cowboy",
     "biomemakeover:mushroom_trader"

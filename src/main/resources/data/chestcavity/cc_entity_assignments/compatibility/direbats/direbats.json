@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animal/omnivore.json",
+  "chestcavity": "chestcavity:cc_types/animal/omnivore.json",
   "entities": [
     "direbats:direbat"
   ]

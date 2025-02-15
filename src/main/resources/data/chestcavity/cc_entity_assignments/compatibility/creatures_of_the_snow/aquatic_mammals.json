@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/dolphin.json",
+  "chestcavity": "chestcavity:cc_types/animals/dolphin.json",
   "entities": [
     "creatures_of_the_snow:beluga",
     "creatures_of_the_snow:narwhal",

@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/fireproof.json",
+  "chestcavity": "chestcavity:cc_types/animals/fireproof.json",
   "entities": [
     "minecraft:strider"
   ]

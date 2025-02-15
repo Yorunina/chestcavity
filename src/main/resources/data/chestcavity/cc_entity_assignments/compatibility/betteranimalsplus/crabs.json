@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/compatibility/betteranimalsplus/crab.json",
+  "chestcavity": "chestcavity:cc_types/compatibility/betteranimalsplus/crab.json",
   "entities": [
     "betteranimalsplus:crab",
 	"betteranimalsplus:horseshoecrab"

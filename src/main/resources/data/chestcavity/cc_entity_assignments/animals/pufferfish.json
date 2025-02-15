@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/pufferfish.json",
+  "chestcavity": "chestcavity:cc_types/animals/pufferfish.json",
   "entities": [
     "minecraft:pufferfish"
   ]

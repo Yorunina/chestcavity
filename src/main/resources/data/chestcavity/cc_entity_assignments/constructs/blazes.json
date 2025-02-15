@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/constructs/blaze.json",
+  "chestcavity": "chestcavity:cc_types/constructs/blaze.json",
   "entities": [
     "minecraft:blaze"
   ]

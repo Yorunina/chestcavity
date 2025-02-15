@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/magical_beasts/creeper.json",
+  "chestcavity": "chestcavity:cc_types/magical_beasts/creeper.json",
   "entities": [
     "minecraft:creeper"
   ]

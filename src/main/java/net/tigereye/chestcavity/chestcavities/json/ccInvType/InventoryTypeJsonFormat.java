@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class InventoryTypeJsonFormat {
-    JsonArray slotPositions;
+    JsonArray slotDefinitions;
     String backgroundTexture;
     JsonObject playerInventoryPosition;
     public InventoryTypeJsonFormat() {

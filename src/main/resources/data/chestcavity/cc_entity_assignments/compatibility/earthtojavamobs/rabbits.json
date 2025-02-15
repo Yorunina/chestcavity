@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/rabbit.json",
+  "chestcavity": "chestcavity:cc_types/animals/rabbit.json",
   "entities": [
     "earthtojavamobs:bold_striped_rabbit",
     "earthtojavamobs:freckled_rabbit",

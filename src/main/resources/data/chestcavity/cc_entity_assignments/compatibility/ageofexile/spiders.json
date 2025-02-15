@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/insects/spider.json",
+  "chestcavity": "chestcavity:cc_types/insects/spider.json",
   "entities": [
     "mmorpg:arcane_spider",
     "mmorpg:fire_spider",

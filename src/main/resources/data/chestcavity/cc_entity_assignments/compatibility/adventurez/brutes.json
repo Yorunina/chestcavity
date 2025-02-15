@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/brutish.json",
+  "chestcavity": "chestcavity:cc_types/animals/brutish.json",
   "entities": [
     "adventurez:piglin_beast",
     "adventurez:enderwarthog",

@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/turtle.json",
+  "chestcavity": "chestcavity:cc_types/animals/turtle.json",
   "entities": [
     "minecraft:turtle"
   ]

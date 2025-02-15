@@ -16,24 +16,24 @@ import java.util.Map;
 public class InventoryTypeManager {
     private static final InventoryTypeSerializer SERIALIZER = new InventoryTypeSerializer();
     public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
-    public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("minecraft", "textures/gui/container/shulker_box.png");
-    public static final List<SlotPosition> DEFAULT_SLOT_POSITIONS = getDefaultInventoryTypeSlotPositions();
-    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:default.json";
+    public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/chest_cavity.png");
+    public static final List<SlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
+    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default.json";
     public InventoryTypeManager() {
     }
 
     public static InventoryTypeData getDefaultInventoryTypeData() {
-        return new InventoryTypeData(DEFAULT_TEXTURE, DEFAULT_SLOT_POSITIONS, new SlotPosition(0, 0));
+        return new InventoryTypeData(DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0));
     }
-    public static List<SlotPosition> getDefaultInventoryTypeSlotPositions() {
+    public static List<SlotDefinition> getDefaultInventoryTypeSlotDefinition() {
         int n, m;
-        List<SlotPosition> slotPositions = new ArrayList<>();
+        List<SlotDefinition> slotDefinitions = new ArrayList<>();
         for(n = 0; n < 3; ++n) {
             for(m = 0; m < 9; ++m) {
-                slotPositions.add(new SlotPosition(8 + m * 18, 18 + n * 18));
+                slotDefinitions.add(new SlotDefinition(8 + m * 18, 18 + n * 18));
             }
         }
-        return slotPositions;
+        return slotDefinitions;
     }
     public static void reloadInventoryType(ResourceManager manager) {
         GeneratedInventoryTypeData.clear();

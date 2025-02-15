@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/omnivore.json",
+  "chestcavity": "chestcavity:cc_types/animals/omnivore.json",
   "entities": [
     "earthtojavamobs:mottled_pig",
     "earthtojavamobs:muddy_pig",

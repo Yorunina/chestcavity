@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/large_fish.json",
+  "chestcavity": "chestcavity:cc_types/animals/large_fish.json",
   "entities": [
     "earthtojavamobs:glow_squid"
   ]

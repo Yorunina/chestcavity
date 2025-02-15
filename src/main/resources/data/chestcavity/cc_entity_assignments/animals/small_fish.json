@@ -1,5 +1,5 @@
 {
-  "chestcavity": "chestcavity:types/animals/small_fish.json",
+  "chestcavity": "chestcavity:cc_types/animals/small_fish.json",
   "entities": [
     "minecraft:cod",
     "minecraft:salmon",
