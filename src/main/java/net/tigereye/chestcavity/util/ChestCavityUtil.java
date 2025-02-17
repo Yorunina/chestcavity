@@ -410,6 +410,21 @@ public class ChestCavityUtil {
         return isCompat;
     }
 
+    public static boolean isOriginalOrgan(ChestCavityInstance cc, ItemStack itemStack) {
+        if (itemStack == null || itemStack == ItemStack.EMPTY) {
+            return true;
+        }
+        CompoundTag tag = itemStack.getTag();
+        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
+            return false;
+        }
+        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+        if (tag.getUUID("owner").equals(cc.compatibility_id)) {
+            return true;
+        }
+        return false;
+    }
+
 
     public static void insertWelfareOrgans(ChestCavityInstance cc) {
         if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0.0F) {
@@ -481,28 +496,18 @@ public class ChestCavityUtil {
     }
 
     public static void onDeath(ChestCavityEntity entity) {
-        ChestCavityInstance ccinstance = entity.getChestCavityInstance();
-        ccinstance.getChestCavityType().onDeath(ccinstance);
+        ChestCavityInstance ccInstance = entity.getChestCavityInstance();
+        ccInstance.getChestCavityType().onDeath(ccInstance);
         if (entity instanceof Player playerEntity) {
-            if (!ChestCavity.config.KEEP_CHEST_CAVITY) {
-                Map<Integer, ItemStack> organsToKeep = new HashMap<>();
-
-                for (int i = 0; i < ccinstance.inventory.getContainerSize(); ++i) {
-                    ItemStack organ = ccinstance.inventory.getItem(i);
-                }
-
-                ccinstance.compatibility_id = UUID.randomUUID();
-                generateChestCavityIfOpened(ccinstance);
-
-                for (Map.Entry<Integer, ItemStack> integerItemStackEntry : organsToKeep.entrySet()) {
-                    Map.Entry<Integer, ItemStack> entry = integerItemStackEntry;
-                    ccinstance.inventory.setItem(entry.getKey(), entry.getValue());
+            insertWelfareOrgans(ccInstance);
+        } else {
+            for (int i = 0; i < ccInstance.inventory.getContainerSize(); ++i) {
+                ItemStack curItem = ccInstance.inventory.getItem(i);
+                if (!isOriginalOrgan(ccInstance, curItem)) {
+                    ccInstance.owner.spawnAtLocation(curItem);
                 }
             }
-
-            insertWelfareOrgans(ccinstance);
         }
-
     }
 
     public static float onHit(ChestCavityInstance cc, DamageSource source, LivingEntity target, float damage) {

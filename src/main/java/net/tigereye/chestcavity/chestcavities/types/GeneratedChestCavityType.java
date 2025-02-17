@@ -45,7 +45,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     public float getDefaultOrganScore(ResourceLocation id) {
-        return (Float)this.getDefaultOrganScores().getOrDefault(id, 0.0F);
+        return this.getDefaultOrganScores().getOrDefault(id, 0.0F);
     }
 
     public ChestCavityInventory getDefaultChestCavity() {

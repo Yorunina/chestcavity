@@ -45,8 +45,6 @@ public class CCConfig implements ConfigData {
     @Category("core")
     public boolean CAN_OPEN_OTHER_PLAYERS = false;
     @Category("core")
-    public boolean KEEP_CHEST_CAVITY = false;
-    @Category("core")
     public boolean DISABLE_ORGAN_REJECTION = false;
     @Category("more")
     public int ARROW_DODGE_DISTANCE = 32;

@@ -69,6 +69,10 @@ public class ChestCavityInstance implements ContainerListener {
         return this.organScores;
     }
 
+    public void setOrganScore(ResourceLocation id, float score){
+        this.organScores.put(id, score);
+    }
+
     public void setOrganScores(Map<ResourceLocation, Float> organScores) {
         this.organScores = organScores;
     }
@@ -95,7 +99,11 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public boolean isSameAsOldInventory() {
-        int containerSize = this.oldInventory.getContainerSize();
+        int oldContainerSize = this.oldInventory.getContainerSize();
+        int containerSize = this.inventory.getContainerSize();
+        if (oldContainerSize != containerSize) {
+            return false;
+        }
         for (int i = 0; i < containerSize; i++) {
             if (!this.oldInventory.getItem(i).equals(this.inventory.getItem(i), true)) {
                 return false;
@@ -151,6 +159,7 @@ public class ChestCavityInstance implements ContainerListener {
         }
 
         ChestCavityUtil.evaluateChestCavity(this);
+        this.oldInventory = this.inventory.clone();
     }
 
     public void toTag(CompoundTag tag, LivingEntity owner) {
