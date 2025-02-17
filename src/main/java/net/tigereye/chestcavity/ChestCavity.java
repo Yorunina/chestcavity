@@ -12,6 +12,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -25,7 +26,6 @@ import net.tigereye.chestcavity.ui.ChestCavityScreen;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 @Mod("chestcavity")
 public class ChestCavity {
 	public static final String MODID = "chestcavity";
@@ -35,6 +35,7 @@ public class ChestCavity {
 	public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER;
 	public static final ResourceLocation CHEST_CAVITY_SCREEN_ID;
 	public static final ResourceLocation COMPATIBILITY_TAG;
+	public static boolean KUBEJS_LOADED = false;
 
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 	public static final RegistryObject<CreativeModeTab> GROUP = CREATIVE_TABS.register("tab", () -> new CreativeModeTab.Builder(CreativeModeTab.Row.TOP,0)
@@ -64,6 +65,9 @@ public class ChestCavity {
 		MENU_TYPES.register(eventBus);
 		eventBus = MinecraftForge.EVENT_BUS;
 		eventBus.register(this);
+		if (ModList.get().isLoaded("kubejs")) {
+			KUBEJS_LOADED = true;
+		}
 	}
 
 	public void clientSetup(FMLClientSetupEvent event) {
