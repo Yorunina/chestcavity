@@ -60,16 +60,16 @@ public class ChestCavityInventory extends SimpleContainer {
 
     public boolean stillValid(Player player) {
         if (this.instance == null) {
-            return true;
+            return false;
         } else if (this.instance.owner.isDeadOrDying()) {
             return false;
         } else {
-            return player.distanceTo(this.instance.owner) < 8.0F;
+            return player.distanceTo(this.instance.owner) < 32.0F;
         }
     }
 
     public ChestCavityInventory clone() {
-        ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize());
+        ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize(), this.instance);
         for(int i = 0; i < this.getContainerSize(); ++i) {
             inventory.setItem(i, this.getItem(i).copy());
         }

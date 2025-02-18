@@ -1,16 +1,17 @@
 package net.tigereye.chestcavity.listeners;
 
-import java.util.UUID;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
+
+import java.util.UUID;
 
 public class OrganUpdateListeners {
     private static final UUID APPENDIX_ID = UUID.fromString("ac606ec3-4cc3-42b5-9399-7fa8ceba8722");
@@ -38,7 +39,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.LUCK) != cc.getOrganScore(CCOrganScores.LUCK)) {
             AttributeInstance att = entity.getAttribute(Attributes.LUCK);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(APPENDIX_ID, "ChestCavityAppendixLuck", (double)((cc.getOrganScore(CCOrganScores.LUCK) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LUCK)) * ChestCavity.config.APPENDIX_LUCK), Operation.ADDITION);
+                AttributeModifier mod = new AttributeModifier(APPENDIX_ID, "ChestCavityAppendixLuck", (cc.getOrganScore(CCOrganScores.LUCK) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LUCK)) * ChestCavity.config.APPENDIX_LUCK, Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }

@@ -56,7 +56,7 @@ public class ChestCavityInstance implements ContainerListener {
         if (owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
-        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize());
+        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
         ChestCavityUtil.evaluateChestCavity(this);
         this.oldInventory = this.inventory.clone();
     }
@@ -144,7 +144,7 @@ public class ChestCavityInstance implements ContainerListener {
                         this.owner.spawnAtLocation(this.inventory.getItem(i));
                     }
                 }
-                this.inventory = new ChestCavityInventory(newInventorySize);
+                this.inventory = new ChestCavityInventory(newInventorySize, this);
             } catch (NullPointerException ignored) {
             }
             if (ccTag.contains("Inventory")) {

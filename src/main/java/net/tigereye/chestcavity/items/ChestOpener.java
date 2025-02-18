@@ -1,27 +1,24 @@
 package net.tigereye.chestcavity.items;
 
-import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.tigereye.chestcavity.ChestCavity;
-import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+
+import java.util.Optional;
 
 public class ChestOpener extends Item {
 	public ChestOpener() {
@@ -46,6 +43,7 @@ public class ChestOpener extends Item {
 		if (optional.isPresent()) {
 			ChestCavityEntity chestCavityEntity = optional.get();
 			ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
+			cc.inventory.setInstance(cc);
 			if (target != player && !cc.getChestCavityType().isOpenable(cc)) {
 				if (player.level().isClientSide()) {
 					if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
