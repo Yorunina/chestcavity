@@ -332,8 +332,8 @@ public class ChestCavityUtil {
     }
 
     public static void evaluateChestCavity(ChestCavityInstance cc) {
+        if (cc.owner == null || cc.owner.level().isClientSide()) return;
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
-
         if (!cc.opened) {
             organScores.clear();
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {
@@ -367,9 +367,7 @@ public class ChestCavityUtil {
             }
         }
         // kubejs接入点：胸腔属性计算节点，取代激活属性计算
-        if (cc.owner != null && !cc.owner.level().isClientSide() && KUBEJS_LOADED) {
-            CCEvents.postEvaluateChestCavity(cc);
-        }
+        CCEvents.postEvaluateChestCavity(cc);
         organUpdate(cc);
     }
 
@@ -518,8 +516,6 @@ public class ChestCavityUtil {
             for (Iterator<OrganOnHitContext> var4 = cc.onHitListeners.iterator(); var4.hasNext(); damage = e.listener.onHit(source, cc.owner, target, cc, e.organ, damage)) {
                 e = var4.next();
             }
-
-            organUpdate(cc);
         }
 
         return damage;
@@ -532,7 +528,6 @@ public class ChestCavityUtil {
 
         if (cc.opened) {
             OrganTickListeners.call(cc.owner, cc);
-            organUpdate(cc);
         }
 
     }
@@ -552,14 +547,14 @@ public class ChestCavityUtil {
     }
 
     public static void organUpdate(ChestCavityInstance cc) {
+        if (cc.owner == null || cc.owner.level().isClientSide()) return;
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
         if (!cc.oldOrganScores.equals(organScores)) {
             OrganUpdateListeners.call(cc.owner, cc);
             cc.oldOrganScores.clear();
             cc.oldOrganScores.putAll(organScores);
-            if (cc.owner != null && !cc.owner.level().isClientSide() && KUBEJS_LOADED) {
-                CCEvents.postUpdateCCScore(cc);
-            }
+            CCEvents.postUpdateCCScore(cc);
+
             NetworkUtil.SendS2CChestCavityUpdatePacket(cc);
         }
     }
