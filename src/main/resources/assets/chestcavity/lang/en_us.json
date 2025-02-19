@@ -1,5 +1,6 @@
 {
     "tabs.chestcavity.tab": "Chest Cavity",
+    "gui.chestcavity.surgical_box.title": "Surgical Box's ChestCavity",
     "tooltips.organ.only_compatible_with": "Only Compatible With: %s",
     "tooltips.organ.safe_to_use": "Safe to Use",
     "death.attack.cc_heartbleed": "%1$s's sacrifice has nourished the sun",
@@ -43,6 +44,7 @@
     "key.chestcavity.pyromancy": "Pyromancy",
     "key.chestcavity.shulker_bullets": "Shulker Bullets",
     "key.chestcavity.silk": "Silk",
+    "item.chestcavity.surgical_box": "Surgical Box",
     "item.chestcavity.chest_opener": "Chest Opener",
     "item.chestcavity.wooden_cleaver": "Wooden Cleaver",
     "item.chestcavity.stone_cleaver": "Stone Cleaver",

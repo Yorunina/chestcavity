@@ -5,10 +5,17 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 public class InventoryTypeData {
+    public ResourceLocation id;
     public List<SlotDefinition> slotDefinitions;
     public ResourceLocation backgroundTexture;
     public SlotDefinition playerInventoryPosition;
 
+    public ResourceLocation getId() {
+        return this.id;
+    }
+    public void setId(ResourceLocation id) {
+        this.id = id;
+    }
     public int getSlotSize() {
         return this.slotDefinitions.size();
     }
@@ -37,7 +44,8 @@ public class InventoryTypeData {
         this.playerInventoryPosition = playerInventoryPosition;
     }
 
-    public InventoryTypeData(ResourceLocation backgroundTexture, List<SlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition) {
+    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<SlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition) {
+        this.id = id;
         this.backgroundTexture = backgroundTexture;
         this.slotDefinitions = slotDefinitions;
         this.playerInventoryPosition = playerInventoryPosition;

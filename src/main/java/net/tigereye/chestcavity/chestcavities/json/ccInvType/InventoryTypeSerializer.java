@@ -15,6 +15,7 @@ public class InventoryTypeSerializer {
 
     public InventoryTypeData read(ResourceLocation id, InventoryTypeJsonFormat inventoryTypeJsonFormat) {
         InventoryTypeData result = InventoryTypeManager.getDefaultInventoryTypeData();
+        result.setId(id);
         if (inventoryTypeJsonFormat.slotDefinitions != null) {
             List<SlotDefinition> slotDefinitions = new ArrayList<>();
             for (JsonElement entry : inventoryTypeJsonFormat.slotDefinitions) {
