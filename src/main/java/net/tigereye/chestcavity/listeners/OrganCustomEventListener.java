@@ -5,4 +5,7 @@ public class OrganCustomEventListener {
     public OrganCustomEventListener(int slotIndex) {
         this.slotIndex = slotIndex;
     }
+    public int getSlotIndex() {
+        return slotIndex;
+    }
 }

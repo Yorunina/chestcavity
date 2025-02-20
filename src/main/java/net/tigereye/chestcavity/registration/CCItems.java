@@ -7,6 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
+import net.tigereye.chestcavity.items.SurgicalBox;
 
 import java.util.ArrayList;
 import java.util.Collection;

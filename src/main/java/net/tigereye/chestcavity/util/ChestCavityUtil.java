@@ -511,6 +511,9 @@ public class ChestCavityUtil {
         }
 
         if (cc.opened) {
+            if (cc.owner != null && !cc.owner.level().isClientSide()) {
+                CCEvents.postOpenedEntityTick(cc);
+            }
             OrganTickListeners.call(cc.owner, cc);
         }
 

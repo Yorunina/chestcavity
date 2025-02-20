@@ -13,17 +13,12 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.listeners.OrganCustomEventListener;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 
@@ -50,7 +45,7 @@ public class ChestCavityInstance implements ContainerListener {
     public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
-    public List<OrganCustomEventListener> customEventListeners;
+    public Map<String, List<Integer>> slotListenerMap = new HashMap<>();
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -96,17 +91,18 @@ public class ChestCavityInstance implements ContainerListener {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
     }
 
-    public List<OrganCustomEventListener> getCustomEventListeners() {
-        return this.customEventListeners;
+    public void clearListenerMap() {
+        this.slotListenerMap.clear();
     }
-    public void addCustomEventListeners(OrganCustomEventListener eventListener) {
-        this.customEventListeners.add(eventListener);
+
+    public void addListener(String eventName, int listener) {
+        if (!this.slotListenerMap.containsKey(eventName)) {
+            this.slotListenerMap.put(eventName, new ArrayList<>());
+        }
+        this.slotListenerMap.get(eventName).add(listener);
     }
-    public void clearCustomEventListeners() {
-        this.customEventListeners.clear();
-    }
-    public void setCustomEventListeners(List<OrganCustomEventListener> eventListeners) {
-        this.customEventListeners = eventListeners;
+    public List<Integer> getListenerList(String eventName) {
+        return this.slotListenerMap.getOrDefault(eventName, new ArrayList<>());
     }
 
     public void containerChanged(@NotNull Container sender) {

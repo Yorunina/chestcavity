@@ -13,6 +13,8 @@ public class CCKubejsPlugin extends KubeJSPlugin {
     public static EventHandler UPDATE_CC_SCORE = CCGROUP
             .server("updateOrganScore", () -> UpdateOrganScoreJS.class);
 
+    public static EventHandler OPENED_ENTITY_TICK = CCGROUP
+            .server("openedEntityTick", () -> OpenedEntityTickJS.class);
     @Override
     public void registerEvents() {
         CCGROUP.register();
