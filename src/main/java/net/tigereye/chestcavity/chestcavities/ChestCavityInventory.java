@@ -34,7 +34,7 @@ public class ChestCavityInventory extends SimpleContainer {
 
         for(int j = 0; j < tags.size(); ++j) {
             CompoundTag NbtCompound = tags.getCompound(j);
-            int k = NbtCompound.getByte("Slot") & 255;
+            int k = NbtCompound.getInt("Slot");
             if (k < this.getContainerSize()) {
                 this.setItem(k, ItemStack.of(NbtCompound));
             }
@@ -49,7 +49,7 @@ public class ChestCavityInventory extends SimpleContainer {
             ItemStack itemStack = this.getItem(i);
             if (!itemStack.isEmpty()) {
                 CompoundTag NbtCompound = new CompoundTag();
-                NbtCompound.putByte("Slot", (byte)i);
+                NbtCompound.putInt("Slot", i);
                 itemStack.save(NbtCompound);
                 list.add(NbtCompound);
             }

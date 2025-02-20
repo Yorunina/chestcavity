@@ -18,7 +18,6 @@ import java.util.Optional;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
-    private final int size;
 
     private static ChestCavityEntity getChestCavityEntity(Inventory playerInventory) {
         ChestCavityEntity playerCCEntity = (ChestCavityEntity) playerInventory.player;
@@ -46,14 +45,13 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         List<SlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
         ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
-        this.size = slotSize;
         this.inventory = inventory;
         inventory.startOpen(playerInventory.player);
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
         // 组装自定义胸腔界面
-        for (int j = 0; j < this.size; ++j) {
+        for (int j = 0; j < slotSize; ++j) {
             this.addSlot(new Slot(inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
         // 组装玩家背包

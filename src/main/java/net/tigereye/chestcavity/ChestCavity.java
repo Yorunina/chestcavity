@@ -22,6 +22,8 @@ import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
+import net.tigereye.chestcavity.ui.ChestCavityItemScreen;
+import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityScreen;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +35,7 @@ public class ChestCavity {
 	public static CCConfig config;
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES;
 	public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER;
+	public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER;
 	public static final ResourceLocation CHEST_CAVITY_SCREEN_ID;
 	public static final ResourceLocation COMPATIBILITY_TAG;
 	public static boolean KUBEJS_LOADED = false;
@@ -72,12 +75,14 @@ public class ChestCavity {
 
 	public void clientSetup(FMLClientSetupEvent event) {
 		MenuScreens.register(CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
+		MenuScreens.register(CHEST_CAVITY_ITEM_SCREEN_HANDLER.get(), ChestCavityItemScreen::new);
 		ChestCavityClient.onInitializeClient();
 	}
 
 	static {
 		MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, "chestcavity");
 		CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
+		CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
 		CHEST_CAVITY_SCREEN_ID = new ResourceLocation("chestcavity", "chest_cavity_screen");
 		COMPATIBILITY_TAG = new ResourceLocation("chestcavity", "organ_compatibility");
 	}
