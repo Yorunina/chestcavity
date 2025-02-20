@@ -28,19 +28,18 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.listeners.*;
+import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
+import net.tigereye.chestcavity.listeners.OrganTickListeners;
+import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
 
 public class ChestCavityUtil {
     public ChestCavityUtil() {
@@ -340,21 +339,16 @@ public class ChestCavityUtil {
                 organScores.putAll(cc.getChestCavityType().getDefaultOrganScores());
             }
         } else {
-            cc.onHitListeners.clear();
             cc.getChestCavityType().loadBaseOrganScores(organScores);
 
             for (int i = 0; i < cc.inventory.getContainerSize(); i++) {
                 ItemStack itemStack = cc.inventory.getItem(i);
                 if (itemStack != ItemStack.EMPTY) {
-                    Item slotItem = itemStack.getItem();
                     OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
                             addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), organScores);
                         });
-                        if (slotItem instanceof OrganOnHitListener) {
-                            cc.onHitListeners.add(new OrganOnHitContext(itemStack, (OrganOnHitListener) slotItem));
-                        }
 
                         if (!data.pseudoOrgan) {
                             boolean isCompat = getCompatibility(cc, itemStack);
@@ -510,16 +504,6 @@ public class ChestCavityUtil {
         }
     }
 
-    public static float onHit(ChestCavityInstance cc, DamageSource source, LivingEntity target, float damage) {
-        if (cc.opened) {
-            OrganOnHitContext e;
-            for (Iterator<OrganOnHitContext> var4 = cc.onHitListeners.iterator(); var4.hasNext(); damage = e.listener.onHit(source, cc.owner, target, cc, e.organ, damage)) {
-                e = var4.next();
-            }
-        }
-
-        return damage;
-    }
 
     public static void onTick(ChestCavityInstance cc) {
         if (cc.updatePacket) {

@@ -118,25 +118,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
     }
 
-    @ModifyVariable(
-            at = @At(
-                    value = "CONSTANT",
-                    args = {"floatValue=0.0F"},
-                    ordinal = 0
-            ),
-            ordinal = 0,
-            method = {"actuallyHurt"},
-            argsOnly = true
-    )
-    public float chestCavityLivingEntityOnHitMixin(float amount, DamageSource source) {
-        if (source.getEntity() instanceof LivingEntity) {
-            Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.getEntity());
-            if (cce.isPresent()) {
-                amount = ChestCavityUtil.onHit(cce.get().getChestCavityInstance(), source, (LivingEntity)(Object)this, amount);
-            }
-        }
-        return amount;
-    }
 
     @Inject(
             at = {@At("RETURN")},
@@ -265,26 +246,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             super(entityType, world);
         }
 
-        @ModifyVariable(
-                at = @At(
-                        value = "CONSTANT",
-                        args = {"floatValue=0.0F"},
-                        ordinal = 0
-                ),
-                ordinal = 0,
-                method = {"actuallyHurt"},
-                argsOnly = true
-        )
-        public float chestCavityPlayerEntityOnHitMixin(float amount, DamageSource source) {
-            if (source.getEntity() instanceof LivingEntity) {
-                Optional<ChestCavityEntity> cce = ChestCavityEntity.of(source.getEntity());
-                if (cce.isPresent()) {
-                    amount = ChestCavityUtil.onHit(cce.get().getChestCavityInstance(), source, this, amount);
-                }
-            }
-
-            return amount;
-        }
 
         @Inject(
                 at = {@At("HEAD")},

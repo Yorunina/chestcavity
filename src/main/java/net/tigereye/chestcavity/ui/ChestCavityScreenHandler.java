@@ -69,6 +69,34 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
 
     }
 
+    public ChestCavityScreenHandler(int syncId, Inventory playerInventory,InventoryTypeData inventoryTypeData, Inventory inventory) {
+        super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
+
+        int slotSize = inventoryTypeData.getSlotSize();
+        List<SlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
+        this.size = slotSize;
+        this.inventory = new ChestCavityInventory(inventory.getContainerSize());
+        inventory.startOpen(playerInventory.player);
+        SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
+        int n;
+        int m;
+        // 组装自定义胸腔界面
+        for (int j = 0; j < this.size; ++j) {
+            this.addSlot(new Slot(inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
+        }
+        // 组装玩家背包
+        for (n = 0; n < 3; ++n) {
+            for (m = 0; m < 9; ++m) {
+                this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY()));
+            }
+        }
+        // 组装玩家快捷栏
+        for (n = 0; n < 9; ++n) {
+            this.addSlot(new Slot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
+        }
+
+    }
+
     public ItemStack quickMoveStack(Player player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);

@@ -7,7 +7,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
-import net.tigereye.chestcavity.items.VenomGland;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,7 +103,6 @@ public class CCItems {
 	public static final RegistryObject<Item> INSECT_STOMACH;
 	public static final RegistryObject<Item> INSECT_CAECA;
 	public static final RegistryObject<Item> SILK_GLAND;
-	public static final RegistryObject<Item> VENOM_GLAND;
 	public static final RegistryObject<Item> ENDER_APPENDIX;
 	public static final RegistryObject<Item> ENDER_HEART;
 	public static final RegistryObject<Item> ENDER_INTESTINE;
@@ -468,7 +466,6 @@ public class CCItems {
 		SILK_GLAND = register("silk_gland", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_TOXIC_ORGAN_MEAT_FOOD_COMPONENT));
 		});
-		VENOM_GLAND = register("venom_gland", VenomGland::new);
 		ENDER_APPENDIX = register("ender_appendix", () -> {
 			return new Item((new Item.Properties()).stacksTo(1).food(CCFoodComponents.RAW_ALIEN_ORGAN_MEAT_FOOD_COMPONENT));
 		});

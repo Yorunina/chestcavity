@@ -13,13 +13,17 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.listeners.OrganOnHitContext;
+import net.tigereye.chestcavity.listeners.OrganCustomEventListener;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 
@@ -30,9 +34,9 @@ public class ChestCavityInstance implements ContainerListener {
     public UUID compatibility_id;
     public boolean opened = false;
     public ChestCavityInventory inventory;
+    public ChestCavityInventory oldInventory;
     public Map<ResourceLocation, Float> oldOrganScores = new HashMap<>();
     protected Map<ResourceLocation, Float> organScores = new HashMap<>();
-    public List<OrganOnHitContext> onHitListeners = new ArrayList<>();
     public LinkedList<Consumer<LivingEntity>> projectileQueue = new LinkedList<>();
     public int heartBleedTimer = 0;
     public int bloodPoisonTimer = 0;
@@ -46,7 +50,7 @@ public class ChestCavityInstance implements ContainerListener {
     public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
-    public ChestCavityInventory oldInventory;
+    public List<OrganCustomEventListener> customEventListeners;
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -91,6 +95,20 @@ public class ChestCavityInstance implements ContainerListener {
     public InventoryTypeData getInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
     }
+
+    public List<OrganCustomEventListener> getCustomEventListeners() {
+        return this.customEventListeners;
+    }
+    public void addCustomEventListeners(OrganCustomEventListener eventListener) {
+        this.customEventListeners.add(eventListener);
+    }
+    public void clearCustomEventListeners() {
+        this.customEventListeners.clear();
+    }
+    public void setCustomEventListeners(List<OrganCustomEventListener> eventListeners) {
+        this.customEventListeners = eventListeners;
+    }
+
     public void containerChanged(@NotNull Container sender) {
         if (!isSameAsOldInventory()) {
             ChestCavityUtil.evaluateChestCavity(this);

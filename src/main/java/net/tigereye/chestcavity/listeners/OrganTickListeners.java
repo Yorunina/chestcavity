@@ -1,9 +1,5 @@
 package net.tigereye.chestcavity.listeners;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -18,6 +14,9 @@ import net.tigereye.chestcavity.registration.CCDamageSources;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.util.OrganUtil;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 public class OrganTickListeners {
     public OrganTickListeners() {
@@ -160,7 +159,7 @@ public class OrganTickListeners {
             --cc.projectileCooldown;
         } else if (!cc.projectileQueue.isEmpty()) {
             cc.projectileCooldown = 5;
-            ((Consumer)cc.projectileQueue.pop()).accept(entity);
+            cc.projectileQueue.pop().accept(entity);
         }
 
     }
