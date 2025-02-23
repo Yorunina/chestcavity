@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
@@ -52,7 +53,7 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
         inventory.deserializeNBT(nbt.getCompound("Inventory"));
 
         int slotSize = inventoryTypeData.getSlotSize();
-        List<SlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
+        List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;

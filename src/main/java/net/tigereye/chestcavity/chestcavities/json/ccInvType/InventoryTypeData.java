@@ -6,9 +6,12 @@ import java.util.List;
 
 public class InventoryTypeData {
     public ResourceLocation id;
-    public List<SlotDefinition> slotDefinitions;
+    public List<ChestCavitySlotDefinition> slotDefinitions;
     public ResourceLocation backgroundTexture;
     public SlotDefinition playerInventoryPosition;
+    public SlotDefinition titlePosition;
+    public SlotDefinition backgroundSize;
+    public SlotDefinition playerInventoryTitlePosition;
 
     public ResourceLocation getId() {
         return this.id;
@@ -19,10 +22,10 @@ public class InventoryTypeData {
     public int getSlotSize() {
         return this.slotDefinitions.size();
     }
-    public List<SlotDefinition> getSlotDefinitions() {
+    public List<ChestCavitySlotDefinition> getSlotDefinitions() {
         return this.slotDefinitions;
     }
-    public SlotDefinition getSlotDefinition(int index) {
+    public ChestCavitySlotDefinition getSlotDefinition(int index) {
         return this.slotDefinitions.get(index);
     }
     public String getSlotType(int index) {
@@ -34,7 +37,7 @@ public class InventoryTypeData {
     public SlotDefinition getPlayerInventoryPosition() {
         return this.playerInventoryPosition;
     }
-    public void setSlotDefinitions(List<SlotDefinition> slotDefinitions) {
+    public void setSlotDefinitions(List<ChestCavitySlotDefinition> slotDefinitions) {
         this.slotDefinitions = slotDefinitions;
     }
     public void setBackgroundTexture(ResourceLocation backgroundTexture) {
@@ -43,11 +46,32 @@ public class InventoryTypeData {
     public void setPlayerInventoryPosition(SlotDefinition playerInventoryPosition) {
         this.playerInventoryPosition = playerInventoryPosition;
     }
+    public void setTitlePosition(SlotDefinition titlePosition) {
+        this.titlePosition = titlePosition;
+    }
+    public SlotDefinition getTitlePosition() {
+        return this.titlePosition;
+    }
+    public void setPlayerInventoryTitlePosition(SlotDefinition playerInventoryTitlePosition) {
+        this.playerInventoryTitlePosition = playerInventoryTitlePosition;
+    }
+    public SlotDefinition getPlayerInventoryTitlePosition() {
+        return this.playerInventoryTitlePosition;
+    }
+    public void setBackgroundSize(SlotDefinition backgroundSize) {
+        this.backgroundSize = backgroundSize;
+    }
+    public SlotDefinition getBackgroundSize() {
+        return this.backgroundSize;
+    }
 
-    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<SlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition) {
+    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<ChestCavitySlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition, SlotDefinition titlePosition, SlotDefinition playerInventoryTitlePosition, SlotDefinition backgroundSize) {
         this.id = id;
         this.backgroundTexture = backgroundTexture;
         this.slotDefinitions = slotDefinitions;
         this.playerInventoryPosition = playerInventoryPosition;
+        this.titlePosition = titlePosition;
+        this.playerInventoryTitlePosition = playerInventoryTitlePosition;
+        this.backgroundSize = backgroundSize;
     }
 }

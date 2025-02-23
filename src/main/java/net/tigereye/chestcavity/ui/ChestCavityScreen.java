@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
 import java.util.Optional;
@@ -31,7 +32,8 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
                 if (targetCCI.ccBeingOpened != null) {
                     targetCCI = targetCCI.ccBeingOpened;
                 }
-                backgroundTexture = ((ChestCavityEntity) targetCCI.owner).getInventoryTypeData().getBackgroundTexture();
+                InventoryTypeData inventoryTypeData = targetCCI.getInventoryTypeData();
+                backgroundTexture = inventoryTypeData.getBackgroundTexture();
             }
             context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         }

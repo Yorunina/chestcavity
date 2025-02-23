@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -37,12 +38,13 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         this(syncId, playerInventory, getChestCavityEntity(playerInventory));
     }
 
+
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity chestCavityEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
 
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
         int slotSize = inventoryTypeData.getSlotSize();
-        List<SlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
+        List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
         ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
         this.inventory = inventory;

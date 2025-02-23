@@ -7,6 +7,9 @@ public class InventoryTypeJsonFormat {
     JsonArray slotDefinitions;
     String backgroundTexture;
     JsonObject playerInventoryPosition;
+    JsonObject titlePosition;
+    JsonObject playerInventoryTitlePosition;
+    JsonObject backgroundSize;
     public InventoryTypeJsonFormat() {
     }
 }
