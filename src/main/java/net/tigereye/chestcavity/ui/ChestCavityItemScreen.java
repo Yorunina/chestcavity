@@ -1,29 +1,20 @@
 package net.tigereye.chestcavity.ui;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition.DEFAULT_SLOT_TYPE;
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_TEXTURE;
 
 public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 
@@ -92,8 +83,9 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
         super.renderTooltip(pGuiGraphics, pX, pY);
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             InventoryTypeData inventoryTypeData = getInventoryTypeData();
-            String slotType = inventoryTypeData.getSlotType(this.hoveredSlot.getSlotIndex());
-            if (Objects.equals(slotType, DEFAULT_SLOT_TYPE)) return;
+            int slotIndex = this.hoveredSlot.index;
+            if (slotIndex < 0 || slotIndex >= inventoryTypeData.getSlotSize()) return;
+            String slotType = inventoryTypeData.getSlotType(slotIndex);
             List<Component> slotTypeTooltips = new ArrayList<>();
             slotTypeTooltips.add(Component.translatable(String.format("chestcavity.slot_type.%s.name", slotType)));
             slotTypeTooltips.add(Component.translatable(String.format("chestcavity.slot_type.%s.desc", slotType)));
