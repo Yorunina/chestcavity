@@ -44,10 +44,10 @@ public class InventoryTypeSerializer {
             JsonElement slotJsonY = inventoryTypeJsonFormat.titlePosition.get("y");
             result.setTitlePosition(new SlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
         }
-        if (inventoryTypeJsonFormat.playerInventoryTitlePosition != null) {
-            JsonElement slotJsonX = inventoryTypeJsonFormat.playerInventoryTitlePosition.get("x");
-            JsonElement slotJsonY = inventoryTypeJsonFormat.playerInventoryTitlePosition.get("y");
-            result.setPlayerInventoryTitlePosition(new SlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+        if (inventoryTypeJsonFormat.inventoryLabelPosition != null) {
+            JsonElement slotJsonX = inventoryTypeJsonFormat.inventoryLabelPosition.get("x");
+            JsonElement slotJsonY = inventoryTypeJsonFormat.inventoryLabelPosition.get("y");
+            result.setInventoryLabelPosition(new SlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
         }
         if (inventoryTypeJsonFormat.backgroundSize != null) {
             JsonElement slotJsonX = inventoryTypeJsonFormat.backgroundSize.get("x");

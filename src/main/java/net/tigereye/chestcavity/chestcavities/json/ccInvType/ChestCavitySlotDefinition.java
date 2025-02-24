@@ -1,9 +1,10 @@
 package net.tigereye.chestcavity.chestcavities.json.ccInvType;
 
 public class ChestCavitySlotDefinition {
+    public static final String DEFAULT_SLOT_TYPE = "default";
     public int x;
     public int y;
-    public String type = "default";
+    public String type = DEFAULT_SLOT_TYPE;
     public int getX() {
         return this.x;
     }

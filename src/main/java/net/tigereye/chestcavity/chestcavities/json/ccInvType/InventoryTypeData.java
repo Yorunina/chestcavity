@@ -11,7 +11,7 @@ public class InventoryTypeData {
     public SlotDefinition playerInventoryPosition;
     public SlotDefinition titlePosition;
     public SlotDefinition backgroundSize;
-    public SlotDefinition playerInventoryTitlePosition;
+    public SlotDefinition inventoryLabelPosition;
 
     public ResourceLocation getId() {
         return this.id;
@@ -52,11 +52,11 @@ public class InventoryTypeData {
     public SlotDefinition getTitlePosition() {
         return this.titlePosition;
     }
-    public void setPlayerInventoryTitlePosition(SlotDefinition playerInventoryTitlePosition) {
-        this.playerInventoryTitlePosition = playerInventoryTitlePosition;
+    public void setInventoryLabelPosition(SlotDefinition inventoryLabelPosition) {
+        this.inventoryLabelPosition = inventoryLabelPosition;
     }
-    public SlotDefinition getPlayerInventoryTitlePosition() {
-        return this.playerInventoryTitlePosition;
+    public SlotDefinition getInventoryLabelPosition() {
+        return this.inventoryLabelPosition;
     }
     public void setBackgroundSize(SlotDefinition backgroundSize) {
         this.backgroundSize = backgroundSize;
@@ -65,13 +65,13 @@ public class InventoryTypeData {
         return this.backgroundSize;
     }
 
-    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<ChestCavitySlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition, SlotDefinition titlePosition, SlotDefinition playerInventoryTitlePosition, SlotDefinition backgroundSize) {
+    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<ChestCavitySlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition, SlotDefinition titlePosition, SlotDefinition inventoryLabelPosition, SlotDefinition backgroundSize) {
         this.id = id;
         this.backgroundTexture = backgroundTexture;
         this.slotDefinitions = slotDefinitions;
         this.playerInventoryPosition = playerInventoryPosition;
         this.titlePosition = titlePosition;
-        this.playerInventoryTitlePosition = playerInventoryTitlePosition;
+        this.inventoryLabelPosition = inventoryLabelPosition;
         this.backgroundSize = backgroundSize;
     }
 }

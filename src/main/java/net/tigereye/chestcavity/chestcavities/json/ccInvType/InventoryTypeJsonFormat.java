@@ -8,7 +8,7 @@ public class InventoryTypeJsonFormat {
     String backgroundTexture;
     JsonObject playerInventoryPosition;
     JsonObject titlePosition;
-    JsonObject playerInventoryTitlePosition;
+    JsonObject inventoryLabelPosition;
     JsonObject backgroundSize;
     public InventoryTypeJsonFormat() {
     }

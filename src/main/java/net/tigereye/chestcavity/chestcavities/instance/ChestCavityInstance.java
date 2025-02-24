@@ -45,7 +45,7 @@ public class ChestCavityInstance implements ContainerListener {
     public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
-    public Map<String, List<Integer>> slotListenerMap = new HashMap<>();
+    public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -95,14 +95,19 @@ public class ChestCavityInstance implements ContainerListener {
         this.slotListenerMap.clear();
     }
 
-    public void addListener(String eventName, int listener) {
+    public void addListener(String eventName, int slotIndex) {
         if (!this.slotListenerMap.containsKey(eventName)) {
-            this.slotListenerMap.put(eventName, new ArrayList<>());
+            this.slotListenerMap.put(eventName, new HashMap<>());
         }
-        this.slotListenerMap.get(eventName).add(listener);
+        this.slotListenerMap.get(eventName).put(slotIndex, this.getInventoryTypeData().getSlotType(slotIndex));
     }
-    public List<Integer> getListenerList(String eventName) {
-        return this.slotListenerMap.getOrDefault(eventName, new ArrayList<>());
+    public Map<Integer, String> getListenerList(String eventName) {
+        return this.slotListenerMap.getOrDefault(eventName, new HashMap<>());
+    }
+    public void removeListener(String eventName, int slotIndex) {
+        if (this.slotListenerMap.containsKey(eventName)) {
+            this.slotListenerMap.get(eventName).remove(slotIndex);
+        }
     }
 
     public void containerChanged(@NotNull Container sender) {

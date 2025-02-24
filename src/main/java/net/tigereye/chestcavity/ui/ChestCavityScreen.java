@@ -8,11 +8,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
 import java.util.Optional;
-
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_TEXTURE;
 
 public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 
@@ -20,10 +19,8 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
         super(handler, inventory, title);
     }
 
-    protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
-        ResourceLocation backgroundTexture = DEFAULT_TEXTURE;
+    public InventoryTypeData getInventoryTypeData() {
+        InventoryTypeData inventoryTypeData = InventoryTypeManager.getDefaultInventoryTypeData();
         if (this.minecraft != null) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(this.minecraft.player);
             if (optional.isPresent()) {
@@ -32,17 +29,26 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
                 if (targetCCI.ccBeingOpened != null) {
                     targetCCI = targetCCI.ccBeingOpened;
                 }
-                InventoryTypeData inventoryTypeData = targetCCI.getInventoryTypeData();
-                backgroundTexture = inventoryTypeData.getBackgroundTexture();
+                inventoryTypeData = targetCCI.getInventoryTypeData();
             }
-            context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         }
+        return inventoryTypeData;
     }
+
+    protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+        int x = (this.width - this.imageWidth) / 2;
+        int y = (this.height - this.imageHeight) / 2;
+        InventoryTypeData inventoryTypeData = getInventoryTypeData();
+        ResourceLocation backgroundTexture = inventoryTypeData.getBackgroundTexture();
+        context.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
+    }
+
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         this.renderTooltip(context, mouseX, mouseY);
     }
+
     protected void init() {
         super.init();
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
