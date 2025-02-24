@@ -101,7 +101,7 @@ public class ChestCavityInstance implements ContainerListener {
         }
         this.slotListenerMap.get(eventName).put(slotIndex, this.getInventoryTypeData().getSlotType(slotIndex));
     }
-    public Map<Integer, String> getListenerList(String eventName) {
+    public Map<Integer, String> getListenerMap(String eventName) {
         return this.slotListenerMap.getOrDefault(eventName, new HashMap<>());
     }
     public void removeListener(String eventName, int slotIndex) {

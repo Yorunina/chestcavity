@@ -3,6 +3,7 @@ package net.tigereye.chestcavity.compat.kubejs;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
+import dev.latvian.mods.kubejs.script.BindingsEvent;
 
 public class CCKubejsPlugin extends KubeJSPlugin {
 
@@ -18,5 +19,10 @@ public class CCKubejsPlugin extends KubeJSPlugin {
     @Override
     public void registerEvents() {
         CCGROUP.register();
+    }
+
+    @Override
+    public void registerBindings(BindingsEvent event) {
+        event.add("ChestCavityUtils", ChestCavityUtilsJS.class);
     }
 }

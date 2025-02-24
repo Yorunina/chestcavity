@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -65,14 +66,17 @@ public class SurgicalBox extends Item implements MenuProvider {
 			// 替换胸腔类型
 			chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
 			itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
+			// 替换胸腔物品栏数量，保存物品信息
+			ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
 
-			ChestCavityInventory playerInventory = chestCavityEntity.getChestCavityInstance().inventory;
-			ListTag playerItemListNbt = playerInventory.getTags();
+			ListTag playerItemListNbt = entityInstance.inventory.getTags();
+			entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
+
 			// 替换物品
-			ItemStackHandler itemInventory = new ItemStackHandler(inventoryTypeData.getSlotSize());
+			ItemStackHandler itemInventory = new ItemStackHandler(itemInventoryTypeData.getSlotSize());
 			itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));
-			for (int i = 0; i < itemInventory.getSlots(); i++) {
-				playerInventory.setItem(i, itemInventory.getStackInSlot(i));
+			for (int i = 0; i < itemInventoryTypeData.getSlotSize(); i++) {
+				entityInstance.inventory.setItem(i, itemInventory.getStackInSlot(i));
 			}
 
 			itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());

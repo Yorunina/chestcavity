@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractContainerMenu> {
-
+    private ResourceLocation backgroundTexture;
+    private InventoryTypeData inventoryTypeData;
     public ChestCavityItemScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
@@ -42,33 +43,9 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
 
     @Override
     protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-        InventoryTypeData inventoryTypeData = getInventoryTypeData();
-        ResourceLocation backgroundTexture  = inventoryTypeData.getBackgroundTexture();
-        int imageWidth = inventoryTypeData.getBackgroundSize().getX();
-        int imageHeight = inventoryTypeData.getBackgroundSize().getY();
-        int x = (this.width - imageWidth) / 2;
-        int y = (this.height - imageHeight) / 2;
-
-        context.blit(backgroundTexture, x, y, 0, 0, imageWidth, imageHeight);
-    }
-
-
-    @Override
-    protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton) {
-        InventoryTypeData inventoryTypeData = getInventoryTypeData();
-        int imageWidth = inventoryTypeData.getBackgroundSize().getX();
-        int imageHeight = inventoryTypeData.getBackgroundSize().getY();
-        return pMouseX < (double)pGuiLeft || pMouseY < (double)pGuiTop || pMouseX >= (double)(pGuiLeft + imageWidth) || pMouseY >= (double)(pGuiTop + imageHeight);
-    }
-    @Override
-    protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
-        InventoryTypeData inventoryTypeData = getInventoryTypeData();
-        int titleX = this.titleLabelX + inventoryTypeData.getTitlePosition().getX();
-        int titleY = this.titleLabelY + inventoryTypeData.getTitlePosition().getY();
-        int inventoryLabelX = this.inventoryLabelX + inventoryTypeData.getInventoryLabelPosition().getX();
-        int inventoryLabelY = this.inventoryLabelY + inventoryTypeData.getInventoryLabelPosition().getY();
-        pGuiGraphics.drawString(this.font, this.title, titleX, titleY, 4210752, false);
-        pGuiGraphics.drawString(this.font, this.playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
+        int x = (this.width - this.imageWidth) / 2;
+        int y = (this.height - this.imageHeight) / 2;
+        context.blit(this.backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
@@ -82,13 +59,12 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
     protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
         super.renderTooltip(pGuiGraphics, pX, pY);
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
-            InventoryTypeData inventoryTypeData = getInventoryTypeData();
             int slotIndex = this.hoveredSlot.index;
             if (slotIndex < 0 || slotIndex >= inventoryTypeData.getSlotSize()) return;
-            String slotType = inventoryTypeData.getSlotType(slotIndex);
+            String slotType = this.inventoryTypeData.getSlotType(slotIndex);
             List<Component> slotTypeTooltips = new ArrayList<>();
-            slotTypeTooltips.add(Component.translatable(String.format("chestcavity.slot_type.%s.name", slotType)));
-            slotTypeTooltips.add(Component.translatable(String.format("chestcavity.slot_type.%s.desc", slotType)));
+            slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.name", slotType)));
+            slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.desc", slotType)));
             pGuiGraphics.renderTooltip(this.font, slotTypeTooltips, Optional.empty(), ItemStack.EMPTY, pX, pY);
         }
     }
@@ -96,10 +72,15 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
     @Override
     protected void init() {
         InventoryTypeData inventoryTypeData = getInventoryTypeData();
-        int imageWidth = inventoryTypeData.getBackgroundSize().getX();
-        int imageHeight = inventoryTypeData.getBackgroundSize().getY();
+        this.inventoryTypeData = inventoryTypeData;
+        this.imageWidth = inventoryTypeData.getBackgroundSize().getX();
+        this.imageHeight = inventoryTypeData.getBackgroundSize().getY();
         this.leftPos = (this.width - imageWidth) / 2;
         this.topPos = (this.height - imageHeight) / 2;
-        this.titleLabelX = (imageWidth - this.font.width(this.title)) / 2;
+        this.titleLabelX = (imageWidth - this.font.width(this.title)) / 2 + inventoryTypeData.getTitlePosition().getX();
+        this.titleLabelY = 6 + inventoryTypeData.getTitlePosition().getY();
+        this.inventoryLabelX = 8 + inventoryTypeData.getInventoryLabelPosition().getX();
+        this.inventoryLabelY = this.imageHeight - 94 + inventoryTypeData.getInventoryLabelPosition().getY();
+        this.backgroundTexture = inventoryTypeData.getBackgroundTexture();
     }
 }
