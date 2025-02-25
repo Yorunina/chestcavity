@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({FoodData.class})
 public abstract class MixinHungerManager {
         @Shadow
-        private int foodLevel;
+        private int tickTimer;
         @Shadow
         private int lastFoodLevel;
         @Shadow
@@ -51,7 +51,7 @@ public abstract class MixinHungerManager {
                         });
                 }
 
-                this.foodLevel = ChestCavityUtil.applySpleenMetabolism(this.CC_player.getChestCavityInstance(), this.foodLevel);
+                this.tickTimer = ChestCavityUtil.applySpleenMetabolism(this.CC_player.getChestCavityInstance(), this.tickTimer);
         }
 
         @Redirect(
@@ -84,10 +84,6 @@ public abstract class MixinHungerManager {
         )
         public float chestCavityAddExhaustionMixin(float exhaustion) {
                 if (this.CC_player != null) {
-                        if (this.exhaustionLevel != this.exhaustionLevel) {
-                                this.exhaustionLevel = 0.0F;
-                        }
-
                         float enduranceDif = this.CC_player.getChestCavityInstance().getOrganScore(CCOrganScores.ENDURANCE) - this.CC_player.getChestCavityInstance().getChestCavityType().getDefaultOrganScore(CCOrganScores.ENDURANCE);
                         float out;
                         if (enduranceDif > 0.0F) {
@@ -95,7 +91,6 @@ public abstract class MixinHungerManager {
                         } else {
                                 out = exhaustion * (1.0F - enduranceDif / 2.0F);
                         }
-
                         return out;
                 } else {
                         return exhaustion;

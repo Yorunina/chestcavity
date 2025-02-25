@@ -25,6 +25,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
+import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 import java.util.Optional;
 
@@ -64,10 +65,12 @@ public class SurgicalBox extends Item implements MenuProvider {
 			}
 
 			// 替换胸腔类型
+			ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
 			chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
+			entityInstance.inventoryType = itemInventoryTypeData.getId();
+
 			itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
 			// 替换胸腔物品栏数量，保存物品信息
-			ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
 
 			ListTag playerItemListNbt = entityInstance.inventory.getTags();
 			entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
@@ -81,6 +84,7 @@ public class SurgicalBox extends Item implements MenuProvider {
 
 			itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());
 			itemNbt.getCompound("Inventory").put("Items", playerItemListNbt);
+			ChestCavityUtil.evaluateChestCavity(entityInstance);
 		}
 
 		return pStack;

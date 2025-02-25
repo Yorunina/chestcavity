@@ -18,7 +18,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 
@@ -129,6 +132,26 @@ public class ChestCavityInstance implements ContainerListener {
             }
         }
         return true;
+    }
+
+    public void setInventoryType(ResourceLocation inventoryType) {
+        this.inventoryType = inventoryType;
+        this.inventory.removeListener(this);
+        int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
+        ChestCavityInventory newInventory = new ChestCavityInventory(newInventorySize, this);
+
+        for (int i = 0; i < this.inventory.getContainerSize(); i++) {
+            if (newInventorySize <= i) {
+                this.owner.spawnAtLocation(this.inventory.getItem(i));
+                continue;
+            }
+            newInventory.setItem(i, this.inventory.getItem(i));
+        }
+        this.inventory = newInventory;
+        this.inventory.addListener(this);
+        if (this.owner instanceof ChestCavityEntity ccEntity) {
+            ccEntity.setInventoryTypeData(this.inventoryType);
+        }
     }
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {
