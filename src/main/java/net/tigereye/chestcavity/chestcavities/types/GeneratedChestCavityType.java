@@ -61,7 +61,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
     public float getBaseOrganScore(ResourceLocation id) {
-        return (Float)this.getBaseOrganScores().getOrDefault(id, 0.0F);
+        return this.getBaseOrganScores().getOrDefault(id, 0.0F);
     }
     public void setInventoryType(ResourceLocation id) {
         this.inventoryType = id;
@@ -86,7 +86,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
 
         for (Ingredient ingredient : this.getExceptionalOrganList().keySet()) {
             if (ingredient.test(itemStack)) {
-                return (Map)this.getExceptionalOrganList().get(ingredient);
+                return this.getExceptionalOrganList().get(ingredient);
             }
         }
 

@@ -56,9 +56,6 @@ public class ChestCavity {
 		config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
 		CCItems.ITEMS.register(eventBus);
 		CREATIVE_TABS.register(eventBus);
-		CCRecipes.RECIPE_SERIALIZERS.register(eventBus);
-		CCRecipes.MCRECIPE_SERIALIZERS.register(eventBus);
-		CCRecipes.RECIPE_TYPES.register(eventBus);
 		CCListeners.register();
 		CCStatusEffects.MOB_EFFECTS.register(eventBus);
 		CCTagOrgans.init();
