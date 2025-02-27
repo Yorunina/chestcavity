@@ -1,13 +1,6 @@
 package net.tigereye.chestcavity.listeners;
 
 import it.unimi.dsi.fastutil.ints.IntComparators;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +22,9 @@ import net.tigereye.chestcavity.registration.CCTags;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.OrganUtil;
 
+import java.util.*;
+import java.util.function.BiConsumer;
+
 public class OrganActivationListeners {
     private static final Map<ResourceLocation, BiConsumer<LivingEntity, ChestCavityInstance>> abilityIDMap = new HashMap();
 
@@ -36,6 +32,7 @@ public class OrganActivationListeners {
     }
 
     public static void register() {
+        register(CCOrganScores.BUOYANT, OrganActivationListeners::ActivateBuoyantExhale);
         register(CCOrganScores.CREEPY, OrganActivationListeners::ActivateCreepy);
         register(CCOrganScores.DRAGON_BREATH, OrganActivationListeners::ActivateDragonBreath);
         register(CCOrganScores.DRAGON_BOMBS, OrganActivationListeners::ActivateDragonBombs);
@@ -61,8 +58,16 @@ public class OrganActivationListeners {
         }
     }
 
+    public static void ActivateBuoyantExhale(LivingEntity entity, ChestCavityInstance cc){
+        if(entity.getAirSupply() > 0) {
+            float breathLoss = cc.getOrganScore(CCOrganScores.BREATH_RECOVERY) * 4.5f - cc.lungRemainder;
+            cc.lungRemainder = 1 - breathLoss % 1;
+            entity.setAirSupply(entity.getAirSupply() - (int) breathLoss);
+        }
+    }
+
     public static void ActivateCreepy(LivingEntity entity, ChestCavityInstance cc) {
-        if (!(cc.getOrganScore(CCOrganScores.CREEPY) < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.EXPLOSION_COOLDOWN.get())) {
+        if (!(cc.getOrganScore(CCOrganScores.CREEPY) < 1.0F) && !entity.hasEffect(CCStatusEffects.EXPLOSION_COOLDOWN.get())) {
             float explosion_yield = cc.getOrganScore(CCOrganScores.EXPLOSIVE);
             ChestCavityUtil.destroyOrgansWithKey(cc, CCOrganScores.EXPLOSIVE);
             OrganUtil.explode(entity, explosion_yield);

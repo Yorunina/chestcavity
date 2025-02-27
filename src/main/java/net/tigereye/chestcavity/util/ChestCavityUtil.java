@@ -12,13 +12,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.phys.AABB;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
@@ -201,12 +199,37 @@ public class ChestCavityUtil {
     public static Float applyLeaping(ChestCavityInstance cc, float velocity) {
         float leaping = cc.getOrganScore(CCOrganScores.LEAPING);
         float defaultLeaping = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LEAPING);
-        return velocity * Math.max(0.0F, 1.0F + (leaping - defaultLeaping) * 0.25F);
+        return velocity * Math.max(0.0F, 1.0F + (leaping - defaultLeaping) * ChestCavity.config.LEAPING_POWER);
     }
 
     public static float applyLeapingToFallDamage(ChestCavityInstance cc, float damage) {
         float leapingDiff = cc.getOrganScore(CCOrganScores.LEAPING) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LEAPING);
         return leapingDiff > 0.0F ? Math.max(0.0F, damage - leapingDiff * leapingDiff / 4.0F) : damage;
+    }
+
+    public static double getBuoyancyLift(LivingEntity entity, ChestCavityInstance chestCavity){
+        float buoyancy = chestCavity.getOrganScore(CCOrganScores.BUOYANT) - chestCavity.getChestCavityType().getDefaultOrganScore(CCOrganScores.BUOYANT);
+        float breathRatio = (float) entity.getAirSupply() / entity.getMaxAirSupply();
+        return buoyancy*breathRatio*ChestCavity.config.BUOYANCY_LIFT;
+    }
+
+    public static double applyLightweightToGravity(ChestCavityInstance cc, double gravity) {
+        float lightweight = cc.getOrganScore(CCOrganScores.LIGHTWEIGHT);
+        float defaultLightweight = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LIGHTWEIGHT);
+        float diff = lightweight-defaultLightweight;
+        if(diff > 0){
+            return gravity / (1+(diff*ChestCavity.config.LIGHTWIEGHT_FACTOR));
+        }
+        else{
+            return gravity * (1-(diff*ChestCavity.config.LIGHTWIEGHT_FACTOR));
+        }
+
+    }
+
+    public static double applyOrgansToFallDistance(LivingEntity entity, ChestCavityInstance cc, double heightDifference) {
+        double aproxEffGrav = 1;
+        aproxEffGrav = applyLightweightToGravity(cc,aproxEffGrav) - (getBuoyancyLift(entity,cc) / 0.08); //0.08 is the strength of minecraft gravity
+        return heightDifference * (((aproxEffGrav-1) * 4 / 3)+1);
     }
 
     public static float applyNutrition(ChestCavityInstance cc, float nutrition, float saturation) {

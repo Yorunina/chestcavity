@@ -55,6 +55,12 @@ public class CCConfig implements ConfigData {
     @Category("more")
     public int CRYSTALSYNTHESIS_FREQUENCY = 10;
     @Category("more")
+    public float BUOYANCY_LIFT = 0.015f;
+    @Category("more")
+    public float LEAPING_POWER = .25f;
+    @Category("more")
+    public float LIGHTWIEGHT_FACTOR = .25f;
+    @Category("more")
     public float FIREPROOF_DEFENSE = 0.75F;
     @Category("more")
     public float IMPACT_DEFENSE = 0.75F;

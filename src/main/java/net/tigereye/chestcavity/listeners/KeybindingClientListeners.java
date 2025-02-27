@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.listeners;
 
-import java.util.Iterator;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -15,51 +14,24 @@ public class KeybindingClientListeners {
 
     public static void register() {
         EventHelper.CLIENT_TICK.register((client) -> {
-            label20:
-            while(true) {
-                if (CCKeybindings.UTILITY_ABILITIES.consumeClick()) {
-                    if (Minecraft.getInstance().player == null) {
-                        continue;
-                    }
-
-                    Iterator<ResourceLocation> var1 = CCKeybindings.UTILITY_ABILITY_LIST.iterator();
-
-                    while(true) {
-                        if (!var1.hasNext()) {
-                            continue label20;
-                        }
-
-                        ResourceLocation i = var1.next();
+            if(CCKeybindings.UTILITY_ABILITIES.isDown()) {
+                if(Minecraft.getInstance().player != null) {
+                    for(ResourceLocation i : CCKeybindings.UTILITY_ABILITY_LIST) {
                         NetworkUtil.SendC2SChestCavityHotkeyPacket(i);
                     }
                 }
-
-                return;
             }
         });
         EventHelper.CLIENT_TICK.register((client) -> {
-            label20:
-            while(true) {
-                if (CCKeybindings.ATTACK_ABILITIES.consumeClick()) {
-                    if (Minecraft.getInstance().player == null) {
-                        continue;
-                    }
-
-                    Iterator<ResourceLocation> var1 = CCKeybindings.ATTACK_ABILITY_LIST.iterator();
-
-                    while(true) {
-                        if (!var1.hasNext()) {
-                            continue label20;
-                        }
-
-                        ResourceLocation i = var1.next();
+            if(CCKeybindings.ATTACK_ABILITIES.isDown()) {
+                if(Minecraft.getInstance().player != null) {
+                    for(ResourceLocation i : CCKeybindings.ATTACK_ABILITY_LIST) {
                         NetworkUtil.SendC2SChestCavityHotkeyPacket(i);
                     }
                 }
-
-                return;
             }
         });
+        register(CCKeybindings.BUOYANT_EXHALE,CCOrganScores.BUOYANT);
         register(CCKeybindings.CREEPY, CCOrganScores.CREEPY);
         register(CCKeybindings.DRAGON_BREATH, CCOrganScores.DRAGON_BREATH);
         register(CCKeybindings.DRAGON_BOMBS, CCOrganScores.DRAGON_BOMBS);
@@ -74,12 +46,11 @@ public class KeybindingClientListeners {
 
     public static void register(KeyMapping keybinding, ResourceLocation id) {
         EventHelper.CLIENT_TICK.register((client) -> {
-            while(keybinding.consumeClick()) {
+            if (keybinding.isDown()) {
                 if (Minecraft.getInstance().player != null) {
                     NetworkUtil.SendC2SChestCavityHotkeyPacket(id);
                 }
             }
-
         });
     }
 }
