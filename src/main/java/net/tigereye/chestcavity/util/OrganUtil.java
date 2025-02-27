@@ -100,25 +100,6 @@ public class OrganUtil {
 
     }
 
-    public static List<MobEffectInstance> getStatusEffects(ItemStack organ) {
-        CompoundTag tag = organ.getOrCreateTag();
-        if (!tag.contains("CustomPotionEffects", 9)) {
-            return new ArrayList();
-        } else {
-            ListTag NbtList = tag.getList("CustomPotionEffects", 10);
-            List<MobEffectInstance> list = new ArrayList();
-
-            for(int i = 0; i < NbtList.size(); ++i) {
-                CompoundTag NbtCompound = NbtList.getCompound(i);
-                MobEffectInstance statusEffectInstance = MobEffectInstance.load(NbtCompound);
-                if (statusEffectInstance != null) {
-                    list.add(statusEffectInstance);
-                }
-            }
-
-            return list;
-        }
-    }
 
     public static void queueDragonBombs(LivingEntity entity, ChestCavityInstance cc, int bombs) {
         if (entity instanceof Player) {
@@ -358,7 +339,7 @@ public class OrganUtil {
             } else {
                 entity.teleportTo(x, (double)targetPos.getY() + 0.1, z);
                 if (!entity.isSilent()) {
-                    entity.level().playSound((Player)null, entity.xOld, entity.yOld, entity.zOld, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
+                    entity.level().playSound(null, entity.xOld, entity.yOld, entity.zOld, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
                     entity.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
                 }
 

@@ -13,7 +13,6 @@
     "MixinLivingEntity$Player",
     "MixinLivingEntity$Server",
     "MixinLivingEntity$Wither",
-    "MixinPotionEntity",
     "MixinSimpleContainer",
     "MixinStatusEffect",
     "MixinStatusEffectInstance",

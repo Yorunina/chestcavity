@@ -25,12 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinHungerManager {
         @Shadow
         private int tickTimer;
-        @Shadow
-        private int lastFoodLevel;
-        @Shadow
-        private float saturationLevel;
-        @Shadow
-        private float exhaustionLevel;
         @Unique
         private ChestCavityEntity CC_player = null;
 

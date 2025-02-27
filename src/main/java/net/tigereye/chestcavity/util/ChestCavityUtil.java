@@ -560,30 +560,4 @@ public class ChestCavityUtil {
         });
     }
 
-    public static void splashHydrophobicWithWater(ThrownPotion splash) {
-        AABB box = splash.getBoundingBox().expandTowards(4.0, 2.0, 4.0);
-        List<LivingEntity> list = splash.level().getEntitiesOfClass(LivingEntity.class, box, ChestCavityUtil::isHydroPhobicOrAllergic);
-        if (!list.isEmpty()) {
-
-            for (LivingEntity livingEntity : list) {
-                double d = splash.distanceToSqr(livingEntity);
-                if (d < 16.0) {
-                    Optional<ChestCavityEntity> optional = ChestCavityEntity.of(livingEntity);
-                    if (optional.isPresent()) {
-                        ChestCavityInstance cc = optional.get().getChestCavityInstance();
-                        float allergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
-                        float phobia = cc.getOrganScore(CCOrganScores.HYDROPHOBIA);
-                        if (allergy > 0.0F) {
-                            livingEntity.hurt(livingEntity.damageSources().indirectMagic(splash, splash.getOwner()), allergy / 26.0F);
-                        }
-
-                        if (phobia > 0.0F) {
-                            OrganUtil.teleportRandomly(livingEntity, phobia * 32.0F);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
 }
