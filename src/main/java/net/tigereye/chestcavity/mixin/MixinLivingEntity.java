@@ -74,6 +74,23 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         return InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.entityData.get(DATA_INVENTORY_TYPE)));
     }
 
+    @ModifyVariable(
+            at = @At("HEAD"),
+            ordinal = 0,
+            method = {"checkFallDamage"},
+            argsOnly = true
+    )
+    public double chestCavityEntityFallMixin(double finalHeightDifference, double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+        if (heightDifference < 0.0) {
+            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((LivingEntity)(Object)this);
+            if (cce.isPresent()) {
+                finalHeightDifference = ChestCavityUtil.applyOrgansToFallDistance((LivingEntity)(Object)this, cce.get().getChestCavityInstance(),heightDifference);
+            }
+        }
+
+        return finalHeightDifference;
+    }
+
     public void setInventoryTypeData(ResourceLocation id) {
         this.entityData.set(DATA_INVENTORY_TYPE, id.toString());
     }

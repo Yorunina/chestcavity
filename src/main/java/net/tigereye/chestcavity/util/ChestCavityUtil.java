@@ -188,12 +188,12 @@ public class ChestCavityUtil {
 
     public static float applyFireResistant(ChestCavityInstance cc, float damage) {
         float fireproof = cc.getOrganScore(CCOrganScores.FIRE_RESISTANT);
-        return fireproof > 0.0F ? (float) ((double) damage * Math.pow((double) (1.0F - ChestCavity.config.FIREPROOF_DEFENSE), (double) (fireproof / 4.0F))) : damage;
+        return fireproof > 0.0F ? (float) ((double) damage * Math.pow(1.0F - ChestCavity.config.FIREPROOF_DEFENSE, fireproof / 4.0F)) : damage;
     }
 
     public static float applyImpactResistant(ChestCavityInstance cc, float damage) {
         float impactResistant = cc.getOrganScore(CCOrganScores.IMPACT_RESISTANT);
-        return impactResistant > 0.0F ? (float) ((double) damage * Math.pow((double) (1.0F - ChestCavity.config.IMPACT_DEFENSE), (double) (impactResistant / 4.0F))) : damage;
+        return impactResistant > 0.0F ? (float) ((double) damage * Math.pow(1.0F - ChestCavity.config.IMPACT_DEFENSE, impactResistant / 4.0F)) : damage;
     }
 
     public static Float applyLeaping(ChestCavityInstance cc, float velocity) {
@@ -210,18 +210,18 @@ public class ChestCavityUtil {
     public static double getBuoyancyLift(LivingEntity entity, ChestCavityInstance chestCavity){
         float buoyancy = chestCavity.getOrganScore(CCOrganScores.BUOYANT) - chestCavity.getChestCavityType().getDefaultOrganScore(CCOrganScores.BUOYANT);
         float breathRatio = (float) entity.getAirSupply() / entity.getMaxAirSupply();
-        return buoyancy*breathRatio*ChestCavity.config.BUOYANCY_LIFT;
+        return buoyancy * breathRatio * ChestCavity.config.BUOYANCY_LIFT;
     }
 
     public static double applyLightweightToGravity(ChestCavityInstance cc, double gravity) {
         float lightweight = cc.getOrganScore(CCOrganScores.LIGHTWEIGHT);
         float defaultLightweight = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LIGHTWEIGHT);
-        float diff = lightweight-defaultLightweight;
+        float diff = lightweight - defaultLightweight;
         if(diff > 0){
-            return gravity / (1+(diff*ChestCavity.config.LIGHTWIEGHT_FACTOR));
+            return gravity / (1 + ( diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
         }
         else{
-            return gravity * (1-(diff*ChestCavity.config.LIGHTWIEGHT_FACTOR));
+            return gravity * (1 - ( diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
         }
 
     }
