@@ -39,10 +39,7 @@ public class ChestCavityTypeSerializer {
             cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson));
             cct.setBaseOrganScores(this.readBaseOrganScoresFromJson(id, cctJson));
             cct.setExceptionalOrganList(this.readExceptionalOrgansFromJson(id, cctJson));
-            cct.setDropRateMultiplier(cctJson.dropRateMultiplier);
             cct.setInventoryType(new ResourceLocation(cctJson.inventoryType));
-            cct.setPlayerChestCavity(cctJson.playerChestCavity);
-            cct.setBossChestCavity(cctJson.bossChestCavity);
             return cct;
         }
     }

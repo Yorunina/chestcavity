@@ -23,7 +23,7 @@ public class MixinEnchantmentHelper {
     private static void chestCavityDealDamageMixin(LivingEntity user, Entity target, CallbackInfo info) {
         Optional<ChestCavityEntity> cce = ChestCavityEntity.of(user);
         if (cce.isPresent() && target instanceof LivingEntity) {
-            OrganOnHitListeners.call(user, (LivingEntity)target, ((ChestCavityEntity)cce.get()).getChestCavityInstance());
+            OrganOnHitListeners.call(user, (LivingEntity)target, cce.get().getChestCavityInstance());
         }
 
     }

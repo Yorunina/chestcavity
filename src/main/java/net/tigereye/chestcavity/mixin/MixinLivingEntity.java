@@ -356,31 +356,4 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
         }
     }
-
-
-    @Mixin({WitherBoss.class})
-    private abstract static class Wither extends Monster {
-        protected Wither(EntityType<? extends Monster> entityType, Level world) {
-            super(entityType, world);
-        }
-
-        @Inject(
-                method = {"dropCustomDeathLoot"},
-                at = {@At(
-                        value = "INVOKE",
-                        target = "Lnet/minecraft/world/entity/boss/wither/WitherBoss;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"
-                )},
-                cancellable = true
-        )
-        protected void chestCavityPreventNetherStarDrop(DamageSource source, int lootingMultiplier, boolean allowDrops, CallbackInfo info) {
-            Optional<ChestCavityEntity> chestCavityEntity = ChestCavityEntity.of(this);
-            if (chestCavityEntity.isPresent()) {
-                ChestCavityInstance cc = chestCavityEntity.get().getChestCavityInstance();
-                if (cc.opened && cc.inventory.countItem(Items.NETHER_STAR) == 0) {
-                    info.cancel();
-                }
-            }
-
-        }
-    }
 }

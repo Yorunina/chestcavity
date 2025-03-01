@@ -20,6 +20,5 @@ public class OrganOnHitListeners {
             double KBRes = target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
             target.absMoveTo(0.0, Math.max(0.0, (double)(ChestCavity.config.LAUNCHING_POWER * launchingDiff) * (1.0 - KBRes)), 0.0);
         }
-
     }
 }

@@ -24,10 +24,6 @@ public class GeneratedChestCavityType implements ChestCavityType {
     private ChestCavityInventory defaultChestCavity = null;
     private Map<ResourceLocation, Float> baseOrganScores = null;
     private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = null;
-    private List<ItemStack> droppableOrgans = null;
-    private float dropRateMultiplier = 1.0F;
-    private boolean bossChestCavity = false;
-    private boolean playerChestCavity = false;
     private ResourceLocation inventoryType = new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING);
 
     public GeneratedChestCavityType() {
@@ -101,46 +97,6 @@ public class GeneratedChestCavityType implements ChestCavityType {
         this.exceptionalOrganList.put(ingredient, scores);
     }
 
-    public List<ItemStack> getDroppableOrgans() {
-        if (this.droppableOrgans == null) {
-            this.deriveDroppableOrgans();
-        }
-
-        return this.droppableOrgans;
-    }
-
-    public void setDroppableOrgans(List<ItemStack> list) {
-        this.droppableOrgans = list;
-    }
-
-    private void deriveDroppableOrgans() {
-        this.droppableOrgans = new LinkedList<>();
-
-        for(int i = 0; i < this.defaultChestCavity.getContainerSize(); ++i) {
-            ItemStack stack = this.defaultChestCavity.getItem(i);
-            if (OrganManager.isTrueOrgan(stack.getItem())) {
-                this.droppableOrgans.add(stack);
-            }
-        }
-
-    }
-
-    public boolean isBossChestCavity() {
-        return this.bossChestCavity;
-    }
-
-    public void setBossChestCavity(boolean bool) {
-        this.bossChestCavity = bool;
-    }
-
-    public boolean isPlayerChestCavity() {
-        return this.playerChestCavity;
-    }
-
-    public void setPlayerChestCavity(boolean bool) {
-        this.playerChestCavity = bool;
-    }
-
     public void fillChestCavityInventory(ChestCavityInventory chestCavity) {
         chestCavity.clearContent();
 
@@ -166,41 +122,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
         }
     }
 
-    public float getDropRateMultiplier() {
-        return this.dropRateMultiplier;
-    }
 
-    public void setDropRateMultiplier(float multiplier) {
-        this.dropRateMultiplier = multiplier;
-    }
-
-    public List<ItemStack> generateLootDrops(RandomSource random, int looting) {
-        List<ItemStack> loot = new ArrayList<>();
-        if (this.playerChestCavity) {
-            return loot;
-        } else if (this.bossChestCavity) {
-            this.generateGuaranteedOrganDrops(random, looting, loot);
-            return loot;
-        } else {
-            if (random.nextFloat() < (ChestCavity.config.UNIVERSAL_DONOR_RATE + ChestCavity.config.ORGAN_BUNDLE_LOOTING_BOOST * (float)looting) * this.getDropRateMultiplier()) {
-                this.generateRareOrganDrops(random, looting, loot);
-            }
-
-            return loot;
-        }
-    }
-
-    public void generateRareOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
-        LinkedList<ItemStack> organPile = new LinkedList<>(this.getDroppableOrgans());
-        int rolls = 1 + random.nextInt(3) + random.nextInt(3);
-        ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
-    }
-
-    public void generateGuaranteedOrganDrops(RandomSource random, int looting, List<ItemStack> loot) {
-        LinkedList<ItemStack> organPile = new LinkedList<>(this.getDroppableOrgans());
-        int rolls = 3 + random.nextInt(2 + looting) + random.nextInt(2 + looting);
-        ChestCavityUtil.drawOrgansFromPile(organPile, rolls, random, loot);
-    }
 
     public void setOrganCompatibility(ChestCavityInstance instance) {
         ChestCavityInventory chestCavity = instance.inventory;
@@ -216,27 +138,9 @@ public class GeneratedChestCavityType implements ChestCavityType {
             }
         }
 
-        if (!this.playerChestCavity) {
-            universalOrgans = 0;
-            RandomSource random = instance.owner.getRandom();
-            if (this.bossChestCavity) {
-                universalOrgans = 3 + random.nextInt(2) + random.nextInt(2);
-            } else if (random.nextFloat() < ChestCavity.config.UNIVERSAL_DONOR_RATE) {
-                universalOrgans = 1 + random.nextInt(3) + random.nextInt(3);
-            }
-
-            for(; universalOrgans > 0; --universalOrgans) {
-                int i = random.nextInt(chestCavity.getContainerSize());
-                ItemStack itemStack = chestCavity.getItem(i);
-                if (itemStack != ItemStack.EMPTY && OrganManager.isTrueOrgan(itemStack.getItem())) {
-                    itemStack.removeTagKey(ChestCavity.COMPATIBILITY_TAG.toString());
-                }
-            }
-        }
-
     }
     public float getHeartBleedCap() {
-        return this.bossChestCavity ? 5.0F : Float.MAX_VALUE;
+        return 5.0F;
     }
 
     public boolean isOpenable(ChestCavityInstance instance) {

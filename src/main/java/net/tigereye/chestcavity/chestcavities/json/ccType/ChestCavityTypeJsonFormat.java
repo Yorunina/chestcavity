@@ -9,10 +9,6 @@ public class ChestCavityTypeJsonFormat {
     JsonArray baseOrganScores;
     JsonArray exceptionalOrgans;
     String inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
-    boolean bossChestCavity = false;
-    boolean playerChestCavity = false;
-    float dropRateMultiplier = 1.0F;
-
     public ChestCavityTypeJsonFormat() {
     }
 }

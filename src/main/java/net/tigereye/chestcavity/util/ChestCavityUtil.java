@@ -34,9 +34,11 @@ import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ChestCavityUtil {
@@ -338,21 +340,6 @@ public class ChestCavityUtil {
         }
     }
 
-    public static void drawOrgansFromPile(List<ItemStack> organPile, int rolls, RandomSource random, List<ItemStack> loot) {
-        for (int i = 0; i < rolls && !organPile.isEmpty(); ++i) {
-            int roll = random.nextInt(organPile.size());
-            int count = 1;
-            ItemStack rolledItem = organPile.remove(roll).copy();
-            if (rolledItem.getCount() > 1) {
-                count += random.nextInt(rolledItem.getMaxStackSize());
-            }
-
-            rolledItem.setCount(count);
-            loot.add(rolledItem);
-        }
-
-    }
-
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
         Map<ResourceLocation, Float> organScores = cc.getOrganScores();
@@ -436,10 +423,7 @@ public class ChestCavityUtil {
             return false;
         }
         tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-        if (tag.getUUID("owner").equals(cc.compatibility_id)) {
-            return true;
-        }
-        return false;
+        return tag.getUUID("owner").equals(cc.compatibility_id);
     }
 
 
@@ -454,10 +438,6 @@ public class ChestCavityUtil {
 
         if (cc.getOrganScore(CCOrganScores.NERVES) <= 0.0F) {
             forcefullyAddStack(cc, new ItemStack(CCItems.ROTTEN_SPINE.get()), 13);
-        }
-
-        if (cc.getOrganScore(CCOrganScores.STRENGTH) <= 0.0F) {
-            forcefullyAddStack(cc, new ItemStack(Items.ROTTEN_FLESH, 16), 0);
         }
 
     }
@@ -515,12 +495,13 @@ public class ChestCavityUtil {
     public static void onDeath(ChestCavityEntity entity) {
         ChestCavityInstance ccInstance = entity.getChestCavityInstance();
         ccInstance.getChestCavityType().onDeath(ccInstance);
-        if (entity instanceof Player playerEntity) {
+        if (entity instanceof Player) {
             insertWelfareOrgans(ccInstance);
         } else {
             for (int i = 0; i < ccInstance.inventory.getContainerSize(); ++i) {
                 ItemStack curItem = ccInstance.inventory.getItem(i);
                 if (!isOriginalOrgan(ccInstance, curItem)) {
+                    ccInstance.inventory.removeItemNoUpdate(i);
                     ccInstance.owner.spawnAtLocation(curItem);
                 }
             }
