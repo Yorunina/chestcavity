@@ -5,7 +5,7 @@ import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 
-public class CCKubejsPlugin extends KubeJSPlugin {
+public class CCKubeJSPlugin extends KubeJSPlugin {
 
     public static EventGroup CCGROUP = EventGroup.of("ChestCavityEvents");
 

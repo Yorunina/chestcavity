@@ -3,7 +3,7 @@ package net.tigereye.chestcavity.compat.kubejs;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
 import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
-import static net.tigereye.chestcavity.compat.kubejs.CCKubejsPlugin.*;
+import static net.tigereye.chestcavity.compat.kubejs.CCKubeJSPlugin.*;
 
 public class CCEvents {
     public static void postUpdateCCScore(ChestCavityInstance cc) {
