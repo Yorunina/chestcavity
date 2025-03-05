@@ -18,11 +18,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,9 +60,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     @Unique
     private static final EntityDataAccessor<String> DATA_INVENTORY_TYPE = SynchedEntityData.defineId(MixinLivingEntity.class, EntityDataSerializers.STRING);;
     @Shadow
-    protected abstract int decreaseAirSupply(int var1);
-    @Shadow
     public abstract void addAdditionalSaveData(CompoundTag pCompound);
+
+    @Shadow protected abstract int increaseAirSupply(int pCurrentAir);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -127,7 +125,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
         if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
-            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.decreaseAirSupply(0)));
+            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
 
     }
