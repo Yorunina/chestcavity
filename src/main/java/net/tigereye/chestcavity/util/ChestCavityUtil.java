@@ -5,7 +5,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.tigereye.chestcavity.ChestCavity;
@@ -34,11 +32,8 @@ import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ChestCavityUtil {
@@ -47,11 +42,6 @@ public class ChestCavityUtil {
 
     public static void addOrganScore(ResourceLocation id, float value, Map<ResourceLocation, Float> organScores) {
         organScores.put(id, organScores.getOrDefault(id, 0.0F) + value);
-    }
-
-    public static float applyBoneDefense(ChestCavityInstance cc, float damage) {
-        float boneDiff = cc.getOrganScore(CCOrganScores.DEFENSE) / 4.0F;
-        return (float) ((double) damage * Math.pow(1.0F - ChestCavity.config.BONE_DEFENSE, boneDiff));
     }
 
     public static int applyBreathInWater(ChestCavityInstance cc, int oldAir, int newAir) {
@@ -157,9 +147,6 @@ public class ChestCavityUtil {
         } else if (attemptArrowDodging(cc, source)) {
             return 0.0F;
         } else {
-            if (!source.is(DamageTypeTags.BYPASSES_ARMOR)) {
-                damage = applyBoneDefense(cc, damage);
-            }
 
             if (source.is(DamageTypeTags.IS_FALL)) {
                 damage = applyLeapingToFallDamage(cc, damage);
@@ -181,8 +168,9 @@ public class ChestCavityUtil {
         if (digestion == 1.0F) {
             return hunger;
         } else if (digestion < 0.0F) {
-            cc.owner.addEffect(new MobEffectInstance(MobEffects.CONFUSION, (int) ((float) (-hunger) * digestion * 400.0F)));
             return 0;
+        } else if (digestion < 1.0F) {
+            return digestion * hunger > 1.0F ? 1 : 0;
         } else {
             return Math.max((int) ((float) hunger * digestion), 1);
         }
@@ -231,14 +219,13 @@ public class ChestCavityUtil {
     public static double applyOrgansToFallDistance(LivingEntity entity, ChestCavityInstance cc, double heightDifference) {
         double aproxEffGrav = 1;
         aproxEffGrav = applyLightweightToGravity(cc,aproxEffGrav) - (getBuoyancyLift(entity,cc) / 0.08); //0.08 is the strength of minecraft gravity
-        return heightDifference * (((aproxEffGrav-1) * 4 / 3)+1);
+        return heightDifference * (((aproxEffGrav - 1) * 4 / 3)+1);
     }
 
     public static float applyNutrition(ChestCavityInstance cc, float nutrition, float saturation) {
         if (nutrition == 4.0F) {
             return saturation;
         } else if (nutrition < 0.0F) {
-            cc.owner.addEffect(new MobEffectInstance(MobEffects.HUNGER, (int) (saturation * nutrition * 800.0F)));
             return 0.0F;
         } else {
             return saturation * nutrition / 4.0F;
@@ -260,9 +247,7 @@ public class ChestCavityUtil {
             return foodStarvationTimer;
         } else {
             float metabolismDiff = cc.getOrganScore(CCOrganScores.METABOLISM) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.METABOLISM);
-            if (metabolismDiff == 0.0F) {
-                return foodStarvationTimer;
-            } else {
+            if (metabolismDiff != 0.0F) {
                 if (metabolismDiff > 0.0F) {
                     cc.metabolismRemainder += metabolismDiff;
                     foodStarvationTimer += (int) cc.metabolismRemainder;
@@ -272,8 +257,8 @@ public class ChestCavityUtil {
                 }
 
                 cc.metabolismRemainder %= 1.0F;
-                return foodStarvationTimer;
             }
+            return foodStarvationTimer;
         }
     }
 

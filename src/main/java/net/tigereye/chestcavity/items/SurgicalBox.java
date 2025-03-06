@@ -64,40 +64,39 @@ public class SurgicalBox extends Item implements MenuProvider {
 				itemNbt.put("Inventory", new ItemStackHandler(itemInventoryTypeData.getSlotSize()).serializeNBT());
 			}
 
-			// 替换胸腔类型
+			// 替换胸腔类
 			ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
 			chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
 			entityInstance.inventoryType = itemInventoryTypeData.getId();
 
 			itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
 			// 替换胸腔物品栏数量，保存物品信息
-
+			entityInstance.inventory.removeListener(entityInstance);
+			entityInstance.oldInventory = entityInstance.inventory.clone();
 			ListTag playerItemListNbt = entityInstance.inventory.getTags();
 			entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
-
 			// 替换物品
 			ItemStackHandler itemInventory = new ItemStackHandler(itemInventoryTypeData.getSlotSize());
 			itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));
 			for (int i = 0; i < itemInventoryTypeData.getSlotSize(); i++) {
 				entityInstance.inventory.setItem(i, itemInventory.getStackInSlot(i));
 			}
-
+			entityInstance.inventory.addListener(entityInstance);
 			itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());
 			itemNbt.getCompound("Inventory").put("Items", playerItemListNbt);
 			ChestCavityUtil.evaluateChestCavity(entityInstance);
 		}
-
 		return pStack;
 	}
 
 
 	@Override
 	public int getUseDuration(ItemStack pStack) {
-		return 20 * 3;
+		return 20;
 	}
 	@Override
 	public UseAnim getUseAnimation(ItemStack pStack) {
-		return UseAnim.BOW;
+		return UseAnim.TOOT_HORN;
 	}
 
 

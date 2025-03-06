@@ -63,7 +63,7 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
             if (slotIndex < 0 || slotIndex >= inventoryTypeData.getSlotSize()) return;
             String slotType = this.inventoryTypeData.getSlotType(slotIndex);
             List<Component> slotTypeTooltips = new ArrayList<>();
-            slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.name", slotType)));
+            slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.name", slotType), slotIndex + 1));
             slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.desc", slotType)));
             pGuiGraphics.renderTooltip(this.font, slotTypeTooltips, Optional.empty(), ItemStack.EMPTY, pX, pY);
         }

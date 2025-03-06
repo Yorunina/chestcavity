@@ -22,6 +22,8 @@ public class OrganUpdateListeners {
     private static final UUID SPINE_MOVEMENT_ID = UUID.fromString("8f56feed-589f-416f-86c5-315765d41f57");
     private static final UUID KNOCKBACK_RESISTANCE_ID = UUID.fromString("673566d3-5daa-40d7-955f-cbabc27a84cf");
 
+    private static final UUID DEFENSE_ID = UUID.fromString("3737d5eb-2a47-42e2-8e70-14552dd706b2");
+
     public OrganUpdateListeners() {
     }
 
@@ -31,8 +33,19 @@ public class OrganUpdateListeners {
         UpdateStrength(entity, cc);
         UpdateSpeed(entity, cc);
         UpdateSpine(entity, cc);
-        UpdateKnockbackResistance(entity, cc);
+        UpdateKnockBackResistance(entity, cc);
         UpdateIncompatibility(entity, cc);
+        UpdateDefense(entity, cc);
+    }
+
+    public static void UpdateDefense(LivingEntity entity, ChestCavityInstance cc) {
+        if (cc.getOldOrganScore(CCOrganScores.DEFENSE) != cc.getOrganScore(CCOrganScores.DEFENSE)) {
+            AttributeInstance att = entity.getAttribute(Attributes.ARMOR);
+            if (att != null) {
+                AttributeModifier mod = new AttributeModifier(DEFENSE_ID, "ChestCavityDefenseArmor", cc.getOrganScore(CCOrganScores.DEFENSE) * ChestCavity.config.BONE_DEFENSE, Operation.ADDITION);
+                ReplaceAttributeModifier(att, mod);
+            }
+        }
     }
 
     public static void UpdateAppendix(LivingEntity entity, ChestCavityInstance cc) {
@@ -97,7 +110,7 @@ public class OrganUpdateListeners {
 
     }
 
-    public static void UpdateKnockbackResistance(LivingEntity entity, ChestCavityInstance cc) {
+    public static void UpdateKnockBackResistance(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOldOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) != cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) {
             AttributeInstance att = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (att != null) {

@@ -25,13 +25,13 @@ public class CCConfig implements ConfigData {
     @Category("core")
     public float FILTRATION_DURATION_FACTOR = 1.0F;
     @Category("core")
-    public float APPENDIX_LUCK = 0.1F;
+    public float APPENDIX_LUCK = 1F;
     @Category("core")
-    public float HEART_HP = 4.0F;
+    public float HEART_HP = 2.0F;
     @Category("core")
     public float MUSCLE_STRENGTH = 1.0F;
     @Category("core")
-    public float MUSCLE_SPEED = 0.5F;
+    public float MUSCLE_SPEED = 0.25F;
     @Category("core")
     public float NERVES_HASTE = 0.1F;
     @Category("core")
