@@ -1,3 +1,6 @@
+# Branch Info
+> Warning! If you use this branch, you will be treated knowing that contains lots of testing content and unfix bugs by default. Please DO NOT post all these bugs to the author or the issue forum unless you know how to fix or the version you use is an already released version.
+
 # Chest Cavity
 Chest Cavity lets you use a 'chest opener' to access a secondary inventory. There are some items already in it, but those probably aren't important so you can take them out to make room for other stuff\*. 
 
