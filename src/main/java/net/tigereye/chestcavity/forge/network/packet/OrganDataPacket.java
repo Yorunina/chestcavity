@@ -1,9 +1,5 @@
 package net.tigereye.chestcavity.forge.network.packet;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,6 +8,11 @@ import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 public class OrganDataPacket {
     private final int organDataSize;
@@ -26,13 +27,13 @@ public class OrganDataPacket {
         int organCount = buf.readInt();
         Map<ResourceLocation, OrganData> organMap = new HashMap<>();
 
-        for(int i = 0; i < organCount; ++i) {
+        for (int i = 0; i < organCount; ++i) {
             ResourceLocation organID = buf.readResourceLocation();
             OrganData organData = new OrganData();
             organData.pseudoOrgan = buf.readBoolean();
             int organAbilityCount = buf.readInt();
 
-            for(int j = 0; j < organAbilityCount; ++j) {
+            for (int j = 0; j < organAbilityCount; ++j) {
                 organData.organScores.put(buf.readResourceLocation(), buf.readFloat());
             }
 

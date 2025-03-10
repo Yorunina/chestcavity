@@ -31,92 +31,123 @@ import java.util.Optional;
 
 public class SurgicalBox extends Item implements MenuProvider {
 
-	public SurgicalBox() {
-		super(new Item.Properties().stacksTo(1));
-	}
+    public SurgicalBox() {
+        super(new Item.Properties().stacksTo(1));
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		if (!world.isClientSide) {
-			if (player.isShiftKeyDown()) {
-				NetworkHooks.openScreen((ServerPlayer) player, this);
-			} else {
-				player.startUsingItem(hand);
-			}
-		}
-		return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
-	}
+    public static InventoryTypeData getInventoryTypeData(ItemStack stack) {
+        CompoundTag itemNbt = stack.getOrCreateTag();
+        InventoryTypeData inventoryTypeData = InventoryTypeManager.getDefaultInventoryTypeData();
+        if (itemNbt.contains("InventoryType")) {
+            inventoryTypeData = InventoryTypeManager.getInventoryTypeData(new ResourceLocation(itemNbt.getString("InventoryType")));
+        }
+        return inventoryTypeData;
+    }
 
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        if (!world.isClientSide) {
+            if (player.isShiftKeyDown()) {
+                NetworkHooks.openScreen((ServerPlayer) player, this);
+            } else {
+                player.startUsingItem(hand);
+            }
+        }
+        return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
+    }
 
-	@Override
-	public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity) {
-		if (pLivingEntity instanceof Player player) {
+    @Override
+    public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity) {
+        if (pLevel.isClientSide) return pStack;
+        if (pLivingEntity instanceof Player player) {
+            Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(player);
+            if (!optionalChestCavityEntity.isPresent()) return pStack;
+            ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
+            replaceChestCavity(pStack, chestCavityEntity);
+        }
+        return pStack;
+    }
 
-			Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(player);
-			if (optionalChestCavityEntity.isEmpty()) return pStack;
-			ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
+        if (pPlayer.level().isClientSide) {
+            return InteractionResult.PASS;
+        }
+        Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(pInteractionTarget);
+        if (!optionalChestCavityEntity.isPresent()) {
+            return InteractionResult.FAIL;
+        }
+        ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
+        ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
+        entityInstance.inventory.setInstance(entityInstance);
+        if (!entityInstance.getChestCavityType().isOpenable(entityInstance)) {
+            ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
+            return InteractionResult.FAIL;
+        }
+        ((ChestCavityEntity) pPlayer).getChestCavityInstance().ccBeingOpened = entityInstance;
 
-			InventoryTypeData itemInventoryTypeData = getInventoryTypeData(pStack);
-			InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
+        replaceChestCavity(pStack, chestCavityEntity);
 
-			CompoundTag itemNbt = pStack.getOrCreateTag();
-			if (!itemNbt.contains("Inventory")) {
-				itemNbt.put("Inventory", new ItemStackHandler(itemInventoryTypeData.getSlotSize()).serializeNBT());
-			}
+        pPlayer.setItemInHand(pUsedHand, pStack);
+        return InteractionResult.SUCCESS;
+    }
 
-			// 替换胸腔类
-			ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
-			chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
-			entityInstance.inventoryType = itemInventoryTypeData.getId();
+    public static void replaceChestCavity(ItemStack pStack, ChestCavityEntity chestCavityEntity) {
+        ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
+        InventoryTypeData itemInventoryTypeData = getInventoryTypeData(pStack);
+        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
+        if (!entityInstance.opened) {
+            try {
+                entityInstance.inventory.removeListener(entityInstance);
+            } catch (NullPointerException ignored) {}
+            entityInstance.opened = true;
+            ChestCavityUtil.generateChestCavityIfOpened(entityInstance);
+            entityInstance.inventory.addListener(entityInstance);
+        }
 
-			itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
-			// 替换胸腔物品栏数量，保存物品信息
-			entityInstance.inventory.removeListener(entityInstance);
-			entityInstance.oldInventory = entityInstance.inventory.clone();
-			ListTag playerItemListNbt = entityInstance.inventory.getTags();
-			entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
-			// 替换物品
-			ItemStackHandler itemInventory = new ItemStackHandler(itemInventoryTypeData.getSlotSize());
-			itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));
-			for (int i = 0; i < itemInventoryTypeData.getSlotSize(); i++) {
-				entityInstance.inventory.setItem(i, itemInventory.getStackInSlot(i));
-			}
-			entityInstance.inventory.addListener(entityInstance);
-			itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());
-			itemNbt.getCompound("Inventory").put("Items", playerItemListNbt);
-			ChestCavityUtil.evaluateChestCavity(entityInstance);
-		}
-		return pStack;
-	}
+        CompoundTag itemNbt = pStack.getOrCreateTag();
+        if (!itemNbt.contains("Inventory")) {
+            itemNbt.put("Inventory", new ItemStackHandler(itemInventoryTypeData.getSlotSize()).serializeNBT());
+        }
+        // 替换胸腔类
+        entityInstance.inventory.removeListener(entityInstance);
+        chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
+        entityInstance.inventoryType = itemInventoryTypeData.getId();
 
+        itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
+        // 替换胸腔物品栏数量，保存物品信息
+        entityInstance.oldInventory = entityInstance.inventory.clone();
+        ListTag entityItemListNbt = entityInstance.inventory.getTags();
+        entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
+        // 替换物品
+        ItemStackHandler itemInventory = new ItemStackHandler(itemInventoryTypeData.getSlotSize());
+        itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));
+        for (int i = 0; i < itemInventoryTypeData.getSlotSize(); i++) {
+            entityInstance.inventory.setItem(i, itemInventory.getStackInSlot(i));
+        }
+        entityInstance.inventory.addListener(entityInstance);
+        itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());
+        itemNbt.getCompound("Inventory").put("Items", entityItemListNbt);
+        ChestCavityUtil.evaluateChestCavity(entityInstance);
+    }
 
-	@Override
-	public int getUseDuration(ItemStack pStack) {
-		return 20;
-	}
-	@Override
-	public UseAnim getUseAnimation(ItemStack pStack) {
-		return UseAnim.TOOT_HORN;
-	}
+    @Override
+    public int getUseDuration(ItemStack pStack) {
+        return 20;
+    }
 
+    @Override
+    public UseAnim getUseAnimation(ItemStack pStack) {
+        return UseAnim.BOW;
+    }
 
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+        return new ChestCavityItemScreenHandler(id, inv);
+    }
 
-	public static InventoryTypeData getInventoryTypeData(ItemStack stack) {
-		CompoundTag itemNbt = stack.getOrCreateTag();
-		InventoryTypeData inventoryTypeData = InventoryTypeManager.getDefaultInventoryTypeData();
-		if (itemNbt.contains("InventoryType")) {
-			inventoryTypeData = InventoryTypeManager.getInventoryTypeData(new ResourceLocation(itemNbt.getString("InventoryType")));
-		}
-		return inventoryTypeData;
-	}
-
-	@Override
-	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new ChestCavityItemScreenHandler(id, inv);
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.translatable("gui.chestcavity.surgical_box.title");
-	}
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("gui.chestcavity.surgical_box.title");
+    }
 }

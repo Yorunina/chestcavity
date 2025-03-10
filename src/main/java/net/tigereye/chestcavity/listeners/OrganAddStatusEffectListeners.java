@@ -21,9 +21,9 @@ public class OrganAddStatusEffectListeners {
     }
 
     private static MobEffectInstance ApplyBuffPurging(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
-        if (cc.getOrganScore(CCOrganScores.BUFF_PURGING) > 0.0F && ((CCStatusEffect)instance.getEffect()).CC_IsBeneficial()) {
-            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance)instance;
-            ccInstance.CC_setDuration((int)((float)instance.getDuration() / (1.0F + ChestCavity.config.BUFF_PURGING_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.BUFF_PURGING))));
+        if (cc.getOrganScore(CCOrganScores.BUFF_PURGING) > 0.0F && ((CCStatusEffect) instance.getEffect()).CC_IsBeneficial()) {
+            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
+            ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.BUFF_PURGING_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.BUFF_PURGING))));
         }
 
         return instance;
@@ -31,11 +31,11 @@ public class OrganAddStatusEffectListeners {
 
     private static MobEffectInstance ApplyDetoxification(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
         if (!(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION) <= 0.0F) && cc.getOrganScore(CCOrganScores.DETOXIFICATION) != cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION)) {
-            CCStatusEffect ccStatusEffect = (CCStatusEffect)instance.getEffect();
+            CCStatusEffect ccStatusEffect = (CCStatusEffect) instance.getEffect();
             if (ccStatusEffect.CC_IsHarmful()) {
-                CCStatusEffectInstance ccInstance = (CCStatusEffectInstance)instance;
-                float detoxRatio = Math.max(0 ,cc.getOrganScore(CCOrganScores.DETOXIFICATION) / cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION));
-                ccInstance.CC_setDuration((int)Math.max(1.0F, (float)(instance.getDuration() * 2) / (1.0F + detoxRatio)));
+                CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
+                float detoxRatio = Math.max(0, cc.getOrganScore(CCOrganScores.DETOXIFICATION) / cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION));
+                ccInstance.CC_setDuration((int) Math.max(1.0F, (float) (instance.getDuration() * 2) / (1.0F + detoxRatio)));
             }
 
             return instance;
@@ -47,8 +47,8 @@ public class OrganAddStatusEffectListeners {
     private static MobEffectInstance ApplyFiltration(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
         float filtrationDiff = cc.getOrganScore(CCOrganScores.FILTRATION) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION);
         if (filtrationDiff > 0.0F && instance.getEffect() == MobEffects.POISON) {
-            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance)instance;
-            ccInstance.CC_setDuration((int)((float)instance.getDuration() / (1.0F + ChestCavity.config.FILTRATION_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.FILTRATION))));
+            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
+            ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.FILTRATION_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.FILTRATION))));
         }
 
         return instance;
@@ -56,8 +56,8 @@ public class OrganAddStatusEffectListeners {
 
     private static MobEffectInstance ApplyWithered(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
         if (cc.getOrganScore(CCOrganScores.WITHERED) > 0.0F && instance.getEffect() == MobEffects.WITHER) {
-            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance)instance;
-            ccInstance.CC_setDuration((int)((float)instance.getDuration() / (1.0F + ChestCavity.config.WITHERED_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.WITHERED))));
+            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
+            ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.WITHERED_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.WITHERED))));
         }
 
         return instance;

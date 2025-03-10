@@ -1,11 +1,6 @@
 package net.tigereye.chestcavity.chestcavities.json.organs;
 
 import com.google.gson.Gson;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -16,6 +11,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListener;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrganManager implements SimpleSynchronousResourceReloadListener {
     private final OrganSerializer SERIALIZER = new OrganSerializer();
@@ -39,8 +40,8 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
 
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat)(new Gson()).fromJson(reader, OrganJsonFormat.class));
-                    GeneratedOrganData.put((ResourceLocation)organDataPair.getA(), (OrganData)organDataPair.getB());
+                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat) (new Gson()).fromJson(reader, OrganJsonFormat.class));
+                    GeneratedOrganData.put((ResourceLocation) organDataPair.getA(), (OrganData) organDataPair.getB());
                 } catch (Throwable readError) {
                     try {
                         stream.close();
@@ -62,7 +63,7 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
     }
 
     public static OrganData getEntry(Item item) {
-        return (OrganData)GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
+        return (OrganData) GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
     }
 
     public static boolean isTrueOrgan(Item item) {

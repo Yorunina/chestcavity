@@ -1,10 +1,5 @@
 package net.tigereye.chestcavity.forge.network.packet;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +9,12 @@ import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.NetworkUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 public class ChestCavityUpdatePacket {
     private final boolean opened;
@@ -35,7 +36,7 @@ public class ChestCavityUpdatePacket {
         boolean open = buf.readBoolean();
         int entries = buf.readInt();
 
-        for(int i = 0; i < entries; ++i) {
+        for (int i = 0; i < entries; ++i) {
             organScores.put(new ResourceLocation(buf.readUtf()), buf.readFloat());
         }
 

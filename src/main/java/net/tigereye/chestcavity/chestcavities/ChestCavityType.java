@@ -32,7 +32,9 @@ public interface ChestCavityType {
     boolean isOpenable(ChestCavityInstance var1);
 
     void onDeath(ChestCavityInstance var1);
+
     void setInventoryType(ResourceLocation id);
+
     ResourceLocation getInventoryType();
 
 }

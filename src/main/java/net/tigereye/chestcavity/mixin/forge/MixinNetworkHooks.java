@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.mixin.forge;
 
-import java.util.ArrayList;
 import net.minecraft.network.Connection;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
@@ -11,6 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
 
 @Mixin({NetworkHooks.class})
 public class MixinNetworkHooks {

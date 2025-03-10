@@ -1,9 +1,9 @@
 {
-    "type": "minecraft:smelting",
-    "ingredient": {
-      "tag": "chestcavity:burnable_meat"
-    },
-    "result": "chestcavity:burnt_meat_chunk",
-    "experience": 0.35,
-    "cookingtime": 200
-  }
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "chestcavity:burnable_meat"
+  },
+  "result": "chestcavity:burnt_meat_chunk",
+  "experience": 0.35,
+  "cookingtime": 200
+}

@@ -60,8 +60,8 @@ public class ChestCavityInstance implements ContainerListener {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
-        ChestCavityUtil.evaluateChestCavity(this);
         this.oldInventory = this.inventory.clone();
+        ChestCavityUtil.evaluateChestCavity(this);
     }
 
     public ChestCavityType getChestCavityType() {
@@ -72,7 +72,7 @@ public class ChestCavityInstance implements ContainerListener {
         return this.organScores;
     }
 
-    public void setOrganScore(ResourceLocation id, float score){
+    public void setOrganScore(ResourceLocation id, float score) {
         this.organScores.put(id, score);
     }
 
@@ -91,6 +91,7 @@ public class ChestCavityInstance implements ContainerListener {
     public ResourceLocation getInventoryType() {
         return this.inventoryType;
     }
+
     public InventoryTypeData getInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
     }
@@ -105,9 +106,11 @@ public class ChestCavityInstance implements ContainerListener {
         }
         this.slotListenerMap.get(eventName).put(slotIndex, this.getInventoryTypeData().getSlotType(slotIndex));
     }
+
     public Map<Integer, String> getListenerMap(String eventName) {
         return this.slotListenerMap.getOrDefault(eventName, new HashMap<>());
     }
+
     public void removeListener(String eventName, int slotIndex) {
         if (this.slotListenerMap.containsKey(eventName)) {
             this.slotListenerMap.get(eventName).remove(slotIndex);
@@ -218,7 +221,7 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putInt("FurnaceProgress", this.furnaceProgress);
         ccTag.putInt("PhotosynthesisProgress", this.photosynthesisProgress);
         ccTag.put("Inventory", this.inventory.getTags());
-        tag.put("ChestCavity",ccTag);
+        tag.put("ChestCavity", ccTag);
     }
 
     public void clone(ChestCavityInstance other) {
@@ -231,7 +234,7 @@ public class ChestCavityInstance implements ContainerListener {
         } catch (NullPointerException ignored) {
         }
 
-        for(int i = 0; i < this.inventory.getContainerSize(); ++i) {
+        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             this.inventory.setItem(i, other.inventory.getItem(i));
         }
 

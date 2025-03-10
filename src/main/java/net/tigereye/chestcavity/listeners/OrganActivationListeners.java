@@ -58,8 +58,8 @@ public class OrganActivationListeners {
         }
     }
 
-    public static void ActivateBuoyantExhale(LivingEntity entity, ChestCavityInstance cc){
-        if(entity.getAirSupply() > 0) {
+    public static void ActivateBuoyantExhale(LivingEntity entity, ChestCavityInstance cc) {
+        if (entity.getAirSupply() > 0) {
             float breathLoss = cc.getOrganScore(CCOrganScores.BREATH_RECOVERY) * 4.5f - cc.lungRemainder;
             cc.lungRemainder = 1 - breathLoss % 1;
             entity.setAirSupply(entity.getAirSupply() - (int) breathLoss);
@@ -72,7 +72,7 @@ public class OrganActivationListeners {
             ChestCavityUtil.destroyOrgansWithKey(cc, CCOrganScores.EXPLOSIVE);
             OrganUtil.explode(entity, explosion_yield);
             if (entity.isAlive()) {
-                entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.EXPLOSION_COOLDOWN.get(), ChestCavity.config.EXPLOSION_COOLDOWN, 0, false, false, true));
+                entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.EXPLOSION_COOLDOWN.get(), ChestCavity.config.EXPLOSION_COOLDOWN, 0, false, false, true));
             }
         }
 
@@ -81,11 +81,11 @@ public class OrganActivationListeners {
     public static void ActivateDragonBreath(LivingEntity entity, ChestCavityInstance cc) {
         float breath = cc.getOrganScore(CCOrganScores.DRAGON_BREATH);
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion(breath * 0.6F);
+            ((Player) entity).causeFoodExhaustion(breath * 0.6F);
         }
 
-        if (!(breath <= 0.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.DRAGON_BREATH_COOLDOWN.get())) {
-            entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.DRAGON_BREATH_COOLDOWN.get(), ChestCavity.config.DRAGON_BREATH_COOLDOWN, 0, false, false, true));
+        if (!(breath <= 0.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.DRAGON_BREATH_COOLDOWN.get())) {
+            entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.DRAGON_BREATH_COOLDOWN.get(), ChestCavity.config.DRAGON_BREATH_COOLDOWN, 0, false, false, true));
             cc.projectileQueue.add(OrganUtil::spawnDragonBreath);
         }
 
@@ -93,16 +93,16 @@ public class OrganActivationListeners {
 
     public static void ActivateDragonBombs(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.DRAGON_BOMBS);
-        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.DRAGON_BOMB_COOLDOWN.get())) {
-            OrganUtil.queueDragonBombs(entity, cc, (int)projectiles);
+        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.DRAGON_BOMB_COOLDOWN.get())) {
+            OrganUtil.queueDragonBombs(entity, cc, (int) projectiles);
         }
 
     }
 
     public static void ActivateForcefulSpit(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.FORCEFUL_SPIT);
-        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get())) {
-            OrganUtil.queueForcefulSpit(entity, cc, (int)projectiles);
+        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get())) {
+            OrganUtil.queueForcefulSpit(entity, cc, (int) projectiles);
         }
 
     }
@@ -114,7 +114,7 @@ public class OrganActivationListeners {
             ItemStack itemStack = cc.owner.getItemBySlot(EquipmentSlot.MAINHAND);
             if (itemStack != null && itemStack != ItemStack.EMPTY) {
                 try {
-                    fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType)null);
+                    fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType) null);
                 } catch (Exception var13) {
                 }
             }
@@ -144,13 +144,13 @@ public class OrganActivationListeners {
                     durations.add(fuelValue);
                     oldPower.save(oldTag);
 
-                    while(true) {
+                    while (true) {
                         durations.add(oldTag.getInt("Duration"));
                         if (!oldTag.contains("HiddenEffect")) {
                             durations.sort(IntComparators.OPPOSITE_COMPARATOR);
                             int amplifier = 0;
 
-                            for(Iterator<Integer> var10 = durations.iterator(); var10.hasNext(); ++amplifier) {
+                            for (Iterator<Integer> var10 = durations.iterator(); var10.hasNext(); ++amplifier) {
                                 Integer duration = var10.next();
                                 newSEI = new MobEffectInstance(CCStatusEffects.FURNACE_POWER.get(), duration, amplifier, false, false, true, newSEI, Optional.empty());
                             }
@@ -182,7 +182,7 @@ public class OrganActivationListeners {
 
             cc.owner.heal(cc.owner.getMaxHealth() * ChestCavity.config.IRON_REPAIR_PERCENT);
             entity.playSound(SoundEvents.IRON_GOLEM_REPAIR, 0.75F, 1.0F);
-            cc.owner.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.IRON_REPAIR_COOLDOWN.get(), (int)((float)ChestCavity.config.IRON_REPAIR_COOLDOWN / ironRepair), 0, false, false, true));
+            cc.owner.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.IRON_REPAIR_COOLDOWN.get(), (int) ((float) ChestCavity.config.IRON_REPAIR_COOLDOWN / ironRepair), 0, false, false, true));
             itemStack.shrink(1);
         }
 
@@ -190,8 +190,8 @@ public class OrganActivationListeners {
 
     public static void ActivateGhastly(LivingEntity entity, ChestCavityInstance cc) {
         float ghastly = cc.getOrganScore(CCOrganScores.GHASTLY);
-        if (!(ghastly < 1.0F) && !entity.hasEffect((MobEffect)CCStatusEffects.GHASTLY_COOLDOWN.get())) {
-            OrganUtil.queueGhastlyFireballs(entity, cc, (int)ghastly);
+        if (!(ghastly < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.GHASTLY_COOLDOWN.get())) {
+            OrganUtil.queueGhastlyFireballs(entity, cc, (int) ghastly);
         }
 
     }
@@ -215,7 +215,7 @@ public class OrganActivationListeners {
                 int duration;
                 if (entity.hasEffect(CCStatusEffects.RUMINATING.get())) {
                     MobEffectInstance ruminating = entity.getEffect(CCStatusEffects.RUMINATING.get());
-                    duration = (int)Math.min((float)(ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE * ChestCavity.config.RUMINATION_SQUARES_PER_STOMACH) * grazing, (float)(ruminating.getDuration() + ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE));
+                    duration = (int) Math.min((float) (ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE * ChestCavity.config.RUMINATION_SQUARES_PER_STOMACH) * grazing, (float) (ruminating.getDuration() + ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE));
                 } else {
                     duration = ChestCavity.config.RUMINATION_TIME * ChestCavity.config.RUMINATION_GRASS_PER_SQUARE;
                 }
@@ -229,7 +229,7 @@ public class OrganActivationListeners {
     public static void ActivatePyromancy(LivingEntity entity, ChestCavityInstance cc) {
         float pyromancy = cc.getOrganScore(CCOrganScores.PYROMANCY);
         if (pyromancy >= 1.0F && !entity.hasEffect(CCStatusEffects.PYROMANCY_COOLDOWN.get())) {
-            OrganUtil.queuePyromancyFireballs(entity, cc, (int)pyromancy);
+            OrganUtil.queuePyromancyFireballs(entity, cc, (int) pyromancy);
         }
 
     }
@@ -237,7 +237,7 @@ public class OrganActivationListeners {
     public static void ActivateShulkerBullets(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.SHULKER_BULLETS);
         if (!(projectiles < 1.0F) && !entity.hasEffect(CCStatusEffects.SHULKER_BULLET_COOLDOWN.get())) {
-            OrganUtil.queueShulkerBullets(entity, cc, (int)projectiles);
+            OrganUtil.queueShulkerBullets(entity, cc, (int) projectiles);
         }
 
     }

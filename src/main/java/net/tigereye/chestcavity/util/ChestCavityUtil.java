@@ -197,7 +197,7 @@ public class ChestCavityUtil {
         return leapingDiff > 0.0F ? Math.max(0.0F, damage - leapingDiff * leapingDiff / 4.0F) : damage;
     }
 
-    public static double getBuoyancyLift(LivingEntity entity, ChestCavityInstance chestCavity){
+    public static double getBuoyancyLift(LivingEntity entity, ChestCavityInstance chestCavity) {
         float buoyancy = chestCavity.getOrganScore(CCOrganScores.BUOYANT) - chestCavity.getChestCavityType().getDefaultOrganScore(CCOrganScores.BUOYANT);
         float breathRatio = (float) entity.getAirSupply() / entity.getMaxAirSupply();
         return buoyancy * breathRatio * ChestCavity.config.BUOYANCY_LIFT;
@@ -207,19 +207,18 @@ public class ChestCavityUtil {
         float lightweight = cc.getOrganScore(CCOrganScores.LIGHTWEIGHT);
         float defaultLightweight = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LIGHTWEIGHT);
         float diff = lightweight - defaultLightweight;
-        if(diff > 0){
-            return gravity / (1 + ( diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
-        }
-        else{
-            return gravity * (1 - ( diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
+        if (diff > 0) {
+            return gravity / (1 + (diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
+        } else {
+            return gravity * (1 - (diff * ChestCavity.config.LIGHTWIEGHT_FACTOR));
         }
 
     }
 
     public static double applyOrgansToFallDistance(LivingEntity entity, ChestCavityInstance cc, double heightDifference) {
         double aproxEffGrav = 1;
-        aproxEffGrav = applyLightweightToGravity(cc,aproxEffGrav) - (getBuoyancyLift(entity,cc) / 0.08); //0.08 is the strength of minecraft gravity
-        return heightDifference * (((aproxEffGrav - 1) * 4 / 3)+1);
+        aproxEffGrav = applyLightweightToGravity(cc, aproxEffGrav) - (getBuoyancyLift(entity, cc) / 0.08); //0.08 is the strength of minecraft gravity
+        return heightDifference * (((aproxEffGrav - 1) * 4 / 3) + 1);
     }
 
     public static float applyNutrition(ChestCavityInstance cc, float nutrition, float saturation) {

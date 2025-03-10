@@ -2,10 +2,11 @@ package net.tigereye.chestcavity.chestcavities.json.ccAssignment;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.tigereye.chestcavity.ChestCavity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChestCavityAssignmentSerializer {
     public ChestCavityAssignmentSerializer() {

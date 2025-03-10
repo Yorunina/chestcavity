@@ -10,6 +10,7 @@ public class InventoryTypeJsonFormat {
     JsonObject titlePosition;
     JsonObject inventoryLabelPosition;
     JsonObject backgroundSize;
+
     public InventoryTypeJsonFormat() {
     }
 }

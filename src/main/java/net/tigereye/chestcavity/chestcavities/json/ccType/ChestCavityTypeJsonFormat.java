@@ -9,6 +9,7 @@ public class ChestCavityTypeJsonFormat {
     JsonArray baseOrganScores;
     JsonArray exceptionalOrgans;
     String inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
+
     public ChestCavityTypeJsonFormat() {
     }
 }

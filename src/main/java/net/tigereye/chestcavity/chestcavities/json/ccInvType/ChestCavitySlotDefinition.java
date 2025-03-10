@@ -5,12 +5,15 @@ public class ChestCavitySlotDefinition {
     public int x;
     public int y;
     public String type = DEFAULT_SLOT_TYPE;
+
     public int getX() {
         return this.x;
     }
+
     public int getY() {
         return this.y;
     }
+
     public String getType() {
         return this.type;
     }
@@ -19,6 +22,7 @@ public class ChestCavitySlotDefinition {
         this.x = x;
         this.y = y;
     }
+
     public ChestCavitySlotDefinition(int x, int y, String type) {
         this.x = x;
         this.y = y;

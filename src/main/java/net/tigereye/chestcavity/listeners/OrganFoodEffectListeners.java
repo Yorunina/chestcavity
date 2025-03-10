@@ -1,7 +1,6 @@
 package net.tigereye.chestcavity.listeners;
 
 import com.mojang.datafixers.util.Pair;
-import java.util.List;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCTags;
+
+import java.util.List;
 
 public class OrganFoodEffectListeners {
     public OrganFoodEffectListeners() {

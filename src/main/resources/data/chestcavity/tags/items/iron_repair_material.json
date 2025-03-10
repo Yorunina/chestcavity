@@ -1,7 +1,7 @@
 {
-    "replace": false,
-    "values": [
-      "minecraft:iron_ingot",
-      "chestcavity:iron_scrap"
-    ]
+  "replace": false,
+  "values": [
+    "minecraft:iron_ingot",
+    "chestcavity:iron_scrap"
+  ]
 }

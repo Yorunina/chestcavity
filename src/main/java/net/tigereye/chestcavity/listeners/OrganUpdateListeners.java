@@ -63,7 +63,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.HEALTH) != cc.getOrganScore(CCOrganScores.HEALTH)) {
             AttributeInstance att = entity.getAttribute(Attributes.MAX_HEALTH);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(HEART_ID, "ChestCavityHeartMaxHP", (double)((cc.getOrganScore(CCOrganScores.HEALTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH)) * ChestCavity.config.HEART_HP), Operation.ADDITION);
+                AttributeModifier mod = new AttributeModifier(HEART_ID, "ChestCavityHeartMaxHP", (double) ((cc.getOrganScore(CCOrganScores.HEALTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH)) * ChestCavity.config.HEART_HP), Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -114,7 +114,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) != cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) {
             AttributeInstance att = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(KNOCKBACK_RESISTANCE_ID, "ChestCavityKnockbackResistance", (double)(cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) * 0.1, Operation.ADDITION);
+                AttributeModifier mod = new AttributeModifier(KNOCKBACK_RESISTANCE_ID, "ChestCavityKnockbackResistance", (double) (cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) * 0.1, Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -124,7 +124,7 @@ public class OrganUpdateListeners {
     public static void UpdateIncompatibility(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOldOrganScore(CCOrganScores.INCOMPATIBILITY) != cc.getOrganScore(CCOrganScores.INCOMPATIBILITY)) {
             try {
-                entity.removeEffect((MobEffect)CCStatusEffects.ORGAN_REJECTION.get());
+                entity.removeEffect((MobEffect) CCStatusEffects.ORGAN_REJECTION.get());
             } catch (Exception ignored) {
             }
         }

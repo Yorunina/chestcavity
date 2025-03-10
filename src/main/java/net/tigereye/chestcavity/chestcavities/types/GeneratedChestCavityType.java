@@ -2,7 +2,6 @@ package net.tigereye.chestcavity.chestcavities.types;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -11,11 +10,11 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
-import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
@@ -59,9 +58,11 @@ public class GeneratedChestCavityType implements ChestCavityType {
     public float getBaseOrganScore(ResourceLocation id) {
         return this.getBaseOrganScores().getOrDefault(id, 0.0F);
     }
+
     public void setInventoryType(ResourceLocation id) {
         this.inventoryType = id;
     }
+
     public ResourceLocation getInventoryType() {
         return this.inventoryType;
     }
@@ -100,7 +101,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
     public void fillChestCavityInventory(ChestCavityInventory chestCavity) {
         chestCavity.clearContent();
 
-        for(int i = 0; i < chestCavity.getContainerSize(); ++i) {
+        for (int i = 0; i < chestCavity.getContainerSize(); ++i) {
             chestCavity.setItem(i, this.defaultChestCavity.getItem(i));
         }
 
@@ -123,12 +124,11 @@ public class GeneratedChestCavityType implements ChestCavityType {
     }
 
 
-
     public void setOrganCompatibility(ChestCavityInstance instance) {
         ChestCavityInventory chestCavity = instance.inventory;
 
         int universalOrgans;
-        for(universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
+        for (universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
             ItemStack itemStack = chestCavity.getItem(universalOrgans);
             if (itemStack != ItemStack.EMPTY) {
                 CompoundTag tag = new CompoundTag();
@@ -139,12 +139,13 @@ public class GeneratedChestCavityType implements ChestCavityType {
         }
 
     }
+
     public float getHeartBleedCap() {
         return 5.0F;
     }
 
     public boolean isOpenable(ChestCavityInstance instance) {
-        boolean weakEnough = instance.owner.getHealth() <= (float)ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD || instance.owner.getHealth() <= instance.owner.getMaxHealth() * ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD;
+        boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD || instance.owner.getHealth() <= instance.owner.getMaxHealth() * ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD;
         boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         boolean easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F;
         return chestVulnerable && (easeOfAccess || weakEnough);

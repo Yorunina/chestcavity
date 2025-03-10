@@ -11,7 +11,9 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin({SimpleContainer.class})
 public abstract class MixinSimpleContainer implements Container {
-    @Shadow @Final private NonNullList<ItemStack> items;
+    @Shadow
+    @Final
+    private NonNullList<ItemStack> items;
 
     public MixinSimpleContainer() {
     }

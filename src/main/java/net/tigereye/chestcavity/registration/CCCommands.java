@@ -1,13 +1,14 @@
 package net.tigereye.chestcavity.registration;
 
 import com.mojang.brigadier.context.CommandContext;
-import java.util.Optional;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
+
+import java.util.Optional;
 
 public class CCCommands {
     public CCCommands() {

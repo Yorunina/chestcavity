@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ChestCavityEntity {
     static Optional<ChestCavityEntity> of(Entity entity) {
-        return entity instanceof ChestCavityEntity ? Optional.of((ChestCavityEntity)entity) : Optional.empty();
+        return entity instanceof ChestCavityEntity ? Optional.of((ChestCavityEntity) entity) : Optional.empty();
     }
 
     ChestCavityInstance getChestCavityInstance();
@@ -17,5 +17,6 @@ public interface ChestCavityEntity {
     void setChestCavityInstance(ChestCavityInstance var1);
 
     InventoryTypeData getInventoryTypeData();
+
     void setInventoryTypeData(ResourceLocation id);
 }

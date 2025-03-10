@@ -9,6 +9,7 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
 public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
+
     public ChestCavityInstance getInstance() {
         return this.instance;
     }
@@ -24,6 +25,7 @@ public class ChestCavityInventory extends SimpleContainer {
     public ChestCavityInventory(int size) {
         super(size);
     }
+
     public ChestCavityInventory(int size, ChestCavityInstance instance) {
         super(size);
         this.instance = instance;
@@ -32,7 +34,7 @@ public class ChestCavityInventory extends SimpleContainer {
     public void readTags(ListTag tags) {
         this.clearContent();
 
-        for(int j = 0; j < tags.size(); ++j) {
+        for (int j = 0; j < tags.size(); ++j) {
             CompoundTag NbtCompound = tags.getCompound(j);
             int k = NbtCompound.getInt("Slot");
             if (k < this.getContainerSize()) {
@@ -45,7 +47,7 @@ public class ChestCavityInventory extends SimpleContainer {
     public ListTag getTags() {
         ListTag list = new ListTag();
 
-        for(int i = 0; i < this.getContainerSize(); ++i) {
+        for (int i = 0; i < this.getContainerSize(); ++i) {
             ItemStack itemStack = this.getItem(i);
             if (!itemStack.isEmpty()) {
                 CompoundTag NbtCompound = new CompoundTag();
@@ -70,7 +72,7 @@ public class ChestCavityInventory extends SimpleContainer {
 
     public ChestCavityInventory clone() {
         ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize(), this.instance);
-        for(int i = 0; i < this.getContainerSize(); ++i) {
+        for (int i = 0; i < this.getContainerSize(); ++i) {
             inventory.setItem(i, this.getItem(i).copy());
         }
         return inventory;

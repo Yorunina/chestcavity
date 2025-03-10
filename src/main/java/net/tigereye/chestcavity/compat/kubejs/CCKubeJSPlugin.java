@@ -16,6 +16,7 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     public static EventHandler OPENED_ENTITY_TICK = CCGROUP
             .server("openedEntityTick", () -> OpenedEntityTickJS.class);
+
     @Override
     public void registerEvents() {
         CCGROUP.register();

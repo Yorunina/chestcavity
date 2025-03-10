@@ -1,12 +1,13 @@
 package net.tigereye.chestcavity.forge.network.packet;
 
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.NetworkUtil;
+
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 public class ReceivedChestCavityUpdatePacket {
     public ReceivedChestCavityUpdatePacket() {

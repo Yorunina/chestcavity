@@ -26,7 +26,7 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
 
     public InventoryTypeData getInventoryTypeData() {
         InventoryTypeData inventoryTypeData = InventoryTypeManager.getDefaultInventoryTypeData();
-        if (this.minecraft != null) {
+        if (this.minecraft != null && this.minecraft.player != null) {
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(this.minecraft.player);
             if (optional.isPresent()) {
                 ChestCavityEntity chestCavityPlayer = optional.get();

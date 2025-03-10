@@ -1,8 +1,8 @@
 plugins {
-	id 'idea'
-	id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-	id 'org.spongepowered.mixin' version '0.7.+'
-	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 version = "${mod_version}-${mc_version}"
@@ -12,116 +12,116 @@ archivesBaseName = "${modid}"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-	mappings channel: 'parchment', version: '2023.09.03-1.20.1'
-	copyIdeResources = true
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-	runs {
-		client {
-			properties 'mixin.env.remapRefMap': 'true'
-			property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
-			workingDirectory project.file('run_client')
-			arg "-mixin.config=chestcavity.mixins.json"
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
+    copyIdeResources = true
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    runs {
+        client {
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            workingDirectory project.file('run_client')
+            arg "-mixin.config=chestcavity.mixins.json"
 
 
-			// Recommended logging level for the console
-			property 'forge.logging.console.level', 'debug'
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
 
-			mods {
-				"${modid}" {
-					source sourceSets.main
-				}
-			}
-		}
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }
 
-		server {
-			properties 'mixin.env.remapRefMap': 'true'
-			property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
-			workingDirectory project.file('run_server')
-			arg "-mixin.config=chestcavity.mixins.json"
+        server {
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            workingDirectory project.file('run_server')
+            arg "-mixin.config=chestcavity.mixins.json"
 
-			property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'debug'
 
-			mods {
-				"${modid}" {
-					source sourceSets.main
-				}
-			}
-		}
-	}
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-repositories{
-	maven {
-		name = "Jared's maven"
-		url = "https://maven.blamejared.com/"
-		content {
-			includeGroup "mezz.jei"
-		}
-	}
+repositories {
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
 
-	maven {
-		name = "Curse maven"
-		url = "https://cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-	mavenCentral()
+    maven {
+        name = "Curse maven"
+        url = "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    mavenCentral()
 }
 
 dependencies {
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
-	compileOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
-	compileOnly fg.deobf("curse.maven:architectury-forge-419699:5137938")
-	compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
-	compileOnly fg.deobf("curse.maven:kubejs-forge-238086:5853326")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
+    compileOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
+    compileOnly fg.deobf("curse.maven:architectury-forge-419699:5137938")
+    compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
+    compileOnly fg.deobf("curse.maven:kubejs-forge-238086:5853326")
 }
 
 sourceSets {
-	main.resources.srcDirs += 'src/generated/resources'
+    main.resources.srcDirs += 'src/generated/resources'
 }
 
 mixin {
-	add sourceSets.main, "${modid}.refmap.json"
-	config "${modid}.mixins.json"
-	debug.export = true
+    add sourceSets.main, "${modid}.refmap.json"
+    config "${modid}.mixins.json"
+    debug.export = true
 }
 
 tasks.named('processResources', ProcessResources).configure {
-	var replaceProperties = [
-			minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-			forge_version: forge_version, forge_version_range: forge_version_range,
-			loader_version_range: loader_version_range,
-			mod_id: "${modid}", mod_name: "${modid}", mod_license: "MIT", mod_version: mod_version,
-			mod_authors: "examplemodsareus", mod_description: "",
-	]
+    var replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version       : forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id              : "${modid}", mod_name: "${modid}", mod_license: "MIT", mod_version: mod_version,
+            mod_authors         : "examplemodsareus", mod_description: "",
+    ]
 
-	inputs.properties replaceProperties
+    inputs.properties replaceProperties
 
-	filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-		expand replaceProperties + [project: project]
-	}}
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
 
 // Example for how to get properties into the manifest for reading by the runtime..
 tasks.named('jar', Jar).configure {
-	manifest {
-		attributes([
-				"Specification-Title": "${modid}",
-				"Specification-Vendor": "examplemodsareus",
-				"Specification-Version": "1",
-				"Implementation-Title": project.name,
-				"Implementation-Version":"${version}",
-				"Implementation-Vendor": "examplemodsareus",
-				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-				"MixinConfigs": "${modid}.mixins.json"
-		])
-	}
-	finalizedBy 'reobfJar'
+    manifest {
+        attributes([
+                "Specification-Title"     : "${modid}",
+                "Specification-Vendor"    : "examplemodsareus",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "${modid}.mixins.json"
+        ])
+    }
+    finalizedBy 'reobfJar'
 }
 
 
-
 tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }

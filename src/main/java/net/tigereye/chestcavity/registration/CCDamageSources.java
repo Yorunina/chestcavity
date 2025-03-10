@@ -14,6 +14,7 @@ public class CCDamageSources {
 
     public CCDamageSources() {
     }
+
     public static DamageSource of(Level world, ResourceKey<DamageType> key) {
         return new DamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key));
     }

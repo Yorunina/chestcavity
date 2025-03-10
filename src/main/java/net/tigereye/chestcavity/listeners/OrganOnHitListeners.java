@@ -18,7 +18,7 @@ public class OrganOnHitListeners {
         float launchingDiff = cc.getOrganScore(CCOrganScores.LAUNCHING) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LAUNCHING);
         if (launchingDiff != 0.0F && attacker.closerThan(target, 4.0)) {
             double KBRes = target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-            target.absMoveTo(0.0, Math.max(0.0, (double)(ChestCavity.config.LAUNCHING_POWER * launchingDiff) * (1.0 - KBRes)), 0.0);
+            target.absMoveTo(0.0, Math.max(0.0, (double) (ChestCavity.config.LAUNCHING_POWER * launchingDiff) * (1.0 - KBRes)), 0.0);
         }
     }
 }

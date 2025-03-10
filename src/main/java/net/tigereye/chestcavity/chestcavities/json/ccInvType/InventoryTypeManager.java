@@ -19,22 +19,25 @@ public class InventoryTypeManager {
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/chest_cavity.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
     public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default.json";
+
     public InventoryTypeManager() {
     }
 
     public static InventoryTypeData getDefaultInventoryTypeData() {
         return new InventoryTypeData(new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING), DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0), new SlotDefinition(0, 0), new SlotDefinition(0, 0), new SlotDefinition(176, 1616));
     }
+
     public static List<ChestCavitySlotDefinition> getDefaultInventoryTypeSlotDefinition() {
         int n, m;
         List<ChestCavitySlotDefinition> slotDefinitions = new ArrayList<>();
-        for(n = 0; n < 3; ++n) {
-            for(m = 0; m < 9; ++m) {
+        for (n = 0; n < 3; ++n) {
+            for (m = 0; m < 9; ++m) {
                 slotDefinitions.add(new ChestCavitySlotDefinition(8 + m * 18, 18 + n * 18));
             }
         }
         return slotDefinitions;
     }
+
     public static void reloadInventoryType(ResourceManager manager) {
         GeneratedInventoryTypeData.clear();
         ChestCavity.LOGGER.info("Loading screenType.");

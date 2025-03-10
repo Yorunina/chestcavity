@@ -1,7 +1,8 @@
 package net.tigereye.chestcavity.forge;
 
-import java.util.function.Consumer;
 import net.minecraftforge.event.TickEvent;
+
+import java.util.function.Consumer;
 
 public class EventHelper {
     public static final EventList<Consumer<TickEvent.ClientTickEvent>> CLIENT_TICK = new EventList();

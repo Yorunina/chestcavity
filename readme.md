@@ -1,18 +1,24 @@
 # Branch Info
-> Warning! If you use this branch, you will be treated knowing that contains lots of testing content and unfix bugs by default. Please DO NOT post all these bugs to the author or the issue forum unless you know how to fix or the version you use is an already released version.
+
+> Warning! If you use this branch, you will be treated knowing that contains lots of testing content and unfix bugs by
+> default. Please DO NOT post all these bugs to the author or the issue forum unless you know how to fix or the version
+> you use is an already released version.
 
 # Chest Cavity
-Chest Cavity lets you use a 'chest opener' to access a secondary inventory. There are some items already in it, but those probably aren't important so you can take them out to make room for other stuff\*. 
+
+Chest Cavity lets you use a 'chest opener' to access a secondary inventory. There are some items already in it, but
+those probably aren't important so you can take them out to make room for other stuff\*.
 
 It also adds a variety of drops that are similar to the junk you discarded from your extra storage.
 
-*Side effects may include shortness of breath, inhibited healing, inability to fight off infection, vulnerability to physical harm, weakness, loss of nutrition, difficulty walking or running, and sacrifice to Aztec gods.*
+*Side effects may include shortness of breath, inhibited healing, inability to fight off infection, vulnerability to
+physical harm, weakness, loss of nutrition, difficulty walking or running, and sacrifice to Aztec gods.*
 
 ## Requirements
-Requires Minecraft 1.16.x and Fabric API. 
+
+Requires Minecraft 1.16.x and Fabric API.
 
 Also uses Onyx Studio's Cardinal Components.
-
 
 ## Images
 

@@ -16,7 +16,7 @@ public class OrganRejection extends CCStatusEffect {
 
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide) {
-            entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float)ChestCavity.config.ORGAN_REJECTION_DAMAGE);
+            entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float) ChestCavity.config.ORGAN_REJECTION_DAMAGE);
         }
 
     }

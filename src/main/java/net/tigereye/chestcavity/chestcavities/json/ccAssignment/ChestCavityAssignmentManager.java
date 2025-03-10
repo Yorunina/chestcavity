@@ -14,6 +14,7 @@ import java.util.Map;
 public class ChestCavityAssignmentManager {
     private static final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
     public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap<>();
+
     public static void reloadChestCavityAssignment(ResourceManager manager) {
         GeneratedChestCavityAssignments.clear();
         ChestCavity.LOGGER.info("Loading chest cavity assignments.");

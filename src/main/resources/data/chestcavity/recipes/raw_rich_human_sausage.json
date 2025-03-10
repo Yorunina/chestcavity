@@ -1,33 +1,33 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:raw_human_organ_meat"
-      },
-      {
-        "item": "chestcavity:sausage_skin"
-      }
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:raw_human_organ_meat"
+    },
+    {
+      "item": "chestcavity:sausage_skin"
+    }
   ],
   "result": {
     "item": "chestcavity:raw_rich_human_sausage",

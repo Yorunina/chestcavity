@@ -19,6 +19,7 @@ import java.util.Optional;
 public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractContainerMenu> {
     private ResourceLocation backgroundTexture;
     private InventoryTypeData inventoryTypeData;
+
     public ChestCavityItemScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }

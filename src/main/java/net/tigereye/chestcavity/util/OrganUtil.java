@@ -73,12 +73,12 @@ public class OrganUtil {
 
 
         MutableComponent compatibleTooltips;
-         if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
-             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-             String name = tag.getString("name");
-             compatibleTooltips = Component.translatable("tooltips.organ.only_compatible_with", name);
+        if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
+            tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+            String name = tag.getString("name");
+            compatibleTooltips = Component.translatable("tooltips.organ.only_compatible_with", name);
         } else {
-             compatibleTooltips = Component.translatable("tooltips.organ.safe_to_use");
+            compatibleTooltips = Component.translatable("tooltips.organ.safe_to_use");
         }
 
         MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
@@ -94,7 +94,7 @@ public class OrganUtil {
 
     public static void explode(LivingEntity entity, float explosionYield) {
         if (!entity.level().isClientSide) {
-            entity.level().explode(null, entity.getX(), entity.getY(), entity.getZ(), (float)Math.sqrt(explosionYield), ExplosionInteraction.MOB);
+            entity.level().explode(null, entity.getX(), entity.getY(), entity.getZ(), (float) Math.sqrt(explosionYield), ExplosionInteraction.MOB);
             spawnEffectsCloud(entity);
         }
 
@@ -103,10 +103,10 @@ public class OrganUtil {
 
     public static void queueDragonBombs(LivingEntity entity, ChestCavityInstance cc, int bombs) {
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion((float)bombs * 0.6F);
+            ((Player) entity).causeFoodExhaustion((float) bombs * 0.6F);
         }
 
-        for(int i = 0; i < bombs; ++i) {
+        for (int i = 0; i < bombs; ++i) {
             cc.projectileQueue.add(OrganUtil::spawnDragonBomb);
         }
 
@@ -115,10 +115,10 @@ public class OrganUtil {
 
     public static void queueForcefulSpit(LivingEntity entity, ChestCavityInstance cc, int projectiles) {
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion((float)projectiles * 0.1F);
+            ((Player) entity).causeFoodExhaustion((float) projectiles * 0.1F);
         }
 
-        for(int i = 0; i < projectiles; ++i) {
+        for (int i = 0; i < projectiles; ++i) {
             cc.projectileQueue.add(OrganUtil::spawnSpit);
         }
 
@@ -127,10 +127,10 @@ public class OrganUtil {
 
     public static void queueGhastlyFireballs(LivingEntity entity, ChestCavityInstance cc, int ghastly) {
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion((float)ghastly * 0.3F);
+            ((Player) entity).causeFoodExhaustion((float) ghastly * 0.3F);
         }
 
-        for(int i = 0; i < ghastly; ++i) {
+        for (int i = 0; i < ghastly; ++i) {
             cc.projectileQueue.add(OrganUtil::spawnGhastlyFireball);
         }
 
@@ -139,22 +139,22 @@ public class OrganUtil {
 
     public static void queuePyromancyFireballs(LivingEntity entity, ChestCavityInstance cc, int pyromancy) {
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion((float)pyromancy * 0.1F);
+            ((Player) entity).causeFoodExhaustion((float) pyromancy * 0.1F);
         }
 
-        for(int i = 0; i < pyromancy; ++i) {
+        for (int i = 0; i < pyromancy; ++i) {
             cc.projectileQueue.add(OrganUtil::spawnPyromancyFireball);
         }
 
-        entity.addEffect(new MobEffectInstance((MobEffect)CCStatusEffects.PYROMANCY_COOLDOWN.get(), ChestCavity.config.PYROMANCY_COOLDOWN, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.PYROMANCY_COOLDOWN.get(), ChestCavity.config.PYROMANCY_COOLDOWN, 0, false, false, true));
     }
 
     public static void queueShulkerBullets(LivingEntity entity, ChestCavityInstance cc, int shulkerBullets) {
         if (entity instanceof Player) {
-            ((Player)entity).causeFoodExhaustion((float)shulkerBullets * 0.3F);
+            ((Player) entity).causeFoodExhaustion((float) shulkerBullets * 0.3F);
         }
 
-        for(int i = 0; i < shulkerBullets; ++i) {
+        for (int i = 0; i < shulkerBullets; ++i) {
             cc.projectileQueue.add(OrganUtil::spawnShulkerBullet);
         }
 
@@ -196,7 +196,7 @@ public class OrganUtil {
             areaEffectCloudEntity.setRadiusOnUse(-0.5F);
             areaEffectCloudEntity.setWaitTime(10);
             areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
-            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
+            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
 
             for (MobEffectInstance statusEffectInstance : collection) {
                 areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
@@ -245,7 +245,7 @@ public class OrganUtil {
             double z = pos.z;
             BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, y, z);
 
-            while(entity.level().isEmptyBlock(mutable)) {
+            while (entity.level().isEmptyBlock(mutable)) {
                 --y;
                 if (y < 0.0) {
                     return;
@@ -257,7 +257,7 @@ public class OrganUtil {
             y = Mth.floor(y) + 1;
             AreaEffectCloud breathEntity = new AreaEffectCloud(entity.level(), x, y, z);
             breathEntity.setOwner(entity);
-            breathEntity.setRadius((float)Math.max(range / 2.0, Math.min(range, MathUtil.horizontalDistanceTo(breathEntity, entity))));
+            breathEntity.setRadius((float) Math.max(range / 2.0, Math.min(range, MathUtil.horizontalDistanceTo(breathEntity, entity))));
             breathEntity.setDuration(200);
             breathEntity.setParticle(ParticleTypes.DRAGON_BREATH);
             breathEntity.addEffect(new MobEffectInstance(MobEffects.HARM));
@@ -287,7 +287,7 @@ public class OrganUtil {
     public static void spawnShulkerBullet(LivingEntity entity) {
         TargetingConditions targetPredicate = TargetingConditions.forCombat();
         targetPredicate.range(ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE * 2);
-        LivingEntity target = entity.level().getNearestEntity(LivingEntity.class, targetPredicate, entity, entity.getX(), entity.getY(), entity.getZ(), new AABB(entity.getX() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() - (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getX() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() + (double)ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
+        LivingEntity target = entity.level().getNearestEntity(LivingEntity.class, targetPredicate, entity, entity.getX(), entity.getY(), entity.getZ(), new AABB(entity.getX() - (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() - (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() - (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getX() + (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getY() + (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE, entity.getZ() + (double) ChestCavity.config.SHULKER_BULLET_TARGETING_RANGE));
         if (target != null) {
             ShulkerBullet shulkerBulletEntity = new ShulkerBullet(entity.level(), entity, target, Axis.Y);
             shulkerBulletEntity.syncPacketPositionCodec(shulkerBulletEntity.getX(), entity.getY(0.5) + 0.3, shulkerBulletEntity.getZ());
@@ -299,10 +299,10 @@ public class OrganUtil {
 
     public static boolean teleportRandomly(LivingEntity entity, float range) {
         if (!entity.level().isClientSide() && entity.isAlive()) {
-            for(int i = 0; i < ChestCavity.config.MAX_TELEPORT_ATTEMPTS; ++i) {
-                double d = entity.getX() + (entity.getRandom().nextDouble() - 0.5) * (double)range;
-                double e = Math.max(1.0, entity.getY() + (entity.getRandom().nextDouble() - 0.5) * (double)range);
-                double f = entity.getZ() + (entity.getRandom().nextDouble() - 0.5) * (double)range;
+            for (int i = 0; i < ChestCavity.config.MAX_TELEPORT_ATTEMPTS; ++i) {
+                double d = entity.getX() + (entity.getRandom().nextDouble() - 0.5) * (double) range;
+                double e = Math.max(1.0, entity.getY() + (entity.getRandom().nextDouble() - 0.5) * (double) range);
+                double f = entity.getZ() + (entity.getRandom().nextDouble() - 0.5) * (double) range;
                 if (teleportTo(entity, d, e, f)) {
                     return true;
                 }
@@ -319,7 +319,7 @@ public class OrganUtil {
         BlockPos.MutableBlockPos targetPos = new BlockPos.MutableBlockPos(x, y, z);
 
         BlockState blockState;
-        for(blockState = entity.level().getBlockState(targetPos); targetPos.getY() > 0 && !blockState.blocksMotion() && !blockState.liquid(); blockState = entity.level().getBlockState(targetPos)) {
+        for (blockState = entity.level().getBlockState(targetPos); targetPos.getY() > 0 && !blockState.blocksMotion() && !blockState.liquid(); blockState = entity.level().getBlockState(targetPos)) {
             targetPos.move(Direction.DOWN);
         }
 
@@ -329,7 +329,7 @@ public class OrganUtil {
             targetPos.move(Direction.UP);
             blockState = entity.level().getBlockState(targetPos);
 
-            for(BlockState blockState2 = entity.level().getBlockState(targetPos.above()); blockState.liquid() || blockState.blocksMotion() || blockState2.liquid() || blockState2.blocksMotion(); blockState2 = entity.level().getBlockState(targetPos.above())) {
+            for (BlockState blockState2 = entity.level().getBlockState(targetPos.above()); blockState.liquid() || blockState.blocksMotion() || blockState2.liquid() || blockState2.blocksMotion(); blockState2 = entity.level().getBlockState(targetPos.above())) {
                 targetPos.move(Direction.UP);
                 blockState = entity.level().getBlockState(targetPos);
             }
@@ -337,7 +337,7 @@ public class OrganUtil {
             if (entity.level().dimensionType().hasCeiling() && targetPos.getY() >= entity.level().getHeight()) {
                 return false;
             } else {
-                entity.teleportTo(x, (double)targetPos.getY() + 0.1, z);
+                entity.teleportTo(x, (double) targetPos.getY() + 0.1, z);
                 if (!entity.isSilent()) {
                     entity.level().playSound(null, entity.xOld, entity.yOld, entity.zOld, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
                     entity.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);

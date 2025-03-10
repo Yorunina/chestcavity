@@ -1,33 +1,33 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:raw_toxic_meat"
-      },
-      {
-        "item": "chestcavity:sausage_skin"
-      }
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:raw_toxic_meat"
+    },
+    {
+      "item": "chestcavity:sausage_skin"
+    }
   ],
   "result": {
     "item": "chestcavity:raw_toxic_sausage",

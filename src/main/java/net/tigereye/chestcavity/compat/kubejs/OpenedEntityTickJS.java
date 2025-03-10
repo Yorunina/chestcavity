@@ -21,8 +21,16 @@ public class OpenedEntityTickJS extends LevelEventJS {
 
 
     @Override
-    public Level getLevel() {return level;}
-    public ChestCavityInstance getChestCavity() {return cc;}
-    public LivingEntity getEntity() {return entity;}
+    public Level getLevel() {
+        return level;
+    }
+
+    public ChestCavityInstance getChestCavity() {
+        return cc;
+    }
+
+    public LivingEntity getEntity() {
+        return entity;
+    }
 
 }
