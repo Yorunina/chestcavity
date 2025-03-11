@@ -24,7 +24,7 @@ public class InventoryTypeManager {
     }
 
     public static InventoryTypeData getDefaultInventoryTypeData() {
-        return new InventoryTypeData(new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING), DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0), new SlotDefinition(0, 0), new SlotDefinition(0, 0), new SlotDefinition(176, 1616));
+        return new InventoryTypeData(new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING), DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new SlotDefinition(176, 1616));
     }
 
     public static List<ChestCavitySlotDefinition> getDefaultInventoryTypeSlotDefinition() {

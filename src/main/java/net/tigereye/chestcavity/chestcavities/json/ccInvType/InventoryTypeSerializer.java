@@ -42,12 +42,22 @@ public class InventoryTypeSerializer {
         if (inventoryTypeJsonFormat.titlePosition != null) {
             JsonElement slotJsonX = inventoryTypeJsonFormat.titlePosition.get("x");
             JsonElement slotJsonY = inventoryTypeJsonFormat.titlePosition.get("y");
-            result.setTitlePosition(new SlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+            if (inventoryTypeJsonFormat.titlePosition.has("hide")) {
+                JsonElement slotJsonHide = inventoryTypeJsonFormat.titlePosition.get("hide");
+                result.setTitlePosition(new TitleSlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt(), slotJsonHide.getAsBoolean()));
+            } else {
+                result.setTitlePosition(new TitleSlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+            }
         }
         if (inventoryTypeJsonFormat.inventoryLabelPosition != null) {
             JsonElement slotJsonX = inventoryTypeJsonFormat.inventoryLabelPosition.get("x");
             JsonElement slotJsonY = inventoryTypeJsonFormat.inventoryLabelPosition.get("y");
-            result.setInventoryLabelPosition(new SlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+            if (inventoryTypeJsonFormat.inventoryLabelPosition.has("hide")) {
+                JsonElement slotJsonHide = inventoryTypeJsonFormat.inventoryLabelPosition.get("hide");
+                result.setInventoryLabelPosition(new TitleSlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt(), slotJsonHide.getAsBoolean()));
+            } else {
+                result.setInventoryLabelPosition(new TitleSlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+            }
         }
         if (inventoryTypeJsonFormat.backgroundSize != null) {
             JsonElement slotJsonX = inventoryTypeJsonFormat.backgroundSize.get("x");

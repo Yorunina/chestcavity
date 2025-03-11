@@ -66,7 +66,6 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         for (n = 0; n < 9; ++n) {
             this.addSlot(new Slot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
         }
-
     }
 
     public ItemStack quickMoveStack(Player player, int invSlot) {

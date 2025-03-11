@@ -286,7 +286,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                     info.cancel();
                 }
             }
-
         }
 
         @Inject(

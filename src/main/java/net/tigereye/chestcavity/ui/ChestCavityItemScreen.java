@@ -71,6 +71,16 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
     }
 
     @Override
+    protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
+        if (!inventoryTypeData.getTitlePosition().isHide()) {
+            pGuiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+        }
+        if (!inventoryTypeData.getInventoryLabelPosition().isHide()) {
+            pGuiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+        }
+    }
+
+    @Override
     protected void init() {
         InventoryTypeData inventoryTypeData = getInventoryTypeData();
         this.inventoryTypeData = inventoryTypeData;

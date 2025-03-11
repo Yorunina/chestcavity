@@ -9,9 +9,9 @@ public class InventoryTypeData {
     public List<ChestCavitySlotDefinition> slotDefinitions;
     public ResourceLocation backgroundTexture;
     public SlotDefinition playerInventoryPosition;
-    public SlotDefinition titlePosition;
+    public TitleSlotDefinition titlePosition;
     public SlotDefinition backgroundSize;
-    public SlotDefinition inventoryLabelPosition;
+    public TitleSlotDefinition inventoryLabelPosition;
 
     public ResourceLocation getId() {
         return this.id;
@@ -57,19 +57,19 @@ public class InventoryTypeData {
         this.playerInventoryPosition = playerInventoryPosition;
     }
 
-    public void setTitlePosition(SlotDefinition titlePosition) {
+    public void setTitlePosition(TitleSlotDefinition titlePosition) {
         this.titlePosition = titlePosition;
     }
 
-    public SlotDefinition getTitlePosition() {
+    public TitleSlotDefinition getTitlePosition() {
         return this.titlePosition;
     }
 
-    public void setInventoryLabelPosition(SlotDefinition inventoryLabelPosition) {
+    public void setInventoryLabelPosition(TitleSlotDefinition inventoryLabelPosition) {
         this.inventoryLabelPosition = inventoryLabelPosition;
     }
 
-    public SlotDefinition getInventoryLabelPosition() {
+    public TitleSlotDefinition getInventoryLabelPosition() {
         return this.inventoryLabelPosition;
     }
 
@@ -81,7 +81,7 @@ public class InventoryTypeData {
         return this.backgroundSize;
     }
 
-    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<ChestCavitySlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition, SlotDefinition titlePosition, SlotDefinition inventoryLabelPosition, SlotDefinition backgroundSize) {
+    public InventoryTypeData(ResourceLocation id, ResourceLocation backgroundTexture, List<ChestCavitySlotDefinition> slotDefinitions, SlotDefinition playerInventoryPosition, TitleSlotDefinition titlePosition, TitleSlotDefinition inventoryLabelPosition, SlotDefinition backgroundSize) {
         this.id = id;
         this.backgroundTexture = backgroundTexture;
         this.slotDefinitions = slotDefinitions;
