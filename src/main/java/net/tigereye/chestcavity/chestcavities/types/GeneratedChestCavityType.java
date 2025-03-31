@@ -157,6 +157,5 @@ public class GeneratedChestCavityType implements ChestCavityType {
             cc.connectedCrystal.setBeamTarget(null);
             cc.connectedCrystal = null;
         }
-
     }
 }

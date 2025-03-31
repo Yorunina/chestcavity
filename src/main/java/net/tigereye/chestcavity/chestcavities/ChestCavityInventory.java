@@ -13,7 +13,6 @@ public class ChestCavityInventory extends SimpleContainer {
     public ChestCavityInstance getInstance() {
         return this.instance;
     }
-
     public void setInstance(ChestCavityInstance instance) {
         this.instance = instance;
     }

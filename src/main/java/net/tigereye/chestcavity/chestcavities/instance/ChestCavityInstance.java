@@ -49,7 +49,7 @@ public class ChestCavityInstance implements ContainerListener {
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
-    public Map<String, Object> customEntityDataMap = new HashMap<>();
+    public Map<String, Object> customDataMap = new HashMap<>();
 
     public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
         this.type = type;
