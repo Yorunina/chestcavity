@@ -30,6 +30,12 @@
   "enchantment.chestcavity.malpractice.desc": "Ruins Organ Drops",
   "enchantment.chestcavity.tomophobia": "Tomophobia",
   "enchantment.chestcavity.tomophobia.desc": "Prevents Organ Drops",
+  "enchantment.chestcavity.painless_surgery": "Painless Surgery",
+  "enchantment.chestcavity.painless_surgery.desc": "Will not be hurt by chest open",
+  "enchantment.chestcavity.safe_surgery": "Safe Surgery",
+  "enchantment.chestcavity.safe_surgery.desc": "Will not open yourself",
+  "enchantment.chestcavity.creative_surgery": "Creative Surgery",
+  "enchantment.chestcavity.creative_surgery.desc": "Can open any entity chest cavity",
   "category.chestcavity.organ_abilities": "Activated Organ Abilities",
   "key.chestcavity.utility_abilities": "Utility Abilities",
   "key.chestcavity.attack_abilities": "Attack Abilities",
@@ -363,5 +369,8 @@
   "text.autoconfig.chestcavity.option.RATS_MISCHIEF_INTEGRATION": "Rat's Mischief Integration (Restart)",
   "text.autoconfig.chestcavity.option.REQUIEM_INTEGRATION": "Requiem Integration (Restart)",
   "text.autoconfig.chestcavity.option.SMALL_ENDERMEN_INTEGRATION": "Small Endermen Integration (Restart)",
-  "text.autoconfig.chestcavity.option.SNOW_MERCY_INTEGRATION": "Direbats Integration (Restart)"
+  "text.autoconfig.chestcavity.option.SNOW_MERCY_INTEGRATION": "Direbats Integration (Restart)",
+  "slot_type.chestcavity.position.relative": "(%s, %s)",
+  "status_msg.chestcavity.chestopener.fail.obstructed": "Target's chest is obstructed",
+  "status_msg.chestcavity.chestopener.fail.healthy": "Target is too healthy to open"
 }

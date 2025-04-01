@@ -43,6 +43,6 @@ public class ChestCavitySlotDefinition {
         this.id = id;
         this.x = x;
         this.y = y;
-        this.relativePosition = new SlotDefinition(x / 8, y / 8);
+        this.relativePosition = new SlotDefinition(x / 16, y / 16);
     }
 }

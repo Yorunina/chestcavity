@@ -257,7 +257,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         )
         protected void chestCavityLivingEntityInteractMobMixin(net.minecraft.world.entity.player.Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
             if (player.getItemInHand(hand).getItem() == CCItems.CHEST_OPENER.get()) {
-                ((ChestOpener) player.getItemInHand(hand).getItem()).openChestCavity(player, this);
+                ItemStack chestOpener = player.getItemInHand(hand);
+                ((ChestOpener) chestOpener.getItem()).openChestCavity(player, this, chestOpener);
                 info.setReturnValue(InteractionResult.SUCCESS);
             }
 
@@ -281,7 +282,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 net.minecraft.world.entity.player.Player player = (net.minecraft.world.entity.player.Player) (Object) this;
                 ItemStack stack = player.getItemInHand(hand);
                 if (stack.getItem() == CCItems.CHEST_OPENER.get()) {
-                    ((ChestOpener) stack.getItem()).openChestCavity(player, (LivingEntity) entity);
+                    ((ChestOpener) stack.getItem()).openChestCavity(player, (LivingEntity) entity, stack);
                     info.setReturnValue(InteractionResult.SUCCESS);
                     info.cancel();
                 }

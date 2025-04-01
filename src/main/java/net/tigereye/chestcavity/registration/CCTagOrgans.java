@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CCTagOrgans {
-    public static Map<TagKey<Item>, Map<ResourceLocation, Float>> tagMap = new HashMap();
+    public static Map<TagKey<Item>, Map<ResourceLocation, Float>> tagMap = new HashMap<>();
 
     public CCTagOrgans() {
     }
 
     public static void init() {
-        Map<ResourceLocation, Float> ease_of_access = new HashMap();
+        Map<ResourceLocation, Float> ease_of_access = new HashMap<>();
         ease_of_access.put(CCOrganScores.EASE_OF_ACCESS, (float) Items.OAK_DOOR.getMaxStackSize());
         tagMap.put(ItemTags.DOORS, ease_of_access);
         tagMap.put(ItemTags.TRAPDOORS, ease_of_access);

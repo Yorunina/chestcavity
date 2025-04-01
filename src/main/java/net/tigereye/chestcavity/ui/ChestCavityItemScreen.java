@@ -68,10 +68,7 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
             List<Component> slotTypeTooltips = new ArrayList<>();
             slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.name", slotType), slotIndex + 1));
             slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.desc", slotType)));
-            if (this.minecraft != null && this.minecraft.player != null) {
-                this.minecraft.player.isShiftKeyDown();
-                slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.relativePosition", slotType), slotDefinition.getRelativeX(), slotDefinition.getRelativeY()));
-            }
+            slotTypeTooltips.add(Component.translatable("slot_type.chestcavity.position.relative", slotDefinition.getRelativeX(), slotDefinition.getRelativeY()));
             pGuiGraphics.renderTooltip(this.font, slotTypeTooltips, Optional.empty(), ItemStack.EMPTY, pX, pY);
         }
     }
