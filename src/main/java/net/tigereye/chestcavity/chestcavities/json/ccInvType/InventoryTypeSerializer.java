@@ -18,19 +18,22 @@ public class InventoryTypeSerializer {
         result.setId(id);
         if (inventoryTypeJsonFormat.slotDefinitions != null) {
             List<ChestCavitySlotDefinition> slotDefinitions = new ArrayList<>();
+            int index = 0;
             for (JsonElement entry : inventoryTypeJsonFormat.slotDefinitions) {
                 JsonObject slotJsonObj = entry.getAsJsonObject();
                 JsonElement slotJsonX = slotJsonObj.get("x");
                 JsonElement slotJsonY = slotJsonObj.get("y");
+                ChestCavitySlotDefinition slotDefinition = new ChestCavitySlotDefinition(index, slotJsonX.getAsInt(), slotJsonY.getAsInt());
                 if (slotJsonObj.has("type")) {
                     JsonElement slotJsonType = slotJsonObj.get("type");
-                    slotDefinitions.add(new ChestCavitySlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt(), slotJsonType.getAsString()));
-                } else {
-                    slotDefinitions.add(new ChestCavitySlotDefinition(slotJsonX.getAsInt(), slotJsonY.getAsInt()));
+                    slotDefinition.setType(slotJsonType.getAsString());
                 }
+                slotDefinitions.add(slotDefinition);
+                index++;
             }
             result.setSlotDefinitions(slotDefinitions);
         }
+
         if (inventoryTypeJsonFormat.backgroundTexture != null) {
             result.setBackgroundTexture(new ResourceLocation(inventoryTypeJsonFormat.backgroundTexture));
         }

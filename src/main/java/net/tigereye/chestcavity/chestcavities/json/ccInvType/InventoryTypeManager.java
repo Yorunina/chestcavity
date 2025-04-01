@@ -32,7 +32,7 @@ public class InventoryTypeManager {
         List<ChestCavitySlotDefinition> slotDefinitions = new ArrayList<>();
         for (n = 0; n < 3; ++n) {
             for (m = 0; m < 9; ++m) {
-                slotDefinitions.add(new ChestCavitySlotDefinition(8 + m * 18, 18 + n * 18));
+                slotDefinitions.add(new ChestCavitySlotDefinition(n * 9 + m, 8 + m * 18, 18 + n * 18));
             }
         }
         return slotDefinitions;

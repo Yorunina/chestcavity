@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 
@@ -62,10 +63,15 @@ public class ChestCavityItemScreen extends AbstractContainerScreen<AbstractConta
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             int slotIndex = this.hoveredSlot.index;
             if (slotIndex < 0 || slotIndex >= inventoryTypeData.getSlotSize()) return;
-            String slotType = this.inventoryTypeData.getSlotType(slotIndex);
+            ChestCavitySlotDefinition slotDefinition = inventoryTypeData.getSlotDefinition(slotIndex);
+            String slotType = slotDefinition.getType();
             List<Component> slotTypeTooltips = new ArrayList<>();
             slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.name", slotType), slotIndex + 1));
             slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.desc", slotType)));
+            if (this.minecraft != null && this.minecraft.player != null) {
+                this.minecraft.player.isShiftKeyDown();
+                slotTypeTooltips.add(Component.translatable(String.format("slot_type.chestcavity.%s.relativePosition", slotType), slotDefinition.getRelativeX(), slotDefinition.getRelativeY()));
+            }
             pGuiGraphics.renderTooltip(this.font, slotTypeTooltips, Optional.empty(), ItemStack.EMPTY, pX, pY);
         }
     }

@@ -1,8 +1,11 @@
 package net.tigereye.chestcavity.chestcavities.json.ccInvType;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryTypeData {
     public ResourceLocation id;
@@ -12,6 +15,7 @@ public class InventoryTypeData {
     public TitleSlotDefinition titlePosition;
     public SlotDefinition backgroundSize;
     public TitleSlotDefinition inventoryLabelPosition;
+    public Map<Integer, Map<Integer, ChestCavitySlotDefinition>> relativeSlotMap = new HashMap<>();
 
     public ResourceLocation getId() {
         return this.id;
@@ -47,6 +51,22 @@ public class InventoryTypeData {
 
     public void setSlotDefinitions(List<ChestCavitySlotDefinition> slotDefinitions) {
         this.slotDefinitions = slotDefinitions;
+        this.relativeSlotMap = new HashMap<>();
+        for (ChestCavitySlotDefinition slotDefinition : slotDefinitions) {
+            int relativeX = slotDefinition.getRelativeX();
+            int relativeY = slotDefinition.getRelativeY();
+            if (!relativeSlotMap.containsKey(relativeX)) {
+                relativeSlotMap.put(relativeX, new HashMap<>());
+            }
+            relativeSlotMap.get(relativeX).put(relativeY, slotDefinition);
+        }
+    }
+
+    public ChestCavitySlotDefinition getRelativeSlotDefinition(int relativeX, int relativeY) {
+        if (relativeSlotMap.containsKey(relativeX) && relativeSlotMap.get(relativeX).containsKey(relativeY)) {
+            return relativeSlotMap.get(relativeX).get(relativeY);
+        }
+        return null;
     }
 
     public void setBackgroundTexture(ResourceLocation backgroundTexture) {
