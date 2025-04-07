@@ -20,6 +20,10 @@ import java.util.Optional;
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
 
+    public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
+        this(syncId, playerInventory, getChestCavityEntity(playerInventory));
+    }
+
     private static ChestCavityEntity getChestCavityEntity(Inventory playerInventory) {
         ChestCavityEntity playerCCEntity = (ChestCavityEntity) playerInventory.player;
         ChestCavityInstance playerCC = playerCCEntity.getChestCavityInstance();
@@ -32,10 +36,6 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
             }
         }
         return playerCCEntity;
-    }
-
-    public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
-        this(syncId, playerInventory, getChestCavityEntity(playerInventory));
     }
 
 
