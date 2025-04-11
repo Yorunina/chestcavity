@@ -543,8 +543,8 @@ public class ChestCavityUtil {
         }
 
         cc.getOrganScores().forEach((key, value) -> {
-            String var10001 = key.getPath();
-            output.accept(var10001 + ": " + value + " ");
+            String scoreName = key.getPath();
+            output.accept(scoreName + ": " + value + " ");
         });
     }
 

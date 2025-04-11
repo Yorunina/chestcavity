@@ -8,9 +8,11 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.tigereye.chestcavity.ChestCavity.MODID;
+
 public class CCKeybindings {
     private static final String ORGAN_ABILITY_KEY_CATEGORY = "organ_abilities";
-    public static ResourceLocation UTILITY_ABILITIES_ID = new ResourceLocation("chestcavity", "utility_abilities");
+    public static ResourceLocation UTILITY_ABILITIES_ID;
     public static KeyMapping UTILITY_ABILITIES;
     public static List<ResourceLocation> UTILITY_ABILITY_LIST;
     public static ResourceLocation ATTACK_ABILITIES_ID;
@@ -53,21 +55,22 @@ public class CCKeybindings {
     }
 
     static {
-        UTILITY_ABILITIES = register(UTILITY_ABILITIES_ID, "organ_abilities", 86);
+        UTILITY_ABILITIES_ID = new ResourceLocation(MODID, "utility_abilities");
+        UTILITY_ABILITIES = register(UTILITY_ABILITIES_ID, ORGAN_ABILITY_KEY_CATEGORY, 86);
         UTILITY_ABILITY_LIST = new ArrayList();
-        ATTACK_ABILITIES_ID = new ResourceLocation("chestcavity", "attack_abilities");
-        ATTACK_ABILITIES = register(ATTACK_ABILITIES_ID, "organ_abilities", 82);
+        ATTACK_ABILITIES_ID = new ResourceLocation(MODID, "attack_abilities");
+        ATTACK_ABILITIES = register(ATTACK_ABILITIES_ID, ORGAN_ABILITY_KEY_CATEGORY, 82);
         ATTACK_ABILITY_LIST = new ArrayList();
-        CREEPY = register(CCOrganScores.CREEPY, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
+        CREEPY = register(CCOrganScores.CREEPY, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
         BUOYANT_EXHALE = register(CCOrganScores.BUOYANT, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, false);
-        DRAGON_BREATH = register(CCOrganScores.DRAGON_BREATH, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
-        DRAGON_BOMBS = register(CCOrganScores.DRAGON_BOMBS, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
-        FORCEFUL_SPIT = register(CCOrganScores.FORCEFUL_SPIT, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
-        FURNACE_POWERED = register(CCOrganScores.FURNACE_POWERED, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, false);
-        IRON_REPAIR = register(CCOrganScores.IRON_REPAIR, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, false);
-        PYROMANCY = register(CCOrganScores.PYROMANCY, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
-        GHASTLY = register(CCOrganScores.GHASTLY, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
-        GRAZING = register(CCOrganScores.GRAZING, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, false);
-        SHULKER_BULLETS = register(CCOrganScores.SHULKER_BULLETS, "organ_abilities", GLFW.GLFW_KEY_UNKNOWN, true);
+        DRAGON_BREATH = register(CCOrganScores.DRAGON_BREATH, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
+        DRAGON_BOMBS = register(CCOrganScores.DRAGON_BOMBS, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
+        FORCEFUL_SPIT = register(CCOrganScores.FORCEFUL_SPIT, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
+        FURNACE_POWERED = register(CCOrganScores.FURNACE_POWERED, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, false);
+        IRON_REPAIR = register(CCOrganScores.IRON_REPAIR, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, false);
+        PYROMANCY = register(CCOrganScores.PYROMANCY, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
+        GHASTLY = register(CCOrganScores.GHASTLY, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
+        GRAZING = register(CCOrganScores.GRAZING, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, false);
+        SHULKER_BULLETS = register(CCOrganScores.SHULKER_BULLETS, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
     }
 }

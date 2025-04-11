@@ -229,15 +229,17 @@ public class ChestCavityInstance implements ContainerListener {
         this.type = other.type;
         this.compatibility_id = other.compatibility_id;
         this.inventoryType = other.inventoryType;
+        if (this.owner instanceof ChestCavityEntity ccEntity) {
+            ccEntity.setInventoryTypeData(this.inventoryType);
+        }
+        this.ccBeingOpened = other.ccBeingOpened;
         try {
             this.inventory.removeListener(this);
         } catch (NullPointerException ignored) {
         }
-
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             this.inventory.setItem(i, other.inventory.getItem(i));
         }
-
         this.inventory.readTags(other.inventory.getTags());
         this.inventory.addListener(this);
         this.heartBleedTimer = other.heartBleedTimer;

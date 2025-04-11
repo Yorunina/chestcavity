@@ -6,7 +6,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Created by Travis on 06/05/2016.
+ * 用于锁定某个槽位，避免逻辑异常
  */
 public class SlotLocked extends Slot {
 
