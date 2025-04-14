@@ -49,10 +49,12 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
 
         inventoryType = nbt.getString("InventoryType");
         InventoryTypeData inventoryTypeData = InventoryTypeManager.getInventoryTypeData(new ResourceLocation(inventoryType));
-        inventory = new ItemStackHandler(inventoryTypeData.getSlotSize());
-        inventory.deserializeNBT(nbt.getCompound("Inventory"));
 
         int slotSize = inventoryTypeData.getSlotSize();
+        this.inventory = new ItemStackHandler(slotSize);
+        nbt.putInt("Size", slotSize);
+        this.inventory.deserializeNBT(nbt.getCompound("Inventory"));
+
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();

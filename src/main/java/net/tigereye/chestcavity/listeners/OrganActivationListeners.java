@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeHooks;
 import net.tigereye.chestcavity.ChestCavity;
@@ -32,7 +31,6 @@ public class OrganActivationListeners {
     }
 
     public static void register() {
-        register(CCOrganScores.BUOYANT, OrganActivationListeners::ActivateBuoyantExhale);
         register(CCOrganScores.CREEPY, OrganActivationListeners::ActivateCreepy);
         register(CCOrganScores.DRAGON_BREATH, OrganActivationListeners::ActivateDragonBreath);
         register(CCOrganScores.DRAGON_BOMBS, OrganActivationListeners::ActivateDragonBombs);
@@ -58,14 +56,6 @@ public class OrganActivationListeners {
         }
     }
 
-    public static void ActivateBuoyantExhale(LivingEntity entity, ChestCavityInstance cc) {
-        if (entity.getAirSupply() > 0) {
-            float breathLoss = cc.getOrganScore(CCOrganScores.BREATH_RECOVERY) * 4.5f - cc.lungRemainder;
-            cc.lungRemainder = 1 - breathLoss % 1;
-            entity.setAirSupply(entity.getAirSupply() - (int) breathLoss);
-        }
-    }
-
     public static void ActivateCreepy(LivingEntity entity, ChestCavityInstance cc) {
         if (!(cc.getOrganScore(CCOrganScores.CREEPY) < 1.0F) && !entity.hasEffect(CCStatusEffects.EXPLOSION_COOLDOWN.get())) {
             float explosion_yield = cc.getOrganScore(CCOrganScores.EXPLOSIVE);
@@ -84,8 +74,8 @@ public class OrganActivationListeners {
             ((Player) entity).causeFoodExhaustion(breath * 0.6F);
         }
 
-        if (!(breath <= 0.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.DRAGON_BREATH_COOLDOWN.get())) {
-            entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.DRAGON_BREATH_COOLDOWN.get(), ChestCavity.config.DRAGON_BREATH_COOLDOWN, 0, false, false, true));
+        if (!(breath <= 0.0F) && !entity.hasEffect(CCStatusEffects.DRAGON_BREATH_COOLDOWN.get())) {
+            entity.addEffect(new MobEffectInstance(CCStatusEffects.DRAGON_BREATH_COOLDOWN.get(), ChestCavity.config.DRAGON_BREATH_COOLDOWN, 0, false, false, true));
             cc.projectileQueue.add(OrganUtil::spawnDragonBreath);
         }
 
@@ -93,7 +83,7 @@ public class OrganActivationListeners {
 
     public static void ActivateDragonBombs(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.DRAGON_BOMBS);
-        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.DRAGON_BOMB_COOLDOWN.get())) {
+        if (!(projectiles < 1.0F) && !entity.hasEffect(CCStatusEffects.DRAGON_BOMB_COOLDOWN.get())) {
             OrganUtil.queueDragonBombs(entity, cc, (int) projectiles);
         }
 
@@ -101,7 +91,7 @@ public class OrganActivationListeners {
 
     public static void ActivateForcefulSpit(LivingEntity entity, ChestCavityInstance cc) {
         float projectiles = cc.getOrganScore(CCOrganScores.FORCEFUL_SPIT);
-        if (!(projectiles < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get())) {
+        if (!(projectiles < 1.0F) && !entity.hasEffect(CCStatusEffects.FORCEFUL_SPIT_COOLDOWN.get())) {
             OrganUtil.queueForcefulSpit(entity, cc, (int) projectiles);
         }
 
@@ -114,7 +104,7 @@ public class OrganActivationListeners {
             ItemStack itemStack = cc.owner.getItemBySlot(EquipmentSlot.MAINHAND);
             if (itemStack != null && itemStack != ItemStack.EMPTY) {
                 try {
-                    fuelValue = ForgeHooks.getBurnTime(itemStack, (RecipeType) null);
+                    fuelValue = ForgeHooks.getBurnTime(itemStack, null);
                 } catch (Exception var13) {
                 }
             }
@@ -182,7 +172,7 @@ public class OrganActivationListeners {
 
             cc.owner.heal(cc.owner.getMaxHealth() * ChestCavity.config.IRON_REPAIR_PERCENT);
             entity.playSound(SoundEvents.IRON_GOLEM_REPAIR, 0.75F, 1.0F);
-            cc.owner.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.IRON_REPAIR_COOLDOWN.get(), (int) ((float) ChestCavity.config.IRON_REPAIR_COOLDOWN / ironRepair), 0, false, false, true));
+            cc.owner.addEffect(new MobEffectInstance(CCStatusEffects.IRON_REPAIR_COOLDOWN.get(), (int) ((float) ChestCavity.config.IRON_REPAIR_COOLDOWN / ironRepair), 0, false, false, true));
             itemStack.shrink(1);
         }
 
@@ -190,7 +180,7 @@ public class OrganActivationListeners {
 
     public static void ActivateGhastly(LivingEntity entity, ChestCavityInstance cc) {
         float ghastly = cc.getOrganScore(CCOrganScores.GHASTLY);
-        if (!(ghastly < 1.0F) && !entity.hasEffect((MobEffect) CCStatusEffects.GHASTLY_COOLDOWN.get())) {
+        if (!(ghastly < 1.0F) && !entity.hasEffect(CCStatusEffects.GHASTLY_COOLDOWN.get())) {
             OrganUtil.queueGhastlyFireballs(entity, cc, (int) ghastly);
         }
 

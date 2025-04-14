@@ -91,6 +91,9 @@ public class ChestCavityInstance implements ContainerListener {
     public ResourceLocation getInventoryType() {
         return this.inventoryType;
     }
+    public void setCCBeingOpened(ChestCavityInstance ccBeingOpened) {
+        this.ccBeingOpened = ccBeingOpened;
+    }
 
     public InventoryTypeData getInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
@@ -141,7 +144,7 @@ public class ChestCavityInstance implements ContainerListener {
     public void setInventoryType(ResourceLocation inventoryType) {
         this.inventoryType = inventoryType;
         this.inventory.removeListener(this);
-        int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
+        int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
         ChestCavityInventory newInventory = new ChestCavityInventory(newInventorySize, this);
 
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
@@ -165,7 +168,6 @@ public class ChestCavityInstance implements ContainerListener {
 
         this.owner = owner;
         CompoundTag ccTag;
-        ListTag NbtList;
         if (tag.contains("ChestCavity")) {
             ccTag = tag.getCompound("ChestCavity");
             this.opened = ccTag.getBoolean("opened");
@@ -184,21 +186,19 @@ public class ChestCavityInstance implements ContainerListener {
             }
             try {
                 this.inventory.removeListener(this);
-                int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
-                if (newInventorySize < this.inventory.getContainerSize()) {
-                    for (int i = newInventorySize; i < this.inventory.getContainerSize(); i++) {
-                        this.owner.spawnAtLocation(this.inventory.getItem(i));
-                    }
-                }
-                this.inventory = new ChestCavityInventory(newInventorySize, this);
             } catch (NullPointerException ignored) {
             }
+            int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
+            if (newInventorySize < this.inventory.getContainerSize()) {
+                for (int i = newInventorySize; i < this.inventory.getContainerSize(); i++) {
+                    this.owner.spawnAtLocation(this.inventory.getItem(i));
+                }
+            }
+            this.inventory = new ChestCavityInventory(newInventorySize, this);
+
             if (ccTag.contains("Inventory")) {
-                NbtList = ccTag.getList("Inventory", 10);
-                this.inventory.readTags(NbtList);
-            } else if (this.opened) {
-                LOGGER.warn("[Chest Cavity] " + owner.getName().getString() + "'s Chest Cavity is mangled. It will be replaced");
-                ChestCavityUtil.generateChestCavityIfOpened(this);
+                ListTag nbtList = ccTag.getList("Inventory", 10);
+                this.inventory.readTags(nbtList);
             }
 
             this.inventory.addListener(this);
@@ -240,7 +240,7 @@ public class ChestCavityInstance implements ContainerListener {
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             this.inventory.setItem(i, other.inventory.getItem(i));
         }
-        this.inventory.readTags(other.inventory.getTags());
+        this.inventory = other.inventory.clone();
         this.inventory.addListener(this);
         this.heartBleedTimer = other.heartBleedTimer;
         this.liverTimer = other.liverTimer;

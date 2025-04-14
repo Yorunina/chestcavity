@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
-import net.tigereye.chestcavity.forge.port.SimpleSynchronousResourceReloadListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -18,15 +18,11 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrganManager implements SimpleSynchronousResourceReloadListener {
+public class OrganManager implements ResourceManagerReloadListener {
     private final OrganSerializer SERIALIZER = new OrganSerializer();
     public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap<>();
 
     public OrganManager() {
-    }
-
-    public ResourceLocation getFabricId() {
-        return new ResourceLocation("chestcavity", "organs");
     }
 
     public void onResourceManagerReload(ResourceManager manager) {
@@ -40,8 +36,8 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
 
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, (OrganJsonFormat) (new Gson()).fromJson(reader, OrganJsonFormat.class));
-                    GeneratedOrganData.put((ResourceLocation) organDataPair.getA(), (OrganData) organDataPair.getB());
+                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, new Gson().fromJson(reader, OrganJsonFormat.class));
+                    GeneratedOrganData.put(organDataPair.getA(), organDataPair.getB());
                 } catch (Throwable readError) {
                     try {
                         stream.close();
@@ -63,7 +59,7 @@ public class OrganManager implements SimpleSynchronousResourceReloadListener {
     }
 
     public static OrganData getEntry(Item item) {
-        return (OrganData) GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
+        return GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
     }
 
     public static boolean isTrueOrgan(Item item) {

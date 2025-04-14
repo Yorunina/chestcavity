@@ -22,7 +22,6 @@ public class CCOrganScores {
     public static final ResourceLocation ARROW_DODGING = new ResourceLocation(ChestCavity.MODID, "arrow_dodging");
     public static final ResourceLocation BUFF_PURGING = new ResourceLocation(ChestCavity.MODID, "buff_purging");
     public static final ResourceLocation BUOYANT = new ResourceLocation(ChestCavity.MODID, "buoyant");
-    public static final ResourceLocation DESTRUCTIVE_COLLISIONS = new ResourceLocation(ChestCavity.MODID, "destructive_collisions");
     public static final ResourceLocation EASE_OF_ACCESS = new ResourceLocation(ChestCavity.MODID, "ease_of_access");
     public static final ResourceLocation FIRE_RESISTANT = new ResourceLocation(ChestCavity.MODID, "fire_resistant");
     public static final ResourceLocation GLOWING = new ResourceLocation(ChestCavity.MODID, "glowing");

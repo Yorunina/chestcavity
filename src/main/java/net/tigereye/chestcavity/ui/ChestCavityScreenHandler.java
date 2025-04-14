@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
@@ -41,20 +42,22 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
 
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity chestCavityEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
+        Player player = playerInventory.player;
+        Level level = player.level();
 
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
-        int slotSize = inventoryTypeData.getSlotSize();
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
-
-        ChestCavityInventory inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
-        this.inventory = inventory;
-        inventory.startOpen(playerInventory.player);
+        if (level.isClientSide()) {
+            this.inventory = new ChestCavityInventory(inventoryTypeData.getSlotSize(), chestCavityEntity.getChestCavityInstance());
+        } else {
+            this.inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
+        }
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
         // 组装自定义胸腔界面
-        for (int j = 0; j < slotSize; ++j) {
-            this.addSlot(new Slot(inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
+        for (int j = 0; j < this.inventory.getContainerSize(); ++j) {
+            this.addSlot(new Slot(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
         // 组装玩家背包
         for (n = 0; n < 3; ++n) {

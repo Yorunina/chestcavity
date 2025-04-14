@@ -25,5 +25,4 @@ public abstract class MixinSimpleContainer implements Container {
             pStack.setCount(this.getMaxStackSize());
         }
     }
-
 }

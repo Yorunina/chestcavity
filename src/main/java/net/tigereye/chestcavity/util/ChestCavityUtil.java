@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.util;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
@@ -374,9 +375,16 @@ public class ChestCavityUtil {
     }
 
     public static void generateChestCavityIfOpened(ChestCavityInstance cc) {
-        if (cc.opened) {
-            cc.inventory.readTags(cc.getChestCavityType().getDefaultChestCavity().getTags());
+        if (!cc.opened) {
+            ListTag tagList = cc.getChestCavityType().getDefaultChestCavity().getTags();
+            try {
+                cc.inventory.removeListener(cc);
+            } catch (NullPointerException ignored) {}
+            cc.inventory = new ChestCavityInventory(tagList.size(), cc);
+            cc.inventory.readTags(tagList);
+            cc.inventory.addListener(cc);
             cc.getChestCavityType().setOrganCompatibility(cc);
+            cc.opened = true;
         }
     }
 
@@ -509,15 +517,8 @@ public class ChestCavityUtil {
 
     public static ChestCavityInventory openChestCavity(ChestCavityInstance cc) {
         if (!cc.opened) {
-            try {
-                cc.inventory.removeListener(cc);
-            } catch (NullPointerException ignored) {
-            }
-            cc.opened = true;
             generateChestCavityIfOpened(cc);
-            cc.inventory.addListener(cc);
         }
-
         return cc.inventory;
     }
 

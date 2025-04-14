@@ -169,6 +169,8 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         ChestCavityUtil.onDeath(this);
     }
 
+
+
     @ModifyVariable(
             at = @At("HEAD"),
             method = {"addEffect(Lnet/minecraft/world/effect/MobEffectInstance;)Z"},
@@ -353,7 +355,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             if (entity instanceof ChestCavityEntity && !entity.level().isClientSide) {
                 NetworkUtil.SendS2CChestCavityUpdatePacket(((ChestCavityEntity) entity).getChestCavityInstance());
             }
-
         }
     }
 }

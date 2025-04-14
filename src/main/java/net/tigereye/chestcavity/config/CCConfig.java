@@ -11,10 +11,6 @@ public class CCConfig implements ConfigData {
     @Category("forge")
     public boolean DEBUG_MODE = true;
     @Category("core")
-    public float ORGAN_BUNDLE_LOOTING_BOOST = 0.04F;
-    @Category("core")
-    public float UNIVERSAL_DONOR_RATE = 0.1F;
-    @Category("core")
     public int ORGAN_REJECTION_DAMAGE = 2;
     @Category("core")
     public int ORGAN_REJECTION_RATE = 600;

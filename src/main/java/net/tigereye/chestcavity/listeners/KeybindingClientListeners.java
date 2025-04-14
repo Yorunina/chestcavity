@@ -31,7 +31,6 @@ public class KeybindingClientListeners {
                 }
             }
         });
-        register(CCKeybindings.BUOYANT_EXHALE, CCOrganScores.BUOYANT);
         register(CCKeybindings.CREEPY, CCOrganScores.CREEPY);
         register(CCKeybindings.DRAGON_BREATH, CCOrganScores.DRAGON_BREATH);
         register(CCKeybindings.DRAGON_BOMBS, CCOrganScores.DRAGON_BOMBS);

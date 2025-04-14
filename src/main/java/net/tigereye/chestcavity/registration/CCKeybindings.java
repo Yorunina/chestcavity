@@ -20,7 +20,6 @@ public class CCKeybindings {
     public static List<ResourceLocation> ATTACK_ABILITY_LIST;
     public static KeyMapping CREEPY;
     public static KeyMapping DRAGON_BREATH;
-    public static KeyMapping BUOYANT_EXHALE;
     public static KeyMapping DRAGON_BOMBS;
     public static KeyMapping FORCEFUL_SPIT;
     public static KeyMapping FURNACE_POWERED;
@@ -29,7 +28,6 @@ public class CCKeybindings {
     public static KeyMapping GHASTLY;
     public static KeyMapping GRAZING;
     public static KeyMapping SHULKER_BULLETS;
-    public static KeyMapping SILK;
 
     public CCKeybindings() {
     }
@@ -62,7 +60,6 @@ public class CCKeybindings {
         ATTACK_ABILITIES = register(ATTACK_ABILITIES_ID, ORGAN_ABILITY_KEY_CATEGORY, 82);
         ATTACK_ABILITY_LIST = new ArrayList();
         CREEPY = register(CCOrganScores.CREEPY, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
-        BUOYANT_EXHALE = register(CCOrganScores.BUOYANT, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, false);
         DRAGON_BREATH = register(CCOrganScores.DRAGON_BREATH, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
         DRAGON_BOMBS = register(CCOrganScores.DRAGON_BOMBS, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
         FORCEFUL_SPIT = register(CCOrganScores.FORCEFUL_SPIT, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);

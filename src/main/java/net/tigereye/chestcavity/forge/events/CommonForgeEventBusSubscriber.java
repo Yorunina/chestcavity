@@ -31,9 +31,18 @@ public class CommonForgeEventBusSubscriber {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        dispatcher.register(Commands.literal("chestcavity").then(((LiteralArgumentBuilder) Commands.literal("getscores").executes(CCCommands::getScoresNoArgs)).then(Commands.argument("entity", EntityArgument.entities()).executes(CCCommands::getScores))));
-        dispatcher.register(Commands.literal("chestcavity").then(((LiteralArgumentBuilder) Commands.literal("resetChestCavity").requires((source) -> {
+        dispatcher.register(Commands.literal("chestcavity")
+                .then(((LiteralArgumentBuilder) Commands.literal("getscores")
+                        .executes(CCCommands::getScoresNoArgs))
+                        .then(Commands.argument("entity", EntityArgument.entities()).executes(CCCommands::getScores))));
+
+
+        dispatcher.register(Commands.literal("chestcavity")
+                .then(((LiteralArgumentBuilder) Commands.literal("resetChestCavity").requires((source) -> {
             return source.hasPermission(2);
-        })).executes(CCCommands::resetChestCavityNoArgs).then(Commands.argument("entity", EntityArgument.entities()).executes(CCCommands::resetChestCavity))));
+        }))
+                .executes(CCCommands::resetChestCavityNoArgs)
+                .then(Commands.argument("entity", EntityArgument.entities())
+                .executes(CCCommands::resetChestCavity))));
     }
 }

@@ -21,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.listeners.KeybindingClientListeners;
 import net.tigereye.chestcavity.registration.*;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreen;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
@@ -75,7 +76,9 @@ public class ChestCavity {
     public void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
         MenuScreens.register(CHEST_CAVITY_ITEM_SCREEN_HANDLER.get(), ChestCavityItemScreen::new);
-        ChestCavityClient.onInitializeClient();
+        CCNetworkingPackets.registerClient();
+        CCKeybindings.init();
+        KeybindingClientListeners.register();
     }
 
     static {

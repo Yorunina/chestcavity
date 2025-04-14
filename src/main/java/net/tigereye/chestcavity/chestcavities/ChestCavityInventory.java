@@ -17,10 +17,6 @@ public class ChestCavityInventory extends SimpleContainer {
         this.instance = instance;
     }
 
-    public ChestCavityInventory() {
-        super(27);
-    }
-
     public ChestCavityInventory(int size) {
         super(size);
     }

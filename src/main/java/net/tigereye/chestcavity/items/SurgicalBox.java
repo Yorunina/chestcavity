@@ -97,12 +97,7 @@ public class SurgicalBox extends Item implements MenuProvider {
         InventoryTypeData itemInventoryTypeData = getInventoryTypeData(pStack);
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
         if (!entityInstance.opened) {
-            try {
-                entityInstance.inventory.removeListener(entityInstance);
-            } catch (NullPointerException ignored) {}
-            entityInstance.opened = true;
             ChestCavityUtil.generateChestCavityIfOpened(entityInstance);
-            entityInstance.inventory.addListener(entityInstance);
         }
 
         CompoundTag itemNbt = pStack.getOrCreateTag();
