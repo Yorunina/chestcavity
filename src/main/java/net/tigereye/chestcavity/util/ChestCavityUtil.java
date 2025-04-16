@@ -20,6 +20,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
@@ -34,6 +35,7 @@ import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.registration.CCTagOrgans;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -335,9 +337,12 @@ public class ChestCavityUtil {
             }
         } else {
             cc.getChestCavityType().loadBaseOrganScores(organScores);
-
+            InventoryTypeData inventoryTypeData = cc.getInventoryTypeData();
             for (int i = 0; i < cc.inventory.getContainerSize(); i++) {
+                String slotType = inventoryTypeData.getSlotType(i);
                 ItemStack itemStack = cc.inventory.getItem(i);
+                // 容器槽不进行分数结算
+                if (Objects.equals(slotType, "container_slot")) continue;
                 if (itemStack != ItemStack.EMPTY) {
                     OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
                     if (data != null) {
