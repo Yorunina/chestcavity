@@ -161,33 +161,6 @@ public class OrganUtil {
         entity.addEffect(new MobEffectInstance(CCStatusEffects.SHULKER_BULLET_COOLDOWN.get(), ChestCavity.config.SHULKER_BULLET_COOLDOWN, 0, false, false, true));
     }
 
-    public static void setStatusEffects(ItemStack organ, ItemStack potion) {
-        List<MobEffectInstance> potionList = PotionUtils.getCustomEffects(potion);
-        List<MobEffectInstance> list = new ArrayList();
-
-        for (MobEffectInstance effect : potionList) {
-            MobEffectInstance effectCopy = new MobEffectInstance(effect);
-            ((CCStatusEffectInstance) effectCopy).CC_setDuration(Math.max(1, effectCopy.getDuration() / 4));
-            list.add(effectCopy);
-        }
-
-        setStatusEffects(organ, list);
-    }
-
-    public static void setStatusEffects(ItemStack organ, List<MobEffectInstance> list) {
-        CompoundTag tag = organ.getOrCreateTag();
-        ListTag NbtList = new ListTag();
-
-        for (MobEffectInstance effect : list) {
-            if (effect != null) {
-                CompoundTag NbtCompound = new CompoundTag();
-                NbtList.add(effect.save(NbtCompound));
-            }
-        }
-
-        tag.put("CustomPotionEffects", NbtList);
-    }
-
     public static void spawnEffectsCloud(LivingEntity entity) {
         Collection<MobEffectInstance> collection = entity.getActiveEffects();
         if (!collection.isEmpty()) {

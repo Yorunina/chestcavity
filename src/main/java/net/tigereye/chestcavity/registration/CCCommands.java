@@ -5,6 +5,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
@@ -65,14 +66,16 @@ public class CCCommands {
         Entity entity;
         try {
             entity = context.getSource().getEntity();
-        } catch (Exception var3) {
+        } catch (Exception exception) {
             context.getSource().sendFailure(Component.translatable("resetChestCavity failed to get entity"));
             return -1;
         }
 
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
         if (optional.isPresent()) {
-            ChestCavityUtil.generateChestCavityIfOpened(optional.get().getChestCavityInstance());
+            ChestCavityInstance cc = optional.get().getChestCavityInstance();
+            cc.opened = false;
+            ChestCavityUtil.generateChestCavityIfOpened(cc);
             return 1;
         } else {
             return 0;
