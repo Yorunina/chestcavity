@@ -27,6 +27,8 @@ public abstract class MixinHungerManager {
     private int tickTimer;
     @Unique
     private ChestCavityEntity CC_player = null;
+    @Unique
+    public boolean chestcavity$noAddExhaustion = false;
 
     public MixinHungerManager() {
     }
@@ -46,6 +48,11 @@ public abstract class MixinHungerManager {
         }
 
         this.tickTimer = ChestCavityUtil.applySpleenMetabolism(this.CC_player.getChestCavityInstance(), this.tickTimer);
+    }
+
+    @Unique
+    public void setNoAddExhaustion(boolean value) {
+        this.chestcavity$noAddExhaustion = value;
     }
 
     @Redirect(
@@ -77,6 +84,9 @@ public abstract class MixinHungerManager {
             argsOnly = true
     )
     public float chestCavityAddExhaustionMixin(float exhaustion) {
+        if (this.chestcavity$noAddExhaustion) {
+            return 0;
+        }
         if (this.CC_player != null) {
             float enduranceDif = this.CC_player.getChestCavityInstance().getOrganScore(CCOrganScores.ENDURANCE) - this.CC_player.getChestCavityInstance().getChestCavityType().getDefaultOrganScore(CCOrganScores.ENDURANCE);
             float out;

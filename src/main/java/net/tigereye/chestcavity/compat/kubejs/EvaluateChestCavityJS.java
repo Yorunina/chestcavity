@@ -11,7 +11,6 @@ public class EvaluateChestCavityJS extends LevelEventJS {
     private final ChestCavityInstance cc;
     private final LivingEntity entity;
 
-
     public EvaluateChestCavityJS(ChestCavityInstance cc, LivingEntity entity, Level level) {
         super();
         this.level = level;

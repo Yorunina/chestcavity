@@ -468,7 +468,6 @@ public class ChestCavityUtil {
                 } else if (OrganManager.hasEntry(itemStack.getItem())) {
                     return OrganManager.getEntry(itemStack.getItem());
                 } else {
-
                     for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
                         TagKey<Item> itemTag = itemTagKey;
                         if (itemStack.is(itemTag)) {
@@ -478,7 +477,6 @@ public class ChestCavityUtil {
                             return organData;
                         }
                     }
-
                     return null;
                 }
             }
