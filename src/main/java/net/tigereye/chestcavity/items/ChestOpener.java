@@ -32,7 +32,6 @@ public class ChestOpener extends Item {
 
     public static void canNotOpenChestCavity(Player player, LivingEntity target) {
         if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-            // todo 本地化
             player.displayClientMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.obstructed"), true);
             player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         } else {
@@ -77,17 +76,9 @@ public class ChestOpener extends Item {
             }
 
             if (target.isAlive()) {
-                String name;
-                try {
-                    name = target.getDisplayName().getString();
-                    // todo 本地化提取
-                    name = name.concat("'s ");
-                } catch (Exception var9) {
-                    name = "";
-                }
                 ((ChestCavityEntity) player).getChestCavityInstance().ccBeingOpened = cc;
                 // 界面渲染
-                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable(name + "Chest Cavity")));
+                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
             }
             return true;
         }

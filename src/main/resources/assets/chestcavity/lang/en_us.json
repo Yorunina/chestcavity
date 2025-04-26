@@ -372,5 +372,6 @@
   "text.autoconfig.chestcavity.option.SNOW_MERCY_INTEGRATION": "Direbats Integration (Restart)",
   "slot_type.chestcavity.position.relative": "(%s, %s)",
   "status_msg.chestcavity.chestopener.fail.obstructed": "Target's chest is obstructed",
-  "status_msg.chestcavity.chestopener.fail.healthy": "Target is too healthy to open"
+  "status_msg.chestcavity.chestopener.fail.healthy": "Target is too healthy to open",
+  "gui.chestcavity.chestopener.title": "%s's Chest Cavity"
 }

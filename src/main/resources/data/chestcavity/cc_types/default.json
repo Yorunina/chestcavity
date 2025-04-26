@@ -115,5 +115,6 @@
   ],
   "forbiddenSlots": [],
   "bossChestCavity": true,
-  "playerChestCavity": false
+  "playerChestCavity": false,
+  "inventoryType": "chestcavity:cc_inventory_types/default.json"
 }

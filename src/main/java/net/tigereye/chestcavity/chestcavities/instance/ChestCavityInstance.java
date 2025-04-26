@@ -48,6 +48,7 @@ public class ChestCavityInstance implements ContainerListener {
     public boolean updatePacket = true;
     public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
+    public ResourceLocation oldInventoryType;
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
     public Map<String, Object> customDataMap = new HashMap<>();
 
@@ -60,6 +61,7 @@ public class ChestCavityInstance implements ContainerListener {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
+        this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
         ChestCavityUtil.evaluateChestCavity(this);
     }
@@ -97,6 +99,10 @@ public class ChestCavityInstance implements ContainerListener {
 
     public InventoryTypeData getInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(this.inventoryType);
+    }
+
+    public InventoryTypeData getOldInventoryTypeData() {
+        return InventoryTypeManager.getInventoryTypeData(this.oldInventoryType);
     }
 
     public void clearListenerMap() {
@@ -142,6 +148,7 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public void setInventoryType(ResourceLocation inventoryType) {
+        this.oldInventoryType = this.inventoryType;
         this.inventoryType = inventoryType;
         this.inventory.removeListener(this);
         int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
@@ -178,6 +185,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.lungRemainder = ccTag.getFloat("LungRemainder");
             this.furnaceProgress = ccTag.getInt("FurnaceProgress");
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
+            this.oldInventoryType = this.inventoryType;
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
             if (ccTag.contains("compatibility_id")) {
                 this.compatibility_id = ccTag.getUUID("compatibility_id");
@@ -228,6 +236,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.opened = other.opened;
         this.type = other.type;
         this.compatibility_id = other.compatibility_id;
+        this.oldInventoryType = other.oldInventoryType;
         this.inventoryType = other.inventoryType;
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);

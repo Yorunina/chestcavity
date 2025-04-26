@@ -385,7 +385,7 @@ public class ChestCavityUtil {
             try {
                 cc.inventory.removeListener(cc);
             } catch (NullPointerException ignored) {}
-            cc.inventory = new ChestCavityInventory(tagList.size(), cc);
+            cc.inventory = new ChestCavityInventory(cc.getInventoryTypeData().getSlotSize(), cc);
             cc.inventory.readTags(tagList);
             cc.inventory.addListener(cc);
             cc.getChestCavityType().setOrganCompatibility(cc);
