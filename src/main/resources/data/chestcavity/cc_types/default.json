@@ -109,12 +109,5 @@
       "position": 26
     }
   ],
-  "baseOrganScores": [
-  ],
-  "exceptionalOrgans": [
-  ],
-  "forbiddenSlots": [],
-  "bossChestCavity": true,
-  "playerChestCavity": false,
   "inventoryType": "chestcavity:cc_inventory_types/default.json"
 }
