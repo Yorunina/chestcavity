@@ -63,7 +63,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
-        ChestCavityUtil.evaluateChestCavity(this);
+//        ChestCavityUtil.evaluateChestCavity(this);
     }
 
     public ChestCavityType getChestCavityType() {
@@ -131,6 +131,12 @@ public class ChestCavityInstance implements ContainerListener {
         if (!isSameAsOldInventory()) {
             ChestCavityUtil.evaluateChestCavity(this);
             this.oldInventory = this.inventory.clone();
+            if (this.oldInventoryType != this.inventoryType) {
+                this.oldInventoryType = this.inventoryType;
+                if (this.owner instanceof ChestCavityEntity ccEntity) {
+                    ccEntity.setInventoryTypeData(this.inventoryType);
+                }
+            }
         }
     }
 
@@ -188,6 +194,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
             this.oldInventoryType = this.inventoryType;
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
+            this.oldInventory = this.inventory.clone();
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
             }
@@ -215,9 +222,7 @@ public class ChestCavityInstance implements ContainerListener {
 
             this.inventory.addListener(this);
         }
-
         ChestCavityUtil.evaluateChestCavity(this);
-        this.oldInventory = this.inventory.clone();
     }
 
     public void toTag(CompoundTag tag, LivingEntity owner) {

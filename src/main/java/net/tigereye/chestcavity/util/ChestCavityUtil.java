@@ -390,6 +390,7 @@ public class ChestCavityUtil {
             cc.inventory.addListener(cc);
             cc.getChestCavityType().setOrganCompatibility(cc);
             cc.opened = true;
+            ChestCavityUtil.evaluateChestCavity(cc);
         }
     }
 
