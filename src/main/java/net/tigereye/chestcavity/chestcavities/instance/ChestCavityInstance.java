@@ -126,6 +126,7 @@ public class ChestCavityInstance implements ContainerListener {
         }
     }
 
+    @Override
     public void containerChanged(@NotNull Container sender) {
         if (!isSameAsOldInventory()) {
             ChestCavityUtil.evaluateChestCavity(this);
@@ -187,6 +188,9 @@ public class ChestCavityInstance implements ContainerListener {
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
             this.oldInventoryType = this.inventoryType;
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
+            if (this.owner instanceof ChestCavityEntity ccEntity) {
+                ccEntity.setInventoryTypeData(this.inventoryType);
+            }
             if (ccTag.contains("compatibility_id")) {
                 this.compatibility_id = ccTag.getUUID("compatibility_id");
             } else {

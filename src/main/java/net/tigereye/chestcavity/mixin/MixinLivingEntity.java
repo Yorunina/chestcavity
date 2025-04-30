@@ -235,7 +235,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
         this.chestCavityInstance.fromTag(tag, (LivingEntity) (Object) this);
-        this.entityData.set(DATA_INVENTORY_TYPE, this.chestCavityInstance.getInventoryType().toString());
     }
 
     @Inject(
@@ -248,8 +247,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
     @Mixin({net.minecraft.world.entity.Mob.class})
     private abstract static class Mob extends LivingEntity {
-        protected Mob(EntityType<? extends LivingEntity> entityType, Level world) {
-            super(entityType, world);
+
+        protected Mob(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
+            super(pEntityType, pLevel);
         }
 
         @Inject(
@@ -320,7 +320,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                     if (cce.getChestCavityInstance().opened && cce.getChestCavityInstance().getOrganScore(CCOrganScores.CREEPY) <= 0.0F) {
                         this.swell = 1;
                     }
-
                 });
             }
 

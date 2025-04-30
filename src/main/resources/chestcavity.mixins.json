@@ -14,7 +14,7 @@
     "MixinSimpleContainer",
     "MixinStatusEffect",
     "MixinStatusEffectInstance",
-    "forge.MixinNetworkHooks"
+    "MixinNetworkHooks"
   ],
   "client": [
     "MixinItem"

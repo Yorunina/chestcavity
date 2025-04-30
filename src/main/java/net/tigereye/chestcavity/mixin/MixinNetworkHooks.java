@@ -1,4 +1,4 @@
-package net.tigereye.chestcavity.mixin.forge;
+package net.tigereye.chestcavity.mixin;
 
 import net.minecraft.network.Connection;
 import net.minecraftforge.network.NetworkHooks;
@@ -28,10 +28,7 @@ public class MixinNetworkHooks {
             ArrayList<Connection> managers = new ArrayList();
             managers.add(manager);
             int count = OrganManager.GeneratedOrganData.size();
-            ChestCavityNetwork.CHANNEL.send(PacketDistributor.NMLIST.with(() -> {
-                return managers;
-            }), new OrganDataPacket(count, OrganManager.GeneratedOrganData));
+            ChestCavityNetwork.CHANNEL.send(PacketDistributor.NMLIST.with(() -> managers), new OrganDataPacket(count, OrganManager.GeneratedOrganData));
         }
-
     }
 }
