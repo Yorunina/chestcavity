@@ -23,7 +23,7 @@ public class CCConfig implements ConfigData {
     @Category("core")
     public float APPENDIX_LUCK = 1F;
     @Category("core")
-    public float HEART_HP = 2.0F;
+    public float HEART_HP = 1.0F;
     @Category("core")
     public float MUSCLE_STRENGTH = 1.0F;
     @Category("core")

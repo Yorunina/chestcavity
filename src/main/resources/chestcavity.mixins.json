@@ -11,10 +11,10 @@
     "MixinLivingEntity$Mob",
     "MixinLivingEntity$Player",
     "MixinLivingEntity$Server",
+    "MixinNetworkHooks",
     "MixinSimpleContainer",
     "MixinStatusEffect",
-    "MixinStatusEffectInstance",
-    "MixinNetworkHooks"
+    "MixinStatusEffectInstance"
   ],
   "client": [
     "MixinItem"

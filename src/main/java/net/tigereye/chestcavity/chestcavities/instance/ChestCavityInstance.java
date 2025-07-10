@@ -60,6 +60,7 @@ public class ChestCavityInstance implements ContainerListener {
         if (owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
+
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();

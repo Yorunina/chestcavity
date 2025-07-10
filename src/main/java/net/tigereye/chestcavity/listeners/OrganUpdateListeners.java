@@ -74,7 +74,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.STRENGTH) != cc.getOrganScore(CCOrganScores.STRENGTH)) {
             AttributeInstance att = entity.getAttribute(Attributes.ATTACK_DAMAGE);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(MUSCLE_STRENGTH_ID, "ChestCavityMuscleAttackDamage", (cc.getOrganScore(CCOrganScores.STRENGTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.STRENGTH)) * ChestCavity.config.MUSCLE_STRENGTH / 8.0F, Operation.MULTIPLY_BASE);
+                AttributeModifier mod = new AttributeModifier(MUSCLE_STRENGTH_ID, "ChestCavityMuscleAttackDamage", (cc.getOrganScore(CCOrganScores.STRENGTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.STRENGTH)) * ChestCavity.config.MUSCLE_STRENGTH, Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }
