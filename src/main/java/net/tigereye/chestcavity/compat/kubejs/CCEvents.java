@@ -1,5 +1,6 @@
 package net.tigereye.chestcavity.compat.kubejs;
 
+import net.minecraft.world.effect.MobEffectInstance;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
 import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
@@ -20,7 +21,16 @@ public class CCEvents {
 
     public static void postOpenedEntityTick(ChestCavityInstance cc) {
         if (KUBEJS_LOADED) {
-            OPENED_ENTITY_TICK.post(new EvaluateChestCavityJS(cc, cc.owner, cc.owner.level()));
+            OPENED_ENTITY_TICK.post(new OpenedEntityTickJS(cc, cc.owner, cc.owner.level()));
         }
+    }
+
+    public static MobEffectInstance postOpenedEntityAddStatus(ChestCavityInstance cc, MobEffectInstance effect) {
+        if (KUBEJS_LOADED) {
+            OrganAddStatusEffectJS event = new OrganAddStatusEffectJS(cc, cc.owner, cc.owner.level(), effect);
+            ORGAN_ADD_STATUS_EFFECT.post(event);
+            return event.getEffect();
+        }
+        return effect;
     }
 }

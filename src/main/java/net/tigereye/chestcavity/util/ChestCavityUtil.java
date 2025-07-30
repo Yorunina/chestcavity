@@ -501,7 +501,17 @@ public class ChestCavityUtil {
     }
 
     public static MobEffectInstance onAddStatusEffect(ChestCavityInstance cc, MobEffectInstance effect) {
-        return OrganAddStatusEffectListeners.call(cc.owner, cc, effect);
+        if (cc.opened) {
+            effect = OrganAddStatusEffectListeners.call(cc.owner, cc, effect);
+            try {
+                if (cc.owner != null && !cc.owner.level().isClientSide()) {
+                    return CCEvents.postOpenedEntityAddStatus(cc, effect);
+                }
+            } catch (Exception err) {
+                return effect;
+            }
+        }
+        return effect;
     }
 
     public static void onDeath(ChestCavityEntity entity) {

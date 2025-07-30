@@ -87,6 +87,10 @@ public class ChestCavityInstance implements ContainerListener {
         return this.organScores.getOrDefault(id, 0.0F);
     }
 
+    public float getOrganScoreOrDefault(ResourceLocation id, float defaultValue) {
+        return this.organScores.getOrDefault(id, defaultValue);
+    }
+
     public float getOldOrganScore(ResourceLocation id) {
         return this.oldOrganScores.getOrDefault(id, 0.0F);
     }

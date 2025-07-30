@@ -130,7 +130,7 @@ public class OrganTickListeners {
     }
 
     public static void TickHealth(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0.0F && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH) != 0.0F) {
+        if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0F && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH) <= 0F) {
             if (entity.level().getGameTime() % (long) ChestCavity.config.HEARTBLEED_RATE == 0L) {
                 ++cc.heartBleedTimer;
                 entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.HEARTBLEED), Math.min((float) cc.heartBleedTimer, cc.getChestCavityType().getHeartBleedCap()));

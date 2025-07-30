@@ -30,7 +30,7 @@ public class OrganAddStatusEffectListeners {
     }
 
     private static MobEffectInstance ApplyDetoxification(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
-        if (!(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION) <= 0.0F) && cc.getOrganScore(CCOrganScores.DETOXIFICATION) != cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION)) {
+        if (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION) > 0.0F && cc.getOrganScoreOrDefault(CCOrganScores.DETOXIFICATION, 1F) != cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION)) {
             CCStatusEffect ccStatusEffect = (CCStatusEffect) instance.getEffect();
             if (ccStatusEffect.CC_IsHarmful()) {
                 CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
@@ -50,7 +50,6 @@ public class OrganAddStatusEffectListeners {
             CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
             ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.FILTRATION_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.FILTRATION))));
         }
-
         return instance;
     }
 
@@ -59,7 +58,6 @@ public class OrganAddStatusEffectListeners {
             CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
             ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.WITHERED_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.WITHERED))));
         }
-
         return instance;
     }
 }
