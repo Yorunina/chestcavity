@@ -263,7 +263,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 ((ChestOpener) chestOpener.getItem()).openChestCavity(player, this, chestOpener);
                 info.setReturnValue(InteractionResult.SUCCESS);
             }
-
         }
     }
 

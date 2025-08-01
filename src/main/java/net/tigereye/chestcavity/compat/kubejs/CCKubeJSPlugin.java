@@ -20,6 +20,9 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
     public static EventHandler ORGAN_ADD_STATUS_EFFECT = CCGROUP
             .server("organAddStatusEffect", () -> OrganAddStatusEffectJS.class);
 
+    public static EventHandler ORGAN_SKILL_WHEEL_SELECT = CCGROUP
+            .client("organSkillWheelSelect", () -> OrganSkillWheelSelectJS.class);
+
     @Override
     public void registerEvents() {
         CCGROUP.register();

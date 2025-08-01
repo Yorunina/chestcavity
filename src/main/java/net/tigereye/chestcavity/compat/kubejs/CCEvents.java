@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.compat.kubejs;
 
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 
 import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
@@ -32,5 +33,12 @@ public class CCEvents {
             return event.getEffect();
         }
         return effect;
+    }
+
+
+    public static void postOrganSkillWheelSelect(ItemStack organItem) {
+        if (KUBEJS_LOADED) {
+            ORGAN_SKILL_WHEEL_SELECT.post(new OrganSkillWheelSelectJS(organItem));
+        }
     }
 }

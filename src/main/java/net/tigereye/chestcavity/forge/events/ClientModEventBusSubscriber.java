@@ -19,6 +19,7 @@ public class ClientModEventBusSubscriber {
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(CCKeybindings.UTILITY_ABILITIES);
+        event.register(CCKeybindings.SKILL_WHEEL);
         event.register(CCKeybindings.ATTACK_ABILITIES);
         event.register(CCKeybindings.CREEPY);
         event.register(CCKeybindings.DRAGON_BREATH);

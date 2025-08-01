@@ -12,10 +12,10 @@ import static net.tigereye.chestcavity.ChestCavity.MODID;
 
 public class CCKeybindings {
     private static final String ORGAN_ABILITY_KEY_CATEGORY = "organ_abilities";
-    public static ResourceLocation UTILITY_ABILITIES_ID;
     public static KeyMapping UTILITY_ABILITIES;
+
+    public static KeyMapping SKILL_WHEEL;
     public static List<ResourceLocation> UTILITY_ABILITY_LIST;
-    public static ResourceLocation ATTACK_ABILITIES_ID;
     public static KeyMapping ATTACK_ABILITIES;
     public static List<ResourceLocation> ATTACK_ABILITY_LIST;
     public static KeyMapping CREEPY;
@@ -53,11 +53,10 @@ public class CCKeybindings {
     }
 
     static {
-        UTILITY_ABILITIES_ID = new ResourceLocation(MODID, "utility_abilities");
-        UTILITY_ABILITIES = register(UTILITY_ABILITIES_ID, ORGAN_ABILITY_KEY_CATEGORY, 86);
+        UTILITY_ABILITIES = register(new ResourceLocation(MODID, "utility_abilities"), ORGAN_ABILITY_KEY_CATEGORY, 86);
+        SKILL_WHEEL = register(new ResourceLocation(MODID, "skill_wheel"), ORGAN_ABILITY_KEY_CATEGORY, 85);
         UTILITY_ABILITY_LIST = new ArrayList();
-        ATTACK_ABILITIES_ID = new ResourceLocation(MODID, "attack_abilities");
-        ATTACK_ABILITIES = register(ATTACK_ABILITIES_ID, ORGAN_ABILITY_KEY_CATEGORY, 82);
+        ATTACK_ABILITIES = register(new ResourceLocation(MODID, "attack_abilities"), ORGAN_ABILITY_KEY_CATEGORY, 82);
         ATTACK_ABILITY_LIST = new ArrayList();
         CREEPY = register(CCOrganScores.CREEPY, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
         DRAGON_BREATH = register(CCOrganScores.DRAGON_BREATH, ORGAN_ABILITY_KEY_CATEGORY, GLFW.GLFW_KEY_UNKNOWN, true);
