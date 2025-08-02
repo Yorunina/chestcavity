@@ -59,7 +59,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     private ChestCavityInstance chestCavityInstance;
     @Unique
     private static final EntityDataAccessor<String> DATA_INVENTORY_TYPE = SynchedEntityData.defineId(MixinLivingEntity.class, EntityDataSerializers.STRING);
-    ;
 
     @Shadow
     public abstract void addAdditionalSaveData(CompoundTag pCompound);

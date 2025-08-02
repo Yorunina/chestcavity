@@ -52,13 +52,13 @@ public class ChestCavity {
 
     public ChestCavity() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus.addListener(CCOverlay::onRegisterOverlays);
         eventBus.addListener(this::clientSetup);
         AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
         CCItems.ITEMS.register(eventBus);
         CREATIVE_TABS.register(eventBus);
         CCEnchantments.ENCHANTMENTS.register(eventBus);
-        eventBus.addListener(CCOverlay::onRegisterOverlays);
         CCListeners.register();
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         CCTagOrgans.init();

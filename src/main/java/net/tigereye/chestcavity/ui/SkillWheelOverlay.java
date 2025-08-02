@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +25,8 @@ public class SkillWheelOverlay implements IGuiOverlay {
     public final static ResourceLocation TEXTURE = new ResourceLocation(ChestCavity.MODID, "textures/gui/icons.png");
 
     private final Vector4f lineColor = new Vector4f(1f, .85f, .7f, 1f);
-    private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .6f);
-    private final Vector4f highlightColor = new Vector4f(.8f, .7f, .55f, .7f);
+    private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .1f);
+    private final Vector4f highlightColor = new Vector4f(.8f, .7f, .55f, .99f);
 
     private final double ringInnerEdge = 20;
     private double ringOuterEdge = 80;
@@ -41,7 +40,7 @@ public class SkillWheelOverlay implements IGuiOverlay {
 
     public void open() {
         active = true;
-        wheelSelection = -1;
+        this.wheelSelection = -1;
         Minecraft.getInstance().mouseHandler.releaseMouse();
     }
 
@@ -69,6 +68,15 @@ public class SkillWheelOverlay implements IGuiOverlay {
             close();
             return;
         }
+        if (minecraft.mouseHandler.isLeftPressed()) {
+            CCEvents.postOrganSkillWheelSelect(this.skillItems.get(this.wheelSelection));
+            close();
+            return;
+        }
+        if (minecraft.mouseHandler.isMouseGrabbed()) {
+            close();
+            return;
+        }
 
         int totalSkillAvailable = this.skillItems.size();
         if (totalSkillAvailable <= 0) {
@@ -88,13 +96,7 @@ public class SkillWheelOverlay implements IGuiOverlay {
 
         float mouseRotation = (MathUtil.getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
-        wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSkillAvailable - 1);
-
-        if (minecraft.mouseHandler.isLeftPressed()) {
-            CCEvents.postOrganSkillWheelSelect(this.skillItems.get(wheelSelection));
-            close();
-            return;
-        }
+        this.wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSkillAvailable - 1);
 
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
         RenderSystem.enableBlend();
@@ -103,7 +105,7 @@ public class SkillWheelOverlay implements IGuiOverlay {
         final BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        drawRadialBackgrounds(buffer, centerX, centerY, wheelSelection);
+        drawRadialBackgrounds(buffer, centerX, centerY);
         drawDividingLines(buffer, centerX, centerY);
 
         tesselator.end();
@@ -202,7 +204,7 @@ public class SkillWheelOverlay implements IGuiOverlay {
         RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex) {
+    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY) {
         double quarterCircle = Math.PI / 2;
         int totalSpellsAvailable = this.skillItems.size();
         int segments;
@@ -228,7 +230,7 @@ public class SkillWheelOverlay implements IGuiOverlay {
             final double y1m2 = Math.sin(beginRadians) * ringOuterEdge;
             final double y2m2 = Math.sin(endRadians) * ringOuterEdge;
 
-            boolean isHighlighted = (i * totalSpellsAvailable) / segments == selectedSpellIndex;
+            boolean isHighlighted = (i * totalSpellsAvailable) / segments == this.wheelSelection;
 
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
@@ -293,29 +295,4 @@ public class SkillWheelOverlay implements IGuiOverlay {
 
     }
 
-    private void setOpaqueTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private void setTranslucentTexture(ResourceLocation texture) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private boolean inTriangle(final double x1, final double y1, final double x2, final double y2,
-                               final double x3, final double y3, final double x, final double y) {
-        final double ab = (x1 - x) * (y2 - y) - (x2 - x) * (y1 - y);
-        final double bc = (x2 - x) * (y3 - y) - (x3 - x) * (y2 - y);
-        final double ca = (x3 - x) * (y1 - y) - (x1 - x) * (y3 - y);
-        return sign(ab) == sign(bc) && sign(bc) == sign(ca);
-    }
-
-    private int sign(final double n) {
-        return n > 0 ? 1 : -1;
-    }
 }

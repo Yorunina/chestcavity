@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class OrganSkillWheelSelectJS extends ClientEventJS {
 
-    public final ItemStack organItem;
+    private final ItemStack organItem;
     public OrganSkillWheelSelectJS(ItemStack itemStack) {
         super();
         this.organItem = itemStack;
