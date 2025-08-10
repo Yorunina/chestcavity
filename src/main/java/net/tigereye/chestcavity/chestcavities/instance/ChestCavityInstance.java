@@ -199,7 +199,6 @@ public class ChestCavityInstance implements ContainerListener {
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
             this.oldInventoryType = this.inventoryType;
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
-            this.oldInventory = this.inventory.clone();
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
             }
@@ -219,15 +218,14 @@ public class ChestCavityInstance implements ContainerListener {
                 }
             }
             this.inventory = new ChestCavityInventory(newInventorySize, this);
-
             if (ccTag.contains("Inventory")) {
                 ListTag nbtList = ccTag.getList("Inventory", 10);
                 this.inventory.readTags(nbtList);
             }
-
             this.inventory.addListener(this);
+            ChestCavityUtil.evaluateChestCavity(this);
+            this.oldInventory = this.inventory.clone();
         }
-        ChestCavityUtil.evaluateChestCavity(this);
     }
 
     public void toTag(CompoundTag tag, LivingEntity owner) {
@@ -274,5 +272,4 @@ public class ChestCavityInstance implements ContainerListener {
         this.connectedCrystal = other.connectedCrystal;
         ChestCavityUtil.evaluateChestCavity(this);
     }
-
 }
