@@ -1,4 +1,4 @@
-package net.tigereye.chestcavity.compat.kubejs;
+package net.tigereye.chestcavity.compat.kubejs.events;
 
 import dev.latvian.mods.kubejs.level.LevelEventJS;
 import net.minecraft.world.entity.LivingEntity;

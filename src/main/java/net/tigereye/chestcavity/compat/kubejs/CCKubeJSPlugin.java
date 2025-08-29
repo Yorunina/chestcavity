@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
+import net.tigereye.chestcavity.compat.kubejs.events.*;
 
 public class CCKubeJSPlugin extends KubeJSPlugin {
 
@@ -19,9 +20,6 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     public static EventHandler ORGAN_ADD_STATUS_EFFECT = CCGROUP
             .server("organAddStatusEffect", () -> OrganAddStatusEffectJS.class);
-
-    public static EventHandler ORGAN_SKILL_WHEEL_SELECT = CCGROUP
-            .client("organSkillWheelSelect", () -> OrganSkillWheelSelectJS.class);
 
     @Override
     public void registerEvents() {

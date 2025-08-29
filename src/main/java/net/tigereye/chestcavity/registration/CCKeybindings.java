@@ -13,8 +13,6 @@ import static net.tigereye.chestcavity.ChestCavity.MODID;
 public class CCKeybindings {
     private static final String ORGAN_ABILITY_KEY_CATEGORY = "organ_abilities";
     public static KeyMapping UTILITY_ABILITIES;
-
-    public static KeyMapping SKILL_WHEEL;
     public static List<ResourceLocation> UTILITY_ABILITY_LIST;
     public static KeyMapping ATTACK_ABILITIES;
     public static List<ResourceLocation> ATTACK_ABILITY_LIST;
@@ -32,8 +30,6 @@ public class CCKeybindings {
     public CCKeybindings() {
     }
 
-    public static void init() {
-    }
 
     public static KeyMapping register(ResourceLocation id, String category, int defaultKey) {
         String namespace = id.getNamespace();
@@ -54,7 +50,6 @@ public class CCKeybindings {
 
     static {
         UTILITY_ABILITIES = register(new ResourceLocation(MODID, "utility_abilities"), ORGAN_ABILITY_KEY_CATEGORY, 86);
-        SKILL_WHEEL = register(new ResourceLocation(MODID, "skill_wheel"), ORGAN_ABILITY_KEY_CATEGORY, 85);
         UTILITY_ABILITY_LIST = new ArrayList();
         ATTACK_ABILITIES = register(new ResourceLocation(MODID, "attack_abilities"), ORGAN_ABILITY_KEY_CATEGORY, 82);
         ATTACK_ABILITY_LIST = new ArrayList();

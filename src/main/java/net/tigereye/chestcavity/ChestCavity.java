@@ -52,7 +52,6 @@ public class ChestCavity {
 
     public ChestCavity() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(CCOverlay::onRegisterOverlays);
         eventBus.addListener(this::clientSetup);
         AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
@@ -77,7 +76,6 @@ public class ChestCavity {
         MenuScreens.register(CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
         MenuScreens.register(CHEST_CAVITY_ITEM_SCREEN_HANDLER.get(), ChestCavityItemScreen::new);
         CCNetworkingPackets.registerClient();
-        CCKeybindings.init();
     }
 
     static {
