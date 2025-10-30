@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/carnivore.json",
-  "entities": [
-    "betteranimalsplus:blackbear",
-    "betteranimalsplus:brownbear",
-    "betteranimalsplus:feralwolf"
-  ]
-}

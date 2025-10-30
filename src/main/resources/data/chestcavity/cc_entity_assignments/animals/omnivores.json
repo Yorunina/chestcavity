@@ -1,7 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/omnivore.json",
-  "entities": [
-    "minecraft:pig",
-    "minecraft:piglin"
-  ]
-}

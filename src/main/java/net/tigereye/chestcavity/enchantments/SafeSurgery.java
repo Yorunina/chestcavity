@@ -13,7 +13,7 @@ public class SafeSurgery extends Enchantment {
     }
     @Override
     public int getMaxLevel() {
-        return 1;
+        return super.getMaxLevel();
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SafeSurgery extends Enchantment {
 
     @Override
     public boolean isCurse() {
-        return false;
+        return super.isCurse();
     }
 
     @Override

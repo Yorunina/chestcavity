@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/herbivore.json",
-  "entities": [
-    "betteranimalsplus:deer",
-    "betteranimalsplus:moose",
-    "betteranimalsplus:reindeer"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/undead/zombie.json",
-  "entities": [
-    "graveyard:ghoul",
-    "graveyard:revenant",
-    "graveyard:nightmare"
-  ]
-}

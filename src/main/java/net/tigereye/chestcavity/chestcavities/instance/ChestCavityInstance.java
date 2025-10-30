@@ -64,7 +64,6 @@ public class ChestCavityInstance implements ContainerListener {
         this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
-//        ChestCavityUtil.evaluateChestCavity(this);
     }
 
     public ChestCavityType getChestCavityType() {

@@ -1,6 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/humanoids/player.json",
-  "entities": [
-    "minecraft:player"
-  ]
-}

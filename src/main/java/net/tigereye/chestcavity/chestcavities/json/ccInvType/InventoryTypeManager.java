@@ -16,7 +16,7 @@ import java.util.Map;
 public class InventoryTypeManager {
     private static final InventoryTypeSerializer SERIALIZER = new InventoryTypeSerializer();
     public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
-    public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/chest_cavity.png");
+    public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/default.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
     public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default.json";
 
@@ -24,18 +24,11 @@ public class InventoryTypeManager {
     }
 
     public static InventoryTypeData getDefaultInventoryTypeData() {
-        return new InventoryTypeData(new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING), DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new SlotDefinition(176, 1616));
+        return new InventoryTypeData(new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING), DEFAULT_TEXTURE, DEFAULT_SLOT_DEFINITION, new SlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new TitleSlotDefinition(0, 0), new SlotDefinition(176, 166));
     }
 
     public static List<ChestCavitySlotDefinition> getDefaultInventoryTypeSlotDefinition() {
-        int n, m;
-        List<ChestCavitySlotDefinition> slotDefinitions = new ArrayList<>();
-        for (n = 0; n < 3; n++) {
-            for (m = 0; m < 9; m++) {
-                slotDefinitions.add(new ChestCavitySlotDefinition(n * 9 + m, 8 + m * 18, 18 + n * 18));
-            }
-        }
-        return slotDefinitions;
+        return new ArrayList<>();
     }
 
     public static void reloadInventoryType(ResourceManager manager) {

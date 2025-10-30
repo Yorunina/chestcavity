@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/undead/wither_skeleton.json",
-  "entities": [
-    "adventurez:nightmare",
-    "adventurez:soul_reaper",
-    "adventurez:wither_puppet"
-  ]
-}

@@ -7,6 +7,7 @@ package net.tigereye.chestcavity.chestcavities;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 
@@ -29,7 +30,7 @@ public interface ChestCavityType {
 
     float getHeartBleedCap();
 
-    boolean isOpenable(ChestCavityInstance var1);
+    boolean isOpenable(ChestCavityInstance var1, Map<Enchantment, Integer> allEnchantments);
 
     void onDeath(ChestCavityInstance var1);
 

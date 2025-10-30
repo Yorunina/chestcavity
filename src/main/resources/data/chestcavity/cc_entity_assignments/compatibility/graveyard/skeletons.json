@@ -1,7 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/undead/skeleton.json",
-  "entities": [
-    "graveyard:skeleton_creeper",
-    "graveyard:reaper"
-  ]
-}

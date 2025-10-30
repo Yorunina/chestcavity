@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
+import static net.tigereye.chestcavity.registration.CCEnchantments.ADVANCE_SURGERY;
 
 public class GeneratedChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> defaultOrganScores = null;
@@ -109,6 +111,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
 
     public void loadBaseOrganScores(Map<ResourceLocation, Float> organScores) {
         organScores.clear();
+        organScores.putAll(this.getBaseOrganScores());
     }
 
     public OrganData catchExceptionalOrgan(ItemStack slot) {
@@ -144,8 +147,10 @@ public class GeneratedChestCavityType implements ChestCavityType {
         return 5.0F;
     }
 
-    public boolean isOpenable(ChestCavityInstance instance) {
-        boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD || instance.owner.getHealth() <= instance.owner.getMaxHealth() * ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD;
+    public boolean isOpenable(ChestCavityInstance instance, Map<Enchantment, Integer> allEnchantments) {
+        int enchantLevel = allEnchantments.getOrDefault(ADVANCE_SURGERY.get(), 0);
+        boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD + 10 * enchantLevel ||
+                instance.owner.getHealth() <= instance.owner.getMaxHealth() * (ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD + 0.2F * enchantLevel);
         boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         boolean easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F;
         return chestVulnerable && (easeOfAccess || weakEnough);

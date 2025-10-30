@@ -19,6 +19,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
+import net.tigereye.chestcavity.compat.tinker.TinkerItemRegistration;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
@@ -29,7 +31,7 @@ import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod("chestcavity")
+@Mod(ChestCavity.MODID)
 public class ChestCavity {
     public static final String MODID = "chestcavity";
     public static final Logger LOGGER = LogManager.getLogger();
@@ -40,6 +42,7 @@ public class ChestCavity {
     public static final ResourceLocation CHEST_CAVITY_SCREEN_ID;
     public static final ResourceLocation COMPATIBILITY_TAG;
     public static boolean KUBEJS_LOADED = false;
+    public static ChestCavityQuestEventHandler FTB_EVENT_HANDLER;
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final RegistryObject<CreativeModeTab> GROUP = CREATIVE_TABS.register("tab", () -> new CreativeModeTab.Builder(CreativeModeTab.Row.TOP, 0)
@@ -47,6 +50,7 @@ public class ChestCavity {
             .title(Component.translatable("tabs." + MODID + ".tab"))
             .displayItems((featureFlagSet, tabOutput) -> {
                 CCItems.ITEMS_FOR_TAB_LIST.forEach(registryObject -> tabOutput.accept(new ItemStack(registryObject.get())));
+                TinkerItemRegistration.addTabItems(featureFlagSet, tabOutput);
             }).build()
     );
 
@@ -62,6 +66,7 @@ public class ChestCavity {
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         CCTagOrgans.init();
         CCCommands.register();
+        TinkerItemRegistration.init(eventBus);
         CCNetworkingPackets.register();
         ChestCavityNetwork.init();
         MENU_TYPES.register(eventBus);
@@ -70,6 +75,7 @@ public class ChestCavity {
         if (ModList.get().isLoaded("kubejs")) {
             KUBEJS_LOADED = true;
         }
+        FTB_EVENT_HANDLER = new ChestCavityQuestEventHandler().init();
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -79,10 +85,10 @@ public class ChestCavity {
     }
 
     static {
-        MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, "chestcavity");
+        MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
         CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
         CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
-        CHEST_CAVITY_SCREEN_ID = new ResourceLocation("chestcavity", "chest_cavity_screen");
-        COMPATIBILITY_TAG = new ResourceLocation("chestcavity", "organ_compatibility");
+        CHEST_CAVITY_SCREEN_ID = new ResourceLocation(MODID, "chest_cavity_screen");
+        COMPATIBILITY_TAG = new ResourceLocation(MODID, "organ_compatibility");
     }
 }

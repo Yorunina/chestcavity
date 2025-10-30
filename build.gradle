@@ -58,7 +58,10 @@ repositories {
             includeGroup "mezz.jei"
         }
     }
-
+    maven { // Mantle && TCon
+        name 'DVS1 Maven FS'
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
     maven {
         name = "Curse maven"
         url = "https://cursemaven.com"
@@ -76,6 +79,13 @@ dependencies {
     compileOnly fg.deobf("curse.maven:architectury-forge-419699:5137938")
     compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
     compileOnly fg.deobf("curse.maven:kubejs-forge-238086:5853326")
+
+    compileOnly fg.deobf("slimeknights.tconstruct:TConstruct:${minecraft_version}-${tconstruct_version}")
+    compileOnly fg.deobf("slimeknights.mantle:Mantle:${minecraft_version}-${mantle_version}")
+    compileOnly fg.deobf("curse.maven:ftb-quests-forge-289412:4816382")
+    compileOnly fg.deobf("curse.maven:ftb-library-forge-404465:4720056")
+    compileOnly fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")
+    compileOnly fg.deobf("curse.maven:item-filters-309674:4838266")
 }
 
 sourceSets {
@@ -120,7 +130,6 @@ tasks.named('jar', Jar).configure {
     }
     finalizedBy 'reobfJar'
 }
-
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'

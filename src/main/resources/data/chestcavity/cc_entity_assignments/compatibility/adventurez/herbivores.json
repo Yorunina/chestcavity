@@ -1,7 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/herbivore.json",
-  "entities": [
-    "adventurez:deer",
-    "adventurez:mammoth"
-  ]
-}

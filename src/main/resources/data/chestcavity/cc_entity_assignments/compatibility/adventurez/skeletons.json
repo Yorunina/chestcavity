@@ -1,7 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/undead/skeleton.json",
-  "entities": [
-    "adventurez:summoner",
-    "adventurez:skeleton_vanguard"
-  ]
-}

@@ -35,9 +35,9 @@ public class CCConfig implements ConfigData {
     @Category("core")
     public float RISK_OF_PRIONS = 0.01F;
     @Category("core")
-    public int CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD = 20;
+    public int CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD = 10;
     @Category("core")
-    public float CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD = 0.5F;
+    public float CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD = 0.1F;
     @Category("core")
     public boolean CAN_OPEN_OTHER_PLAYERS = false;
     @Category("core")

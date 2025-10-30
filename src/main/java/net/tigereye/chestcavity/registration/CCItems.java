@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
 import net.tigereye.chestcavity.items.SurgicalBox;
@@ -206,7 +207,7 @@ public class CCItems {
     }
 
     static {
-        ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "chestcavity");
+        ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ChestCavity.MODID);
         CHEST_OPENER_SETTINGS = (new Item.Properties()).stacksTo(1);
         FOOD_ITEM_SETTINGS = (new Item.Properties()).stacksTo(64);
         CHEST_OPENER = register("chest_opener", ChestOpener::new);
@@ -732,5 +733,6 @@ public class CCItems {
         FURNACE_POWER = ITEMS.register("furnace_power", () -> {
             return new Item(FOOD_ITEM_SETTINGS.food(CCFoodComponents.FURNACE_POWER_FOOD_COMPONENT));
         });
+
     }
 }

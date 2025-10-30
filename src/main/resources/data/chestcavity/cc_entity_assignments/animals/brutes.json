@@ -1,9 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/brutish.json",
-  "entities": [
-    "minecraft:hoglin",
-    "minecraft:ravager",
-    "minecraft:piglin_brute",
-    "minecraft:warden"
-  ]
-}

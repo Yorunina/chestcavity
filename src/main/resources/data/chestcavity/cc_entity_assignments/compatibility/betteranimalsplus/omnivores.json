@@ -1,9 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/omnivore.json",
-  "entities": [
-    "betteranimalsplus:boar",
-    "betteranimalsplus:coyote",
-    "betteranimalsplus:turkey",
-    "betteranimalsplus:walrus"
-  ]
-}

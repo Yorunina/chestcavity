@@ -7,13 +7,13 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import static net.tigereye.chestcavity.registration.CCTags.CHEST_OPENER;
 
-public class PainlessSurgery extends Enchantment {
-    public PainlessSurgery() {
-        super(Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+public class AdvanceSurgery extends Enchantment {
+    public AdvanceSurgery() {
+        super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
     @Override
     public int getMaxLevel() {
-        return super.getMaxLevel();
+        return 5;
     }
 
     @Override

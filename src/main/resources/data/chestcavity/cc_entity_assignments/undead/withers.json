@@ -1,6 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/undead/wither.json",
-  "entities": [
-    "minecraft:wither"
-  ]
-}

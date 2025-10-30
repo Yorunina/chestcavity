@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/animals/small_aquatic_carnivore.json",
-  "entities": [
-    "minecraft:axolotl",
-    "minecraft:frog",
-    "minecraft:tadpole"
-  ]
-}

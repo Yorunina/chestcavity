@@ -24,6 +24,8 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
+import net.tigereye.chestcavity.compat.tinker.OrganToolStates;
+import net.tigereye.chestcavity.compat.tinker.TinkerOrganItem;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
@@ -478,27 +480,29 @@ public class ChestCavityUtil {
             organData = OrganManager.readNBTOrganData(itemStack);
             if (organData != null) {
                 return organData;
-            } else {
-                Item item = itemStack.getItem();
-                if (item instanceof CCOrganItem oItem) {
-                    return oItem.getOrganData(itemStack);
-                } else if (OrganManager.hasEntry(itemStack.getItem())) {
-                    return OrganManager.getEntry(itemStack.getItem());
-                } else {
-                    for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
-                        TagKey<Item> itemTag = itemTagKey;
-                        if (itemStack.is(itemTag)) {
-                            organData = new OrganData();
-                            organData.pseudoOrgan = true;
-                            organData.organScores = CCTagOrgans.tagMap.get(itemTag);
-                            return organData;
-                        }
-                    }
-                    return null;
+            }
+            Item item = itemStack.getItem();
+            if (item instanceof CCOrganItem oItem) {
+                return oItem.getOrganData(itemStack);
+            }
+            if (OrganManager.hasEntry(itemStack.getItem())) {
+                return OrganManager.getEntry(itemStack.getItem());
+            }
+            if (item instanceof TinkerOrganItem) {
+                return OrganToolStates.getOrganDataFromTinkerOrgan(itemStack);
+            }
+            for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
+                if (itemStack.is(itemTagKey)) {
+                    organData = new OrganData();
+                    organData.pseudoOrgan = true;
+                    organData.organScores = CCTagOrgans.tagMap.get(itemTagKey);
+                    return organData;
                 }
             }
+            return null;
         }
     }
+
 
     public static MobEffectInstance onAddStatusEffect(ChestCavityInstance cc, MobEffectInstance effect) {
         if (cc.opened) {

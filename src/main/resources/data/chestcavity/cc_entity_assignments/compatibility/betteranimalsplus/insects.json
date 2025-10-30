@@ -1,8 +1,0 @@
-{
-  "chestcavity": "chestcavity:cc_types/insects/insect.json",
-  "entities": [
-    "betteranimalsplus:bobbit_worm",
-    "betteranimalsplus:butterfly",
-    "betteranimalsplus:dragonfly"
-  ]
-}

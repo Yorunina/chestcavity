@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.items;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCItems;
@@ -59,7 +61,7 @@ public class ChestOpener extends Item {
         ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
         cc.inventory.setInstance(cc);
         Map<Enchantment, Integer> allEnchantments = chestOpener.getAllEnchantments();
-        if (target != player && !cc.getChestCavityType().isOpenable(cc) && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
+        if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments) && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
             if (player.level().isClientSide()) {
                 canNotOpenChestCavity(player, target);
             }
@@ -79,6 +81,9 @@ public class ChestOpener extends Item {
                 ((ChestCavityEntity) player).getChestCavityInstance().ccBeingOpened = cc;
                 // 界面渲染
                 player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
+                if (player instanceof ServerPlayer serverPlayer) {
+                    ChestCavity.FTB_EVENT_HANDLER.onChestCavityOpened(serverPlayer, target);
+                }
             }
             return true;
         }

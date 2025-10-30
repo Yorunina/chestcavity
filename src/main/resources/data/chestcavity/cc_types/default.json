@@ -1,112 +1,25 @@
 {
-  "defaultChestCavity": [
+  "defaultChestCavity": [],
+  "baseOrganScores": [
     {
-      "item": "minecraft:dirt",
-      "position": 0
+      "id": "chestcavity:health",
+      "value": "1"
     },
     {
-      "item": "minecraft:dirt",
-      "position": 1
+      "id": "chestcavity:breath_recovery",
+      "value": "2"
     },
     {
-      "item": "minecraft:dirt",
-      "position": 2
+      "id": "chestcavity:breath_capacity",
+      "value": "2"
     },
     {
-      "item": "minecraft:dirt",
-      "position": 3
+      "id": "chestcavity:detoxification",
+      "value": "1"
     },
     {
-      "item": "minecraft:dirt",
-      "position": 4
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 5
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 6
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 7
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 8
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 9
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 10
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 11
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 12
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 13
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 14
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 15
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 16
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 17
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 18
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 19
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 20
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 21
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 22
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 23
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 24
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 25
-    },
-    {
-      "item": "minecraft:dirt",
-      "position": 26
+      "id": "chestcavity:filtration",
+      "value": "1"
     }
   ],
   "inventoryType": "chestcavity:cc_inventory_types/default.json"

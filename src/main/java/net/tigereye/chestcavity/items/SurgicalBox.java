@@ -16,6 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
@@ -27,6 +28,7 @@ import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class SurgicalBox extends Item implements MenuProvider {
@@ -80,7 +82,8 @@ public class SurgicalBox extends Item implements MenuProvider {
         ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
         ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
         entityInstance.inventory.setInstance(entityInstance);
-        if (!entityInstance.getChestCavityType().isOpenable(entityInstance)) {
+        Map<Enchantment, Integer> allEnchantments = pStack.getAllEnchantments();
+        if (!entityInstance.getChestCavityType().isOpenable(entityInstance, allEnchantments)) {
             ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
             return InteractionResult.FAIL;
         }
