@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "stats": {
+    "chestcavity:organ_shell": {
+      "efficiency": 0.5,
+      "adaptability": 1.2
+    }
+  }
+}

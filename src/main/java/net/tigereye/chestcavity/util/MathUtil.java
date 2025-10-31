@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MathUtil {
-    public MathUtil() {
+public final class MathUtil {
+    private MathUtil() {
     }
 
     public static float horizontalDistanceTo(Entity entity1, Entity entity2) {
@@ -24,7 +24,7 @@ public class MathUtil {
     }
 
     public static float getAngle(double ax, double ay, double bx, double by) {
-        return (float) (Math.atan2(by - ay, bx - ax)) + 3.141f;// + (a.x > b.x ? Math.PI : 0));
+        return (float) (Math.atan2(by - ay, bx - ax) + Math.PI);
     }
 
     private static final Map<String, Integer> OPERATOR_PRECEDENCE = new HashMap<>();

@@ -24,7 +24,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
-import net.tigereye.chestcavity.compat.tinker.OrganToolStates;
+import net.tigereye.chestcavity.compat.tinker.OrganToolStats;
 import net.tigereye.chestcavity.compat.tinker.TinkerOrganItem;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -489,7 +489,7 @@ public class ChestCavityUtil {
                 return OrganManager.getEntry(itemStack.getItem());
             }
             if (item instanceof TinkerOrganItem) {
-                return OrganToolStates.getOrganDataFromTinkerOrgan(itemStack);
+                return OrganToolStats.getOrganDataFromTinkerOrgan(itemStack);
             }
             for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
                 if (itemStack.is(itemTagKey)) {

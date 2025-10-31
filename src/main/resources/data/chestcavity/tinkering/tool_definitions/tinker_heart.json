@@ -3,8 +3,14 @@
     {
       "type": "tconstruct:part_stats",
       "parts": [
-        "chestcavity:genesis_simulation_core",
-        "tconstruct:large_plate"
+        {
+          "item": "chestcavity:heart_shell",
+          "scale": 1
+        },
+        {
+          "item": "chestcavity:crystal",
+          "scale": 1
+        }
       ],
       "primary_part": 0
     },
@@ -22,28 +28,9 @@
       ]
     },
     {
-      "type": "tconstruct:material_traits",
-      "hooks": [
-        "tconstruct:tool_traits",
-        "tconstruct:rebalanced_trait"
-      ],
-      "material_index": 0,
-      "stat_type": "tconstruct:head"
-    },
-    {
-      "type": "tconstruct:material_traits",
-      "hooks": [
-        "tconstruct:tool_traits",
-        "tconstruct:rebalanced_trait"
-      ],
-      "material_index": 1,
-      "stat_type": "tconstruct:plating_shield"
-    },
-    {
       "type": "tconstruct:base_stats",
       "stats": {
-        "tconstruct:attack_damage": 0.5,
-        "tconstruct:attack_speed": 1.2
+        "chestcavity:organ_health": 1.0
       }
     }
   ]

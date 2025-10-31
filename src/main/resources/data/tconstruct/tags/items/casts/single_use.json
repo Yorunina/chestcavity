@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#chestcavity:casts/single_use/heart_shell",
+    "#chestcavity:casts/single_use/crystal"
+  ]
+}

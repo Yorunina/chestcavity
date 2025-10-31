@@ -1,8 +1,0 @@
-{
-  "type": "tconstruct:table_casting_material",
-  "cast": {
-    "tag": "tconstruct:casts/multi_use/genesis_simulation_core"
-  },
-  "item_cost": 3,
-  "result": "chestcavity:genesis_simulation_core"
-}

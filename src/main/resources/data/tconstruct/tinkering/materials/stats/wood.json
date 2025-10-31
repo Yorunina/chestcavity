@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "stats": {
+    "chestcavity:crystal": {
+      "durability": 100,
+      "adaptability": 1.2
+    },
+    "chestcavity:organ_shell": {
+      "efficiency": 0.5,
+      "adaptability": 1.2
+    }
+  }
+}

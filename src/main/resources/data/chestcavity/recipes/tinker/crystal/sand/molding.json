@@ -1,0 +1,9 @@
+{
+  "type": "tconstruct:molding_table",
+  "material": { "tag": "tconstruct:casts/sand" },
+  "pattern": {
+    "type": "tconstruct:material",
+    "item": "chestcavity:crystal"
+  },
+  "result": "chestcavity:crystal_sand_cast"
+}

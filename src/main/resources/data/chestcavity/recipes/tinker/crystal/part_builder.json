@@ -1,0 +1,10 @@
+{
+  "type": "tconstruct:part_builder",
+  "pattern": "chestcavity:crystal",
+  "pattern_item": [
+    { "tag": "tconstruct:patterns/default" },
+    { "item": "chestcavity:crystal_cast" }
+  ],
+  "cost": 1,
+  "result": { "item": "chestcavity:crystal" }
+}

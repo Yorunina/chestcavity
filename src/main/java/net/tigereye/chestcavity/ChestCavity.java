@@ -50,7 +50,7 @@ public class ChestCavity {
             .title(Component.translatable("tabs." + MODID + ".tab"))
             .displayItems((featureFlagSet, tabOutput) -> {
                 CCItems.ITEMS_FOR_TAB_LIST.forEach(registryObject -> tabOutput.accept(new ItemStack(registryObject.get())));
-                TinkerItemRegistration.addTabItems(featureFlagSet, tabOutput);
+                TinkerItemRegistration.addTabItems(tabOutput);
             }).build()
     );
 
