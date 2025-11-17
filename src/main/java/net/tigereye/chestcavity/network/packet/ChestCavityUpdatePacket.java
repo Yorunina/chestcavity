@@ -1,4 +1,4 @@
-package net.tigereye.chestcavity.forge.network.packet;
+package net.tigereye.chestcavity.network.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;

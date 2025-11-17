@@ -5,15 +5,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.PacketDistributor;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
-import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
-import net.tigereye.chestcavity.forge.network.packet.ChestCavityHotkeyPacket;
-import net.tigereye.chestcavity.forge.network.packet.ChestCavityUpdatePacket;
-import net.tigereye.chestcavity.forge.network.packet.ReceivedChestCavityUpdatePacket;
+import net.tigereye.chestcavity.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.network.packet.ChestCavityHotkeyPacket;
+import net.tigereye.chestcavity.network.packet.ChestCavityUpdatePacket;
+import net.tigereye.chestcavity.network.packet.ReceivedChestCavityUpdatePacket;
 
 public class NetworkUtil {
-    public NetworkUtil() {
-    }
-
     public static boolean SendS2CChestCavityUpdatePacket(ChestCavityInstance cc) {
         cc.updatePacket = true;
         return SendS2CChestCavityUpdatePacket(cc, true);
@@ -25,7 +22,7 @@ public class NetworkUtil {
             if (owner instanceof ServerPlayer spe) {
                 // 此判断为必须
                 if (spe.connection != null) {
-                    ChestCavityNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> spe), new ChestCavityUpdatePacket(cc));
+                    ChestCavityNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> spe), new ChestCavityUpdatePacket(cc));
                 }
                 return true;
             }
@@ -39,11 +36,11 @@ public class NetworkUtil {
     }
 
     public static boolean SendC2SChestCavityReceivedUpdatePacket(ChestCavityInstance cc) {
-        ChestCavityNetwork.CHANNEL.sendToServer(new ReceivedChestCavityUpdatePacket());
+        ChestCavityNetwork.INSTANCE.sendToServer(new ReceivedChestCavityUpdatePacket());
         return SendS2CChestCavityUpdatePacket(cc, cc.updatePacket);
     }
 
     public static void SendC2SChestCavityHotkeyPacket(ResourceLocation organScore) {
-        ChestCavityNetwork.CHANNEL.sendToServer(new ChestCavityHotkeyPacket(organScore));
+        ChestCavityNetwork.INSTANCE.sendToServer(new ChestCavityHotkeyPacket(organScore));
     }
 }

@@ -4,8 +4,8 @@ import net.minecraft.network.Connection;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
-import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
-import net.tigereye.chestcavity.forge.network.packet.OrganDataPacket;
+import net.tigereye.chestcavity.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.network.packet.OrganDataPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,7 +28,7 @@ public class MixinNetworkHooks {
             ArrayList<Connection> managers = new ArrayList();
             managers.add(manager);
             int count = OrganManager.GeneratedOrganData.size();
-            ChestCavityNetwork.CHANNEL.send(PacketDistributor.NMLIST.with(() -> managers), new OrganDataPacket(count, OrganManager.GeneratedOrganData));
+            ChestCavityNetwork.INSTANCE.send(PacketDistributor.NMLIST.with(() -> managers), new OrganDataPacket(count, OrganManager.GeneratedOrganData));
         }
     }
 }

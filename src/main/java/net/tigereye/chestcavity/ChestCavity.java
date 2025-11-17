@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
 import net.tigereye.chestcavity.compat.tinker.TinkerItemRegistration;
 import net.tigereye.chestcavity.config.CCConfig;
-import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
@@ -64,9 +64,8 @@ public class ChestCavity {
         CCListeners.register();
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         CCTagOrgans.init();
-        CCCommands.register();
         TinkerItemRegistration.init(eventBus);
-        ChestCavityNetwork.init();
+        ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);
 
         if (ModList.get().isLoaded("kubejs")) {
