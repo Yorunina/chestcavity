@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 
@@ -59,13 +58,10 @@ public class OrganDataPacket {
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
-                return () -> {
-                    OrganManager.GeneratedOrganData.clear();
-                    OrganManager.GeneratedOrganData.putAll(this.organData);
-                    ChestCavity.LOGGER.info("loaded " + this.organDataSize + " organs from server");
-                    success.set(true);
-                };
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                OrganManager.GeneratedOrganData.clear();
+                OrganManager.GeneratedOrganData.putAll(this.organData);
+                success.set(true);
             });
         });
         contextSupplier.get().setPacketHandled(true);

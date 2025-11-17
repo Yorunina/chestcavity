@@ -27,10 +27,7 @@ public class OrganManager implements ResourceManagerReloadListener {
 
     public void onResourceManagerReload(ResourceManager manager) {
         GeneratedOrganData.clear();
-        ChestCavity.LOGGER.info("Loading organs.");
-        manager.listResources("organs", (path) -> {
-            return path.getPath().endsWith(".json");
-        }).forEach((id, resource) -> {
+        manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
 
@@ -51,7 +48,6 @@ public class OrganManager implements ResourceManagerReloadListener {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
             }
         });
-        ChestCavity.LOGGER.info("Loaded " + GeneratedOrganData.size() + " organs.");
     }
 
     public static boolean hasEntry(Item item) {
@@ -62,13 +58,6 @@ public class OrganManager implements ResourceManagerReloadListener {
         return GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
     }
 
-    public static boolean isTrueOrgan(Item item) {
-        if (hasEntry(item)) {
-            return !getEntry(item).pseudoOrgan;
-        } else {
-            return false;
-        }
-    }
 
     public static OrganData readNBTOrganData(ItemStack itemStack) {
         CompoundTag nbt = itemStack.getTagElement("organData");

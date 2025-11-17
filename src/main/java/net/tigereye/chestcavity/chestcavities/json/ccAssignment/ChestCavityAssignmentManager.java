@@ -17,10 +17,7 @@ public class ChestCavityAssignmentManager {
 
     public static void reloadChestCavityAssignment(ResourceManager manager) {
         GeneratedChestCavityAssignments.clear();
-        ChestCavity.LOGGER.info("Loading chest cavity assignments.");
-        manager.listResources("cc_entity_assignments", (path) -> {
-            return path.getPath().endsWith(".json");
-        }).forEach((id, resource) -> {
+        manager.listResources("cc_entity_assignments", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
                 try {
@@ -41,6 +38,5 @@ public class ChestCavityAssignmentManager {
             }
 
         });
-        ChestCavity.LOGGER.info("Loaded " + GeneratedChestCavityAssignments.size() + " chest cavity assignments.");
     }
 }

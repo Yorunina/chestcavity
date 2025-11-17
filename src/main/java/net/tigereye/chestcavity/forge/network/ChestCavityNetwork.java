@@ -13,9 +13,6 @@ public final class ChestCavityNetwork {
     private static final String VERSION = "2.16.2";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("chestcavity", "main"), () -> VERSION, VERSION::equals, VERSION::equals);
 
-    public ChestCavityNetwork() {
-    }
-
     public static void init() {
         int index = 0;
         CHANNEL.messageBuilder(ChestCavityUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT).encoder(ChestCavityUpdatePacket::encode).decoder(ChestCavityUpdatePacket::decode).consumerMainThread(ChestCavityUpdatePacket::handle).add();

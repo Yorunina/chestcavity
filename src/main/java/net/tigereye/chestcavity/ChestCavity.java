@@ -2,7 +2,6 @@ package net.tigereye.chestcavity;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,23 +22,23 @@ import net.tigereye.chestcavity.compat.tinker.TinkerItemRegistration;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.forge.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
-import net.tigereye.chestcavity.ui.ChestCavityItemScreen;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
-import net.tigereye.chestcavity.ui.ChestCavityScreen;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 @Mod(ChestCavity.MODID)
 public class ChestCavity {
     public static final String MODID = "chestcavity";
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+    public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
+    public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
+
     public static final Logger LOGGER = LogManager.getLogger();
     public static CCConfig config;
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES;
-    public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER;
-    public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER;
-    public static final ResourceLocation CHEST_CAVITY_SCREEN_ID;
-    public static final ResourceLocation COMPATIBILITY_TAG;
+
+    public static final ResourceLocation COMPATIBILITY_TAG = new ResourceLocation(MODID, "organ_compatibility");
     public static boolean KUBEJS_LOADED = false;
     public static ChestCavityQuestEventHandler FTB_EVENT_HANDLER;
 
@@ -55,8 +53,9 @@ public class ChestCavity {
     );
 
     public ChestCavity() {
+        MinecraftForge.EVENT_BUS.register(this);
+
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::clientSetup);
         AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
         CCItems.ITEMS.register(eventBus);
@@ -69,24 +68,10 @@ public class ChestCavity {
         TinkerItemRegistration.init(eventBus);
         ChestCavityNetwork.init();
         MENU_TYPES.register(eventBus);
-        eventBus = MinecraftForge.EVENT_BUS;
-        eventBus.register(this);
+
         if (ModList.get().isLoaded("kubejs")) {
             KUBEJS_LOADED = true;
         }
         FTB_EVENT_HANDLER = new ChestCavityQuestEventHandler().init();
-    }
-
-    public void clientSetup(FMLClientSetupEvent event) {
-        MenuScreens.register(CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
-        MenuScreens.register(CHEST_CAVITY_ITEM_SCREEN_HANDLER.get(), ChestCavityItemScreen::new);
-    }
-
-    static {
-        MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-        CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
-        CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
-        CHEST_CAVITY_SCREEN_ID = new ResourceLocation(MODID, "chest_cavity_screen");
-        COMPATIBILITY_TAG = new ResourceLocation(MODID, "organ_compatibility");
     }
 }

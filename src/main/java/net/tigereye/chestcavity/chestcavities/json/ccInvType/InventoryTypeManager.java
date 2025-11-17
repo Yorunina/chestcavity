@@ -56,7 +56,6 @@ public class InventoryTypeManager {
             }
         });
 
-        ChestCavity.LOGGER.info("Loaded " + GeneratedInventoryTypeData.size() + " inventory.");
     }
 
     public static InventoryTypeData getInventoryTypeData(ResourceLocation id) {

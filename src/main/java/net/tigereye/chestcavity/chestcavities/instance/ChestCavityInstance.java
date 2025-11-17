@@ -7,7 +7,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
@@ -180,10 +179,6 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {
-        if (ChestCavity.config.DEBUG_MODE) {
-            LOGGER.debug("[Chest Cavity] Reading ChestCavityManager fromTag");
-        }
-
         this.owner = owner;
         CompoundTag ccTag;
         if (tag.contains("ChestCavity")) {

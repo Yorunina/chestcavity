@@ -55,17 +55,15 @@ public class ChestCavityUpdatePacket {
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         AtomicBoolean success = new AtomicBoolean(false);
         ctx.get().enqueueWork(() -> {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
-                return () -> {
-                    Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.getInstance().player);
-                    optional.ifPresent((chestCavityEntity) -> {
-                        ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
-                        instance.opened = this.opened;
-                        instance.setOrganScores(this.organScoresMap);
-                        success.set(true);
-                        NetworkUtil.SendC2SChestCavityReceivedUpdatePacket(instance);
-                    });
-                };
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.getInstance().player);
+                optional.ifPresent((chestCavityEntity) -> {
+                    ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
+                    instance.opened = this.opened;
+                    instance.setOrganScores(this.organScoresMap);
+                    success.set(true);
+                    NetworkUtil.SendC2SChestCavityReceivedUpdatePacket(instance);
+                });
             });
         });
         ctx.get().setPacketHandled(true);

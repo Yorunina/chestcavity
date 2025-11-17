@@ -21,7 +21,6 @@ public class ChestCavityTypeManager {
 
     public static void reloadChestCavityType(ResourceManager manager) {
         GeneratedChestCavityTypes.clear();
-        ChestCavity.LOGGER.info("Loading chest cavity types.");
         manager.listResources("cc_types", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
@@ -41,7 +40,6 @@ public class ChestCavityTypeManager {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
             }
         });
-        ChestCavity.LOGGER.info("Loaded " + GeneratedChestCavityTypes.size() + " chest cavity types.");
     }
 
 }
