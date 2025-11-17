@@ -583,4 +583,18 @@ public class ChestCavityUtil {
         });
     }
 
+    public static void setOrganCompatibility(ChestCavityInstance instance, ItemStack itemStack) {
+        if (itemStack != ItemStack.EMPTY) {
+            CompoundTag tag = new CompoundTag();
+            tag.putUUID("owner", instance.compatibility_id);
+            tag.putString("name", instance.owner.getDisplayName().getString());
+            itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
+        }
+    }
+
+    public static void removeOrganCompatibility(ItemStack itemStack) {
+        if (itemStack != ItemStack.EMPTY) {
+            itemStack.removeTagKey(ChestCavity.COMPATIBILITY_TAG.toString());
+        }
+    }
 }

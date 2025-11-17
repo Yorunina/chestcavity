@@ -23,9 +23,7 @@ public class OrganFoodEffectListeners {
     private static List<Pair<MobEffectInstance, Float>> applyRotgut(List<Pair<MobEffectInstance, Float>> list, ItemStack itemStack, Level world, LivingEntity entity, ChestCavityInstance cc) {
         float rotten = cc.getOrganScore(CCOrganScores.ROTGUT) + cc.getOrganScore(CCOrganScores.ROT_DIGESTION);
         if (rotten > 0.0F && itemStack.is(CCTags.ROTTEN_FOOD)) {
-            list.removeIf((pair) -> {
-                return pair.getFirst().getEffect() == MobEffects.HUNGER;
-            });
+            list.removeIf((pair) -> pair.getFirst().getEffect() == MobEffects.HUNGER);
         }
 
         return list;

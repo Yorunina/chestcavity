@@ -11,9 +11,7 @@ import net.tigereye.chestcavity.forge.network.packet.ReceivedChestCavityUpdatePa
 
 public final class ChestCavityNetwork {
     private static final String VERSION = "2.16.2";
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("chestcavity", "main"), () -> {
-        return "2.16.2";
-    }, "2.16.2"::equals, "2.16.2"::equals);
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("chestcavity", "main"), () -> VERSION, VERSION::equals, VERSION::equals);
 
     public ChestCavityNetwork() {
     }

@@ -67,7 +67,6 @@ public class ChestCavity {
         CCTagOrgans.init();
         CCCommands.register();
         TinkerItemRegistration.init(eventBus);
-        CCNetworkingPackets.register();
         ChestCavityNetwork.init();
         MENU_TYPES.register(eventBus);
         eventBus = MinecraftForge.EVENT_BUS;
@@ -81,7 +80,6 @@ public class ChestCavity {
     public void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(CHEST_CAVITY_SCREEN_HANDLER.get(), ChestCavityScreen::new);
         MenuScreens.register(CHEST_CAVITY_ITEM_SCREEN_HANDLER.get(), ChestCavityItemScreen::new);
-        CCNetworkingPackets.registerClient();
     }
 
     static {

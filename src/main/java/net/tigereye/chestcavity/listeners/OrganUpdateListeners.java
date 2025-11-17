@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.listeners;
 
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -42,7 +41,7 @@ public class OrganUpdateListeners {
         if (cc.getOldOrganScore(CCOrganScores.DEFENSE) != cc.getOrganScore(CCOrganScores.DEFENSE)) {
             AttributeInstance att = entity.getAttribute(Attributes.ARMOR);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(DEFENSE_ID, "ChestCavityDefenseArmor", cc.getOrganScore(CCOrganScores.DEFENSE) * ChestCavity.config.BONE_DEFENSE, Operation.ADDITION);
+                AttributeModifier mod = new AttributeModifier(DEFENSE_ID, "ChestCavityDefenseArmor", (cc.getOrganScore(CCOrganScores.DEFENSE) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DEFENSE)) * ChestCavity.config.BONE_DEFENSE, Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }
@@ -56,18 +55,16 @@ public class OrganUpdateListeners {
                 ReplaceAttributeModifier(att, mod);
             }
         }
-
     }
 
     public static void UpdateHeart(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOldOrganScore(CCOrganScores.HEALTH) != cc.getOrganScore(CCOrganScores.HEALTH)) {
             AttributeInstance att = entity.getAttribute(Attributes.MAX_HEALTH);
             if (att != null) {
-                AttributeModifier mod = new AttributeModifier(HEART_ID, "ChestCavityHeartMaxHP", (double) ((cc.getOrganScore(CCOrganScores.HEALTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH)) * ChestCavity.config.HEART_HP), Operation.ADDITION);
+                AttributeModifier mod = new AttributeModifier(HEART_ID, "ChestCavityHeartMaxHP", (cc.getOrganScore(CCOrganScores.HEALTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH)) * ChestCavity.config.HEART_HP, Operation.ADDITION);
                 ReplaceAttributeModifier(att, mod);
             }
         }
-
     }
 
     public static void UpdateStrength(LivingEntity entity, ChestCavityInstance cc) {
@@ -124,7 +121,7 @@ public class OrganUpdateListeners {
     public static void UpdateIncompatibility(LivingEntity entity, ChestCavityInstance cc) {
         if (cc.getOldOrganScore(CCOrganScores.INCOMPATIBILITY) != cc.getOrganScore(CCOrganScores.INCOMPATIBILITY)) {
             try {
-                entity.removeEffect((MobEffect) CCStatusEffects.ORGAN_REJECTION.get());
+                entity.removeEffect(CCStatusEffects.ORGAN_REJECTION.get());
             } catch (Exception ignored) {
             }
         }

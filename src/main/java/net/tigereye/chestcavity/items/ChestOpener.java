@@ -68,9 +68,9 @@ public class ChestOpener extends Item {
             return false;
         } else {
             if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F || allEnchantments.containsKey(CREATIVE_SURGERY.get()) || allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
-                if (player.level().isClientSide()) {
-                    player.playNotifySound(SoundEvents.CHEST_OPEN, SoundSource.PLAYERS, 0.75F, 1.0F);
-                }
+//                if (player.level().isClientSide()) {
+//                    player.playNotifySound(SoundEvents.CHEST_OPEN, SoundSource.PLAYERS, 0.75F, 1.0F);
+//                }
             }  else if (!shouldKnockback) {
                 target.hurt(player.damageSources().generic(), 4.0F);
             } else {

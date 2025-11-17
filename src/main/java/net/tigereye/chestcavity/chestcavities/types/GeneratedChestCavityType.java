@@ -6,15 +6,20 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.items.ItemStackHandler;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
@@ -133,15 +138,10 @@ public class GeneratedChestCavityType implements ChestCavityType {
         int universalOrgans;
         for (universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
             ItemStack itemStack = chestCavity.getItem(universalOrgans);
-            if (itemStack != ItemStack.EMPTY) {
-                CompoundTag tag = new CompoundTag();
-                tag.putUUID("owner", instance.compatibility_id);
-                tag.putString("name", instance.owner.getDisplayName().getString());
-                itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
-            }
+            ChestCavityUtil.setOrganCompatibility(instance, itemStack);
         }
-
     }
+
 
     public float getHeartBleedCap() {
         return 5.0F;
@@ -162,5 +162,28 @@ public class GeneratedChestCavityType implements ChestCavityType {
             cc.connectedCrystal.setBeamTarget(null);
             cc.connectedCrystal = null;
         }
+    }
+
+
+    public static List<ItemStack> setInventoryTypeData(ItemStack stack, ResourceLocation inventoryType) {
+        List<ItemStack> resList = new ArrayList<>();
+        InventoryTypeData inventoryTypeData = InventoryTypeManager.getInventoryTypeData(inventoryType);
+        CompoundTag itemNbt = stack.getOrCreateTag();
+        if (!itemNbt.contains("Inventory")) {
+            itemNbt.put("Inventory", new ItemStackHandler(inventoryTypeData.getSlotSize()).serializeNBT());
+        }
+        ItemStackHandler itemInventory = new ItemStackHandler();
+        itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));
+        ItemStackHandler newItemInventory = new ItemStackHandler(inventoryTypeData.getSlotSize());
+        for (int i = 0; i < itemInventory.getSlots(); i++) {
+            if (i >= newItemInventory.getSlots()) {
+                resList.add(itemInventory.getStackInSlot(i));
+                continue;
+            }
+            newItemInventory.setStackInSlot(i, itemInventory.getStackInSlot(i));
+        }
+        itemNbt.put("Inventory", newItemInventory.serializeNBT());
+        itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
+        return resList;
     }
 }

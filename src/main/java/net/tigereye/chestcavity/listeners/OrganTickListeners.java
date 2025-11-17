@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.listeners;
 
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -170,13 +169,13 @@ public class OrganTickListeners {
             float Hydroallergy = cc.getOrganScore(CCOrganScores.HYDROALLERGENIC);
             if (!(Hydroallergy <= 0.0F)) {
                 if (entity.isInWater()) {
-                    if (!entity.hasEffect((MobEffect) CCStatusEffects.WATER_VULNERABILITY.get())) {
+                    if (!entity.hasEffect(CCStatusEffects.WATER_VULNERABILITY.get())) {
                         entity.hurt(entity.damageSources().magic(), 10.0F);
-                        entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.WATER_VULNERABILITY.get(), (int) (260.0F / Hydroallergy), 0, false, false, true));
+                        entity.addEffect(new MobEffectInstance(CCStatusEffects.WATER_VULNERABILITY.get(), (int) (260.0F / Hydroallergy), 0, false, false, true));
                     }
-                } else if (entity.isInWaterOrRain() && !entity.hasEffect((MobEffect) CCStatusEffects.WATER_VULNERABILITY.get())) {
+                } else if (entity.isInWaterOrRain() && !entity.hasEffect(CCStatusEffects.WATER_VULNERABILITY.get())) {
                     entity.hurt(entity.damageSources().magic(), 1.0F);
-                    entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.WATER_VULNERABILITY.get(), (int) (260.0F / Hydroallergy), 0, false, false, true));
+                    entity.addEffect(new MobEffectInstance(CCStatusEffects.WATER_VULNERABILITY.get(), (int) (260.0F / Hydroallergy), 0, false, false, true));
                 }
             }
         }
@@ -194,8 +193,9 @@ public class OrganTickListeners {
     public static void TickIncompatibility(LivingEntity entity, ChestCavityInstance chestCavity) {
         if (!entity.level().isClientSide() && !ChestCavity.config.DISABLE_ORGAN_REJECTION) {
             float incompatibility = chestCavity.getOrganScore(CCOrganScores.INCOMPATIBILITY);
-            if (incompatibility > 0.0F && !entity.hasEffect((MobEffect) CCStatusEffects.ORGAN_REJECTION.get())) {
-                entity.addEffect(new MobEffectInstance((MobEffect) CCStatusEffects.ORGAN_REJECTION.get(), (int) ((float) ChestCavity.config.ORGAN_REJECTION_RATE / incompatibility), 0, false, true, true));
+            if (incompatibility > 0.0F && !entity.hasEffect(CCStatusEffects.ORGAN_REJECTION.get())) {
+                entity.addEffect(new MobEffectInstance(CCStatusEffects.ORGAN_REJECTION.get(), (int) ((float) ChestCavity.config.ORGAN_REJECTION_RATE / incompatibility), 0, false, true, true));
+                entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float) ChestCavity.config.ORGAN_REJECTION_DAMAGE);
             }
         }
 
