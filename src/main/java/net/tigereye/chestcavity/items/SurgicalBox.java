@@ -87,7 +87,6 @@ public class SurgicalBox extends Item implements MenuProvider {
             ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
             return InteractionResult.FAIL;
         }
-        ((ChestCavityEntity) pPlayer).getChestCavityInstance().ccBeingOpened = entityInstance;
 
         replaceChestCavity(pStack, chestCavityEntity);
 

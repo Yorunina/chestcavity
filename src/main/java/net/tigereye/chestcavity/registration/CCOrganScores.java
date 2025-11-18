@@ -35,7 +35,6 @@ public class CCOrganScores {
     public static final ResourceLocation WATERBREATH = new ResourceLocation(ChestCavity.MODID, "water_breath");
     public static final ResourceLocation WITHERED = new ResourceLocation(ChestCavity.MODID, "withered");
     public static final ResourceLocation CREEPY = new ResourceLocation(ChestCavity.MODID, "creepy");
-    public static final ResourceLocation LIGHTWEIGHT = new ResourceLocation(ChestCavity.MODID, "lightweight");
     public static final ResourceLocation DRAGON_BOMBS = new ResourceLocation(ChestCavity.MODID, "dragon_bombs");
     public static final ResourceLocation DRAGON_BREATH = new ResourceLocation(ChestCavity.MODID, "dragon_breath");
     public static final ResourceLocation EXPLOSIVE = new ResourceLocation(ChestCavity.MODID, "explosive");

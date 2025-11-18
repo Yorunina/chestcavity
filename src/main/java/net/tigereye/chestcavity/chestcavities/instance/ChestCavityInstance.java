@@ -44,7 +44,6 @@ public class ChestCavityInstance implements ContainerListener {
     public int photosynthesisProgress = 0;
     public EndCrystal connectedCrystal = null;
     public boolean updatePacket = true;
-    public ChestCavityInstance ccBeingOpened = null;
     public ResourceLocation inventoryType;
     public ResourceLocation oldInventoryType;
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
@@ -93,9 +92,6 @@ public class ChestCavityInstance implements ContainerListener {
 
     public ResourceLocation getInventoryType() {
         return this.inventoryType;
-    }
-    public void setCCBeingOpened(ChestCavityInstance ccBeingOpened) {
-        this.ccBeingOpened = ccBeingOpened;
     }
 
     public InventoryTypeData getInventoryTypeData() {
@@ -243,7 +239,6 @@ public class ChestCavityInstance implements ContainerListener {
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
-        this.ccBeingOpened = other.ccBeingOpened;
         try {
             this.inventory.removeListener(this);
         } catch (NullPointerException ignored) {

@@ -8,7 +8,6 @@
     "MixinHungerManager",
     "MixinLivingEntity",
     "MixinLivingEntity$Creeper",
-    "MixinLivingEntity$Mob",
     "MixinLivingEntity$Player",
     "MixinLivingEntity$Server",
     "MixinNetworkHooks",

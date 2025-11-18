@@ -32,9 +32,6 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
             if (optional.isPresent()) {
                 ChestCavityEntity chestCavityPlayer = optional.get();
                 ChestCavityInstance targetCCI = chestCavityPlayer.getChestCavityInstance();
-                if (targetCCI.ccBeingOpened != null) {
-                    targetCCI = targetCCI.ccBeingOpened;
-                }
                 inventoryTypeData = ((ChestCavityEntity) targetCCI.owner).getInventoryTypeData();
             }
         }

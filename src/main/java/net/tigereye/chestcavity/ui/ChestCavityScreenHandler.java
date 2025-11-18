@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
-import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
@@ -16,7 +15,6 @@ import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
@@ -26,17 +24,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     }
 
     private static ChestCavityEntity getChestCavityEntity(Inventory playerInventory) {
-        ChestCavityEntity playerCCEntity = (ChestCavityEntity) playerInventory.player;
-        ChestCavityInstance playerCC = playerCCEntity.getChestCavityInstance();
-        ChestCavityInstance targetCCI = playerCC.ccBeingOpened;
-
-        if (targetCCI != null) {
-            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(targetCCI.owner);
-            if (optional.isPresent()) {
-                return optional.get();
-            }
-        }
-        return playerCCEntity;
+        return (ChestCavityEntity) playerInventory.player;
     }
 
 

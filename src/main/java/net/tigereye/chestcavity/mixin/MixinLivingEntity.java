@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -25,15 +23,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.ITeleporter;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstanceFactory;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.listeners.OrganFoodEffectListeners;
-import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.NetworkUtil;
@@ -72,23 +67,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
     public InventoryTypeData getInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(new ResourceLocation(this.entityData.get(DATA_INVENTORY_TYPE)));
-    }
-
-    @ModifyVariable(
-            at = @At("HEAD"),
-            ordinal = 0,
-            method = {"checkFallDamage"},
-            argsOnly = true
-    )
-    public double chestCavityEntityFallMixin(double finalHeightDifference, double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
-        if (heightDifference < 0.0) {
-            Optional<ChestCavityEntity> cce = ChestCavityEntity.of((LivingEntity) (Object) this);
-            if (cce.isPresent()) {
-                finalHeightDifference = ChestCavityUtil.applyOrgansToFallDistance((LivingEntity) (Object) this, cce.get().getChestCavityInstance(), heightDifference);
-            }
-        }
-
-        return finalHeightDifference;
     }
 
     public void setInventoryTypeData(ResourceLocation id) {
@@ -137,17 +115,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
 
-    }
-
-
-    @ModifyVariable(at = @At("STORE"), ordinal = 0, method = "travel")
-    public double chestCavityLivingEntityLightweightMixin(double gravity) {
-        Optional<ChestCavityEntity> cce = ChestCavityEntity.of(this);
-        if (cce.isPresent()) {
-            ChestCavityInstance cci = cce.get().getChestCavityInstance();
-            gravity = ChestCavityUtil.applyLightweightToGravity(cci, gravity);
-        }
-        return gravity;
     }
 
     @Inject(
@@ -255,49 +222,12 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         this.chestCavityInstance.toTag(tag, (LivingEntity) (Object) this);
     }
 
-    @Mixin({net.minecraft.world.entity.Mob.class})
-    private abstract static class Mob extends LivingEntity {
-
-        protected Mob(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
-            super(pEntityType, pLevel);
-        }
-
-        @Inject(
-                at = {@At("HEAD")},
-                method = {"checkAndHandleImportantInteractions"},
-                cancellable = true
-        )
-        protected void chestCavityLivingEntityInteractMobMixin(net.minecraft.world.entity.player.Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-            if (player.getItemInHand(hand).getItem() == CCItems.CHEST_OPENER.get()) {
-                ItemStack chestOpener = player.getItemInHand(hand);
-                ((ChestOpener) chestOpener.getItem()).openChestCavity(player, this, chestOpener);
-                info.setReturnValue(InteractionResult.SUCCESS);
-            }
-        }
-    }
-
     @Mixin({net.minecraft.world.entity.player.Player.class})
     public abstract static class Player extends LivingEntity {
         protected Player(EntityType<? extends LivingEntity> entityType, Level world) {
             super(entityType, world);
         }
 
-        @Inject(
-                at = {@At("HEAD")},
-                method = {"interactOn"},
-                cancellable = true
-        )
-        void chestCavityPlayerEntityInteractPlayerMixin(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-            if (entity instanceof LivingEntity && ChestCavity.config.CAN_OPEN_OTHER_PLAYERS) {
-                net.minecraft.world.entity.player.Player player = (net.minecraft.world.entity.player.Player) (Object) this;
-                ItemStack stack = player.getItemInHand(hand);
-                if (stack.getItem() == CCItems.CHEST_OPENER.get()) {
-                    ((ChestOpener) stack.getItem()).openChestCavity(player, (LivingEntity) entity, stack);
-                    info.setReturnValue(InteractionResult.SUCCESS);
-                    info.cancel();
-                }
-            }
-        }
 
         @Inject(
                 at = {@At("RETURN")},

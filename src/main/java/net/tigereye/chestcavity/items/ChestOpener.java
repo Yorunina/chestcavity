@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -42,16 +43,32 @@ public class ChestOpener extends Item {
         }
     }
 
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+        if (player.level().isClientSide()) {
+            return InteractionResult.PASS;
+        }
+        Map<Enchantment, Integer> allEnchantments = stack.getAllEnchantments();
+        if (!allEnchantments.containsKey(CREATIVE_SURGERY.get()) || target instanceof Player) {
+            return InteractionResult.FAIL;
+        }
+        boolean success = this.openChestCavity(player, target, stack, true);
+        if (success) {
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+        }
+    }
+
     public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack chestOpener = player.getItemInHand(hand);
+        if (world.isClientSide()) {
+            return InteractionResultHolder.pass(chestOpener);
+        }
         if (chestOpener.getAllEnchantments().containsKey(SAFE_SURGERY.get())) {
             return InteractionResultHolder.fail(chestOpener);
         }
         return this.openChestCavity(player, player, chestOpener, false) ? InteractionResultHolder.sidedSuccess(chestOpener, false) : InteractionResultHolder.fail(chestOpener);
-    }
-
-    public boolean openChestCavity(Player player, LivingEntity target, ItemStack chestOpener) {
-        return this.openChestCavity(player, target, chestOpener, true);
     }
 
     public boolean openChestCavity(Player player, LivingEntity target, ItemStack chestOpener, boolean shouldKnockback) {
@@ -76,7 +93,6 @@ public class ChestOpener extends Item {
             }
 
             if (target.isAlive()) {
-                ((ChestCavityEntity) player).getChestCavityInstance().ccBeingOpened = cc;
                 // 界面渲染
                 player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) ->
                         new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
