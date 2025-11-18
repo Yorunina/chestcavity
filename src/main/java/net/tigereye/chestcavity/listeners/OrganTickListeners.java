@@ -7,31 +7,66 @@ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.compat.kubejs.CCEvents;
+import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCDamageSources;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.util.NetworkUtil;
 import net.tigereye.chestcavity.util.OrganUtil;
 
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = ChestCavity.MODID)
 public class OrganTickListeners {
     public OrganTickListeners() {
     }
 
-    public static void call(LivingEntity entity, ChestCavityInstance cc) {
-        TickIncompatibility(entity, cc);
-        TickProjectileQueue(entity, cc);
-        TickFiltration(entity, cc);
-        TickBuoyant(entity, cc);
-        TickCrystalsynthesis(entity, cc);
-        TickPhotosynthesis(entity, cc);
-        TickHydroallergenic(entity, cc);
-        TickHydrophobia(entity, cc);
-        TickGlowing(entity, cc);
+    @SubscribeEvent
+    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.level().isClientSide) {
+            return;
+        }
+
+        if (entity instanceof ChestCavityEntity ccEntity) {
+            ChestCavityInstance cc = ccEntity.getChestCavityInstance();
+            if (cc.updatePacket) {
+                NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
+            }
+
+            if (cc.opened) {
+                if (cc.owner != null) {
+                    CCEvents.postOpenedEntityTick(cc);
+                }
+                TickIncompatibility(entity, cc);
+                TickProjectileQueue(entity, cc);
+                TickFiltration(entity, cc);
+                TickBuoyant(entity, cc);
+                TickCrystalsynthesis(entity, cc);
+                TickPhotosynthesis(entity, cc);
+                TickHydroallergenic(entity, cc);
+                TickHydrophobia(entity, cc);
+                TickGlowing(entity, cc);
+                TickHealth(entity, cc);
+            }
+        }
     }
+
+    public static void TickHealth(LivingEntity entity, ChestCavityInstance cc) {
+        if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0F && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH) > 0F) {
+            if (entity.level().getGameTime() % 20 == 0L) {
+                entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.HEARTBLEED), Math.max(1.0F, entity.getMaxHealth() * 0.1F));
+            }
+        }
+    }
+
 
     public static void TickBuoyant(LivingEntity entity, ChestCavityInstance chestCavity) {
         if (entity instanceof Player ent) {

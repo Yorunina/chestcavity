@@ -1,25 +1,31 @@
 package net.tigereye.chestcavity.ui;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.network.PacketDistributor;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.network.packet.TargetEntityInventoryTypePacket;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
-    private ChestCavityInventory inventory;
-    private ChestCavityEntity targetEntity;
+    private final ChestCavityInventory inventory;
 
     // 为MenuType注册保留的双参数构造函数
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
@@ -28,20 +34,28 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
 
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity targetEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
-        this.targetEntity = targetEntity;
         Player player = playerInventory.player;
         Level level = player.level();
+        InventoryTypeData inventoryTypeData;
+        if (level.isClientSide() && targetEntity == null) {
+            ResourceLocation inventoryType = TargetEntityInventoryTypeManager.getTargetEntityInventoryType();
+            inventoryTypeData = InventoryTypeManager.getInventoryTypeData(inventoryType);
+        } else {
+            inventoryTypeData = targetEntity.getInventoryTypeData();
+        }
 
-        // 如果targetEntity为null（MenuType注册时），使用玩家作为默认值
-        ChestCavityEntity actualTargetEntity = targetEntity != null ? targetEntity : ChestCavityEntity.of(player).get();
-
-        InventoryTypeData inventoryTypeData = actualTargetEntity.getInventoryTypeData();
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
         if (level.isClientSide()) {
             this.inventory = new ChestCavityInventory(inventoryTypeData.getSlotSize());
         } else {
-            this.inventory = ChestCavityUtil.openChestCavity(actualTargetEntity.getChestCavityInstance());
+            this.inventory = ChestCavityUtil.openChestCavity(targetEntity.getChestCavityInstance());
         }
+
+        // 在服务器端，向客户端发送目标实体的inventoryType信息
+        if (player instanceof ServerPlayer serverPlayer) {
+            ChestCavityNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new TargetEntityInventoryTypePacket(inventoryTypeData.getId()));
+        }
+
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
@@ -89,8 +103,11 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         return this.inventory.stillValid(player);
     }
 
-    // 获取目标实体的方法，供ChestCavityScreen使用
-    public ChestCavityEntity getTargetEntity() {
-        return this.targetEntity;
+    @Override
+    public void removed(@NotNull Player player) {
+        super.removed(player);
+        if (player.level().isClientSide()) {
+            net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager.removeTargetEntityInventoryType();
+        }
     }
 }

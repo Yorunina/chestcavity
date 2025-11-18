@@ -29,7 +29,6 @@ import net.tigereye.chestcavity.compat.tinker.TinkerOrganItem;
 import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
-import net.tigereye.chestcavity.listeners.OrganTickListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
@@ -38,7 +37,6 @@ import net.tigereye.chestcavity.registration.CCTagOrgans;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ChestCavityUtil {
@@ -299,29 +297,6 @@ public class ChestCavityUtil {
         cc.inventory.setChanged();
     }
 
-    public static boolean determineDefaultOrganScores(ChestCavityType chestCavityType) {
-        Map<ResourceLocation, Float> organScores = chestCavityType.getDefaultOrganScores();
-        chestCavityType.loadBaseOrganScores(organScores);
-
-        try {
-            for (int i = 0; i < chestCavityType.getDefaultChestCavity().getContainerSize(); ++i) {
-                ItemStack itemStack = chestCavityType.getDefaultChestCavity().getItem(i);
-                if (itemStack != ItemStack.EMPTY) {
-                    OrganData data = lookupOrgan(itemStack, chestCavityType);
-                    if (data != null) {
-                        data.organScores.forEach((key, value) -> {
-                            addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), organScores);
-                        });
-                    }
-                }
-            }
-
-            return true;
-        } catch (IllegalStateException var6) {
-            ChestCavity.LOGGER.warn(var6.getMessage() + ". Chest Cavity will attempt to calculate this default organ score later.");
-            return false;
-        }
-    }
 
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
@@ -432,16 +407,6 @@ public class ChestCavityUtil {
 
     }
 
-    public static boolean isHydroPhobicOrAllergic(LivingEntity entity) {
-        Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
-        if (optional.isEmpty()) {
-            return false;
-        } else {
-            ChestCavityInstance cc = optional.get().getChestCavityInstance();
-            return cc.getOrganScore(CCOrganScores.HYDROALLERGENIC) > 0.0F || cc.getOrganScore(CCOrganScores.HYDROPHOBIA) > 0.0F;
-        }
-    }
-
     public static OrganData lookupOrgan(ItemStack itemStack, ChestCavityType cct) {
         OrganData organData = null;
         if (cct != null) {
@@ -506,21 +471,6 @@ public class ChestCavityUtil {
                 }
             }
         }
-    }
-
-
-    public static void onTick(ChestCavityInstance cc) {
-        if (cc.updatePacket) {
-            NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
-        }
-
-        if (cc.opened) {
-            if (cc.owner != null && !cc.owner.level().isClientSide()) {
-                CCEvents.postOpenedEntityTick(cc);
-            }
-            OrganTickListeners.call(cc.owner, cc);
-        }
-
     }
 
     public static ChestCavityInventory openChestCavity(ChestCavityInstance cc) {

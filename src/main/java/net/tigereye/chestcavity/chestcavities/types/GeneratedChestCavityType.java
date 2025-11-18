@@ -38,8 +38,17 @@ public class GeneratedChestCavityType implements ChestCavityType {
     public Map<ResourceLocation, Float> getDefaultOrganScores() {
         if (this.defaultOrganScores == null) {
             this.defaultOrganScores = new HashMap<>();
-            if (!ChestCavityUtil.determineDefaultOrganScores(this)) {
-                this.defaultOrganScores = null;
+            this.loadBaseOrganScores(this.defaultOrganScores);
+            for (int i = 0; i < this.getDefaultChestCavity().getContainerSize(); ++i) {
+                ItemStack itemStack = this.getDefaultChestCavity().getItem(i);
+                if (itemStack != ItemStack.EMPTY) {
+                    OrganData data = ChestCavityUtil.lookupOrgan(itemStack, this);
+                    if (data != null) {
+                        data.organScores.forEach((key, value) -> {
+                            ChestCavityUtil.addOrganScore(key, value * itemStack.getCount(), this.defaultOrganScores);
+                        });
+                    }
+                }
             }
         }
 

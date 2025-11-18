@@ -92,16 +92,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     }
 
 
-    @Inject(
-            at = {@At("HEAD")},
-            method = {"baseTick"}
-    )
-    public void chestCavityLivingEntityBaseTickMixin(CallbackInfo info) {
-        if (this.level().isClientSide) {
-            return;
-        }
-        ChestCavityUtil.onTick(this.chestCavityInstance);
-    }
 
     @Inject(
             at = {@At("TAIL")},
@@ -195,6 +185,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             cancellable = true
     )
     public void chestCavityLivingEntityJumpVelocityMixin(CallbackInfoReturnable<Float> info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         info.setReturnValue(ChestCavityUtil.applyLeaping(this.chestCavityInstance, info.getReturnValueF()));
     }
 

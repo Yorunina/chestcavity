@@ -50,5 +50,10 @@ public final class ChestCavityNetwork {
                 .decoder(ReceivedChestCavityUpdatePacket::new)
                 .consumerMainThread(ReceivedChestCavityUpdatePacket::handle)
                 .add();
+        INSTANCE.messageBuilder(TargetEntityInventoryTypePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(TargetEntityInventoryTypePacket::encode)
+                .decoder(TargetEntityInventoryTypePacket::decode)
+                .consumerMainThread(TargetEntityInventoryTypePacket::handle)
+                .add();
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
-import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +25,11 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
     }
 
     public InventoryTypeData getInventoryTypeData() {
-        if (this.menu instanceof ChestCavityScreenHandler screenHandler) {
-            ChestCavityEntity targetEntity = screenHandler.getTargetEntity();
-            if (targetEntity != null) {
-                return targetEntity.getInventoryTypeData();
-            }
+        ResourceLocation inventoryType = TargetEntityInventoryTypeManager.getTargetEntityInventoryType();
+        if(inventoryType == null){
+            return InventoryTypeManager.getDefaultInventoryTypeData();
         }
-        return InventoryTypeManager.getDefaultInventoryTypeData();
+        return InventoryTypeManager.getInventoryTypeData(inventoryType);
     }
 
     @Override
