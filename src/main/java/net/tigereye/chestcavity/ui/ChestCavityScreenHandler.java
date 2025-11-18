@@ -13,32 +13,34 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
-    private final ChestCavityInventory inventory;
+    private ChestCavityInventory inventory;
+    private ChestCavityEntity targetEntity;
 
+    // 为MenuType注册保留的双参数构造函数
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
-        this(syncId, playerInventory, getChestCavityEntity(playerInventory));
+        this(syncId, playerInventory, null);
     }
 
-    private static ChestCavityEntity getChestCavityEntity(Inventory playerInventory) {
-        return (ChestCavityEntity) playerInventory.player;
-    }
-
-
-    public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity chestCavityEntity) {
+    public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity targetEntity) {
         super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
+        this.targetEntity = targetEntity;
         Player player = playerInventory.player;
         Level level = player.level();
 
-        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
+        // 如果targetEntity为null（MenuType注册时），使用玩家作为默认值
+        ChestCavityEntity actualTargetEntity = targetEntity != null ? targetEntity : ChestCavityEntity.of(player).get();
+
+        InventoryTypeData inventoryTypeData = actualTargetEntity.getInventoryTypeData();
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
         if (level.isClientSide()) {
-            this.inventory = new ChestCavityInventory(chestCavityEntity.getChestCavityInstance());
+            this.inventory = new ChestCavityInventory(inventoryTypeData.getSlotSize());
         } else {
-            this.inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
+            this.inventory = ChestCavityUtil.openChestCavity(actualTargetEntity.getChestCavityInstance());
         }
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
@@ -83,7 +85,12 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         return newStack;
     }
 
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return this.inventory.stillValid(player);
+    }
+
+    // 获取目标实体的方法，供ChestCavityScreen使用
+    public ChestCavityEntity getTargetEntity() {
+        return this.targetEntity;
     }
 }

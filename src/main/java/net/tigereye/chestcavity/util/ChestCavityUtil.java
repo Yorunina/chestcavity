@@ -41,8 +41,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
-
 public class ChestCavityUtil {
     public ChestCavityUtil() {
     }
@@ -378,7 +376,6 @@ public class ChestCavityUtil {
     }
 
     public static void generateChestCavityIfOpened(ChestCavityInstance cc) {
-        LOGGER.info("Generating chest cavity inventory for {} with tags {}", cc.getChestCavityType().getInventoryType(), cc.getChestCavityType().getDefaultChestCavity());
         ListTag tagList = cc.getChestCavityType().getDefaultChestCavity().getTags();
         cc.inventory.removeListener(cc);
         cc.inventory = new ChestCavityInventory(cc);

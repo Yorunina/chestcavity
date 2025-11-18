@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
@@ -26,16 +25,13 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
     }
 
     public InventoryTypeData getInventoryTypeData() {
-        InventoryTypeData inventoryTypeData = InventoryTypeManager.getDefaultInventoryTypeData();
-        if (this.minecraft != null && this.minecraft.player != null) {
-            Optional<ChestCavityEntity> optional = ChestCavityEntity.of(this.minecraft.player);
-            if (optional.isPresent()) {
-                ChestCavityEntity chestCavityPlayer = optional.get();
-                ChestCavityInstance targetCCI = chestCavityPlayer.getChestCavityInstance();
-                inventoryTypeData = ((ChestCavityEntity) targetCCI.owner).getInventoryTypeData();
+        if (this.menu instanceof ChestCavityScreenHandler screenHandler) {
+            ChestCavityEntity targetEntity = screenHandler.getTargetEntity();
+            if (targetEntity != null) {
+                return targetEntity.getInventoryTypeData();
             }
         }
-        return inventoryTypeData;
+        return InventoryTypeManager.getDefaultInventoryTypeData();
     }
 
     @Override

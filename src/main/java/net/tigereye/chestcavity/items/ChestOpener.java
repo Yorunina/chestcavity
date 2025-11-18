@@ -49,7 +49,7 @@ public class ChestOpener extends Item {
             return InteractionResult.PASS;
         }
         Map<Enchantment, Integer> allEnchantments = stack.getAllEnchantments();
-        if (!allEnchantments.containsKey(CREATIVE_SURGERY.get()) || target instanceof Player) {
+        if (target instanceof Player && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
             return InteractionResult.FAIL;
         }
         boolean success = this.openChestCavity(player, target, stack, true);
@@ -60,10 +60,14 @@ public class ChestOpener extends Item {
         }
     }
 
+    @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack chestOpener = player.getItemInHand(hand);
         if (world.isClientSide()) {
             return InteractionResultHolder.pass(chestOpener);
+        }
+        if (!player.isShiftKeyDown()) {
+            return InteractionResultHolder.fail(chestOpener);
         }
         if (chestOpener.getAllEnchantments().containsKey(SAFE_SURGERY.get())) {
             return InteractionResultHolder.fail(chestOpener);
@@ -102,6 +106,5 @@ public class ChestOpener extends Item {
             }
             return true;
         }
-
     }
 }
