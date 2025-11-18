@@ -15,8 +15,6 @@ public class CCConfig implements ConfigData {
     @Category("core")
     public int ORGAN_REJECTION_RATE = 600;
     @Category("core")
-    public int HEARTBLEED_RATE = 20;
-    @Category("core")
     public int KIDNEY_RATE = 60;
     @Category("core")
     public float FILTRATION_DURATION_FACTOR = 1.0F;

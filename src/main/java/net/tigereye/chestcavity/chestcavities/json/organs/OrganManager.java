@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,14 +17,14 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrganManager implements ResourceManagerReloadListener {
-    private final OrganSerializer SERIALIZER = new OrganSerializer();
+public class OrganManager {
+    private static final OrganSerializer SERIALIZER = new OrganSerializer();
     public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap<>();
 
     public OrganManager() {
     }
 
-    public void onResourceManagerReload(ResourceManager manager) {
+    public static void reloadOrganData(ResourceManager manager) {
         GeneratedOrganData.clear();
         manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
@@ -33,7 +32,7 @@ public class OrganManager implements ResourceManagerReloadListener {
 
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    Tuple<ResourceLocation, OrganData> organDataPair = this.SERIALIZER.read(id, new Gson().fromJson(reader, OrganJsonFormat.class));
+                    Tuple<ResourceLocation, OrganData> organDataPair = SERIALIZER.read(id, new Gson().fromJson(reader, OrganJsonFormat.class));
                     GeneratedOrganData.put(organDataPair.getA(), organDataPair.getB());
                 } catch (Throwable readError) {
                     try {

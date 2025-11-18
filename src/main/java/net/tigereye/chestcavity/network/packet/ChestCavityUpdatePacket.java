@@ -1,6 +1,5 @@
 package net.tigereye.chestcavity.network.packet;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,7 +55,7 @@ public class ChestCavityUpdatePacket {
         AtomicBoolean success = new AtomicBoolean(false);
         ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                Optional<ChestCavityEntity> optional = ChestCavityEntity.of(Minecraft.getInstance().player);
+                Optional<ChestCavityEntity> optional = ChestCavityEntity.of();
                 optional.ifPresent((chestCavityEntity) -> {
                     ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
                     instance.opened = this.opened;

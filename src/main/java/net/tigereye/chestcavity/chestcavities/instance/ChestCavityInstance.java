@@ -35,7 +35,6 @@ public class ChestCavityInstance implements ContainerListener {
     public Map<ResourceLocation, Float> oldOrganScores = new HashMap<>();
     protected Map<ResourceLocation, Float> organScores = new HashMap<>();
     public LinkedList<Consumer<LivingEntity>> projectileQueue = new LinkedList<>();
-    public int heartBleedTimer = 0;
     public int bloodPoisonTimer = 0;
     public int liverTimer = 0;
     public float metabolismRemainder = 0.0F;
@@ -57,10 +56,9 @@ public class ChestCavityInstance implements ContainerListener {
         this.compatibility_id = owner.getUUID();
         this.inventoryType = type.getInventoryType();
         if (owner instanceof ChestCavityEntity ccEntity) {
-            ccEntity.setInventoryTypeData(this.inventoryType);
+            ccEntity.setInventoryTypeData(this.getInventoryType());
         }
-
-        this.inventory = new ChestCavityInventory(InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize(), this);
+        this.inventory = new ChestCavityInventory( this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
     }
@@ -162,7 +160,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.inventoryType = inventoryType;
         this.inventory.removeListener(this);
         int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
-        ChestCavityInventory newInventory = new ChestCavityInventory(newInventorySize, this);
+        ChestCavityInventory newInventory = new ChestCavityInventory(this);
 
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
             if (newInventorySize <= i) {
@@ -184,7 +182,6 @@ public class ChestCavityInstance implements ContainerListener {
         if (tag.contains("ChestCavity")) {
             ccTag = tag.getCompound("ChestCavity");
             this.opened = ccTag.getBoolean("opened");
-            this.heartBleedTimer = ccTag.getInt("HeartTimer");
             this.bloodPoisonTimer = ccTag.getInt("KidneyTimer");
             this.liverTimer = ccTag.getInt("LiverTimer");
             this.metabolismRemainder = ccTag.getFloat("MetabolismRemainder");
@@ -211,7 +208,7 @@ public class ChestCavityInstance implements ContainerListener {
                     this.owner.spawnAtLocation(this.inventory.getItem(i));
                 }
             }
-            this.inventory = new ChestCavityInventory(newInventorySize, this);
+            this.inventory = new ChestCavityInventory(this);
             if (ccTag.contains("Inventory")) {
                 ListTag nbtList = ccTag.getList("Inventory", 10);
                 this.inventory.readTags(nbtList);
@@ -227,7 +224,6 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putBoolean("opened", this.opened);
         ccTag.putString("InventoryType", this.inventoryType.toString());
         ccTag.putUUID("compatibility_id", this.compatibility_id);
-        ccTag.putInt("HeartTimer", this.heartBleedTimer);
         ccTag.putInt("KidneyTimer", this.bloodPoisonTimer);
         ccTag.putInt("LiverTimer", this.liverTimer);
         ccTag.putFloat("MetabolismRemainder", this.metabolismRemainder);
@@ -257,7 +253,6 @@ public class ChestCavityInstance implements ContainerListener {
         }
         this.inventory = other.inventory.clone();
         this.inventory.addListener(this);
-        this.heartBleedTimer = other.heartBleedTimer;
         this.liverTimer = other.liverTimer;
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;

@@ -10,9 +10,6 @@ import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager
 public class ChestCavityInstanceFactory {
     private static final ResourceLocation DEFAULT_CHEST_CAVITY_TYPE = new ResourceLocation("chestcavity:cc_types/default.json");
 
-    public ChestCavityInstanceFactory() {
-    }
-
     public static ChestCavityInstance newChestCavityInstance(EntityType<? extends LivingEntity> entityType, LivingEntity owner) {
         ResourceLocation entityID = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
         if (ChestCavityAssignmentManager.GeneratedChestCavityAssignments.containsKey(entityID)) {
@@ -21,7 +18,6 @@ public class ChestCavityInstanceFactory {
                 return new ChestCavityInstance(ChestCavityTypeManager.GeneratedChestCavityTypes.get(chestCavityTypeID), owner);
             }
         }
-
         return new ChestCavityInstance(ChestCavityTypeManager.GeneratedChestCavityTypes.get(DEFAULT_CHEST_CAVITY_TYPE), owner);
     }
 }

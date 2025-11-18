@@ -27,7 +27,7 @@ import static net.tigereye.chestcavity.registration.CCEnchantments.ADVANCE_SURGE
 
 public class GeneratedChestCavityType implements ChestCavityType {
     private Map<ResourceLocation, Float> defaultOrganScores = null;
-    private ChestCavityInventory defaultChestCavity = null;
+    private ChestCavityInventory defaultChestCavity = new ChestCavityInventory(0);
     private Map<ResourceLocation, Float> baseOrganScores = null;
     private Map<Ingredient, Map<ResourceLocation, Float>> exceptionalOrganList = null;
     private ResourceLocation inventoryType = new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING);

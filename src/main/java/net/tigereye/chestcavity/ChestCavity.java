@@ -31,9 +31,6 @@ import org.apache.logging.log4j.Logger;
 @Mod(ChestCavity.MODID)
 public class ChestCavity {
     public static final String MODID = "chestcavity";
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
-    public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static CCConfig config;
@@ -51,6 +48,10 @@ public class ChestCavity {
                 TinkerItemRegistration.addTabItems(tabOutput);
             }).build()
     );
+
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+    public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
+    public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
 
     public ChestCavity() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -73,4 +74,7 @@ public class ChestCavity {
         }
         FTB_EVENT_HANDLER = new ChestCavityQuestEventHandler().init();
     }
+
+
+
 }

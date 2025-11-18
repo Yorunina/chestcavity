@@ -28,7 +28,6 @@ public interface ChestCavityType {
 
     void setOrganCompatibility(ChestCavityInstance var1);
 
-    float getHeartBleedCap();
 
     boolean isOpenable(ChestCavityInstance var1, Map<Enchantment, Integer> allEnchantments);
 

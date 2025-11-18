@@ -67,20 +67,19 @@ public class ChestOpener extends Item {
             }
             return false;
         } else {
-            if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F || allEnchantments.containsKey(CREATIVE_SURGERY.get()) || allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
-//                if (player.level().isClientSide()) {
-//                    player.playNotifySound(SoundEvents.CHEST_OPEN, SoundSource.PLAYERS, 0.75F, 1.0F);
-//                }
-            }  else if (!shouldKnockback) {
-                target.hurt(player.damageSources().generic(), 4.0F);
-            } else {
-                target.hurt(player.damageSources().playerAttack(player), 4.0F);
+            if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) <= 0.0F && !allEnchantments.containsKey(CREATIVE_SURGERY.get()) && !allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
+                if (!shouldKnockback) {
+                    target.hurt(player.damageSources().generic(), 4.0F);
+                } else {
+                    target.hurt(player.damageSources().playerAttack(player), 4.0F);
+                }
             }
 
             if (target.isAlive()) {
                 ((ChestCavityEntity) player).getChestCavityInstance().ccBeingOpened = cc;
                 // 界面渲染
-                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
+                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) ->
+                        new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
                 if (player instanceof ServerPlayer serverPlayer) {
                     ChestCavity.FTB_EVENT_HANDLER.onChestCavityOpened(serverPlayer, target);
                 }

@@ -116,7 +116,7 @@ public class SurgicalBox extends Item implements MenuProvider {
         // 替换胸腔物品栏数量，保存物品信息
         entityInstance.oldInventory = entityInstance.inventory.clone();
         ListTag entityItemListNbt = entityInstance.inventory.getTags();
-        entityInstance.inventory = new ChestCavityInventory(itemInventoryTypeData.getSlotSize(), entityInstance);
+        entityInstance.inventory = new ChestCavityInventory(entityInstance);
         // 替换物品
         ItemStackHandler itemInventory = new ItemStackHandler(itemInventoryTypeData.getSlotSize());
         itemInventory.deserializeNBT(itemNbt.getCompound("Inventory"));

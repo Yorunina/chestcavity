@@ -53,38 +53,28 @@ public class ChestCavityTypeSerializer {
 
         for (JsonElement entry : cctJson.defaultChestCavity) {
             ++i;
-            try {
-                JsonObject obj = entry.getAsJsonObject();
-                if (!obj.has("item")) {
-                    ChestCavity.LOGGER.error("Missing item component in entry no." + i + " in " + id.toString() + "'s default chest cavity");
-                } else if (!obj.has("position")) {
-                    ChestCavity.LOGGER.error("Missing position component in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
-                } else {
-                    ResourceLocation itemID = new ResourceLocation(obj.get("item").getAsString());
-                    Optional<Item> itemOptional = Optional.ofNullable(ForgeRegistries.ITEMS.getValue(new ResourceLocation(obj.get("item").getAsString())));
-                    if (itemOptional.isPresent()) {
-                        Item item = itemOptional.get();
-                        ItemStack stack;
-                        int pos;
-                        if (obj.has("count")) {
-                            pos = obj.get("count").getAsInt();
-                            stack = new ItemStack(item, pos);
-                        } else {
-                            stack = new ItemStack(item, item.getMaxStackSize());
-                        }
 
-                        pos = obj.get("position").getAsInt();
-                        if (pos >= inv.getContainerSize()) {
-                            ChestCavity.LOGGER.error("Position component is out of bounds in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
-                        } else {
-                            inv.setItem(pos, stack);
-                        }
+            JsonObject obj = entry.getAsJsonObject();
+            if (!obj.has("item")) {
+                ChestCavity.LOGGER.warn("Missing item component in entry no." + i + " in " + id.toString() + "'s default chest cavity");
+            } else if (!obj.has("position")) {
+                ChestCavity.LOGGER.warn("Missing position component in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
+            } else {
+                ResourceLocation itemID = new ResourceLocation(obj.get("item").getAsString());
+                Optional<Item> itemOptional = Optional.ofNullable(ForgeRegistries.ITEMS.getValue(itemID));
+                if (itemOptional.isPresent()) {
+                    Item item = itemOptional.get();
+                    ItemStack stack = new ItemStack(item, 1);
+                    if (obj.has("count")) {
+                        stack.setCount(obj.get("count").getAsInt());
+                    }
+                    int pos = obj.get("position").getAsInt();
+                    if (pos >= inv.getContainerSize()) {
+                        ChestCavity.LOGGER.warn("Position component is out of bounds in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
                     } else {
-                        ChestCavity.LOGGER.error("Unknown " + itemID + " in entry no. " + i + " in " + id.toString() + "'s default chest cavity");
+                        inv.setItem(pos, stack);
                     }
                 }
-            } catch (Exception var14) {
-                ChestCavity.LOGGER.error("Error parsing entry no. " + i + " in " + id.toString() + "'s default chest cavity");
             }
         }
 

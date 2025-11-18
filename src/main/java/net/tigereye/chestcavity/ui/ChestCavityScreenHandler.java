@@ -48,18 +48,18 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
         if (level.isClientSide()) {
-            this.inventory = new ChestCavityInventory(inventoryTypeData.getSlotSize(), chestCavityEntity.getChestCavityInstance());
+            this.inventory = new ChestCavityInventory(chestCavityEntity.getChestCavityInstance());
         } else {
             this.inventory = ChestCavityUtil.openChestCavity(chestCavityEntity.getChestCavityInstance());
         }
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
         int n;
         int m;
-        // 组装自定义胸腔界面
+
         for (int j = 0; j < this.inventory.getContainerSize(); j++) {
             this.addSlot(new Slot(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
-        // 组装玩家背包
+
         for (n = 0; n < 3; n++) {
             for (m = 0; m < 9; m++) {
                 this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY()));

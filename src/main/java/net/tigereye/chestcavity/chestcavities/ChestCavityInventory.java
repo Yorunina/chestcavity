@@ -6,6 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 
 public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
@@ -21,8 +22,8 @@ public class ChestCavityInventory extends SimpleContainer {
         super(size);
     }
 
-    public ChestCavityInventory(int size, ChestCavityInstance instance) {
-        super(size);
+    public ChestCavityInventory(ChestCavityInstance instance) {
+        super(InventoryTypeManager.getInventoryTypeData(instance.getInventoryType()).getSlotSize());
         this.instance = instance;
     }
 
@@ -66,7 +67,7 @@ public class ChestCavityInventory extends SimpleContainer {
     }
 
     public ChestCavityInventory clone() {
-        ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize(), this.instance);
+        ChestCavityInventory inventory = new ChestCavityInventory(this.instance);
         for (int i = 0; i < this.getContainerSize(); ++i) {
             inventory.setItem(i, this.getItem(i).copy());
         }

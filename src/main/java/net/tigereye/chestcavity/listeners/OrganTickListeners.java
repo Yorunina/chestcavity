@@ -24,7 +24,6 @@ public class OrganTickListeners {
     public static void call(LivingEntity entity, ChestCavityInstance cc) {
         TickIncompatibility(entity, cc);
         TickProjectileQueue(entity, cc);
-        TickHealth(entity, cc);
         TickFiltration(entity, cc);
         TickBuoyant(entity, cc);
         TickCrystalsynthesis(entity, cc);
@@ -128,17 +127,6 @@ public class OrganTickListeners {
 
     }
 
-    public static void TickHealth(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOrganScore(CCOrganScores.HEALTH) <= 0F && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH) <= 0F) {
-            if (entity.level().getGameTime() % (long) ChestCavity.config.HEARTBLEED_RATE == 0L) {
-                ++cc.heartBleedTimer;
-                entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.HEARTBLEED), Math.min((float) cc.heartBleedTimer, cc.getChestCavityType().getHeartBleedCap()));
-            }
-        } else {
-            cc.heartBleedTimer = 0;
-        }
-
-    }
 
     public static void TickFiltration(LivingEntity entity, ChestCavityInstance cc) {
         if (!entity.level().isClientSide() && !(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION) <= 0.0F)) {

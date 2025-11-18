@@ -100,7 +100,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"<init>"}
     )
     public void chestCavityLivingEntityConstructorMixin(EntityType<? extends LivingEntity> entityType, Level world, CallbackInfo info) {
-        this.chestCavityInstance = ChestCavityInstanceFactory.newChestCavityInstance(entityType, (LivingEntity) (Object) this);
+        if (!world.isClientSide()) {
+            this.chestCavityInstance = ChestCavityInstanceFactory.newChestCavityInstance(entityType, (LivingEntity) (Object) this);
+        }
     }
 
     @Inject(
@@ -117,6 +119,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"baseTick"}
     )
     public void chestCavityLivingEntityBaseTickMixin(CallbackInfo info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         ChestCavityUtil.onTick(this.chestCavityInstance);
     }
 
@@ -125,6 +130,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"baseTick"}
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
             this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
@@ -148,6 +156,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             cancellable = true
     )
     protected void chestCavityLivingEntityGetNextAirUnderwaterMixin(int air, CallbackInfoReturnable<Integer> info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         info.setReturnValue(ChestCavityUtil.applyBreathInWater(this.chestCavityInstance, air, info.getReturnValueI()));
     }
 
@@ -312,6 +323,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 method = {"tick"}
         )
         protected void chestCavityCreeperTickMixin(CallbackInfo info) {
+            if (this.level().isClientSide) {
+                return;
+            }
             if (this.isAlive() && this.swell > 1) {
                 ChestCavityEntity.of(this).ifPresent((cce) -> {
                     if (cce.getChestCavityInstance().opened && cce.getChestCavityInstance().getOrganScore(CCOrganScores.CREEPY) <= 0.0F) {
