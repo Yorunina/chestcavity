@@ -35,18 +35,20 @@ public class ChestOpener extends Item {
 
     public static void canNotOpenChestCavity(Player player, LivingEntity target) {
         if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-            player.displayClientMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.obstructed"), true);
-            player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
+            player.sendSystemMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.obstructed"));
+            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                    SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         } else {
-            player.displayClientMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.healthy"), true);
-            player.playNotifySound(SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
+            player.sendSystemMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.healthy"));
+            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                    SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         }
     }
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (player.level().isClientSide()) {
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
         }
         Map<Enchantment, Integer> allEnchantments = stack.getAllEnchantments();
         if (target instanceof Player && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
@@ -66,9 +68,7 @@ public class ChestOpener extends Item {
         if (world.isClientSide()) {
             return InteractionResultHolder.pass(chestOpener);
         }
-        if (!player.isShiftKeyDown()) {
-            return InteractionResultHolder.fail(chestOpener);
-        }
+
         if (chestOpener.getAllEnchantments().containsKey(SAFE_SURGERY.get())) {
             return InteractionResultHolder.fail(chestOpener);
         }
@@ -83,9 +83,7 @@ public class ChestOpener extends Item {
         cc.inventory.setInstance(cc);
         Map<Enchantment, Integer> allEnchantments = chestOpener.getAllEnchantments();
         if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments) && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
-            if (player.level().isClientSide()) {
-                canNotOpenChestCavity(player, target);
-            }
+            canNotOpenChestCavity(player, target);
             return false;
         } else {
             if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) <= 0.0F && !allEnchantments.containsKey(CREATIVE_SURGERY.get()) && !allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
