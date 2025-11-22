@@ -57,10 +57,6 @@ public class CCConfig implements ConfigData {
     @Category("more")
     public float IMPACT_DEFENSE = 0.75F;
     @Category("more")
-    public float IRON_REPAIR_PERCENT = 0.25F;
-    @Category("more")
-    public float LAUNCHING_POWER = 0.1F;
-    @Category("more")
     public int MAX_TELEPORT_ATTEMPTS = 5;
     @Category("more")
     public int PHOTOSYNTHESIS_FREQUENCY = 50;
@@ -88,8 +84,6 @@ public class CCConfig implements ConfigData {
     public int FORCEFUL_SPIT_COOLDOWN = 20;
     @Category("cooldown")
     public int GHASTLY_COOLDOWN = 60;
-    @Category("cooldown")
-    public int IRON_REPAIR_COOLDOWN = 1200;
     @Category("cooldown")
     public int PYROMANCY_COOLDOWN = 78;
     @Category("cooldown")

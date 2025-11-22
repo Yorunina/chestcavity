@@ -204,6 +204,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             at = {@At("TAIL")}
     )
     private void readCustomDataFromNbt(CompoundTag tag, CallbackInfo callbackInfo) {
+        if (this.level().isClientSide) {
+            return;
+        }
         this.chestCavityInstance.fromTag(tag, (LivingEntity) (Object) this);
     }
 
@@ -212,6 +215,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             at = {@At("TAIL")}
     )
     private void writeCustomDataToNbt(CompoundTag tag, CallbackInfo callbackInfo) {
+        if (this.level().isClientSide) {
+            return;
+        }
         this.chestCavityInstance.toTag(tag, (LivingEntity) (Object) this);
     }
 

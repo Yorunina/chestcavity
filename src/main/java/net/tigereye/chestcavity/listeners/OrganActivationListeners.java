@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,7 +16,6 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
-import net.tigereye.chestcavity.registration.CCTags;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.OrganUtil;
 
@@ -36,7 +34,6 @@ public class OrganActivationListeners {
         register(CCOrganScores.DRAGON_BOMBS, OrganActivationListeners::ActivateDragonBombs);
         register(CCOrganScores.FORCEFUL_SPIT, OrganActivationListeners::ActivateForcefulSpit);
         register(CCOrganScores.FURNACE_POWERED, OrganActivationListeners::ActivateFurnacePowered);
-        register(CCOrganScores.IRON_REPAIR, OrganActivationListeners::ActivateIronRepair);
         register(CCOrganScores.PYROMANCY, OrganActivationListeners::ActivatePyromancy);
         register(CCOrganScores.GHASTLY, OrganActivationListeners::ActivateGhastly);
         register(CCOrganScores.GRAZING, OrganActivationListeners::ActivateGrazing);
@@ -159,24 +156,6 @@ public class OrganActivationListeners {
 
     }
 
-    public static void ActivateIronRepair(LivingEntity entity, ChestCavityInstance cc) {
-        float ironRepair = cc.getOrganScore(CCOrganScores.IRON_REPAIR) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.IRON_REPAIR);
-        if (!(ironRepair <= 0.0F) && !cc.owner.hasEffect(CCStatusEffects.IRON_REPAIR_COOLDOWN.get()) && !(cc.owner.getHealth() >= cc.owner.getMaxHealth())) {
-            ItemStack itemStack = cc.owner.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (!itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
-                itemStack = cc.owner.getItemBySlot(EquipmentSlot.OFFHAND);
-                if (!itemStack.is(CCTags.IRON_REPAIR_MATERIAL)) {
-                    return;
-                }
-            }
-
-            cc.owner.heal(cc.owner.getMaxHealth() * ChestCavity.config.IRON_REPAIR_PERCENT);
-            entity.playSound(SoundEvents.IRON_GOLEM_REPAIR, 0.75F, 1.0F);
-            cc.owner.addEffect(new MobEffectInstance(CCStatusEffects.IRON_REPAIR_COOLDOWN.get(), (int) ((float) ChestCavity.config.IRON_REPAIR_COOLDOWN / ironRepair), 0, false, false, true));
-            itemStack.shrink(1);
-        }
-
-    }
 
     public static void ActivateGhastly(LivingEntity entity, ChestCavityInstance cc) {
         float ghastly = cc.getOrganScore(CCOrganScores.GHASTLY);

@@ -26,7 +26,6 @@ public class ChestCavityClient {
         event.register(CCKeybindings.DRAGON_BOMBS);
         event.register(CCKeybindings.FORCEFUL_SPIT);
         event.register(CCKeybindings.FURNACE_POWERED);
-        event.register(CCKeybindings.IRON_REPAIR);
         event.register(CCKeybindings.PYROMANCY);
         event.register(CCKeybindings.GHASTLY);
         event.register(CCKeybindings.GRAZING);

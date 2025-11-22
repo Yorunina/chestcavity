@@ -53,7 +53,6 @@ public class KeybindingClientListeners {
         register(CCKeybindings.DRAGON_BOMBS, CCOrganScores.DRAGON_BOMBS);
         register(CCKeybindings.FORCEFUL_SPIT, CCOrganScores.FORCEFUL_SPIT);
         register(CCKeybindings.FURNACE_POWERED, CCOrganScores.FURNACE_POWERED);
-        register(CCKeybindings.IRON_REPAIR, CCOrganScores.IRON_REPAIR);
         register(CCKeybindings.GHASTLY, CCOrganScores.GHASTLY);
         register(CCKeybindings.GRAZING, CCOrganScores.GRAZING);
         register(CCKeybindings.PYROMANCY, CCOrganScores.PYROMANCY);

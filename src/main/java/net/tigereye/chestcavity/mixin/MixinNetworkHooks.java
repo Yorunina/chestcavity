@@ -31,19 +31,15 @@ public class MixinNetworkHooks {
         if (direction.equals("PLAY_TO_CLIENT")) {
             ArrayList<Connection> managers = new ArrayList<>();
             managers.add(manager);
-            
             // 发送器官数据
             int organCount = OrganManager.GeneratedOrganData.size();
             ChestCavityNetwork.INSTANCE.send(PacketDistributor.NMLIST.with(() -> managers), new OrganDataPacket(organCount, OrganManager.GeneratedOrganData));
-            
             // 发送胸腔分配数据
             int assignmentCount = ChestCavityAssignmentManager.GeneratedChestCavityAssignments.size();
             ChestCavityNetwork.INSTANCE.send(PacketDistributor.NMLIST.with(() -> managers), new ChestCavityAssignmentDataPacket(assignmentCount, ChestCavityAssignmentManager.GeneratedChestCavityAssignments));
-
             // 发送库存类型数据
             int inventoryTypeCount = InventoryTypeManager.GeneratedInventoryTypeData.size();
             ChestCavityNetwork.INSTANCE.send(PacketDistributor.NMLIST.with(() -> managers), new InventoryTypeDataPacket(inventoryTypeCount, InventoryTypeManager.GeneratedInventoryTypeData));
-
         }
     }
 }

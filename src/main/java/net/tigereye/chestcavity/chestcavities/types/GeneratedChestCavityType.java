@@ -45,7 +45,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
                     OrganData data = ChestCavityUtil.lookupOrgan(itemStack, this);
                     if (data != null) {
                         data.organScores.forEach((key, value) -> {
-                            ChestCavityUtil.addOrganScore(key, value * itemStack.getCount(), this.defaultOrganScores);
+                            ChestCavityUtil.addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), this.defaultOrganScores);
                         });
                     }
                 }
@@ -54,6 +54,7 @@ public class GeneratedChestCavityType implements ChestCavityType {
 
         return this.defaultOrganScores;
     }
+
 
     public float getDefaultOrganScore(ResourceLocation id) {
         return this.getDefaultOrganScores().getOrDefault(id, 0.0F);

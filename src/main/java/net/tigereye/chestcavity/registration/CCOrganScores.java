@@ -29,7 +29,6 @@ public class CCOrganScores {
     public static final ResourceLocation HYDROPHOBIA = new ResourceLocation(ChestCavity.MODID, "hydrophobia");
     public static final ResourceLocation IMPACT_RESISTANT = new ResourceLocation(ChestCavity.MODID, "impact_resistant");
     public static final ResourceLocation KNOCKBACK_RESISTANT = new ResourceLocation(ChestCavity.MODID, "knockback_resistant");
-    public static final ResourceLocation LAUNCHING = new ResourceLocation(ChestCavity.MODID, "launching");
     public static final ResourceLocation LEAPING = new ResourceLocation(ChestCavity.MODID, "leaping");
     public static final ResourceLocation SWIM_SPEED = new ResourceLocation(ChestCavity.MODID, "swim_speed");
     public static final ResourceLocation WATERBREATH = new ResourceLocation(ChestCavity.MODID, "water_breath");
@@ -50,10 +49,8 @@ public class CCOrganScores {
     public static final ResourceLocation FURNACE_POWERED = new ResourceLocation(ChestCavity.MODID, "furnace_powered");
     public static final ResourceLocation HERBIVOROUS_DIGESTION = new ResourceLocation(ChestCavity.MODID, "herbivorous_digestion");
     public static final ResourceLocation HERBIVOROUS_NUTRITION = new ResourceLocation(ChestCavity.MODID, "herbivorous_nutrition");
-    public static final ResourceLocation IRON_REPAIR = new ResourceLocation(ChestCavity.MODID, "iron_repair");
     public static final ResourceLocation ROT_DIGESTION = new ResourceLocation(ChestCavity.MODID, "rot_digestion");
     public static final ResourceLocation ROTGUT = new ResourceLocation(ChestCavity.MODID, "rotgut");
-    public static final ResourceLocation VENOMOUS = new ResourceLocation(ChestCavity.MODID, "venomous");
 
     public CCOrganScores() {
     }

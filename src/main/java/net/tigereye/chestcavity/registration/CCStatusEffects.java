@@ -20,7 +20,6 @@ public class CCStatusEffects {
     public static final RegistryObject<MobEffect> FORCEFUL_SPIT_COOLDOWN;
     public static final RegistryObject<MobEffect> FURNACE_POWER;
     public static final RegistryObject<MobEffect> GHASTLY_COOLDOWN;
-    public static final RegistryObject<MobEffect> IRON_REPAIR_COOLDOWN;
     public static final RegistryObject<MobEffect> PYROMANCY_COOLDOWN;
     public static final RegistryObject<MobEffect> RUMINATING;
     public static final RegistryObject<MobEffect> SHULKER_BULLET_COOLDOWN;
@@ -50,9 +49,6 @@ public class CCStatusEffects {
         });
         FURNACE_POWER = MOB_EFFECTS.register("furnace_power", FurnacePower::new);
         GHASTLY_COOLDOWN = MOB_EFFECTS.register("ghastly_cooldown", () -> {
-            return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
-        });
-        IRON_REPAIR_COOLDOWN = MOB_EFFECTS.register("iron_repair_cooldown", () -> {
             return new CCStatusEffect(MobEffectCategory.NEUTRAL, 0);
         });
         PYROMANCY_COOLDOWN = MOB_EFFECTS.register("pyromancy_cooldown", () -> {
