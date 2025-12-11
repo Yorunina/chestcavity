@@ -125,6 +125,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             cancellable = true
     )
     public void chestCavityLivingEntityDamageMixin(DamageSource source, float amount, CallbackInfoReturnable<Float> info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         info.setReturnValue(ChestCavityUtil.applyDefenses(this.chestCavityInstance, source, info.getReturnValueF()));
     }
 
@@ -133,6 +136,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"dropEquipment"}
     )
     public void chestCavityLivingEntityDropInventoryMixin(CallbackInfo info) {
+        if (this.level().isClientSide) {
+            return;
+        }
         ChestCavityUtil.onDeath(this);
     }
 
@@ -145,6 +151,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             argsOnly = true
     )
     public MobEffectInstance chestCavityLivingEntityAddStatusEffectMixin(MobEffectInstance effect) {
+        if (this.level().isClientSide) {
+            return effect;
+        }
         return ChestCavityUtil.onAddStatusEffect(this.chestCavityInstance, effect);
     }
 
@@ -157,12 +166,14 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
     )
     public List<Pair<MobEffectInstance, Float>> chestCavityLivingEntityApplyFoodEffectsMixin(FoodProperties instance, ItemStack stack, Level world, LivingEntity targetEntity) {
         List<Pair<MobEffectInstance, Float>> list = instance.getEffects();
+        if (this.level().isClientSide) {
+            return list;
+        }
         Optional<ChestCavityEntity> option = ChestCavityEntity.of(targetEntity);
         if (option.isPresent()) {
-            list = new LinkedList(list);
+            list = new LinkedList<>(list);
             OrganFoodEffectListeners.call(list, stack, world, targetEntity, option.get().getChestCavityInstance());
         }
-
         return list;
     }
 
@@ -176,6 +187,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             require = 0
     )
     protected float chestCavityLivingEntityWaterTravelMixin(float g) {
+        if (this.level().isClientSide) {
+            return g;
+        }
         return g * ChestCavityUtil.applySwimSpeedInWater(this.chestCavityInstance);
     }
 
@@ -234,7 +248,10 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 cancellable = true
         )
         void chestCavityPlayerEntityGetBlockBreakingSpeedMixin(BlockState block, CallbackInfoReturnable<Float> cir) {
-            cir.setReturnValue(ChestCavityUtil.applyNervesToMining(((ChestCavityEntity) this).getChestCavityInstance(), (Float) cir.getReturnValue()));
+            if (this.level().isClientSide) {
+                return;
+            }
+            cir.setReturnValue(ChestCavityUtil.applyNervesToMining(((ChestCavityEntity) this).getChestCavityInstance(), cir.getReturnValue()));
         }
     }
 
