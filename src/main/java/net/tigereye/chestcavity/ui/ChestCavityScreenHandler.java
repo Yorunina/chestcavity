@@ -106,8 +106,8 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     @Override
     public void removed(@NotNull Player player) {
         super.removed(player);
-        if (player.level().isClientSide()) {
-            net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager.removeTargetEntityInventoryType();
-        }
+//        if (player.level().isClientSide()) {
+//            TargetEntityInventoryTypeManager.removeTargetEntityInventoryType();
+//        }
     }
 }
