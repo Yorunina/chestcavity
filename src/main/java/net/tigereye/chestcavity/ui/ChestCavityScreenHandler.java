@@ -26,6 +26,7 @@ import java.util.List;
 
 public class ChestCavityScreenHandler extends AbstractContainerMenu {
     private final ChestCavityInventory inventory;
+    private ItemStack chestCavityItem;
 
     // 为MenuType注册保留的双参数构造函数
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory) {
@@ -37,6 +38,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         Player player = playerInventory.player;
         Level level = player.level();
         InventoryTypeData inventoryTypeData;
+        chestCavityItem = player.getMainHandItem();
         if (level.isClientSide() && targetEntity == null) {
             ResourceLocation inventoryType = TargetEntityInventoryTypeManager.getTargetEntityInventoryType();
             inventoryTypeData = InventoryTypeManager.getInventoryTypeData(inventoryType);
@@ -61,17 +63,17 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         int m;
 
         for (int j = 0; j < this.inventory.getContainerSize(); j++) {
-            this.addSlot(new Slot(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
+            this.addSlot(new ChestCavitySlot(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
 
         for (n = 0; n < 3; n++) {
             for (m = 0; m < 9; m++) {
-                this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY()));
+                this.addSlot(new ChestCavityInventorySlot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY(), chestCavityItem));
             }
         }
         // 组装玩家快捷栏
         for (n = 0; n < 9; n++) {
-            this.addSlot(new Slot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
+            this.addSlot(new ChestCavityInventorySlot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY(), chestCavityItem));
         }
     }
 

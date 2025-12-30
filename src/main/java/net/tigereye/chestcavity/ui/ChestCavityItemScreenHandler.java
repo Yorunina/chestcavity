@@ -9,8 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefinition;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
@@ -22,8 +20,7 @@ import java.util.List;
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
 public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
-
-    private ItemStackHandler inventory;
+    private ChestCavityContainer inventory;
     private InteractionHand itemHand;
     private ItemStack chestCavityItem;
 
@@ -51,9 +48,9 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
         InventoryTypeData inventoryTypeData = InventoryTypeManager.getInventoryTypeData(new ResourceLocation(inventoryType));
 
         int slotSize = inventoryTypeData.getSlotSize();
-        this.inventory = new ItemStackHandler(slotSize);
+        this.inventory = new ChestCavityContainer(slotSize);
         nbt.putInt("Size", slotSize);
-        this.inventory.deserializeNBT(nbt.getCompound("Inventory"));
+        this.inventory.fromTag(nbt.getList("Inventory", 10));
 
         List<ChestCavitySlotDefinition> slotDefinitionList = inventoryTypeData.getSlotDefinitions();
 
@@ -62,26 +59,17 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
         int m;
         // 组装自定义胸腔界面
         for (int j = 0; j < slotSize; j++) {
-            this.addSlot(new SlotItemHandler(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()) {
-                @Override
-                public boolean mayPlace(ItemStack stack) {
-                    return !stack.is(chestCavityItem.getItem());
-                }
-            });
+            this.addSlot(new ChestCavitySlot(this.inventory, j, slotDefinitionList.get(j).getX(), slotDefinitionList.get(j).getY()));
         }
         // 组装玩家背包
         for (n = 0; n < 3; n++) {
             for (m = 0; m < 9; m++) {
-                this.addSlot(new Slot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY()));
+                this.addSlot(new ChestCavityInventorySlot(playerInventory, m + n * 9 + 9, 8 + m * 18 + playerInventoryPosition.getX(), 84 + n * 18 + playerInventoryPosition.getY(), chestCavityItem));
             }
         }
         // 组装玩家快捷栏
         for (n = 0; n < 9; n++) {
-            if (playerInventory.selected == n) {
-                this.addSlot(new SlotLocked(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
-            } else {
-                this.addSlot(new Slot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY()));
-            }
+            this.addSlot(new ChestCavityInventorySlot(playerInventory, n, 8 + n * 18 + playerInventoryPosition.getX(), 142 + playerInventoryPosition.getY(), chestCavityItem));
         }
 
     }
@@ -93,11 +81,11 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
         if (slot.hasItem()) {
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
-            if (invSlot < this.inventory.getSlots()) {
-                if (!this.moveItemStackTo(originalStack, this.inventory.getSlots(), this.slots.size(), true)) {
+            if (invSlot < this.inventory.getContainerSize()) {
+                if (!this.moveItemStackTo(originalStack, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(originalStack, 0, this.inventory.getSlots(), false)) {
+            } else if (!this.moveItemStackTo(originalStack, 0, this.inventory.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -113,7 +101,7 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
 
     @Override
     public void removed(Player player) {
-        chestCavityItem.getOrCreateTag().put("Inventory", inventory.serializeNBT());
+        chestCavityItem.getOrCreateTag().put("Inventory", inventory.createTag());
         super.removed(player);
     }
 

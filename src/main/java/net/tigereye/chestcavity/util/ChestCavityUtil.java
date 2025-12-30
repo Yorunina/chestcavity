@@ -351,10 +351,10 @@ public class ChestCavityUtil {
     }
 
     public static void generateChestCavityIfOpened(ChestCavityInstance cc) {
-        ListTag tagList = cc.getChestCavityType().getDefaultChestCavity().getTags();
+        ListTag tagList = cc.getChestCavityType().getDefaultChestCavity().createTag();
         cc.inventory.removeListener(cc);
         cc.inventory = new ChestCavityInventory(cc);
-        cc.inventory.readTags(tagList);
+        cc.inventory.fromTag(tagList);
         cc.inventory.addListener(cc);
         cc.getChestCavityType().setOrganCompatibility(cc);
         cc.opened = true;

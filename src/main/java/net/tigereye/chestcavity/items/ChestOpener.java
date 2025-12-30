@@ -72,7 +72,7 @@ public class ChestOpener extends Item {
         if (chestOpener.getAllEnchantments().containsKey(SAFE_SURGERY.get())) {
             return InteractionResultHolder.fail(chestOpener);
         }
-        return this.openChestCavity(player, player, chestOpener, false) ? InteractionResultHolder.sidedSuccess(chestOpener, false) : InteractionResultHolder.fail(chestOpener);
+        return this.openChestCavity(player, player, chestOpener, false) ? InteractionResultHolder.success(chestOpener) : InteractionResultHolder.fail(chestOpener);
     }
 
     public boolean openChestCavity(Player player, LivingEntity target, ItemStack chestOpener, boolean shouldKnockback) {

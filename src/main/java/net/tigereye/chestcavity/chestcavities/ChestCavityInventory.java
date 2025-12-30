@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
+import org.jetbrains.annotations.NotNull;
 
 public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
@@ -22,14 +23,14 @@ public class ChestCavityInventory extends SimpleContainer {
         super(size);
     }
 
-    public ChestCavityInventory(ChestCavityInstance instance) {
-        super(InventoryTypeManager.getInventoryTypeData(instance.getInventoryType()).getSlotSize());
-        this.instance = instance;
+    public ChestCavityInventory(ChestCavityInstance ccInstance) {
+        super(InventoryTypeManager.getInventoryTypeData(ccInstance.getInventoryType()).getSlotSize());
+        this.instance = ccInstance;
     }
 
-    public void readTags(ListTag tags) {
+    @Override
+    public void fromTag(ListTag tags) {
         this.clearContent();
-
         for (int j = 0; j < tags.size(); ++j) {
             CompoundTag NbtCompound = tags.getCompound(j);
             int k = NbtCompound.getInt("Slot");
@@ -37,10 +38,10 @@ public class ChestCavityInventory extends SimpleContainer {
                 this.setItem(k, ItemStack.of(NbtCompound));
             }
         }
-
     }
 
-    public ListTag getTags() {
+    @Override
+    public @NotNull ListTag createTag() {
         ListTag list = new ListTag();
 
         for (int i = 0; i < this.getContainerSize(); ++i) {
@@ -52,10 +53,10 @@ public class ChestCavityInventory extends SimpleContainer {
                 list.add(NbtCompound);
             }
         }
-
         return list;
     }
 
+    @Override
     public boolean stillValid(Player player) {
         if (this.instance == null) {
             return false;

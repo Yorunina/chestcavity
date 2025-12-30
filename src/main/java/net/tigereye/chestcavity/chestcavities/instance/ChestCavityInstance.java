@@ -207,7 +207,7 @@ public class ChestCavityInstance implements ContainerListener {
             this.inventory = new ChestCavityInventory(this);
             if (ccTag.contains("Inventory")) {
                 ListTag nbtList = ccTag.getList("Inventory", 10);
-                this.inventory.readTags(nbtList);
+                this.inventory.fromTag(nbtList);
             }
             this.inventory.addListener(this);
             ChestCavityUtil.evaluateChestCavity(this);
@@ -226,7 +226,7 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putFloat("LungRemainder", this.lungRemainder);
         ccTag.putInt("FurnaceProgress", this.furnaceProgress);
         ccTag.putInt("PhotosynthesisProgress", this.photosynthesisProgress);
-        ccTag.put("Inventory", this.inventory.getTags());
+        ccTag.put("Inventory", this.inventory.createTag());
         tag.put("ChestCavity", ccTag);
     }
 
