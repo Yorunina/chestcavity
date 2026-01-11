@@ -18,7 +18,7 @@ public class InventoryTypeManager {
     public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/default.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
-    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default.json";
+    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default";
 
     public InventoryTypeManager() {
     }
@@ -34,14 +34,15 @@ public class InventoryTypeManager {
     public static void reloadInventoryType(ResourceManager manager) {
         GeneratedInventoryTypeData.clear();
         ChestCavity.LOGGER.info("Loading screenType.");
-        manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
+        manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((jsonId, resource) -> {
             try {
                 InputStream stream = resource.open();
                 try {
+                    ResourceLocation id = new ResourceLocation(jsonId.getNamespace(), jsonId.getPath().substring(0, jsonId.getPath().length() - 5));
                     Reader reader = new InputStreamReader(stream);
-                    InventoryTypeData inventoryTypeData = SERIALIZER.read(id, (new Gson()).fromJson(reader, InventoryTypeJsonFormat.class));
+                    InventoryTypeData inventoryTypeData = SERIALIZER.read(jsonId, (new Gson()).fromJson(reader, InventoryTypeJsonFormat.class));
                     GeneratedInventoryTypeData.put(id, inventoryTypeData);
-                    ChestCavity.LOGGER.info("Loaded inventory " + id.toString());
+                    ChestCavity.LOGGER.info("Loaded inventory " + jsonId);
                 } catch (Throwable readError) {
                     try {
                         stream.close();
@@ -52,7 +53,7 @@ public class InventoryTypeManager {
                 }
                 stream.close();
             } catch (Exception openError) {
-                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
+                ChestCavity.LOGGER.error("Error occurred while loading resource json " + jsonId.toString(), openError);
             }
         });
 
