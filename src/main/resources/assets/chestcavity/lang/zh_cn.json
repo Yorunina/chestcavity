@@ -364,6 +364,7 @@
   "gui.chestcavity.chestopener.title": "%s 的胸腔",
   "ftbquests.task.chestcavity.open_chest_cavity_task": "开胸",
   "ftbquests.task.chestcavity.open_chest_cavity_task.entity": "实体类型",
+  "ftbquests.task.chestcavity.open_chest_cavity_task.inventoryType": "胸腔类型",
   "ftbquests.task.chestcavity.open_chest_cavity_task.value": "次数",
   "chestcavity.task.ftbquests.open_chest_cavity.title": "打开胸腔: %sx %s",
   "item.chestcavity.heart_shell": "心脏外壳",

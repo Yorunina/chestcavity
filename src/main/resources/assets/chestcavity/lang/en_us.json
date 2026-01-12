@@ -365,6 +365,7 @@
   "gui.chestcavity.chestopener.title": "%s's Chest Cavity",
   "ftbquests.task.chestcavity.open_chest_cavity_task": "Open Chest Cavity",
   "ftbquests.task.chestcavity.open_chest_cavity_task.entity": "Entity Type",
+  "ftbquests.task.chestcavity.open_chest_cavity_task.inventoryType": "ChestCavity Type",
   "ftbquests.task.chestcavity.open_chest_cavity_task.value": "Amount",
   "chestcavity.task.ftbquests.open_chest_cavity.title": "Open Chest Cavity: %sx %s"
 }
