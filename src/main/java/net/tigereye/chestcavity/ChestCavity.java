@@ -37,7 +37,6 @@ public class ChestCavity {
 
     public static final ResourceLocation COMPATIBILITY_TAG = new ResourceLocation(MODID, "organ_compatibility");
     public static boolean KUBEJS_LOADED = false;
-    public static ChestCavityQuestEventHandler FTB_EVENT_HANDLER;
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final RegistryObject<CreativeModeTab> GROUP = CREATIVE_TABS.register("tab", () -> new CreativeModeTab.Builder(CreativeModeTab.Row.TOP, 0)
@@ -72,7 +71,7 @@ public class ChestCavity {
         if (ModList.get().isLoaded("kubejs")) {
             KUBEJS_LOADED = true;
         }
-        FTB_EVENT_HANDLER = new ChestCavityQuestEventHandler().init();
+        ChestCavityQuestEventHandler.getInstance().init();
     }
 
 

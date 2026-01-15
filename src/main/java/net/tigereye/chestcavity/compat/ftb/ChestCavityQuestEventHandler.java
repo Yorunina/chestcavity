@@ -13,17 +13,24 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ChestCavityQuestEventHandler {
-    private List<OpenChestCavityTask> chestCavityOpenedTaskList = new ArrayList<>();
+    private List<OpenChestCavityTask> chestCavityOpenedTaskList = null;
 
+    private static ChestCavityQuestEventHandler INSTANCE = null;
     public ChestCavityQuestEventHandler init() {
         ChestCavityTypes.init();
         ClearFileCacheEvent.EVENT.register(this::fileCacheClear);
         return this;
+    }
+
+    public static ChestCavityQuestEventHandler getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ChestCavityQuestEventHandler();
+        }
+        return INSTANCE;
     }
 
     private void fileCacheClear(QuestFile file) {

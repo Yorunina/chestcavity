@@ -15,8 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
@@ -99,7 +99,7 @@ public class ChestOpener extends Item {
                 player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) ->
                         new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
                 if (player instanceof ServerPlayer serverPlayer) {
-                    ChestCavity.FTB_EVENT_HANDLER.onChestCavityOpened(serverPlayer, target);
+                    ChestCavityQuestEventHandler.getInstance().onChestCavityOpened(serverPlayer, target);
                 }
             }
             return true;
