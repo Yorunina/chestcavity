@@ -22,6 +22,7 @@ import net.tigereye.chestcavity.compat.tinker.TinkerItemRegistration;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
+import net.tigereye.chestcavity.ui.ChestCavityAlbumScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +52,8 @@ public class ChestCavity {
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static final RegistryObject<MenuType<ChestCavityScreenHandler>> CHEST_CAVITY_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_screen", () -> new MenuType<>(ChestCavityScreenHandler::new, FeatureFlags.VANILLA_SET));
     public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
+    public static final RegistryObject<MenuType<ChestCavityAlbumScreenHandler>> CHEST_CAVITY_ALBUM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_album_screen", () -> new MenuType<>(ChestCavityAlbumScreenHandler::new, FeatureFlags.VANILLA_SET));
+
 
     public ChestCavity() {
         MinecraftForge.EVENT_BUS.register(this);

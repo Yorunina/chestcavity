@@ -8,6 +8,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.items.ChestOpener;
 import net.tigereye.chestcavity.items.CreeperAppendix;
+import net.tigereye.chestcavity.items.OrganAlbum;
 import net.tigereye.chestcavity.items.SurgicalBox;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class CCItems {
     public static final RegistryObject<Item> HUMAN_KIDNEY;
     public static final RegistryObject<Item> HUMAN_LIVER;
     public static final RegistryObject<Item> SURGICAL_BOX;
+    public static final RegistryObject<Item> ORGAN_ALBUM;
     public static final RegistryObject<Item> HUMAN_LUNG;
     public static final RegistryObject<Item> HUMAN_MUSCLE;
     public static final RegistryObject<Item> HUMAN_RIB;
@@ -576,6 +578,7 @@ public class CCItems {
         });
         CREEPER_APPENDIX = register("creeper_appendix", CreeperAppendix::new);
         SURGICAL_BOX = register("surgical_box", SurgicalBox::new);
+        ORGAN_ALBUM = register("organ_album", OrganAlbum::new);
 
         SHIFTING_LEAVES = register("shifting_leaves", () -> {
             return new Item((new Item.Properties()).stacksTo(1));

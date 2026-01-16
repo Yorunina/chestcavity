@@ -55,5 +55,10 @@ public final class ChestCavityNetwork {
                 .decoder(TargetEntityInventoryTypePacket::decode)
                 .consumerMainThread(TargetEntityInventoryTypePacket::handle)
                 .add();
+        INSTANCE.messageBuilder(RequestAlbumPagePacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .encoder(RequestAlbumPagePacket::encode)
+                .decoder(RequestAlbumPagePacket::decode)
+                .consumerMainThread(RequestAlbumPagePacket::handle)
+                .add();
     }
 }
