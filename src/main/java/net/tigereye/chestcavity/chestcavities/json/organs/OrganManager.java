@@ -65,14 +65,11 @@ public class OrganManager {
 
     public static OrganData readNBTOrganData(@NotNull CompoundTag nbt) {
         OrganData organData = new OrganData();
-        organData.pseudoOrgan = nbt.getBoolean("pseudoOrgan");
-
         for (String key : nbt.getAllKeys()) {
             if (!key.equals("pseudoOrgan")) {
                 organData.organScores.put(new ResourceLocation(key), nbt.getFloat(key));
             }
         }
-
         return organData;
     }
 }

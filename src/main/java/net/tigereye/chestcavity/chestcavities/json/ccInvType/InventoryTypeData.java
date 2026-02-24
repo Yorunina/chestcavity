@@ -37,6 +37,7 @@ public class InventoryTypeData {
     }
 
     public String getSlotType(int index) {
+        if (this.slotDefinitions.size() <= index) return ChestCavitySlotDefinition.DEFAULT_SLOT_TYPE;
         return this.slotDefinitions.get(index).getType();
     }
 

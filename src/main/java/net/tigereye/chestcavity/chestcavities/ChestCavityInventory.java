@@ -67,10 +67,13 @@ public class ChestCavityInventory extends SimpleContainer {
         }
     }
 
+    @Override
     public ChestCavityInventory clone() {
         ChestCavityInventory inventory = new ChestCavityInventory(this.instance);
         for (int i = 0; i < this.getContainerSize(); ++i) {
-            inventory.setItem(i, this.getItem(i).copy());
+            ItemStack pItem = this.getItem(i);
+            if (pItem.isEmpty()) continue;
+            inventory.setItem(i, pItem.copy());
         }
         return inventory;
     }

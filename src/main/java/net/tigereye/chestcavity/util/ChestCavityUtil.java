@@ -26,7 +26,6 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.compat.tinker.OrganToolStats;
 import net.tigereye.chestcavity.compat.tinker.TinkerOrganItem;
-import net.tigereye.chestcavity.interfaces.CCOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
@@ -286,11 +285,10 @@ public class ChestCavityUtil {
     public static void destroyOrgansWithKey(ChestCavityInstance cc, ResourceLocation organ) {
         for (int i = 0; i < cc.inventory.getContainerSize(); ++i) {
             ItemStack slot = cc.inventory.getItem(i);
-            if (slot != ItemStack.EMPTY) {
-                OrganData organData = lookupOrgan(slot, cc.getChestCavityType());
-                if (organData != null && organData.organScores.containsKey(organ)) {
-                    cc.inventory.removeItemNoUpdate(i);
-                }
+            if (slot.isEmpty()) continue;
+            OrganData organData = lookupOrgan(slot, cc.getChestCavityType());
+            if (!organData.isEmpty() && organData.organScores.containsKey(organ)) {
+                cc.inventory.removeItemNoUpdate(i);
             }
         }
 
@@ -309,24 +307,23 @@ public class ChestCavityUtil {
         } else {
             cc.getChestCavityType().loadBaseOrganScores(organScores);
             InventoryTypeData inventoryTypeData = cc.getInventoryTypeData();
+
             for (int i = 0; i < cc.inventory.getContainerSize(); i++) {
                 String slotType = inventoryTypeData.getSlotType(i);
                 ItemStack itemStack = cc.inventory.getItem(i);
                 // 容器槽不进行分数结算
                 if (Objects.equals(slotType, "container_slot")) continue;
-                if (itemStack != ItemStack.EMPTY) {
-                    OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
-                    if (data != null) {
-                        data.organScores.forEach((key, value) -> {
-                            addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), organScores);
-                        });
+                if (itemStack.isEmpty()) continue;
+                OrganData data = lookupOrgan(itemStack, cc.getChestCavityType());
+                if (data.isEmpty()) continue;
+                data.organScores.forEach((key, value) -> {
+                    addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), organScores);
+                });
 
-                        if (!data.pseudoOrgan) {
-                            boolean isCompat = getCompatibility(cc, itemStack);
-                            if (!isCompat) {
-                                addOrganScore(CCOrganScores.INCOMPATIBILITY, 1.0F, organScores);
-                            }
-                        }
+                if (!data.pseudoOrgan) {
+                    boolean isCompat = getCompatibility(cc, itemStack);
+                    if (!isCompat) {
+                        addOrganScore(CCOrganScores.INCOMPATIBILITY, 1.0F, organScores);
                     }
                 }
             }
@@ -408,38 +405,35 @@ public class ChestCavityUtil {
     }
 
     public static OrganData lookupOrgan(ItemStack itemStack, ChestCavityType cct) {
-        OrganData organData = null;
-        if (cct != null) {
-            organData = cct.catchExceptionalOrgan(itemStack);
-        }
+        OrganData organData = new OrganData();
 
-        if (organData != null) {
-            return organData;
-        } else {
-            organData = OrganManager.readNBTOrganData(itemStack);
-            if (organData != null) {
+        for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
+            if (itemStack.is(itemTagKey)) {
+                organData.pseudoOrgan = true;
+                organData.organScores = CCTagOrgans.tagMap.get(itemTagKey);
                 return organData;
             }
-            Item item = itemStack.getItem();
-            if (item instanceof CCOrganItem oItem) {
-                return oItem.getOrganData(itemStack);
-            }
-            if (OrganManager.hasEntry(itemStack.getItem())) {
-                return OrganManager.getEntry(itemStack.getItem());
-            }
-            if (item instanceof TinkerOrganItem) {
-                return OrganToolStats.getOrganDataFromTinkerOrgan(itemStack);
-            }
-            for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {
-                if (itemStack.is(itemTagKey)) {
-                    organData = new OrganData();
-                    organData.pseudoOrgan = true;
-                    organData.organScores = CCTagOrgans.tagMap.get(itemTagKey);
-                    return organData;
-                }
-            }
-            return null;
         }
+
+        if (cct != null) {
+            OrganData exceptionalOrganData = cct.catchExceptionalOrgan(itemStack);
+            if (exceptionalOrganData != null) organData.mergeOrganScores(exceptionalOrganData.organScores);
+        }
+
+        OrganData nbtOrganData = OrganManager.readNBTOrganData(itemStack);
+        if (nbtOrganData != null) organData.mergeOrganScores(nbtOrganData.organScores);
+
+        Item item = itemStack.getItem();
+        if (OrganManager.hasEntry(item)) {
+            OrganData managedOrganData = OrganManager.getEntry(item);
+            if (managedOrganData != null) organData.mergeOrganScores(managedOrganData.organScores);
+        }
+
+        if (item instanceof TinkerOrganItem) {
+            organData.mergeOrganScores(OrganToolStats.getOrganDataFromTinkerOrgan(itemStack).organScores);
+        }
+
+        return organData;
     }
 
 

@@ -3,6 +3,7 @@ package net.tigereye.chestcavity.chestcavities.instance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,6 +13,7 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,7 +59,7 @@ public class ChestCavityInstance implements ContainerListener {
         if (owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.getInventoryType());
         }
-        this.inventory = new ChestCavityInventory( this);
+        this.inventory = new ChestCavityInventory(this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
     }
@@ -157,7 +159,6 @@ public class ChestCavityInstance implements ContainerListener {
         this.inventory.removeListener(this);
         int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
         ChestCavityInventory newInventory = new ChestCavityInventory(this);
-
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
             if (newInventorySize <= i) {
                 this.owner.spawnAtLocation(this.inventory.getItem(i));
@@ -170,6 +171,10 @@ public class ChestCavityInstance implements ContainerListener {
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
+        if (this.owner instanceof ServerPlayer player && player.containerMenu instanceof ChestCavityScreenHandler) {
+            player.closeContainer();
+        }
+        this.containerChanged(this.inventory);
     }
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {
@@ -184,8 +189,8 @@ public class ChestCavityInstance implements ContainerListener {
             this.lungRemainder = ccTag.getFloat("LungRemainder");
             this.furnaceProgress = ccTag.getInt("FurnaceProgress");
             this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
-            this.oldInventoryType = this.inventoryType;
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
+            this.oldInventoryType = this.inventoryType;
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
             }

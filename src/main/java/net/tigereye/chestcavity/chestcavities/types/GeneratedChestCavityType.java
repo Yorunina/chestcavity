@@ -41,17 +41,12 @@ public class GeneratedChestCavityType implements ChestCavityType {
             this.loadBaseOrganScores(this.defaultOrganScores);
             for (int i = 0; i < this.getDefaultChestCavity().getContainerSize(); ++i) {
                 ItemStack itemStack = this.getDefaultChestCavity().getItem(i);
-                if (itemStack != ItemStack.EMPTY) {
-                    OrganData data = ChestCavityUtil.lookupOrgan(itemStack, this);
-                    if (data != null) {
-                        data.organScores.forEach((key, value) -> {
-                            ChestCavityUtil.addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), this.defaultOrganScores);
-                        });
-                    }
-                }
+                if (itemStack.isEmpty()) continue;
+                OrganData data = ChestCavityUtil.lookupOrgan(itemStack, this);
+                if (data.isEmpty()) continue;
+                data.organScores.forEach((key, value) -> ChestCavityUtil.addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), this.defaultOrganScores));
             }
         }
-
         return this.defaultOrganScores;
     }
 
@@ -162,8 +157,8 @@ public class GeneratedChestCavityType implements ChestCavityType {
         boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD + 10 * enchantLevel ||
                 instance.owner.getHealth() <= instance.owner.getMaxHealth() * (ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD + 0.2F * enchantLevel);
         boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-        boolean easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) > 0.0F;
-        return chestVulnerable && (easeOfAccess || weakEnough);
+        double easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS);
+        return chestVulnerable && (easeOfAccess > 0 || weakEnough) && easeOfAccess >= 0;
     }
 
     public void onDeath(ChestCavityInstance cc) {
