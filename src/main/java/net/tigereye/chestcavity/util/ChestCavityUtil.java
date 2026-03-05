@@ -24,8 +24,6 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
-import net.tigereye.chestcavity.compat.tinker.OrganToolStats;
-import net.tigereye.chestcavity.compat.tinker.TinkerOrganItem;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
@@ -411,26 +409,21 @@ public class ChestCavityUtil {
             if (itemStack.is(itemTagKey)) {
                 organData.pseudoOrgan = true;
                 organData.organScores = CCTagOrgans.tagMap.get(itemTagKey);
-                return organData;
             }
         }
 
         if (cct != null) {
             OrganData exceptionalOrganData = cct.catchExceptionalOrgan(itemStack);
-            if (exceptionalOrganData != null) organData.mergeOrganScores(exceptionalOrganData.organScores);
+            organData.mergeOrganScores(exceptionalOrganData);
         }
 
         OrganData nbtOrganData = OrganManager.readNBTOrganData(itemStack);
-        if (nbtOrganData != null) organData.mergeOrganScores(nbtOrganData.organScores);
+        organData.mergeOrganScores(nbtOrganData);
 
         Item item = itemStack.getItem();
         if (OrganManager.hasEntry(item)) {
             OrganData managedOrganData = OrganManager.getEntry(item);
-            if (managedOrganData != null) organData.mergeOrganScores(managedOrganData.organScores);
-        }
-
-        if (item instanceof TinkerOrganItem) {
-            organData.mergeOrganScores(OrganToolStats.getOrganDataFromTinkerOrgan(itemStack).organScores);
+            organData.mergeOrganScores(managedOrganData);
         }
 
         return organData;

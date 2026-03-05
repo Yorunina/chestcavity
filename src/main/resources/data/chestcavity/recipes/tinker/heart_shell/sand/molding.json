@@ -1,9 +1,0 @@
-{
-  "type": "tconstruct:molding_table",
-  "material": { "tag": "tconstruct:casts/sand" },
-  "pattern": {
-    "type": "tconstruct:material",
-    "item": "chestcavity:heart_shell"
-  },
-  "result": "chestcavity:heart_shell_sand_cast"
-}

@@ -1,8 +1,0 @@
-{
-  "type": "tconstruct:item_part_builder",
-  "pattern": "chestcavity:crystal",
-  "pattern_item": {
-    "tag": "tconstruct:casts/sand"
-  },
-  "result": "chestcavity:crystal_sand_cast"
-}

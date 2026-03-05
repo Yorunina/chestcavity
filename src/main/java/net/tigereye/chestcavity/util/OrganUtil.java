@@ -8,7 +8,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvents;
@@ -34,6 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
@@ -51,13 +51,11 @@ public final class OrganUtil {
         CompoundTag tag = itemStack.getOrCreateTag();
         boolean isCompat = false;
         MinecraftServer server = null;
-        if (world != null) {
-            server = world.getServer();
-        }
+        if (world != null) server = world.getServer();
 
-        if (server == null) {
-            server = Minecraft.getInstance().getSingleplayerServer();
-        }
+
+        if (server == null) server = Minecraft.getInstance().getSingleplayerServer();
+
 
         if (server != null) {
             Player serverPlayer = server.getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
@@ -65,26 +63,26 @@ public final class OrganUtil {
                 isCompat = ChestCavityUtil.getCompatibility(ccPlayer.getChestCavityInstance(), itemStack);
             }
         }
+        OrganData organData = ChestCavityUtil.lookupOrgan(itemStack, null);
+        if (organData.pseudoOrgan) {
+            return;
+        }
 
-
-        MutableComponent compatibleTooltips;
+        MutableComponent compatibleTooltip;
         if (tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
             tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
             String name = tag.getString("name");
-            compatibleTooltips = Component.translatable("tooltips.organ.only_compatible_with", name);
+            compatibleTooltip = Component.translatable("tooltips.organ.only_compatible_with", name);
         } else {
-            compatibleTooltips = Component.translatable("tooltips.organ.safe_to_use");
+            compatibleTooltip = Component.translatable("tooltips.organ.safe_to_use");
         }
 
-        MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
         if (isCompat) {
-            text.withStyle(ChatFormatting.GREEN);
+            compatibleTooltip.withStyle(ChatFormatting.GREEN);
         } else {
-            text.withStyle(ChatFormatting.RED);
+            compatibleTooltip.withStyle(ChatFormatting.RED);
         }
-
-        text.append(compatibleTooltips);
-        tooltip.add(text);
+        tooltip.add(compatibleTooltip);
     }
 
     public static void explode(LivingEntity entity, float explosionYield) {

@@ -18,7 +18,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
-import net.tigereye.chestcavity.compat.tinker.TinkerItemRegistration;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
@@ -44,7 +43,6 @@ public class ChestCavity {
             .title(Component.translatable("tabs." + MODID + ".tab"))
             .displayItems((featureFlagSet, tabOutput) -> {
                 CCItems.ITEMS_FOR_TAB_LIST.forEach(registryObject -> tabOutput.accept(new ItemStack(registryObject.get())));
-                TinkerItemRegistration.addTabItems(tabOutput);
             }).build()
     );
 
@@ -64,7 +62,6 @@ public class ChestCavity {
         CCListeners.register();
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         CCTagOrgans.init();
-        TinkerItemRegistration.init(eventBus);
         ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);
 

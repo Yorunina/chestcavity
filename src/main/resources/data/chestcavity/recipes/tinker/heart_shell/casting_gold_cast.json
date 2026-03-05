@@ -1,8 +1,0 @@
-{
-  "type": "tconstruct:table_casting_material",
-  "cast": {
-    "tag": "chestcavity:casts/multi_use/heart_shell"
-  },
-  "item_cost": 8,
-  "result": "chestcavity:heart_shell"
-}

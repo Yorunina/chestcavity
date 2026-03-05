@@ -12,14 +12,17 @@ public class OrganData {
     public OrganData() {
     }
 
-    public void mergeOrganScores(Map<ResourceLocation, Float> organScores) {
-        organScores.forEach((k, v) -> {
+    public boolean mergeOrganScores(OrganData organData) {
+        if (organData == null) return false;
+        if (organData.pseudoOrgan) this.pseudoOrgan = true;
+        organData.organScores.forEach((k, v) -> {
             if (!this.organScores.containsKey(k)) {
                 this.organScores.put(k, v);
             } else {
                 this.organScores.put(k, this.organScores.get(k) + v);
             }
         });
+        return true;
     }
 
     public boolean isEmpty() {
