@@ -13,32 +13,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class ChestCavityAssignmentDataPacket {
-    private final int assignmentDataSize;
-    private final Map<ResourceLocation, ResourceLocation> assignmentData;
+    private final Map<ResourceLocation, String> rawData;
 
-    public ChestCavityAssignmentDataPacket(Map<ResourceLocation, ResourceLocation> assignmentData) {
-        this.assignmentDataSize = assignmentData.size();
-        this.assignmentData = assignmentData;
+    public ChestCavityAssignmentDataPacket(Map<ResourceLocation, String> rawData) {
+        this.rawData = rawData;
     }
 
     public static ChestCavityAssignmentDataPacket decode(FriendlyByteBuf buf) {
         int assignmentCount = buf.readInt();
-        Map<ResourceLocation, ResourceLocation> assignmentMap = new HashMap<>();
-
-        for (int i = 0; i < assignmentCount; ++i) {
-            ResourceLocation entityID = buf.readResourceLocation();
-            ResourceLocation chestCavityTypeID = buf.readResourceLocation();
-            assignmentMap.put(entityID, chestCavityTypeID);
+        Map<ResourceLocation, String> assignmentMap = new HashMap<>();
+        for(int i = 0; i < assignmentCount; i++){
+            ResourceLocation key = buf.readResourceLocation();
+            String value = buf.readUtf();
+            assignmentMap.put(key,value);
         }
-
         return new ChestCavityAssignmentDataPacket(assignmentMap);
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(this.assignmentDataSize);
-        this.assignmentData.forEach((entityID, chestCavityTypeID) -> {
+        buf.writeInt(this.rawData.size());
+        this.rawData.forEach((entityID, chestCavityTypeID) -> {
             buf.writeResourceLocation(entityID);
-            buf.writeResourceLocation(chestCavityTypeID);
+            buf.writeUtf(chestCavityTypeID);
         });
     }
 
@@ -46,8 +42,8 @@ public class ChestCavityAssignmentDataPacket {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                ChestCavityAssignmentManager.ChestCavityAssignments.clear();
-                ChestCavityAssignmentManager.ChestCavityAssignments.putAll(this.assignmentData);
+                ChestCavityAssignmentManager.RawChestCavityAssignments = this.rawData;
+                ChestCavityAssignmentManager.parseData(this.rawData);
                 success.set(true);
             });
         });

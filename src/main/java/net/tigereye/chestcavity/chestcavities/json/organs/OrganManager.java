@@ -11,15 +11,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrganManager {
     private static final OrganSerializer SERIALIZER = new OrganSerializer();
     public static Map<ResourceLocation, OrganData> OrganData = new HashMap<>();
+    public static Map<ResourceLocation, String> RawOrganData = new HashMap<>();
 
     public OrganManager() {
     }
@@ -29,24 +31,14 @@ public class OrganManager {
         manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
-
-                try {
-                    Reader reader = new InputStreamReader(stream);
-                    Tuple<ResourceLocation, OrganData> organDataPair = SERIALIZER.read(id, new Gson().fromJson(reader, OrganJsonFormat.class));
-                    OrganData.put(organDataPair.getA(), organDataPair.getB());
-                } catch (Throwable readError) {
-                    try {
-                        stream.close();
-                    } catch (Throwable closeError) {
-                        readError.addSuppressed(closeError);
-                    }
-                    throw readError;
-                }
+                String result = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining(System.lineSeparator()));
+                RawOrganData.put(id, result);
                 stream.close();
             } catch (Exception openError) {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
             }
         });
+        parseData(RawOrganData);
     }
 
     public static boolean hasEntry(Item item) {
@@ -71,5 +63,13 @@ public class OrganManager {
             }
         }
         return organData;
+    }
+
+    public static void parseData(Map<ResourceLocation, String> rawData) {
+        OrganData.clear();
+        rawData.forEach((id, data) -> {
+            Tuple<ResourceLocation, OrganData> organDataPair = SERIALIZER.read(id, new Gson().fromJson(data, OrganJsonFormat.class));
+            OrganData.put(organDataPair.getA(), organDataPair.getB());
+        });
     }
 }

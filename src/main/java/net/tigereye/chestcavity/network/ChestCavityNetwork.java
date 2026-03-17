@@ -40,6 +40,11 @@ public final class ChestCavityNetwork {
                 .decoder(InventoryTypeDataPacket::decode)
                 .consumerMainThread(InventoryTypeDataPacket::handle)
                 .add();
+        INSTANCE.messageBuilder(ChestCavityTypeDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ChestCavityTypeDataPacket::encode)
+                .decoder(ChestCavityTypeDataPacket::decode)
+                .consumerMainThread(ChestCavityTypeDataPacket::handle)
+                .add();
         INSTANCE.messageBuilder(ChestCavityHotkeyPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ChestCavityHotkeyPacket::encode)
                 .decoder(ChestCavityHotkeyPacket::new)

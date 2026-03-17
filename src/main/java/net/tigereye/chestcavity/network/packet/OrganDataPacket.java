@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 
 import java.util.HashMap;
@@ -14,44 +13,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class OrganDataPacket {
-    private final int organDataSize;
-    private final Map<ResourceLocation, OrganData> organData;
+    private final Map<ResourceLocation, String> rawData;
 
-    public OrganDataPacket(Map<ResourceLocation, OrganData> organData) {
-        this.organDataSize = organData.size();
-        this.organData = organData;
+    public OrganDataPacket(Map<ResourceLocation, String> rawData) {
+        this.rawData = rawData;
     }
 
     public static OrganDataPacket decode(FriendlyByteBuf buf) {
         int organCount = buf.readInt();
-        Map<ResourceLocation, OrganData> organMap = new HashMap<>();
-
-        for (int i = 0; i < organCount; ++i) {
-            ResourceLocation organID = buf.readResourceLocation();
-            OrganData organData = new OrganData();
-            organData.pseudoOrgan = buf.readBoolean();
-            int organAbilityCount = buf.readInt();
-
-            for (int j = 0; j < organAbilityCount; ++j) {
-                organData.organScores.put(buf.readResourceLocation(), buf.readFloat());
-            }
-
-            organMap.put(organID, organData);
+        Map<ResourceLocation, String> organMap = new HashMap<>();
+        for(int i = 0; i < organCount; i++){
+            ResourceLocation key = buf.readResourceLocation();
+            String value = buf.readUtf();
+            organMap.put(key,value);
         }
-
         return new OrganDataPacket(organMap);
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(this.organDataSize);
-        this.organData.forEach((id, data) -> {
+        buf.writeInt(this.rawData.size());
+        this.rawData.forEach((id, data) -> {
             buf.writeResourceLocation(id);
-            buf.writeBoolean(data.pseudoOrgan);
-            buf.writeInt(data.organScores.size());
-            data.organScores.forEach((ability, score) -> {
-                buf.writeResourceLocation(ability);
-                buf.writeFloat(score);
-            });
+            buf.writeUtf(data);
         });
     }
 
@@ -59,8 +42,8 @@ public class OrganDataPacket {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                OrganManager.OrganData.clear();
-                OrganManager.OrganData.putAll(this.organData);
+                OrganManager.RawOrganData = this.rawData;
+                OrganManager.parseData(this.rawData);
                 success.set(true);
             });
         });

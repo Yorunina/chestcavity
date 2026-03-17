@@ -20,6 +20,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.packet.ChestCavityAssignmentDataPacket;
+import net.tigereye.chestcavity.network.packet.ChestCavityTypeDataPacket;
 import net.tigereye.chestcavity.network.packet.InventoryTypeDataPacket;
 import net.tigereye.chestcavity.network.packet.OrganDataPacket;
 
@@ -37,9 +38,10 @@ public class ChestCavityDataManager implements PreparableReloadListener {
     @SubscribeEvent
     public static void playerConnected(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(OrganManager.OrganData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.ChestCavityAssignments), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(InventoryTypeManager.InventoryTypeData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(OrganManager.RawOrganData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
     
     @Override
@@ -52,9 +54,10 @@ public class ChestCavityDataManager implements PreparableReloadListener {
             return null;
         }, backGrounExecutor).thenCompose(preparationBarrier::wait).thenAcceptAsync((pObj) -> {
             if (Environment.get().getDist().isDedicatedServer() && ServerLifecycleHooks.getCurrentServer() != null) {
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(OrganManager.OrganData));
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.ChestCavityAssignments));
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(InventoryTypeManager.InventoryTypeData));
+                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(OrganManager.RawOrganData));
+                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData));
+                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes));
+                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments));
             }
         }, executor);
     }
