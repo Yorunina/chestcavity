@@ -20,7 +20,6 @@ public class NetworkUtil {
         if (!cc.owner.level().isClientSide()) {
             LivingEntity owner = cc.owner;
             if (owner instanceof ServerPlayer spe) {
-                // 此判断为必须
                 if (spe.connection != null) {
                     ChestCavityNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> spe), new ChestCavityUpdatePacket(cc));
                 }

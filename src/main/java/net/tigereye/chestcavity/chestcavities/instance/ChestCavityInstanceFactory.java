@@ -12,12 +12,12 @@ public class ChestCavityInstanceFactory {
 
     public static ChestCavityInstance newChestCavityInstance(EntityType<? extends LivingEntity> entityType, LivingEntity owner) {
         ResourceLocation entityID = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
-        if (ChestCavityAssignmentManager.GeneratedChestCavityAssignments.containsKey(entityID)) {
-            ResourceLocation chestCavityTypeID = ChestCavityAssignmentManager.GeneratedChestCavityAssignments.get(entityID);
-            if (ChestCavityTypeManager.GeneratedChestCavityTypes.containsKey(chestCavityTypeID)) {
-                return new ChestCavityInstance(ChestCavityTypeManager.GeneratedChestCavityTypes.get(chestCavityTypeID), owner);
+        if (ChestCavityAssignmentManager.ChestCavityAssignments.containsKey(entityID)) {
+            ResourceLocation chestCavityTypeID = ChestCavityAssignmentManager.ChestCavityAssignments.get(entityID);
+            if (ChestCavityTypeManager.ChestCavityTypes.containsKey(chestCavityTypeID)) {
+                return new ChestCavityInstance(ChestCavityTypeManager.ChestCavityTypes.get(chestCavityTypeID), owner);
             }
         }
-        return new ChestCavityInstance(ChestCavityTypeManager.GeneratedChestCavityTypes.get(DEFAULT_CHEST_CAVITY_TYPE), owner);
+        return new ChestCavityInstance(ChestCavityTypeManager.ChestCavityTypes.get(DEFAULT_CHEST_CAVITY_TYPE), owner);
     }
 }

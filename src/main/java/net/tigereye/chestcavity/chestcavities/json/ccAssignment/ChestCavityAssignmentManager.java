@@ -13,17 +13,17 @@ import java.util.Map;
 
 public class ChestCavityAssignmentManager {
     private static final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
-    public static Map<ResourceLocation, ResourceLocation> GeneratedChestCavityAssignments = new HashMap<>();
+    public static Map<ResourceLocation, ResourceLocation> ChestCavityAssignments = new HashMap<>();
 
     public static void reloadChestCavityAssignment(ResourceManager manager) {
-        GeneratedChestCavityAssignments.clear();
+        ChestCavityAssignments.clear();
         manager.listResources("cc_entity_assignments", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
                 try {
                     Reader reader = new InputStreamReader(stream);
                     ChestCavityAssignmentResult assignmentResult = SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityAssignmentJsonFormat.class));
-                    GeneratedChestCavityAssignments.putAll(assignmentResult.getChestcavityMap());
+                    ChestCavityAssignments.putAll(assignmentResult.getChestcavityMap());
                 } catch (Throwable var7) {
                     try {
                         stream.close();

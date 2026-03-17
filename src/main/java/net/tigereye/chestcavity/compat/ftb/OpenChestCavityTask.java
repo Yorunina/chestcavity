@@ -27,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.GeneratedInventoryTypeData;
+import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.InventoryTypeData;
 
 
 public class OpenChestCavityTask extends Task {
@@ -106,7 +106,7 @@ public class OpenChestCavityTask extends Task {
             return ItemIcon.getItemIcon(item != null ? item : Items.SPAWNER);
         }).create(), EMPTY);
 
-        List<ResourceLocation> invIds = new ArrayList<>(GeneratedInventoryTypeData.keySet());
+        List<ResourceLocation> invIds = new ArrayList<>(InventoryTypeData.keySet());
         invIds.add(EMPTY);
         config.addEnum("inventoryType", this.inventoryType, (v) -> {
             this.inventoryType = v;

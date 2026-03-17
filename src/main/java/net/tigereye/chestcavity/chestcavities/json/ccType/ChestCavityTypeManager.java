@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.tigereye.chestcavity.ChestCavity;
-import net.tigereye.chestcavity.chestcavities.types.GeneratedChestCavityType;
+import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,19 +14,19 @@ import java.util.Map;
 
 public class ChestCavityTypeManager {
     private static final ChestCavityTypeSerializer SERIALIZER = new ChestCavityTypeSerializer();
-    public static Map<ResourceLocation, GeneratedChestCavityType> GeneratedChestCavityTypes = new HashMap<>();
+    public static Map<ResourceLocation, ChestCavityType> ChestCavityTypes = new HashMap<>();
 
     public ChestCavityTypeManager() {
     }
 
     public static void reloadChestCavityType(ResourceManager manager) {
-        GeneratedChestCavityTypes.clear();
+        ChestCavityTypes.clear();
         manager.listResources("cc_types", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
                 try {
                     Reader reader = new InputStreamReader(stream);
-                    GeneratedChestCavityTypes.put(id, SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityTypeJsonFormat.class)));
+                    ChestCavityTypes.put(id, SERIALIZER.read(id, new Gson().fromJson(reader, ChestCavityTypeJsonFormat.class)));
                 } catch (Throwable readError) {
                     try {
                         stream.close();

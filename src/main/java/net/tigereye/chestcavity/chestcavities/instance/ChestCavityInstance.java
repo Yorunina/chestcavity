@@ -9,7 +9,7 @@ import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
-import net.tigereye.chestcavity.chestcavities.ChestCavityType;
+import net.tigereye.chestcavity.chestcavities.IChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 public class ChestCavityInstance implements ContainerListener {
     public static final Logger LOGGER = LogManager.getLogger();
-    protected ChestCavityType type;
+    protected IChestCavityType type;
     public LivingEntity owner;
     public UUID compatibility_id;
     public boolean opened = false;
@@ -51,7 +51,7 @@ public class ChestCavityInstance implements ContainerListener {
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
     public Map<String, Object> customDataMap = new HashMap<>();
 
-    public ChestCavityInstance(ChestCavityType type, LivingEntity owner) {
+    public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
         this.type = type;
         this.owner = owner;
         this.compatibility_id = owner.getUUID();
@@ -64,7 +64,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.oldInventory = this.inventory.clone();
     }
 
-    public ChestCavityType getChestCavityType() {
+    public IChestCavityType getChestCavityType() {
         return this.type;
     }
 

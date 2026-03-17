@@ -18,8 +18,8 @@ public class InventoryTypeDataPacket {
     private final int inventoryTypeDataSize;
     private final Map<ResourceLocation, InventoryTypeData> inventoryTypeData;
 
-    public InventoryTypeDataPacket(int inventoryTypeDataSize, Map<ResourceLocation, InventoryTypeData> inventoryTypeData) {
-        this.inventoryTypeDataSize = inventoryTypeDataSize;
+    public InventoryTypeDataPacket(Map<ResourceLocation, InventoryTypeData> inventoryTypeData) {
+        this.inventoryTypeDataSize = inventoryTypeData.size();
         this.inventoryTypeData = inventoryTypeData;
     }
 
@@ -71,7 +71,7 @@ public class InventoryTypeDataPacket {
             inventoryTypeMap.put(inventoryTypeID, inventoryType);
         }
 
-        return new InventoryTypeDataPacket(inventoryTypeCount, inventoryTypeMap);
+        return new InventoryTypeDataPacket(inventoryTypeMap);
     }
 
     public void encode(FriendlyByteBuf buf) {
@@ -110,8 +110,8 @@ public class InventoryTypeDataPacket {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                InventoryTypeManager.GeneratedInventoryTypeData.clear();
-                InventoryTypeManager.GeneratedInventoryTypeData.putAll(this.inventoryTypeData);
+                InventoryTypeManager.InventoryTypeData.clear();
+                InventoryTypeManager.InventoryTypeData.putAll(this.inventoryTypeData);
                 success.set(true);
             });
         });

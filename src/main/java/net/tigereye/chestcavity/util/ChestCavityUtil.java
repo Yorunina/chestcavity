@@ -18,7 +18,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
-import net.tigereye.chestcavity.chestcavities.ChestCavityType;
+import net.tigereye.chestcavity.chestcavities.IChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
@@ -402,7 +402,7 @@ public class ChestCavityUtil {
 
     }
 
-    public static OrganData lookupOrgan(ItemStack itemStack, ChestCavityType cct) {
+    public static OrganData lookupOrgan(ItemStack itemStack, IChestCavityType cct) {
         OrganData organData = new OrganData();
 
         for (TagKey<Item> itemTagKey : CCTagOrgans.tagMap.keySet()) {

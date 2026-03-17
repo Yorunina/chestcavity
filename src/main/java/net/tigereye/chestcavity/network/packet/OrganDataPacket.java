@@ -17,8 +17,8 @@ public class OrganDataPacket {
     private final int organDataSize;
     private final Map<ResourceLocation, OrganData> organData;
 
-    public OrganDataPacket(int organDataSize, Map<ResourceLocation, OrganData> organData) {
-        this.organDataSize = organDataSize;
+    public OrganDataPacket(Map<ResourceLocation, OrganData> organData) {
+        this.organDataSize = organData.size();
         this.organData = organData;
     }
 
@@ -39,7 +39,7 @@ public class OrganDataPacket {
             organMap.put(organID, organData);
         }
 
-        return new OrganDataPacket(organCount, organMap);
+        return new OrganDataPacket(organMap);
     }
 
     public void encode(FriendlyByteBuf buf) {
@@ -59,8 +59,8 @@ public class OrganDataPacket {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                OrganManager.GeneratedOrganData.clear();
-                OrganManager.GeneratedOrganData.putAll(this.organData);
+                OrganManager.OrganData.clear();
+                OrganManager.OrganData.putAll(this.organData);
                 success.set(true);
             });
         });

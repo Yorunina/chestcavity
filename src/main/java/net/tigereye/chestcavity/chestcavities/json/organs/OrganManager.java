@@ -19,13 +19,13 @@ import java.util.Map;
 
 public class OrganManager {
     private static final OrganSerializer SERIALIZER = new OrganSerializer();
-    public static Map<ResourceLocation, OrganData> GeneratedOrganData = new HashMap<>();
+    public static Map<ResourceLocation, OrganData> OrganData = new HashMap<>();
 
     public OrganManager() {
     }
 
     public static void reloadOrganData(ResourceManager manager) {
-        GeneratedOrganData.clear();
+        OrganData.clear();
         manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
@@ -33,7 +33,7 @@ public class OrganManager {
                 try {
                     Reader reader = new InputStreamReader(stream);
                     Tuple<ResourceLocation, OrganData> organDataPair = SERIALIZER.read(id, new Gson().fromJson(reader, OrganJsonFormat.class));
-                    GeneratedOrganData.put(organDataPair.getA(), organDataPair.getB());
+                    OrganData.put(organDataPair.getA(), organDataPair.getB());
                 } catch (Throwable readError) {
                     try {
                         stream.close();
@@ -50,11 +50,11 @@ public class OrganManager {
     }
 
     public static boolean hasEntry(Item item) {
-        return GeneratedOrganData.containsKey(ForgeRegistries.ITEMS.getKey(item));
+        return OrganData.containsKey(ForgeRegistries.ITEMS.getKey(item));
     }
 
     public static OrganData getEntry(Item item) {
-        return GeneratedOrganData.get(ForgeRegistries.ITEMS.getKey(item));
+        return OrganData.get(ForgeRegistries.ITEMS.getKey(item));
     }
 
 

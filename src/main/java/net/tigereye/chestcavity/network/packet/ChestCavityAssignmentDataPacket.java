@@ -16,8 +16,8 @@ public class ChestCavityAssignmentDataPacket {
     private final int assignmentDataSize;
     private final Map<ResourceLocation, ResourceLocation> assignmentData;
 
-    public ChestCavityAssignmentDataPacket(int assignmentDataSize, Map<ResourceLocation, ResourceLocation> assignmentData) {
-        this.assignmentDataSize = assignmentDataSize;
+    public ChestCavityAssignmentDataPacket(Map<ResourceLocation, ResourceLocation> assignmentData) {
+        this.assignmentDataSize = assignmentData.size();
         this.assignmentData = assignmentData;
     }
 
@@ -31,7 +31,7 @@ public class ChestCavityAssignmentDataPacket {
             assignmentMap.put(entityID, chestCavityTypeID);
         }
 
-        return new ChestCavityAssignmentDataPacket(assignmentCount, assignmentMap);
+        return new ChestCavityAssignmentDataPacket(assignmentMap);
     }
 
     public void encode(FriendlyByteBuf buf) {
@@ -46,8 +46,8 @@ public class ChestCavityAssignmentDataPacket {
         AtomicBoolean success = new AtomicBoolean(false);
         contextSupplier.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                ChestCavityAssignmentManager.GeneratedChestCavityAssignments.clear();
-                ChestCavityAssignmentManager.GeneratedChestCavityAssignments.putAll(this.assignmentData);
+                ChestCavityAssignmentManager.ChestCavityAssignments.clear();
+                ChestCavityAssignmentManager.ChestCavityAssignments.putAll(this.assignmentData);
                 success.set(true);
             });
         });

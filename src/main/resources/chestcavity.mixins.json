@@ -9,7 +9,6 @@
     "MixinLivingEntity$Creeper",
     "MixinLivingEntity$Player",
     "MixinLivingEntity$Server",
-    "MixinNetworkHooks",
     "MixinSimpleContainer",
     "MixinStatusEffect",
     "MixinStatusEffectInstance"

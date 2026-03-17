@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class InventoryTypeManager {
     private static final InventoryTypeSerializer SERIALIZER = new InventoryTypeSerializer();
-    public static Map<ResourceLocation, InventoryTypeData> GeneratedInventoryTypeData = new HashMap<>();
+    public static Map<ResourceLocation, InventoryTypeData> InventoryTypeData = new HashMap<>();
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/default.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
     public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default";
@@ -32,7 +32,7 @@ public class InventoryTypeManager {
     }
 
     public static void reloadInventoryType(ResourceManager manager) {
-        GeneratedInventoryTypeData.clear();
+        InventoryTypeData.clear();
         ChestCavity.LOGGER.info("Loading screenType.");
         manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((jsonId, resource) -> {
             try {
@@ -41,7 +41,7 @@ public class InventoryTypeManager {
                     ResourceLocation id = new ResourceLocation(jsonId.getNamespace(), jsonId.getPath().substring(0, jsonId.getPath().length() - 5));
                     Reader reader = new InputStreamReader(stream);
                     InventoryTypeData inventoryTypeData = SERIALIZER.read(jsonId, (new Gson()).fromJson(reader, InventoryTypeJsonFormat.class));
-                    GeneratedInventoryTypeData.put(id, inventoryTypeData);
+                    InventoryTypeData.put(id, inventoryTypeData);
                     ChestCavity.LOGGER.info("Loaded inventory " + jsonId);
                 } catch (Throwable readError) {
                     try {
@@ -60,6 +60,6 @@ public class InventoryTypeManager {
     }
 
     public static InventoryTypeData getInventoryTypeData(ResourceLocation id) {
-        return GeneratedInventoryTypeData.getOrDefault(id, getDefaultInventoryTypeData());
+        return InventoryTypeData.getOrDefault(id, getDefaultInventoryTypeData());
     }
 }
