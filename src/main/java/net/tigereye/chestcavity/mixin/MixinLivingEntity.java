@@ -241,7 +241,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             super(entityType, world);
         }
 
-
         @Inject(
                 at = {@At("RETURN")},
                 method = {"getDestroySpeed"},

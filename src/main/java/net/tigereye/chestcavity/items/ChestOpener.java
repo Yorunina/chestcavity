@@ -46,24 +46,24 @@ public class ChestOpener extends Item {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity target, @NotNull InteractionHand hand) {
         if (player.level().isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         Map<Enchantment, Integer> allEnchantments = stack.getAllEnchantments();
         if (target instanceof Player && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
         }
         boolean success = this.openChestCavity(player, target, stack, true);
         if (success) {
             return InteractionResult.SUCCESS;
         } else {
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
         }
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack chestOpener = player.getItemInHand(hand);
         if (world.isClientSide()) {
             return InteractionResultHolder.pass(chestOpener);

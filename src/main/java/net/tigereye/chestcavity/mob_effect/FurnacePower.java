@@ -1,5 +1,6 @@
 package net.tigereye.chestcavity.mob_effect;
 
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +12,7 @@ import net.tigereye.chestcavity.registration.CCItems;
 
 import java.util.Optional;
 
-public class FurnacePower extends CCStatusEffect {
+public class FurnacePower extends MobEffect {
     public FurnacePower() {
         super(MobEffectCategory.BENEFICIAL, 13172480);
     }

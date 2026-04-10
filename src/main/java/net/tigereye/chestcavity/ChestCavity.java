@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
 import net.tigereye.chestcavity.config.CCConfig;
+import net.tigereye.chestcavity.mob_effect.ModPotions;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.*;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
@@ -61,6 +62,7 @@ public class ChestCavity {
         CCEnchantments.ENCHANTMENTS.register(eventBus);
         CCListeners.register();
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
+        ModPotions.register(eventBus);
         CCTagOrgans.init();
         ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);

@@ -18,12 +18,11 @@ public class ChestCavitySlot extends Slot {
 
     @Override
     public boolean mayPickup(Player playerIn) {
-        return !this.container.getItem(index).is(CCTags.CANNOT_REMOVE);
+        return playerIn.isCreative() || !this.container.getItem(index).is(CCTags.CANNOT_REMOVE);
     }
 
     @Override
     public Optional<ItemStack> tryRemove(int pCount, int pDecrement, Player pPlayer) {
-
         if (!this.mayPickup(pPlayer)) {
             return Optional.empty();
         } else if (!this.allowModification(pPlayer) && pDecrement < this.getItem().getCount()) {

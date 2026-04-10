@@ -1,5 +1,6 @@
 package net.tigereye.chestcavity.mob_effect;
 
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -8,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.registration.CCItems;
 
-public class Ruminating extends CCStatusEffect {
+public class Ruminating extends MobEffect {
     public Ruminating() {
         super(MobEffectCategory.BENEFICIAL, 13172480);
     }

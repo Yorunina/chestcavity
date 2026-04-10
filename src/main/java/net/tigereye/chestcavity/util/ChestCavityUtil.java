@@ -450,9 +450,10 @@ public class ChestCavityUtil {
         if (entity instanceof Player) {
             insertWelfareOrgans(ccInstance);
         } else {
+            boolean underOrganSlip = entity instanceof LivingEntity living && living.hasEffect(CCStatusEffects.ORGAN_SLIP.get());
             for (int i = 0; i < ccInstance.inventory.getContainerSize(); ++i) {
                 ItemStack curItem = ccInstance.inventory.getItem(i);
-                if (!isOriginalOrgan(ccInstance, curItem)) {
+                if (!isOriginalOrgan(ccInstance, curItem) || underOrganSlip) {
                     ccInstance.inventory.removeItemNoUpdate(i);
                     ccInstance.owner.spawnAtLocation(curItem);
                 }
