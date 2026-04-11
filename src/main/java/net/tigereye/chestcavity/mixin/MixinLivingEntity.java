@@ -1,7 +1,6 @@
 package net.tigereye.chestcavity.mixin;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,13 +11,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,20 +26,19 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstanceFactor
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.listeners.OrganFoodEffectListeners;
 import net.tigereye.chestcavity.registration.CCOrganScores;
+import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.NetworkUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
@@ -60,6 +57,9 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
     @Shadow
     protected abstract int increaseAirSupply(int pCurrentAir);
+
+    @Shadow
+    public abstract boolean hasEffect(MobEffect pEffect);
 
     protected MixinLivingEntity(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -98,13 +98,13 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             method = {"baseTick"}
     )
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
-        if (this.level().isClientSide) {
-            return;
-        }
+        if (this.level().isClientSide) return;
+
+        if (this.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) return;
+
         if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
             this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
-
     }
 
     @Inject(
@@ -157,26 +157,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         return ChestCavityUtil.onAddStatusEffect(this.chestCavityInstance, effect);
     }
 
-    @Redirect(
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/food/FoodProperties;getEffects()Ljava/util/List;"
-            ),
-            method = {"addEatEffect"}
-    )
-    public List<Pair<MobEffectInstance, Float>> chestCavityLivingEntityApplyFoodEffectsMixin(FoodProperties instance, ItemStack stack, Level world, LivingEntity targetEntity) {
-        List<Pair<MobEffectInstance, Float>> list = instance.getEffects();
-        if (this.level().isClientSide) {
-            return list;
-        }
-        Optional<ChestCavityEntity> option = ChestCavityEntity.of(targetEntity);
-        if (option.isPresent()) {
-            list = new LinkedList<>(list);
-            OrganFoodEffectListeners.call(list, stack, world, targetEntity, option.get().getChestCavityInstance());
-        }
-        return list;
-    }
-
     @ModifyArg(
             at = @At(
                     value = "INVOKE",
@@ -191,18 +171,6 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             return g;
         }
         return g * ChestCavityUtil.applySwimSpeedInWater(this.chestCavityInstance);
-    }
-
-    @Inject(
-            at = {@At("RETURN")},
-            method = {"getJumpPower"},
-            cancellable = true
-    )
-    public void chestCavityLivingEntityJumpVelocityMixin(CallbackInfoReturnable<Float> info) {
-        if (this.level().isClientSide) {
-            return;
-        }
-        info.setReturnValue(ChestCavityUtil.applyLeaping(this.chestCavityInstance, info.getReturnValueF()));
     }
 
     public ChestCavityInstance getChestCavityInstance() {
@@ -247,9 +215,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
                 cancellable = true
         )
         void chestCavityPlayerEntityGetBlockBreakingSpeedMixin(BlockState block, CallbackInfoReturnable<Float> cir) {
-            if (this.level().isClientSide) {
-                return;
-            }
+            if (this.level().isClientSide) return;
             cir.setReturnValue(ChestCavityUtil.applyNervesToMining(((ChestCavityEntity) this).getChestCavityInstance(), cir.getReturnValue()));
         }
     }
@@ -273,21 +239,19 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
             }
             if (this.isAlive() && this.swell > 1) {
                 ChestCavityEntity.of(this).ifPresent((cce) -> {
-                    if (cce.getChestCavityInstance().opened && cce.getChestCavityInstance().getOrganScore(CCOrganScores.CREEPY) <= 0.0F) {
+                    if (cce.getChestCavityInstance().opened && cce.getChestCavityInstance().getOrganScore(CCOrganScores.LUCK) <= 0.0F) {
                         this.swell = 1;
                     }
                 });
             }
-
         }
     }
 
     @Mixin({ServerPlayer.class})
-    private abstract static class Server extends net.minecraft.world.entity.player.Player {
-        public Server(Level world, BlockPos pos, float yaw, GameProfile profile) {
+    private abstract static class MixinServerPlayer extends net.minecraft.world.entity.player.Player {
+        public MixinServerPlayer(Level world, BlockPos pos, float yaw, GameProfile profile) {
             super(world, pos, yaw, profile);
         }
-
         @Inject(
                 method = {"restoreFrom"},
                 at = {@At("TAIL")}

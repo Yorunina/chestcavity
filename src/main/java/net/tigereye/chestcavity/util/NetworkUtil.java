@@ -1,12 +1,10 @@
 package net.tigereye.chestcavity.util;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.PacketDistributor;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
-import net.tigereye.chestcavity.network.packet.ChestCavityHotkeyPacket;
 import net.tigereye.chestcavity.network.packet.ChestCavityUpdatePacket;
 import net.tigereye.chestcavity.network.packet.ReceivedChestCavityUpdatePacket;
 
@@ -39,7 +37,4 @@ public class NetworkUtil {
         return SendS2CChestCavityUpdatePacket(cc, cc.updatePacket);
     }
 
-    public static void SendC2SChestCavityHotkeyPacket(ResourceLocation organScore) {
-        ChestCavityNetwork.INSTANCE.sendToServer(new ChestCavityHotkeyPacket(organScore));
-    }
 }

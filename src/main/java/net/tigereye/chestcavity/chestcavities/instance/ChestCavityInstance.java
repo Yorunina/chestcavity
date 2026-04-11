@@ -20,10 +20,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 
 public class ChestCavityInstance implements ContainerListener {
@@ -36,14 +34,10 @@ public class ChestCavityInstance implements ContainerListener {
     public ChestCavityInventory oldInventory;
     public Map<ResourceLocation, Float> oldOrganScores = new HashMap<>();
     protected Map<ResourceLocation, Float> organScores = new HashMap<>();
-    public LinkedList<Consumer<LivingEntity>> projectileQueue = new LinkedList<>();
     public int bloodPoisonTimer = 0;
     public int liverTimer = 0;
     public float metabolismRemainder = 0.0F;
     public float lungRemainder = 0.0F;
-    public int projectileCooldown = 0;
-    public int furnaceProgress = 0;
-    public int photosynthesisProgress = 0;
     public EndCrystal connectedCrystal = null;
     public boolean updatePacket = true;
     public ResourceLocation inventoryType;
@@ -187,8 +181,6 @@ public class ChestCavityInstance implements ContainerListener {
             this.liverTimer = ccTag.getInt("LiverTimer");
             this.metabolismRemainder = ccTag.getFloat("MetabolismRemainder");
             this.lungRemainder = ccTag.getFloat("LungRemainder");
-            this.furnaceProgress = ccTag.getInt("FurnaceProgress");
-            this.photosynthesisProgress = ccTag.getInt("PhotosynthesisProgress");
             this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
             this.oldInventoryType = this.inventoryType;
             if (this.owner instanceof ChestCavityEntity ccEntity) {
@@ -229,8 +221,6 @@ public class ChestCavityInstance implements ContainerListener {
         ccTag.putInt("LiverTimer", this.liverTimer);
         ccTag.putFloat("MetabolismRemainder", this.metabolismRemainder);
         ccTag.putFloat("LungRemainder", this.lungRemainder);
-        ccTag.putInt("FurnaceProgress", this.furnaceProgress);
-        ccTag.putInt("PhotosynthesisProgress", this.photosynthesisProgress);
         ccTag.put("Inventory", this.inventory.createTag());
         tag.put("ChestCavity", ccTag);
     }
@@ -257,7 +247,6 @@ public class ChestCavityInstance implements ContainerListener {
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
         this.lungRemainder = other.lungRemainder;
-        this.furnaceProgress = other.furnaceProgress;
         this.connectedCrystal = other.connectedCrystal;
         ChestCavityUtil.evaluateChestCavity(this);
     }

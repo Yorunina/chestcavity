@@ -14,25 +14,16 @@ public class OrganAddStatusEffectListeners {
     }
 
     public static MobEffectInstance call(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
-        instance = ApplyBuffPurging(entity, cc, instance);
         instance = ApplyDetoxification(entity, cc, instance);
-        instance = ApplyWithered(entity, cc, instance);
+        instance = ApplyFiltration(entity, cc, instance);
         return instance;
     }
 
-    private static MobEffectInstance ApplyBuffPurging(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
-        if (cc.getOrganScore(CCOrganScores.BUFF_PURGING) > 0.0F && ((CCStatusEffect) instance.getEffect()).CC_IsBeneficial()) {
-            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
-            ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.BUFF_PURGING_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.BUFF_PURGING))));
-        }
-
-        return instance;
-    }
 
     private static MobEffectInstance ApplyDetoxification(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
         if (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION) > 0.0F && cc.getOrganScoreOrDefault(CCOrganScores.DETOXIFICATION, 1F) != cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION)) {
             CCStatusEffect ccStatusEffect = (CCStatusEffect) instance.getEffect();
-            if (ccStatusEffect.CC_IsHarmful()) {
+            if (ccStatusEffect.isHarmful() && instance.getEffect() != MobEffects.POISON) {
                 CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
                 float detoxRatio = Math.max(0, cc.getOrganScore(CCOrganScores.DETOXIFICATION) / cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DETOXIFICATION));
                 ccInstance.CC_setDuration((int) Math.max(1.0F, (float) (instance.getDuration() * 2) / (1.0F + detoxRatio)));
@@ -49,14 +40,6 @@ public class OrganAddStatusEffectListeners {
         if (filtrationDiff > 0.0F && instance.getEffect() == MobEffects.POISON) {
             CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
             ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.FILTRATION_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.FILTRATION))));
-        }
-        return instance;
-    }
-
-    private static MobEffectInstance ApplyWithered(LivingEntity entity, ChestCavityInstance cc, MobEffectInstance instance) {
-        if (cc.getOrganScore(CCOrganScores.WITHERED) > 0.0F && instance.getEffect() == MobEffects.WITHER) {
-            CCStatusEffectInstance ccInstance = (CCStatusEffectInstance) instance;
-            ccInstance.CC_setDuration((int) ((float) instance.getDuration() / (1.0F + ChestCavity.config.WITHERED_DURATION_FACTOR * cc.getOrganScore(CCOrganScores.WITHERED))));
         }
         return instance;
     }

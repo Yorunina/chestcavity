@@ -8,7 +8,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.EffectiveFoodScores;
-import net.tigereye.chestcavity.listeners.OrganFoodListeners;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import org.jetbrains.annotations.Nullable;
@@ -67,14 +66,12 @@ public abstract class MixinHungerManager {
             FoodProperties itemFoodComponent = item.getFoodProperties();
             if (itemFoodComponent != null) {
                 EffectiveFoodScores efs = new EffectiveFoodScores(this.CC_player.getChestCavityInstance().getOrganScore(CCOrganScores.DIGESTION), this.CC_player.getChestCavityInstance().getOrganScore(CCOrganScores.NUTRITION));
-                efs = OrganFoodListeners.call(item, itemFoodComponent, this.CC_player, efs);
                 float saturationGain = ChestCavityUtil.applyNutrition(this.CC_player.getChestCavityInstance(), efs.nutrition, item.getFoodProperties().getSaturationModifier()) * (float) item.getFoodProperties().getNutrition() * 2.0F;
                 int hungerGain = ChestCavityUtil.applyDigestion(this.CC_player.getChestCavityInstance(), efs.digestion, item.getFoodProperties().getNutrition());
                 float newSaturation = saturationGain / (float) (hungerGain * 2);
                 this.eat(hungerGain, newSaturation);
             }
         }
-
     }
 
     @ModifyVariable(

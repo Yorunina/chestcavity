@@ -1,7 +1,7 @@
 package net.tigereye.chestcavity.interfaces;
 
 public interface CCStatusEffect {
-    boolean CC_IsHarmful();
+    boolean isHarmful();
 
-    boolean CC_IsBeneficial();
+    boolean isBeneficial();
 }

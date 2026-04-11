@@ -16,11 +16,11 @@ public class MixinStatusEffect implements CCStatusEffect {
     public MixinStatusEffect() {
     }
 
-    public boolean CC_IsHarmful() {
+    public boolean isHarmful() {
         return this.category == MobEffectCategory.HARMFUL;
     }
 
-    public boolean CC_IsBeneficial() {
+    public boolean isBeneficial() {
         return this.category == MobEffectCategory.BENEFICIAL;
     }
 }

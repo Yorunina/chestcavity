@@ -40,7 +40,7 @@ public class ChestCavity {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final RegistryObject<CreativeModeTab> GROUP = CREATIVE_TABS.register("tab", () -> new CreativeModeTab.Builder(CreativeModeTab.Row.TOP, 0)
-            .icon(() -> new ItemStack(CCItems.HUMAN_HEART.get()))
+            .icon(() -> new ItemStack(CCItems.CHEST_OPENER.get()))
             .title(Component.translatable("tabs." + MODID + ".tab"))
             .displayItems((featureFlagSet, tabOutput) -> {
                 CCItems.ITEMS_FOR_TAB_LIST.forEach(registryObject -> tabOutput.accept(new ItemStack(registryObject.get())));
@@ -60,10 +60,8 @@ public class ChestCavity {
         CCItems.ITEMS.register(eventBus);
         CREATIVE_TABS.register(eventBus);
         CCEnchantments.ENCHANTMENTS.register(eventBus);
-        CCListeners.register();
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         ModPotions.register(eventBus);
-        CCTagOrgans.init();
         ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);
 

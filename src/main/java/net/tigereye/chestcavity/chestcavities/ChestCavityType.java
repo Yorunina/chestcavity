@@ -146,10 +146,6 @@ public class ChestCavityType implements IChestCavityType {
     }
 
 
-    public float getHeartBleedCap() {
-        return 5.0F;
-    }
-
     public boolean isOpenable(ChestCavityInstance instance, Map<Enchantment, Integer> allEnchantments) {
         int enchantLevel = allEnchantments.getOrDefault(ADVANCE_SURGERY.get(), 0);
         boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD + 10 * enchantLevel ||
@@ -160,7 +156,6 @@ public class ChestCavityType implements IChestCavityType {
     }
 
     public void onDeath(ChestCavityInstance cc) {
-        cc.projectileQueue.clear();
         if (cc.connectedCrystal != null) {
             cc.connectedCrystal.setBeamTarget(null);
             cc.connectedCrystal = null;

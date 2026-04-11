@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "chestcavity:item/food/cooked_alien_organ_meat"
-  }
-}
