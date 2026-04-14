@@ -18,7 +18,6 @@ public class ChestCavityAssignmentManager {
     public static Map<ResourceLocation, String> RawChestCavityAssignments = new HashMap<>();
 
     public static void reloadChestCavityAssignment(ResourceManager manager) {
-        ChestCavityAssignments.clear();
         manager.listResources("cc_entity_assignments", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();

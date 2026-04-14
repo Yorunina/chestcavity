@@ -8,7 +8,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +21,9 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
-import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.registration.CCOrganScores;
-import net.tigereye.chestcavity.registration.CCStatusEffects;
 
 import java.util.Map;
 import java.util.Objects;
@@ -311,7 +308,7 @@ public class ChestCavityUtil {
 
         boolean isCompat = false;
         tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-        if (tag.getUUID("owner").equals(cc.compatibility_id)) {
+        if (tag.getUUID("owner").equals(cc.compatibilityId)) {
             isCompat = true;
         }
         return isCompat;
@@ -326,7 +323,7 @@ public class ChestCavityUtil {
             return false;
         }
         tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
-        return tag.getUUID("owner").equals(cc.compatibility_id);
+        return tag.getUUID("owner").equals(cc.compatibilityId);
     }
 
 
@@ -366,25 +363,6 @@ public class ChestCavityUtil {
         return effect;
     }
 
-    public static void onDeath(ChestCavityEntity entity) {
-        ChestCavityInstance ccInstance = entity.getChestCavityInstance();
-        ccInstance.getChestCavityType().onDeath(ccInstance);
-        if (entity instanceof Player player) {
-            if (ccInstance.getOrganScore(CCOrganScores.HEALTH) <= 0 || ccInstance.getOrganScore(CCOrganScores.BREATH_RECOVERY) <= 0 || ccInstance.getOrganScore(CCOrganScores.INCOMPATIBILITY) > 0) {
-                player.addEffect(new MobEffectInstance(CCStatusEffects.ORGAN_PROTECTION.get(), 20 * 60, 0, false, false));
-            }
-            return;
-        }
-
-        boolean underOrganSlip = entity instanceof LivingEntity living && living.hasEffect(CCStatusEffects.ORGAN_SLIP.get());
-        for (int i = 0; i < ccInstance.inventory.getContainerSize(); ++i) {
-            ItemStack curItem = ccInstance.inventory.getItem(i);
-            if (!isOriginalOrgan(ccInstance, curItem) || underOrganSlip) {
-                ccInstance.inventory.removeItemNoUpdate(i);
-                ccInstance.owner.spawnAtLocation(curItem);
-            }
-        }
-    }
 
     public static ChestCavityInventory openChestCavity(ChestCavityInstance cc) {
         if (!cc.opened) {
@@ -410,7 +388,7 @@ public class ChestCavityUtil {
     public static void setOrganCompatibility(ChestCavityInstance instance, ItemStack itemStack) {
         if (itemStack != ItemStack.EMPTY) {
             CompoundTag tag = new CompoundTag();
-            tag.putUUID("owner", instance.compatibility_id);
+            tag.putUUID("owner", instance.compatibilityId);
             tag.putString("name", instance.owner.getDisplayName().getString());
             itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
         }

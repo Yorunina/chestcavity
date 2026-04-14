@@ -43,7 +43,6 @@ public class ChestCavityInventory extends SimpleContainer {
     @Override
     public @NotNull ListTag createTag() {
         ListTag list = new ListTag();
-
         for (int i = 0; i < this.getContainerSize(); ++i) {
             ItemStack itemStack = this.getItem(i);
             if (!itemStack.isEmpty()) {
@@ -66,6 +65,7 @@ public class ChestCavityInventory extends SimpleContainer {
             return player.distanceTo(this.instance.owner) < 32.0F;
         }
     }
+
 
     @Override
     public ChestCavityInventory clone() {

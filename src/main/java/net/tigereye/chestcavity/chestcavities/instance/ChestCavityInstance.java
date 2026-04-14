@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.IChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
@@ -28,7 +27,7 @@ public class ChestCavityInstance implements ContainerListener {
     public static final Logger LOGGER = LogManager.getLogger();
     protected IChestCavityType type;
     public LivingEntity owner;
-    public UUID compatibility_id;
+    public UUID compatibilityId;
     public boolean opened = false;
     public ChestCavityInventory inventory;
     public ChestCavityInventory oldInventory;
@@ -38,7 +37,6 @@ public class ChestCavityInstance implements ContainerListener {
     public int liverTimer = 0;
     public float metabolismRemainder = 0.0F;
     public float lungRemainder = 0.0F;
-    public EndCrystal connectedCrystal = null;
     public boolean updatePacket = true;
     public ResourceLocation inventoryType;
     public ResourceLocation oldInventoryType;
@@ -48,7 +46,7 @@ public class ChestCavityInstance implements ContainerListener {
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
         this.type = type;
         this.owner = owner;
-        this.compatibility_id = owner.getUUID();
+        this.compatibilityId = owner.getUUID();
         this.inventoryType = type.getInventoryType();
         if (owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.getInventoryType());
@@ -121,14 +119,13 @@ public class ChestCavityInstance implements ContainerListener {
 
     @Override
     public void containerChanged(@NotNull Container sender) {
-        if (!isSameAsOldInventory()) {
-            ChestCavityUtil.evaluateChestCavity(this);
-            this.oldInventory = this.inventory.clone();
-            if (this.oldInventoryType != this.inventoryType) {
-                this.oldInventoryType = this.inventoryType;
-                if (this.owner instanceof ChestCavityEntity ccEntity) {
-                    ccEntity.setInventoryTypeData(this.inventoryType);
-                }
+        if (isSameAsOldInventory()) return;
+        ChestCavityUtil.evaluateChestCavity(this);
+        this.oldInventory = this.inventory.clone();
+        if (this.oldInventoryType != this.inventoryType) {
+            this.oldInventoryType = this.inventoryType;
+            if (this.owner instanceof ChestCavityEntity ccEntity) {
+                ccEntity.setInventoryTypeData(this.inventoryType);
             }
         }
     }
@@ -186,15 +183,13 @@ public class ChestCavityInstance implements ContainerListener {
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
             }
-            if (ccTag.contains("compatibility_id")) {
-                this.compatibility_id = ccTag.getUUID("compatibility_id");
+            if (ccTag.contains("CompatibilityId")) {
+                this.compatibilityId = ccTag.getUUID("CompatibilityId");
             } else {
-                this.compatibility_id = owner.getUUID();
+                this.compatibilityId = owner.getUUID();
             }
-            try {
-                this.inventory.removeListener(this);
-            } catch (NullPointerException ignored) {
-            }
+            this.inventory.removeListener(this);
+
             int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
             if (newInventorySize < this.inventory.getContainerSize()) {
                 for (int i = newInventorySize; i < this.inventory.getContainerSize(); i++) {
@@ -216,7 +211,7 @@ public class ChestCavityInstance implements ContainerListener {
         CompoundTag ccTag = new CompoundTag();
         ccTag.putBoolean("opened", this.opened);
         ccTag.putString("InventoryType", this.inventoryType.toString());
-        ccTag.putUUID("compatibility_id", this.compatibility_id);
+        ccTag.putUUID("CompatibilityId", this.compatibilityId);
         ccTag.putInt("KidneyTimer", this.bloodPoisonTimer);
         ccTag.putInt("LiverTimer", this.liverTimer);
         ccTag.putFloat("MetabolismRemainder", this.metabolismRemainder);
@@ -228,16 +223,13 @@ public class ChestCavityInstance implements ContainerListener {
     public void clone(ChestCavityInstance other) {
         this.opened = other.opened;
         this.type = other.type;
-        this.compatibility_id = other.compatibility_id;
+        this.compatibilityId = other.compatibilityId;
         this.oldInventoryType = other.oldInventoryType;
         this.inventoryType = other.inventoryType;
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
-        try {
-            this.inventory.removeListener(this);
-        } catch (NullPointerException ignored) {
-        }
+        this.inventory.removeListener(this);
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             this.inventory.setItem(i, other.inventory.getItem(i));
         }
@@ -247,7 +239,6 @@ public class ChestCavityInstance implements ContainerListener {
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
         this.lungRemainder = other.lungRemainder;
-        this.connectedCrystal = other.connectedCrystal;
         ChestCavityUtil.evaluateChestCavity(this);
     }
 }

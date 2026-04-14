@@ -39,6 +39,4 @@ public class ChestCavityContainer extends SimpleContainer {
         }
         return list;
     }
-
-
 }

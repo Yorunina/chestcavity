@@ -22,7 +22,6 @@ public class ChestCavityTypeManager {
     }
 
     public static void reloadChestCavityType(ResourceManager manager) {
-        ChestCavityTypes.clear();
         manager.listResources("cc_types", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();

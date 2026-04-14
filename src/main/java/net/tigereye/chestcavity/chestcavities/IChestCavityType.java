@@ -28,10 +28,7 @@ public interface IChestCavityType {
 
     void setOrganCompatibility(ChestCavityInstance var1);
 
-
     boolean isOpenable(ChestCavityInstance var1, Map<Enchantment, Integer> allEnchantments);
-
-    void onDeath(ChestCavityInstance var1);
 
     void setInventoryType(ResourceLocation id);
 

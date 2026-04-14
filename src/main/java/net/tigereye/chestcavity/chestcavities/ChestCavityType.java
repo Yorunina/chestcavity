@@ -155,13 +155,6 @@ public class ChestCavityType implements IChestCavityType {
         return chestVulnerable && (easeOfAccess > 0 || weakEnough) && easeOfAccess >= 0;
     }
 
-    public void onDeath(ChestCavityInstance cc) {
-        if (cc.connectedCrystal != null) {
-            cc.connectedCrystal.setBeamTarget(null);
-            cc.connectedCrystal = null;
-        }
-    }
-
 
     public static List<ItemStack> setInventoryTypeData(ItemStack stack, ResourceLocation inventoryType) {
         List<ItemStack> resList = new ArrayList<>();

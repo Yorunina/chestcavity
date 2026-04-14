@@ -80,6 +80,10 @@ dependencies {
     compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
     compileOnly fg.deobf("curse.maven:kubejs-forge-238086:5853326")
 
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
     compileOnly fg.deobf("curse.maven:ftb-quests-forge-289412:4816382")
     compileOnly fg.deobf("curse.maven:ftb-library-forge-404465:4720056")
     compileOnly fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")

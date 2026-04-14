@@ -34,7 +34,6 @@ public class InventoryTypeManager {
     }
 
     public static void reloadInventoryType(ResourceManager manager) {
-        InventoryTypeData.clear();
         manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((jsonId, resource) -> {
             try {
                 InputStream stream = resource.open();

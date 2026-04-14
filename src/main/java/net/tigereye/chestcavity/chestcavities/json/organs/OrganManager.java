@@ -27,7 +27,6 @@ public class OrganManager {
     }
 
     public static void reloadOrganData(ResourceManager manager) {
-        OrganData.clear();
         manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
             try {
                 InputStream stream = resource.open();
