@@ -15,7 +15,6 @@ import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 @Mod.EventBusSubscriber
 public class EntityDeathListener {
-
     @SubscribeEvent
     public static void onEntityDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();

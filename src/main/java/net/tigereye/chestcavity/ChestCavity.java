@@ -61,6 +61,8 @@ public class ChestCavity {
         CREATIVE_TABS.register(eventBus);
         CCEnchantments.ENCHANTMENTS.register(eventBus);
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
+        CCAttributes.ATTRIBUTE.register(eventBus);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(CCAttributes::onEntityAttributeModification);
         ModPotions.register(eventBus);
         ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);
@@ -70,7 +72,4 @@ public class ChestCavity {
         }
         ChestCavityQuestEventHandler.getInstance().init();
     }
-
-
-
 }

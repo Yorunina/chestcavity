@@ -1,5 +1,6 @@
 {
   "tabs.chestcavity.tab": "Chest Cavity",
+  "chestcavity.attribute.climb_speed.name": "Climb Speed",
   "gui.chestcavity.surgical_box.title": "Surgical Box's ChestCavity",
   "tooltips.organ.only_compatible_with": "Only Compatible With: %s",
   "tooltips.organ.safe_to_use": "Safe to Use",
@@ -53,6 +54,7 @@
   "organscore.chestcavity.swim_speed": "%sSwim Speed",
   "organscore.chestcavity.water_breath": "%sWater Breath",
   "organscore.chestcavity.ease_of_access": "Ease of Access",
+  "organscore.chestcavity.climb_speed": "%sClimb Speed",
   "text.autoconfig.chestcavity.title": "Chest Cavity",
   "text.autoconfig.chestcavity.category.core": "Core",
   "text.autoconfig.chestcavity.category.more": "More",

@@ -40,6 +40,16 @@ public class ChestCavityInventory extends SimpleContainer {
         }
     }
 
+    public int countEmpty() {
+        int empty = 0;
+        for (int i = 0; i < this.getContainerSize(); ++i) {
+            if (this.getItem(i).isEmpty()) {
+                empty++;
+            }
+        }
+        return empty;
+    }
+
     @Override
     public @NotNull ListTag createTag() {
         ListTag list = new ListTag();

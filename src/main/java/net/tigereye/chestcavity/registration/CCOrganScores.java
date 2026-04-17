@@ -24,6 +24,7 @@ public class CCOrganScores {
     public static final ResourceLocation IMPACT_RESISTANT = new ResourceLocation(ChestCavity.MODID, "impact_resistant");
     public static final ResourceLocation KNOCKBACK_RESISTANT = new ResourceLocation(ChestCavity.MODID, "knockback_resistant");
     public static final ResourceLocation SWIM_SPEED = new ResourceLocation(ChestCavity.MODID, "swim_speed");
+    public static final ResourceLocation CLIMBING = new ResourceLocation(ChestCavity.MODID, "climbing");
     public static final ResourceLocation WATERBREATH = new ResourceLocation(ChestCavity.MODID, "water_breath");
 
 

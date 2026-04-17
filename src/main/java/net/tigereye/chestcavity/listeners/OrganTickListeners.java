@@ -3,6 +3,8 @@ package net.tigereye.chestcavity.listeners;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -10,6 +12,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCDamageSources;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
@@ -23,8 +26,8 @@ public class OrganTickListeners {
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
+        TickClimbingAttribute(entity);
         if (entity.level().isClientSide) return;
-
 
         if (!(entity instanceof ChestCavityEntity ccEntity)) return;
         ChestCavityInstance cc = ccEntity.getChestCavityInstance();
@@ -32,12 +35,22 @@ public class OrganTickListeners {
 
 
         if (!cc.opened) return;
-        if (cc.owner != null) CCEvents.postOpenedEntityTick(cc);
+        if (cc.owner != null) CCEvents.postOpenedEntityTick(entity, cc);
 
         if (!entity.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) {
             TickFiltration(entity, cc);
             TickHealth(entity, cc);
             TickIncompatibility(entity, cc);
+        }
+    }
+
+    public static void TickClimbingAttribute(LivingEntity entity) {
+        AttributeInstance climbSpeed = entity.getAttribute(CCAttributes.CLIMB_SPEED.get());
+        if (climbSpeed == null) return;
+        if (entity.horizontalCollision) {
+            if (entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D) {
+                entity.setDeltaMovement(new Vec3(entity.getDeltaMovement().x(), climbSpeed.getValue(), entity.getDeltaMovement().z()));
+            }
         }
     }
 
@@ -73,6 +86,5 @@ public class OrganTickListeners {
                 entity.hurt(CCDamageSources.of(entity.level(), CCDamageSources.ORGAN_REJECTION), (float) ChestCavity.config.ORGAN_REJECTION_DAMAGE);
             }
         }
-
     }
 }

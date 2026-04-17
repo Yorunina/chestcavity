@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 
@@ -22,6 +23,7 @@ public class OrganUpdateListeners {
     private static final UUID KNOCKBACK_RESISTANCE_ID = UUID.fromString("673566d3-5daa-40d7-955f-cbabc27a84cf");
 
     private static final UUID DEFENSE_ID = UUID.fromString("3737d5eb-2a47-42e2-8e70-14552dd706b2");
+    private static final UUID CLIMB_SPEED_ID = UUID.fromString("bca95213-7672-424c-b75b-c8ad88b22b28");
 
     public OrganUpdateListeners() {
     }
@@ -35,6 +37,18 @@ public class OrganUpdateListeners {
         UpdateKnockBackResistance(entity, cc);
         UpdateIncompatibility(entity, cc);
         UpdateDefense(entity, cc);
+        UpdateClimbing(entity, cc);
+    }
+
+    public static void UpdateClimbing(LivingEntity entity, ChestCavityInstance cc) {
+        float climbingScore = cc.getOrganScore(CCOrganScores.CLIMBING);
+        if (cc.getOldOrganScore(CCOrganScores.CLIMBING) != climbingScore && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.CLIMBING) <= 0) {
+            AttributeInstance att = entity.getAttribute(CCAttributes.CLIMB_SPEED.get());
+
+            if (att == null) return;
+            AttributeModifier mod = new AttributeModifier(CLIMB_SPEED_ID, "ChestCavityClimbingSpeed", Math.max(climbingScore / 10.0F, 0), Operation.ADDITION);
+            ReplaceAttributeModifier(att, mod);
+        }
     }
 
     public static void UpdateDefense(LivingEntity entity, ChestCavityInstance cc) {

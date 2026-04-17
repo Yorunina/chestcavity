@@ -1,5 +1,6 @@
 {
   "tabs.chestcavity.tab": "胸腔",
+  "chestcavity.attribute.climb_speed.name": "攀爬速度",
   "gui.chestcavity.surgical_box.title": "手术盒内部空间",
   "tooltips.organ.only_compatible_with": "兼容生物: %s",
   "tooltips.organ.safe_to_use": "可安全使用",
@@ -53,6 +54,7 @@
   "organscore.chestcavity.swim_speed": "+%s 游泳速度",
   "organscore.chestcavity.water_breath": "+%s 水下呼吸",
   "organscore.chestcavity.ease_of_access": "易于接触",
+  "organscore.chestcavity.climb_speed": "+%s 爬行速度",
   "text.autoconfig.chestcavity.title": "胸腔",
   "text.autoconfig.chestcavity.category.core": "核心",
   "text.autoconfig.chestcavity.category.more": "更多",

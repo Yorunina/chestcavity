@@ -14,8 +14,7 @@ public class CCStatusEffects {
     public static final RegistryObject<MobEffect> ORGAN_SLIP;
     public static final RegistryObject<MobEffect> ORGAN_PROTECTION;
 
-    public CCStatusEffects() {
-    }
+    public CCStatusEffects() {}
 
     static {
         MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, "chestcavity");

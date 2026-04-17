@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.compat.kubejs;
 
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.compat.kubejs.events.EvaluateChestCavityJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OpenedEntityTickJS;
@@ -23,9 +24,9 @@ public class CCEvents {
         }
     }
 
-    public static void postOpenedEntityTick(ChestCavityInstance cc) {
+    public static void postOpenedEntityTick(LivingEntity entity, ChestCavityInstance cc) {
         if (KUBEJS_LOADED) {
-            OPENED_ENTITY_TICK.post(new OpenedEntityTickJS(cc, cc.owner, cc.owner.level()));
+            OPENED_ENTITY_TICK.post(new OpenedEntityTickJS(cc, entity, entity.level()));
         }
     }
 

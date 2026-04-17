@@ -84,10 +84,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
 
 
 
-    @Inject(
-            at = {@At("TAIL")},
-            method = {"baseTick"}
-    )
+    @Inject(at = @At("TAIL"), method = "baseTick")
     protected void chestCavityLivingEntityBaseTickBreathAirMixin(CallbackInfo info) {
         if (this.level().isClientSide) return;
 
@@ -181,4 +178,5 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         }
         this.chestCavityInstance.toTag(tag, (LivingEntity) (Object) this);
     }
+
 }
