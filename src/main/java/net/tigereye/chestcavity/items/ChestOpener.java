@@ -32,7 +32,6 @@ public class ChestOpener extends Item {
     public ChestOpener() {
         super(CCItems.CHEST_OPENER_SETTINGS);
     }
-
     public static void canNotOpenChestCavity(Player player, LivingEntity target) {
         if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
             player.sendSystemMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.obstructed"));
