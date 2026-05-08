@@ -46,7 +46,7 @@ public class OrganTickListeners {
 
     public static void TickClimbingAttribute(LivingEntity entity) {
         AttributeInstance climbSpeed = entity.getAttribute(CCAttributes.CLIMB_SPEED.get());
-        if (climbSpeed == null) return;
+        if (climbSpeed == null || climbSpeed.getValue() <= 0.0D) return;
         if (entity.horizontalCollision) {
             if (entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D) {
                 entity.setDeltaMovement(new Vec3(entity.getDeltaMovement().x(), climbSpeed.getValue(), entity.getDeltaMovement().z()));

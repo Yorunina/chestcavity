@@ -5,7 +5,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +16,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
@@ -25,7 +27,6 @@ import net.tigereye.chestcavity.ui.ChestCavityContainer;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class SurgicalBox extends Item implements MenuProvider {
@@ -67,31 +68,32 @@ public class SurgicalBox extends Item implements MenuProvider {
         return pStack;
     }
 
-    @Override
-    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
-        if (pPlayer.level().isClientSide) {
-            return InteractionResult.PASS;
-        }
-        Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(pInteractionTarget);
-        if (!optionalChestCavityEntity.isPresent()) {
-            return InteractionResult.FAIL;
-        }
-        ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
-        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
-        if (inventoryTypeData.getSlotSize() == 0) return InteractionResult.FAIL;
-        ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
-        entityInstance.inventory.setInstance(entityInstance);
-        Map<Enchantment, Integer> allEnchantments = pStack.getAllEnchantments();
-        if (!entityInstance.getChestCavityType().isOpenable(entityInstance, allEnchantments)) {
-            ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
-            return InteractionResult.FAIL;
-        }
-
-        replaceChestCavity(pStack, chestCavityEntity);
-
-        pPlayer.setItemInHand(pUsedHand, pStack);
-        return InteractionResult.SUCCESS;
-    }
+//    @Override
+//    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
+//        if (pPlayer.level().isClientSide) {
+//            return InteractionResult.PASS;
+//        }
+//        Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(pInteractionTarget);
+//        if (!optionalChestCavityEntity.isPresent()) {
+//            return InteractionResult.FAIL;
+//        }
+//        ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
+//        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
+//        if (inventoryTypeData.getSlotSize() == 0) return InteractionResult.FAIL;
+//        ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
+//        entityInstance.inventory.setInstance(entityInstance);
+//        Map<Enchantment, Integer> allEnchantments = pStack.getAllEnchantments();
+//        double easeAccess = entityInstance.opened ? entityInstance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) : entityInstance.getChestCavityType().getDefaultOrganScore(CCOrganScores.EASE_OF_ACCESS);
+//        if (!entityInstance.getChestCavityType().isOpenable(entityInstance, allEnchantments, easeAccess)) {
+//            ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
+//            return InteractionResult.FAIL;
+//        }
+//
+//        replaceChestCavity(pStack, chestCavityEntity);
+//
+//        pPlayer.setItemInHand(pUsedHand, pStack);
+//        return InteractionResult.SUCCESS;
+//    }
 
     public static void replaceChestCavity(ItemStack pStack, ChestCavityEntity chestCavityEntity) {
         ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();

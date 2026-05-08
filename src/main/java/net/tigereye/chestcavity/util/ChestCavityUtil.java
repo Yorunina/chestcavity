@@ -38,8 +38,14 @@ public class ChestCavityUtil {
 
     public static int applyBreathInWater(ChestCavityInstance cc, int oldAir, int newAir) {
         //if your chest cavity is untouched or normal, we do nothing
-        if (!cc.opened || (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) &&
-                cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH))) {
+        if (!cc.opened) {
+            return newAir;
+        }
+        IChestCavityType ccType = cc.getChestCavityType();
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) <= 0) {
+            return newAir;
+        }
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH)) {
             return newAir;
         }
 
@@ -84,9 +90,14 @@ public class ChestCavityUtil {
     }
 
     public static int applyBreathOnLand(ChestCavityInstance cc, int oldAir, int airGain) {
-        if (!cc.opened || (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) == cc.getOrganScore(CCOrganScores.BREATH_RECOVERY) &&
-                cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) &&
-                cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH))) {
+        if (!cc.opened) {
+            return oldAir;
+        }
+        IChestCavityType ccType = cc.getChestCavityType();
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) <= 0) {
+            return oldAir;
+        }
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH) && ccType.getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) == cc.getOrganScore(CCOrganScores.BREATH_RECOVERY)) {
             return oldAir;
         }
 
@@ -281,7 +292,6 @@ public class ChestCavityUtil {
                 cc.owner.spawnAtLocation(cc.inventory.removeItemNoUpdate(slot));
             }
         }
-
         cc.inventory.addItem(stack);
     }
 

@@ -12,7 +12,6 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
-import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import java.util.Map;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 import static net.tigereye.chestcavity.registration.CCEnchantments.ADVANCE_SURGERY;
+import static net.tigereye.chestcavity.registration.CCEnchantments.CREATIVE_SURGERY;
 
 public class ChestCavityType implements IChestCavityType {
     private Map<ResourceLocation, Float> defaultOrganScores = null;
@@ -146,13 +146,17 @@ public class ChestCavityType implements IChestCavityType {
     }
 
 
-    public boolean isOpenable(ChestCavityInstance instance, Map<Enchantment, Integer> allEnchantments) {
+    public boolean isOpenable(ChestCavityInstance instance, Map<Enchantment, Integer> allEnchantments, double easeAccess) {
+        if (allEnchantments.containsKey(CREATIVE_SURGERY.get())) return true;
+
         int enchantLevel = allEnchantments.getOrDefault(ADVANCE_SURGERY.get(), 0);
+
         boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD + 10 * enchantLevel ||
                 instance.owner.getHealth() <= instance.owner.getMaxHealth() * (ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD + 0.2F * enchantLevel);
+
         boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-        double easeOfAccess = instance.getOrganScore(CCOrganScores.EASE_OF_ACCESS);
-        return chestVulnerable && (easeOfAccess > 0 || weakEnough) && easeOfAccess >= 0;
+
+        return chestVulnerable && (easeAccess > 0 || weakEnough) && easeAccess >= 0;
     }
 
 

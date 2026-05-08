@@ -81,11 +81,12 @@ public class ChestOpener extends Item {
         ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
         cc.inventory.setInstance(cc);
         Map<Enchantment, Integer> allEnchantments = chestOpener.getAllEnchantments();
-        if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments) && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
+        double easeAccess = cc.opened ? cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) : cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.EASE_OF_ACCESS);
+        if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments, easeAccess)) {
             canNotOpenChestCavity(player, target);
             return false;
         } else {
-            if (cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) <= 0.0F && !allEnchantments.containsKey(CREATIVE_SURGERY.get()) && !allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
+            if (easeAccess <= 0 && !allEnchantments.containsKey(CREATIVE_SURGERY.get()) && !allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
                 if (!shouldKnockback) {
                     target.hurt(player.damageSources().generic(), 4.0F);
                 } else {
