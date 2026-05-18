@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -172,17 +173,7 @@ public class ChestCavityUtil {
         }
     }
 
-    public static int applyDigestion(ChestCavityInstance cc, float digestion, int hunger) {
-        if (digestion == 1.0F) {
-            return hunger;
-        } else if (digestion < 0.0F) {
-            return 0;
-        } else if (digestion < 1.0F) {
-            return digestion * hunger > 1.0F ? 1 : 0;
-        } else {
-            return Math.max((int) ((float) hunger * digestion), 1);
-        }
-    }
+
 
     public static float applyFireResistant(ChestCavityInstance cc, float damage) {
         float fireproof = cc.getOrganScore(CCOrganScores.FIRE_RESISTANT);
@@ -195,13 +186,31 @@ public class ChestCavityUtil {
     }
 
 
-    public static float applyNutrition(ChestCavityInstance cc, float nutrition, float saturation) {
-        if (nutrition == 4.0F) {
+    public static int applyDigestion(ChestCavityInstance cc, FoodProperties foodProperties) {
+        float digestion = cc.getOrganScore(CCOrganScores.DIGESTION);
+        float defaultDigestion = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DIGESTION);
+        int hunger = foodProperties.getNutrition();
+        float digestionDiff = digestion - defaultDigestion;
+        if (digestionDiff == 0) {
+            return hunger;
+        } else if (digestionDiff < 0) {
+            return Math.abs(digestionDiff) < hunger ? 1 : 0;
+        } else {
+            return Math.max((int) (hunger * (1 + digestionDiff / 4)), 1);
+        }
+    }
+    public static float applyNutrition(ChestCavityInstance cc, FoodProperties foodProperties) {
+        float nutrition = cc.getOrganScore(CCOrganScores.NUTRITION);
+        float defaultNutrition = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NUTRITION);
+        float saturation = foodProperties.getSaturationModifier();
+        int hunger = foodProperties.getNutrition();
+        float nutritionDiff = nutrition - defaultNutrition;
+        if (nutritionDiff == 0) {
             return saturation;
-        } else if (nutrition < 0.0F) {
+        } else if (nutritionDiff < 0) {
             return 0.0F;
         } else {
-            return saturation * nutrition / 4.0F;
+            return saturation * (1 + nutritionDiff / 4) * hunger * 2;
         }
     }
 

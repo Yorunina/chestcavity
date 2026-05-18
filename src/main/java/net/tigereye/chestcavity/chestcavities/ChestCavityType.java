@@ -152,7 +152,7 @@ public class ChestCavityType implements IChestCavityType {
         int enchantLevel = allEnchantments.getOrDefault(ADVANCE_SURGERY.get(), 0);
 
         boolean weakEnough = instance.owner.getHealth() <= (float) ChestCavity.config.CHEST_OPENER_ABSOLUTE_HEALTH_THRESHOLD + 10 * enchantLevel ||
-                instance.owner.getHealth() <= instance.owner.getMaxHealth() * (ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD + 0.2F * enchantLevel);
+                instance.owner.getHealth() <= instance.owner.getMaxHealth() * (ChestCavity.config.CHEST_OPENER_FRACTIONAL_HEALTH_THRESHOLD + 0.1F * enchantLevel);
 
         boolean chestVulnerable = instance.owner.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 

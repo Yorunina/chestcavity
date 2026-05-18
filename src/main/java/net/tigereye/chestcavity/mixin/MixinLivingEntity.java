@@ -33,10 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.DEFAULT_INVENTORY_TYPE_STRING;
 
-@Mixin(
-        value = {LivingEntity.class},
-        priority = 900
-)
+@Mixin(value = LivingEntity.class, priority = 900)
 public abstract class MixinLivingEntity extends Entity implements ChestCavityEntity {
     @Unique
     private ChestCavityInstance chestCavityInstance;
