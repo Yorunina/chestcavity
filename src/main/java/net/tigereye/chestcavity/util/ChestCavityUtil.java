@@ -206,9 +206,9 @@ public class ChestCavityUtil {
         int hunger = foodProperties.getNutrition();
         float nutritionDiff = nutrition - defaultNutrition;
         if (nutritionDiff == 0) {
-            return saturation;
+            return saturation * hunger * 2;
         } else if (nutritionDiff < 0) {
-            return 0.0F;
+            return saturation * Math.max(1 + nutritionDiff / 2, 0) * hunger * 2;
         } else {
             return saturation * (1 + nutritionDiff / 4) * hunger * 2;
         }
@@ -321,12 +321,12 @@ public class ChestCavityUtil {
         }
 
         CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
+        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG)) {
             return true;
         }
 
         boolean isCompat = false;
-        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG);
         if (tag.getUUID("owner").equals(cc.compatibilityId)) {
             isCompat = true;
         }
@@ -338,10 +338,10 @@ public class ChestCavityUtil {
             return true;
         }
         CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG.toString())) {
+        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG)) {
             return false;
         }
-        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG.toString());
+        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG);
         return tag.getUUID("owner").equals(cc.compatibilityId);
     }
 
@@ -408,8 +408,8 @@ public class ChestCavityUtil {
         if (itemStack != ItemStack.EMPTY) {
             CompoundTag tag = new CompoundTag();
             tag.putUUID("owner", instance.compatibilityId);
-            tag.putString("name", instance.owner.getDisplayName().getString());
-            itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG.toString(), tag);
+            tag.putString("name", instance.owner instanceof Player ? instance.owner.getName().getString() : instance.owner.getType().getDescriptionId());
+            itemStack.addTagElement(ChestCavity.COMPATIBILITY_TAG, tag);
         }
     }
 }

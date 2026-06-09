@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.tigereye.chestcavity.registration.CCItems;
+import net.tigereye.chestcavity.items.ChestOpener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,8 +16,8 @@ public abstract class MixinMob {
     @Inject(method = "checkAndHandleImportantInteractions", at = @At("HEAD"), cancellable = true)
     private void checkAndHandleImportantInteractions(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (itemstack.is(CCItems.CHEST_OPENER.get())) {
-            InteractionResult action = itemstack.interactLivingEntity(player, (Mob) (Object) this, hand);
+        if (itemstack.getItem() instanceof ChestOpener chestOpener) {
+            InteractionResult action = chestOpener.openLivingEntity(itemstack, player, (Mob) (Object) this, hand);
             if (action.consumesAction()) {
                 cir.setReturnValue(action);
             }

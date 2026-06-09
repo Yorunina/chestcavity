@@ -25,9 +25,9 @@ public class MixinItem {
             method = {"appendHoverText"}
     )
     public void chestCavityItemAppendTooltip(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context, CallbackInfo info) {
-        if (world == null) return;
+        if (world == null || !world.isClientSide) return;
         OrganData data = ChestCavityUtil.lookupOrgan(stack, null);
-        if (!data.isEmpty() && world.isClientSide) {
+        if (!data.isEmpty()) {
             OrganUtil.displayCompatibility(stack, world, tooltip, context);
         }
     }

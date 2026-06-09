@@ -141,6 +141,9 @@ public class ChestCavityType implements IChestCavityType {
         int universalOrgans;
         for (universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
             ItemStack itemStack = chestCavity.getItem(universalOrgans);
+            if (itemStack.isEmpty()) continue;
+            OrganData organData = ChestCavityUtil.lookupOrgan(itemStack, instance.getChestCavityType());
+            if (organData.isEmpty()) continue;
             ChestCavityUtil.setOrganCompatibility(instance, itemStack);
         }
     }

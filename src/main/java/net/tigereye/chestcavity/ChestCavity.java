@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -21,7 +20,10 @@ import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
 import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.mob_effect.ModPotions;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
-import net.tigereye.chestcavity.registration.*;
+import net.tigereye.chestcavity.registration.CCAttributes;
+import net.tigereye.chestcavity.registration.CCEnchantments;
+import net.tigereye.chestcavity.registration.CCItems;
+import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +37,7 @@ public class ChestCavity {
     public static final Logger LOGGER = LogManager.getLogger();
     public static CCConfig config;
 
-    public static final ResourceLocation COMPATIBILITY_TAG = new ResourceLocation(MODID, "organ_compatibility");
+    public static final String COMPATIBILITY_TAG = MODID + ":organ_compatibility";
     public static boolean KUBEJS_LOADED = false;
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
