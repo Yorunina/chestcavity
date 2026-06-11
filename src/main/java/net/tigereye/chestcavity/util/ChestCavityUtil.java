@@ -9,7 +9,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -186,10 +185,10 @@ public class ChestCavityUtil {
     }
 
 
-    public static int applyDigestion(ChestCavityInstance cc, FoodProperties foodProperties) {
-        float digestion = cc.getOrganScore(CCOrganScores.DIGESTION);
+    public static int applyDigestion(ChestCavityInstance cc, int hunger, float saturation) {
         float defaultDigestion = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DIGESTION);
-        int hunger = foodProperties.getNutrition();
+        float digestion = cc.getOrganScoreOrDefault(CCOrganScores.DIGESTION, defaultDigestion);
+
         float digestionDiff = digestion - defaultDigestion;
         if (digestionDiff == 0) {
             return hunger;
@@ -199,18 +198,18 @@ public class ChestCavityUtil {
             return Math.max((int) (hunger * (1 + digestionDiff / 4)), 1);
         }
     }
-    public static float applyNutrition(ChestCavityInstance cc, FoodProperties foodProperties) {
-        float nutrition = cc.getOrganScore(CCOrganScores.NUTRITION);
+
+    public static float applyNutrition(ChestCavityInstance cc, int hunger, float saturation) {
         float defaultNutrition = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NUTRITION);
-        float saturation = foodProperties.getSaturationModifier();
-        int hunger = foodProperties.getNutrition();
+        float nutrition = cc.getOrganScoreOrDefault(CCOrganScores.NUTRITION, defaultNutrition);
+        ChestCavity.LOGGER.info("nutrition: {}, defaultNutrition: {}", nutrition, defaultNutrition);
         float nutritionDiff = nutrition - defaultNutrition;
         if (nutritionDiff == 0) {
-            return saturation * hunger * 2;
+            return saturation;
         } else if (nutritionDiff < 0) {
-            return saturation * Math.max(1 + nutritionDiff / 2, 0) * hunger * 2;
+            return saturation * Math.max(1 + nutritionDiff / 2, 0);
         } else {
-            return saturation * (1 + nutritionDiff / 4) * hunger * 2;
+            return saturation * (1 + nutritionDiff / 4);
         }
     }
 
@@ -228,7 +227,8 @@ public class ChestCavityUtil {
         if (!cc.opened) {
             return foodStarvationTimer;
         } else {
-            float metabolismDiff = cc.getOrganScore(CCOrganScores.METABOLISM) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.METABOLISM);
+            float defaultMetabolism = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.METABOLISM);
+            float metabolismDiff = cc.getOrganScoreOrDefault(CCOrganScores.METABOLISM, defaultMetabolism) - defaultMetabolism;
             if (metabolismDiff != 0.0F) {
                 if (metabolismDiff > 0.0F) {
                     cc.metabolismRemainder += metabolismDiff;

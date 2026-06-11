@@ -1,13 +1,10 @@
 package net.tigereye.chestcavity.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.interfaces.CCFoodData;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
@@ -17,57 +14,45 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FoodData.class)
-public abstract class MixinFoodData {
+public class MixinFoodData implements CCFoodData {
     @Shadow
     private int tickTimer;
     @Unique
-    private ChestCavityEntity ccPlayer = null;
-
-    public MixinFoodData() {
-    }
-
+    public ChestCavityInstance ccIns = null;
     @Shadow
-    public abstract void eat(int var1, float var2);
+    private int foodLevel;
+    @Shadow
+    private float saturationLevel;
+
+    public MixinFoodData() {}
 
     @Inject(
             at = {@At("HEAD")},
             method = {"tick"}
     )
     public void chestCavityUpdateMixin(Player player, CallbackInfo info) {
-        if (this.ccPlayer == null) {
+        if (this.ccIns == null) {
             ChestCavityEntity.of(player).ifPresent((ccPlayerEntityInterface) -> {
-                this.ccPlayer = ccPlayerEntityInterface;
+                this.ccIns = ccPlayerEntityInterface.getChestCavityInstance();
             });
         }
 
-        this.tickTimer = ChestCavityUtil.applySpleenMetabolism(this.ccPlayer.getChestCavityInstance(), this.tickTimer);
+        if (this.ccIns != null) {
+            this.tickTimer = ChestCavityUtil.applySpleenMetabolism(this.ccIns, this.tickTimer);
+        }
     }
 
-    @Redirect(
-            method = {"eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;)V"},
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/food/FoodData;eat(IF)V"
-            )
-    )
-    public void chestCavityEatMixin(FoodData instance, int pFoodLevelModifier, float pSaturationLevelModifier, @Local(name = "pItem") Item pItem, @Local(name = "pStack") ItemStack pStack, @Local(name = "entity")LivingEntity entity) {
-        if (pItem.isEdible()) {
-            if (this.ccPlayer != null) {
-                FoodProperties itemFoodComponent = pItem.getFoodProperties(pStack, entity);
-                if (itemFoodComponent != null) {
-                    ChestCavityInstance ccIns = this.ccPlayer.getChestCavityInstance();
-                    float saturationGain = ChestCavityUtil.applyNutrition(ccIns, itemFoodComponent);
-                    int hungerGain = ChestCavityUtil.applyDigestion(ccIns, itemFoodComponent);
-                    this.eat(hungerGain, saturationGain / (2 * hungerGain));
-                }
-            } else {
-                FoodProperties foodproperties = pItem.getFoodProperties(pStack, entity);
-                this.eat(foodproperties.getNutrition(), foodproperties.getSaturationModifier());
-            }
+    @Inject(method = "eat(IF)V", at = @At("HEAD"), cancellable = true)
+    public void chestCavityEatMixin(int pFoodLevelModifier, float pSaturationLevelModifier, CallbackInfo ci) {
+        if (this.ccIns != null) {
+            float saturationGain = ChestCavityUtil.applyNutrition(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
+            int hungerGain = ChestCavityUtil.applyDigestion(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
+            this.foodLevel = Math.min(hungerGain + this.foodLevel, 20);
+            this.saturationLevel = Math.min(this.saturationLevel + (float) hungerGain * saturationGain, (float) this.foodLevel);
+            ci.cancel();
         }
     }
 
@@ -78,8 +63,8 @@ public abstract class MixinFoodData {
             argsOnly = true
     )
     public float chestCavityAddExhaustionMixin(float exhaustion) {
-        if (this.ccPlayer != null) {
-            float enduranceDiff = this.ccPlayer.getChestCavityInstance().getOrganScore(CCOrganScores.ENDURANCE) - this.ccPlayer.getChestCavityInstance().getChestCavityType().getDefaultOrganScore(CCOrganScores.ENDURANCE);
+        if (this.ccIns != null) {
+            float enduranceDiff = this.ccIns.getOrganScore(CCOrganScores.ENDURANCE) - this.ccIns.getChestCavityType().getDefaultOrganScore(CCOrganScores.ENDURANCE);
             float out;
             if (enduranceDiff > 0.0F) {
                 out = exhaustion / (1.0F + enduranceDiff / 2.0F);
@@ -90,5 +75,10 @@ public abstract class MixinFoodData {
         } else {
             return exhaustion;
         }
+    }
+
+    public void updateCCInstance(ChestCavityInstance ccIns) {
+        this.ccIns = ccIns;
+        ChestCavity.LOGGER.info("CCFoodData updateCCInstance");
     }
 }

@@ -5,8 +5,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.interfaces.CCFoodData;
 import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
@@ -38,6 +40,9 @@ public class OrganUpdateListeners {
         UpdateIncompatibility(entity, cc);
         UpdateDefense(entity, cc);
         UpdateClimbing(entity, cc);
+        if (entity instanceof Player player) {
+            ((CCFoodData)player.getFoodData()).updateCCInstance(cc);
+        }
     }
 
     public static void UpdateClimbing(LivingEntity entity, ChestCavityInstance cc) {

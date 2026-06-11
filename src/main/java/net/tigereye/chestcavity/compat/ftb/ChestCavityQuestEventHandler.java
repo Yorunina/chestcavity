@@ -4,8 +4,6 @@ import dev.ftb.mods.ftbquests.api.QuestFile;
 import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
-import dev.ftb.mods.ftbteams.api.Team;
-import dev.ftb.mods.ftbteams.data.TeamManagerImpl;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,9 +43,7 @@ public class ChestCavityQuestEventHandler {
                 this.chestCavityOpenedTaskList = ServerQuestFile.INSTANCE.collect(OpenChestCavityTask.class);
             }
             if (this.chestCavityOpenedTaskList.isEmpty()) return;
-            Team team = TeamManagerImpl.INSTANCE.getTeamForPlayer(player).orElse(null);
-            if (team == null) return;
-            TeamData teamData = ServerQuestFile.INSTANCE.getOrCreateTeamData(team);
+            TeamData teamData = ServerQuestFile.INSTANCE.getOrCreateTeamData(player);
 
             Optional<ChestCavityEntity> optional = ChestCavityEntity.of(entity);
             if (optional.isEmpty()) return;
