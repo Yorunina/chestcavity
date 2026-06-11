@@ -27,11 +27,11 @@ public class CreativeSurgery extends Enchantment {
 
     @Override
     public boolean isTradeable() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isDiscoverable() {
-        return true;
+        return false;
     }
 }

@@ -187,7 +187,7 @@ public class ChestCavityUtil {
 
     public static int applyDigestion(ChestCavityInstance cc, int hunger, float saturation) {
         float defaultDigestion = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DIGESTION);
-        float digestion = cc.getOrganScoreOrDefault(CCOrganScores.DIGESTION, defaultDigestion);
+        float digestion = cc.getOrganScore(CCOrganScores.DIGESTION);
 
         float digestionDiff = digestion - defaultDigestion;
         if (digestionDiff == 0) {
@@ -201,13 +201,12 @@ public class ChestCavityUtil {
 
     public static float applyNutrition(ChestCavityInstance cc, int hunger, float saturation) {
         float defaultNutrition = cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NUTRITION);
-        float nutrition = cc.getOrganScoreOrDefault(CCOrganScores.NUTRITION, defaultNutrition);
-        ChestCavity.LOGGER.info("nutrition: {}, defaultNutrition: {}", nutrition, defaultNutrition);
+        float nutrition = cc.getOrganScore(CCOrganScores.NUTRITION);
         float nutritionDiff = nutrition - defaultNutrition;
         if (nutritionDiff == 0) {
             return saturation;
         } else if (nutritionDiff < 0) {
-            return saturation * Math.max(1 + nutritionDiff / 2, 0);
+            return saturation * Math.max(1 + nutritionDiff / 2, 0.1F);
         } else {
             return saturation * (1 + nutritionDiff / 4);
         }

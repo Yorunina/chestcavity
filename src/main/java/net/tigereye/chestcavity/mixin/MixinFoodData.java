@@ -27,7 +27,8 @@ public class MixinFoodData implements CCFoodData {
     @Shadow
     private float saturationLevel;
 
-    public MixinFoodData() {}
+    public MixinFoodData() {
+    }
 
     @Inject(
             at = {@At("HEAD")},
@@ -36,6 +37,7 @@ public class MixinFoodData implements CCFoodData {
     public void chestCavityUpdateMixin(Player player, CallbackInfo info) {
         if (this.ccIns == null) {
             ChestCavityEntity.of(player).ifPresent((ccPlayerEntityInterface) -> {
+                ChestCavityUtil.openChestCavity(ccPlayerEntityInterface.getChestCavityInstance());
                 this.ccIns = ccPlayerEntityInterface.getChestCavityInstance();
             });
         }
@@ -51,7 +53,7 @@ public class MixinFoodData implements CCFoodData {
             float saturationGain = ChestCavityUtil.applyNutrition(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
             int hungerGain = ChestCavityUtil.applyDigestion(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
             this.foodLevel = Math.min(hungerGain + this.foodLevel, 20);
-            this.saturationLevel = Math.min(this.saturationLevel + (float) hungerGain * saturationGain, (float) this.foodLevel);
+            this.saturationLevel = Math.min(this.saturationLevel + pFoodLevelModifier * saturationGain * 2.0F, this.foodLevel);
             ci.cancel();
         }
     }
