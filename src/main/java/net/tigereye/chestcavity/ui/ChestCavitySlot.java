@@ -18,6 +18,9 @@ public class ChestCavitySlot extends Slot {
 
     @Override
     public boolean mayPickup(Player playerIn) {
+        if (!this.container.stillValid(playerIn)) {
+            return false;
+        }
         return playerIn.isCreative() || !this.container.getItem(index).is(CCTags.CANNOT_REMOVE);
     }
 

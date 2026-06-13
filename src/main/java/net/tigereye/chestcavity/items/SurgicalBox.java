@@ -112,6 +112,7 @@ public class SurgicalBox extends Item implements MenuProvider {
         entityInstance.inventory.removeListener(entityInstance);
         chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
         entityInstance.oldInventory = entityInstance.inventory.clone();
+        entityInstance.oldInventoryType = entityInstance.inventoryType;
         entityInstance.inventoryType = itemInventoryTypeData.getId();
 
         itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());

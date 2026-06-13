@@ -2,7 +2,6 @@ package net.tigereye.chestcavity.mixin;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.CCFoodData;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
@@ -81,6 +80,5 @@ public class MixinFoodData implements CCFoodData {
 
     public void updateCCInstance(ChestCavityInstance ccIns) {
         this.ccIns = ccIns;
-        ChestCavity.LOGGER.info("CCFoodData updateCCInstance");
     }
 }

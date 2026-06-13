@@ -71,6 +71,10 @@ public class ChestCavityInventory extends SimpleContainer {
             return false;
         } else if (this.instance.owner.isDeadOrDying()) {
             return false;
+        } else if (this.instance.owner.isRemoved()) {
+            return false;
+        } else if (this.instance.owner.level() == null) {
+            return false;
         } else {
             return player.distanceTo(this.instance.owner) < 32.0F;
         }

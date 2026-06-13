@@ -81,6 +81,9 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);
         if (slot.hasItem()) {
+            if (!this.inventory.stillValid(player)) {
+                return ItemStack.EMPTY;
+            }
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
             if (invSlot < this.inventory.getContainerSize()) {
@@ -102,7 +105,11 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     }
 
     public boolean stillValid(@NotNull Player player) {
-        return this.inventory.stillValid(player);
+        boolean valid = this.inventory.stillValid(player);
+        if (!valid && !player.level().isClientSide()) {
+            player.closeContainer();
+        }
+        return valid;
     }
 
     @Override
