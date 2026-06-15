@@ -85,5 +85,11 @@
   "ftbquests.task.chestcavity.open_chest_cavity_task.entity": "实体类型",
   "ftbquests.task.chestcavity.open_chest_cavity_task.inventoryType": "胸腔类型",
   "ftbquests.task.chestcavity.open_chest_cavity_task.value": "次数",
-  "chestcavity.task.ftbquests.open_chest_cavity.title": "打开胸腔: %sx %s"
+  "chestcavity.task.ftbquests.open_chest_cavity.title": "打开胸腔: %sx %s",
+  "jei.chestcavity.category.organ_source": "器官来源",
+  "jei.chestcavity.category.entity_organs": "生物器官",
+  "jei.chestcavity.organ_source.organ": "器官",
+  "jei.chestcavity.organ_source.sources": "来源生物",
+  "jei.chestcavity.entity_organs.entity": "生物",
+  "jei.chestcavity.entity_organs.organs": "产出器官"
 }

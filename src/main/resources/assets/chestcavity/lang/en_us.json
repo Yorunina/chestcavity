@@ -1,4 +1,4 @@
-{
+  {
   "tabs.chestcavity.tab": "Chest Cavity",
   "chestcavity.attribute.climb_speed.name": "Climb Speed",
   "gui.chestcavity.surgical_box.title": "Surgical Box's ChestCavity",
@@ -85,5 +85,11 @@
   "ftbquests.task.chestcavity.open_chest_cavity_task.entity": "Entity Type",
   "ftbquests.task.chestcavity.open_chest_cavity_task.inventoryType": "ChestCavity Type",
   "ftbquests.task.chestcavity.open_chest_cavity_task.value": "Amount",
-  "chestcavity.task.ftbquests.open_chest_cavity.title": "Open Chest Cavity: %sx %s"
+  "chestcavity.task.ftbquests.open_chest_cavity.title": "Open Chest Cavity: %sx %s",
+  "jei.chestcavity.category.organ_source": "Organ Sources",
+  "jei.chestcavity.category.entity_organs": "Entity Organs",
+  "jei.chestcavity.organ_source.organ": "Organ",
+  "jei.chestcavity.organ_source.sources": "Source Entities",
+  "jei.chestcavity.entity_organs.entity": "Entity",
+  "jei.chestcavity.entity_organs.organs": "Dropped Organs"
 }
