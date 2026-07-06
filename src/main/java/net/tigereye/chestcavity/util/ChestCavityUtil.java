@@ -332,22 +332,25 @@ public class ChestCavityUtil {
         return isCompat;
     }
 
-    public static boolean isOriginalOrgan(ChestCavityInstance cc, ItemStack itemStack) {
+    public static boolean isOriginalOrgan(ChestCavityInstance cc, int slot, ItemStack itemStack) {
         if (itemStack == null || itemStack == ItemStack.EMPTY) {
             return true;
         }
+
         CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.contains(ChestCavity.COMPATIBILITY_TAG)) {
-            return false;
+        if (tag != null && tag.contains(ChestCavity.COMPATIBILITY_TAG)) {
+            CompoundTag compatibilityTag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG);
+            return compatibilityTag.getUUID("owner").equals(cc.compatibilityId);
         }
-        tag = tag.getCompound(ChestCavity.COMPATIBILITY_TAG);
-        return tag.getUUID("owner").equals(cc.compatibilityId);
+
+        ChestCavityInventory defaultInv = cc.getChestCavityType().getDefaultChestCavity();
+        ItemStack defaultItem = defaultInv.getItem(slot);
+        return ItemStack.isSameItemSameTags(itemStack, defaultItem) && itemStack.getCount() == defaultItem.getCount();
     }
 
 
     public static OrganData lookupOrgan(ItemStack itemStack, IChestCavityType cct) {
         OrganData organData = new OrganData();
-
 
         if (cct != null) {
             OrganData exceptionalOrganData = cct.catchExceptionalOrgan(itemStack);

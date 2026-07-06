@@ -14,6 +14,8 @@
   "effect.chestcavity.organ_slip.desc": "Drops the all organs when the entity dies with this effect applied",
   "effect.chestcavity.organ_protection": "Organ Protection",
   "effect.chestcavity.organ_protection.desc": "Protect the entity from bleeding or organ rejection",
+  "effect.chestcavity.surgical_anesthesia": "Surgical Anesthesia",
+  "effect.chestcavity.surgical_anesthesia.desc": "Entity will be considered as easy to open chest cavity",
   "item.minecraft.potion.effect.organ_slip": "Organ Slip Potion",
   "item.minecraft.splash_potion.effect.organ_slip": "Splash Organ Slip Potion",
   "item.minecraft.lingering_potion.effect.organ_slip": "Lingering Organ Slip Potion",

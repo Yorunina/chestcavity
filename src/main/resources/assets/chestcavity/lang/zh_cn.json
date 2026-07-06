@@ -14,6 +14,8 @@
   "effect.chestcavity.organ_slip.desc": "具有此效果的单位在死亡时，会掉落其胸腔所有器官",
   "effect.chestcavity.organ_protection": "器官防护",
   "effect.chestcavity.organ_protection.desc": "保护实体免受因器官不足导致的出血、中毒、器官排异等现象。",
+  "effect.chestcavity.surgical_anesthesia": "手术麻醉",
+  "effect.chestcavity.surgical_anesthesia.desc": "具有此效果的单位将会被视为易于开胸。",
   "item.minecraft.potion.effect.organ_slip": "器官滑脱药水",
   "item.minecraft.splash_potion.effect.organ_slip": "喷溅型器官滑脱药水",
   "item.minecraft.lingering_potion.effect.organ_slip": "滞留型器官滑脱药水",

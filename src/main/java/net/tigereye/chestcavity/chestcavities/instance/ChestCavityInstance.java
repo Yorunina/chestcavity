@@ -226,6 +226,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.compatibilityId = other.compatibilityId;
         this.oldInventoryType = other.oldInventoryType;
         this.inventoryType = other.inventoryType;
+        this.oldInventory = other.oldInventory;
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
@@ -239,6 +240,8 @@ public class ChestCavityInstance implements ContainerListener {
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
         this.lungRemainder = other.lungRemainder;
+        this.customDataMap =  other.customDataMap;
+        this.slotListenerMap =  other.slotListenerMap;
         ChestCavityUtil.evaluateChestCavity(this);
     }
 }

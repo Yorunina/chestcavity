@@ -1,5 +1,7 @@
 package net.tigereye.chestcavity.listeners;
 
+import dev.xkmc.modulargolems.content.entity.common.AbstractGolemEntity;
+import dev.xkmc.modulargolems.content.entity.common.GolemFlags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +23,8 @@ public class EntityDeathListener {
         Level level = entity.level();
         if (level.isClientSide()) return;
 
+        if (entity instanceof AbstractGolemEntity<?,?> golemEntity && golemEntity.hasFlag(GolemFlags.RECYCLE)) return;
+
         ChestCavityEntity ccEntity = (ChestCavityEntity) entity;
         ChestCavityInstance ccInstance = ccEntity.getChestCavityInstance();
         if (entity instanceof Player) return;
@@ -29,7 +33,7 @@ public class EntityDeathListener {
         boolean underOrganSlip = entity.hasEffect(CCStatusEffects.ORGAN_SLIP.get());
         for (int i = 0; i < ccInv.getContainerSize(); ++i) {
             ItemStack curItem = ccInv.getItem(i);
-            if (!ChestCavityUtil.isOriginalOrgan(ccInstance, curItem) || underOrganSlip) {
+            if (!ChestCavityUtil.isOriginalOrgan(ccInstance, i, curItem) || underOrganSlip) {
                 ccInv.removeItemNoUpdate(i);
                 ccInstance.owner.spawnAtLocation(curItem);
             }

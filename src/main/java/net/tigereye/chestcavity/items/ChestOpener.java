@@ -20,6 +20,7 @@ import net.tigereye.chestcavity.compat.ftb.ChestCavityQuestEventHandler;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCItems;
 import net.tigereye.chestcavity.registration.CCOrganScores;
+import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +91,12 @@ public class ChestOpener extends Item {
         ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
         cc.inventory.setInstance(cc);
         Map<Enchantment, Integer> allEnchantments = chestOpener.getAllEnchantments();
+
         double easeAccess = cc.opened ? cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) : cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.EASE_OF_ACCESS);
+        if (cc.owner.hasEffect(CCStatusEffects.SURGICAL_ANESTHESIA.get())) {
+            easeAccess = Math.max(easeAccess, 1.0D);
+        }
+
         if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments, easeAccess)) {
             canNotOpenChestCavity(player, target);
             return false;
@@ -99,7 +105,7 @@ public class ChestOpener extends Item {
                 if (!shouldKnockback) {
                     target.hurt(player.damageSources().generic(), 4.0F);
                 } else {
-                    target.hurt(player.damageSources().playerAttack(player), 4.0F);
+                    target.hurt(player.damageSources().magic(), 4.0F);
                 }
             }
 
