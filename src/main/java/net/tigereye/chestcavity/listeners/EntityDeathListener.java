@@ -13,7 +13,8 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.ChestCavitySurgeryService;
+import net.tigereye.chestcavity.service.OrganLookupService;
 
 @Mod.EventBusSubscriber
 public class EntityDeathListener {
@@ -28,12 +29,12 @@ public class EntityDeathListener {
         ChestCavityEntity ccEntity = (ChestCavityEntity) entity;
         ChestCavityInstance ccInstance = ccEntity.getChestCavityInstance();
         if (entity instanceof Player) return;
-        ChestCavityInventory ccInv = ChestCavityUtil.openChestCavity(ccInstance);
+        ChestCavityInventory ccInv = ChestCavitySurgeryService.openChestCavity(ccInstance);
 
         boolean underOrganSlip = entity.hasEffect(CCStatusEffects.ORGAN_SLIP.get());
         for (int i = 0; i < ccInv.getContainerSize(); ++i) {
             ItemStack curItem = ccInv.getItem(i);
-            if (!ChestCavityUtil.isOriginalOrgan(ccInstance, i, curItem) || underOrganSlip) {
+            if (!OrganLookupService.isOriginalOrgan(ccInstance, i, curItem) || underOrganSlip) {
                 ccInv.removeItemNoUpdate(i);
                 ccInstance.owner.spawnAtLocation(curItem);
             }

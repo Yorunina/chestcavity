@@ -23,12 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.tigereye.chestcavity.chestcavities.json.ChestCavityDataRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.InventoryTypeData;
-
 
 public class OpenChestCavityTask extends Task {
     private static final ResourceLocation PLAYER = new ResourceLocation("minecraft:player");
@@ -106,7 +104,7 @@ public class OpenChestCavityTask extends Task {
             return ItemIcon.getItemIcon(item != null ? item : Items.SPAWNER);
         }).create(), EMPTY);
 
-        List<ResourceLocation> invIds = new ArrayList<>(InventoryTypeData.keySet());
+        List<ResourceLocation> invIds = new ArrayList<>(ChestCavityDataRepository.getCurrent().getInventoryTypes().keySet());
         invIds.add(EMPTY);
         config.addEnum("inventoryType", this.inventoryType, (v) -> {
             this.inventoryType = v;

@@ -25,7 +25,8 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManage
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.ui.ChestCavityContainer;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.ChestCavityEvaluationService;
+import net.tigereye.chestcavity.service.ChestCavitySurgeryService;
 
 import java.util.Optional;
 
@@ -101,7 +102,7 @@ public class SurgicalBox extends Item implements MenuProvider {
         InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
 
         if (!entityInstance.opened) {
-            ChestCavityUtil.generateChestCavityIfOpened(entityInstance);
+            ChestCavitySurgeryService.generateChestCavityIfOpened(entityInstance);
         }
 
         CompoundTag itemNbt = pStack.getOrCreateTag();
@@ -123,7 +124,7 @@ public class SurgicalBox extends Item implements MenuProvider {
         ChestCavityContainer playerInventory = new ChestCavityContainer(inventoryTypeData.getSlotSize());
         playerInventory.fromTag(entityItemListNbt);
         itemNbt.put("Inventory", playerInventory.createTag());
-        ChestCavityUtil.evaluateChestCavity(entityInstance);
+        ChestCavityEvaluationService.evaluate(entityInstance);
     }
 
     @Override

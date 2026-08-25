@@ -14,10 +14,6 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.tigereye.chestcavity.ChestCavity;
-import net.tigereye.chestcavity.chestcavities.json.ccAssignment.ChestCavityAssignmentManager;
-import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
-import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager;
-import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.packet.ChestCavityAssignmentDataPacket;
 import net.tigereye.chestcavity.network.packet.ChestCavityTypeDataPacket;
@@ -44,26 +40,25 @@ public class ChestCavityDataManager implements PreparableReloadListener {
     }
 
     private static void sendDataTo(ServerPlayer player) {
-        ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(OrganManager.RawOrganData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityDataSnapshot snapshot = ChestCavityDataRepository.getCurrent();
+        ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(snapshot.getVersion(), snapshot.getRawOrgans()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(snapshot.getVersion(), snapshot.getRawInventoryTypes()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityTypeDataPacket(snapshot.getVersion(), snapshot.getRawChestCavityTypes()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(snapshot.getVersion(), snapshot.getRawAssignments()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     private static void broadcastData() {
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(OrganManager.RawOrganData));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments));
+        ChestCavityDataSnapshot snapshot = ChestCavityDataRepository.getCurrent();
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(snapshot.getVersion(), snapshot.getRawOrgans()));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(snapshot.getVersion(), snapshot.getRawInventoryTypes()));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(snapshot.getVersion(), snapshot.getRawChestCavityTypes()));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(snapshot.getVersion(), snapshot.getRawAssignments()));
     }
     
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager manager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            OrganManager.reloadOrganData(manager);
-            ChestCavityAssignmentManager.reloadChestCavityAssignment(manager);
-            InventoryTypeManager.reloadInventoryType(manager);
-            ChestCavityTypeManager.reloadChestCavityType(manager);
+            ChestCavityDataRepository.reload(manager);
             return null;
         }, backgroundExecutor).thenCompose(preparationBarrier::wait).thenAcceptAsync(ignored -> {
             if (Environment.get().getDist().isDedicatedServer() && ServerLifecycleHooks.getCurrentServer() != null) {

@@ -12,7 +12,7 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.OrganLookupService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,9 +40,13 @@ public class ChestCavityType implements IChestCavityType {
             for (int i = 0; i < this.getDefaultChestCavity().getContainerSize(); ++i) {
                 ItemStack itemStack = this.getDefaultChestCavity().getItem(i);
                 if (itemStack.isEmpty()) continue;
-                OrganData data = ChestCavityUtil.lookupOrgan(itemStack, this);
+                OrganData data = OrganLookupService.lookupOrgan(itemStack, this);
                 if (data.isEmpty()) continue;
-                data.organScores.forEach((key, value) -> ChestCavityUtil.addOrganScore(key, value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F), this.defaultOrganScores));
+                data.organScores.forEach((key, value) -> OrganLookupService.addOrganScore(
+                        key,
+                        value * Math.min((float) itemStack.getCount() / (float) itemStack.getMaxStackSize(), 1.0F),
+                        this.defaultOrganScores
+                ));
             }
         }
         return this.defaultOrganScores;
@@ -142,9 +146,9 @@ public class ChestCavityType implements IChestCavityType {
         for (universalOrgans = 0; universalOrgans < chestCavity.getContainerSize(); ++universalOrgans) {
             ItemStack itemStack = chestCavity.getItem(universalOrgans);
             if (itemStack.isEmpty()) continue;
-            OrganData organData = ChestCavityUtil.lookupOrgan(itemStack, instance.getChestCavityType());
+            OrganData organData = OrganLookupService.lookupOrgan(itemStack, instance.getChestCavityType());
             if (organData.isEmpty()) continue;
-            ChestCavityUtil.setOrganCompatibility(instance, itemStack);
+            OrganLookupService.setOrganCompatibility(instance, itemStack);
         }
     }
 

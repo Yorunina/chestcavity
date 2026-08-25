@@ -18,7 +18,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.packet.TargetEntityInventoryTypePacket;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.ChestCavitySurgeryService;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +50,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         if (level.isClientSide()) {
             this.inventory = new ChestCavityInventory(inventoryTypeData.getSlotSize());
         } else {
-            this.inventory = ChestCavityUtil.openChestCavity(targetEntity.getChestCavityInstance());
+            this.inventory = ChestCavitySurgeryService.openChestCavity(targetEntity.getChestCavityInstance());
         }
 
         // 在服务器端，向客户端发送目标实体的inventoryType信息

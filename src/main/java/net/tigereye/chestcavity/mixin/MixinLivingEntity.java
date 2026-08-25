@@ -20,7 +20,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.OrganEffectService;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -88,7 +88,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         if (this.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) return;
 
         if (!this.isEyeInFluid(FluidTags.WATER) || this.level().getBlockState(this.blockPosition()).is(Blocks.BUBBLE_COLUMN)) {
-            this.setAirSupply(ChestCavityUtil.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
+            this.setAirSupply(OrganEffectService.applyBreathOnLand(this.chestCavityInstance, this.getAirSupply(), this.increaseAirSupply(0)));
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         if (this.level().isClientSide) {
             return;
         }
-        info.setReturnValue(ChestCavityUtil.applyBreathInWater(this.chestCavityInstance, air, info.getReturnValueI()));
+        info.setReturnValue(OrganEffectService.applyBreathInWater(this.chestCavityInstance, air, info.getReturnValueI()));
     }
 
     @Inject(
@@ -113,7 +113,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         if (this.level().isClientSide) {
             return;
         }
-        info.setReturnValue(ChestCavityUtil.applyDefenses(this.chestCavityInstance, source, info.getReturnValueF()));
+        info.setReturnValue(OrganEffectService.applyDefenses(this.chestCavityInstance, source, info.getReturnValueF()));
     }
 
 
@@ -127,7 +127,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         if (this.level().isClientSide) {
             return effect;
         }
-        return ChestCavityUtil.onAddStatusEffect(this.chestCavityInstance, effect);
+        return OrganEffectService.onAddStatusEffect(this.chestCavityInstance, effect);
     }
 
     @ModifyArg(
@@ -143,7 +143,7 @@ public abstract class MixinLivingEntity extends Entity implements ChestCavityEnt
         if (this.level().isClientSide) {
             return g;
         }
-        return g * ChestCavityUtil.applySwimSpeedInWater(this.chestCavityInstance);
+        return g * OrganEffectService.applySwimSpeedInWater(this.chestCavityInstance);
     }
 
     public ChestCavityInstance getChestCavityInstance() {

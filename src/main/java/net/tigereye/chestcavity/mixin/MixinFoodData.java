@@ -6,7 +6,8 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.interfaces.CCFoodData;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.registration.CCOrganScores;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.ChestCavitySurgeryService;
+import net.tigereye.chestcavity.service.OrganEffectService;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,21 +37,21 @@ public class MixinFoodData implements CCFoodData {
     public void chestCavityUpdateMixin(Player player, CallbackInfo info) {
         if (this.ccIns == null) {
             ChestCavityEntity.of(player).ifPresent((ccPlayerEntityInterface) -> {
-                ChestCavityUtil.openChestCavity(ccPlayerEntityInterface.getChestCavityInstance());
+                ChestCavitySurgeryService.openChestCavity(ccPlayerEntityInterface.getChestCavityInstance());
                 this.ccIns = ccPlayerEntityInterface.getChestCavityInstance();
             });
         }
 
         if (this.ccIns != null) {
-            this.tickTimer = ChestCavityUtil.applySpleenMetabolism(this.ccIns, this.tickTimer);
+            this.tickTimer = OrganEffectService.applySpleenMetabolism(this.ccIns, this.tickTimer);
         }
     }
 
     @Inject(method = "eat(IF)V", at = @At("HEAD"), cancellable = true)
     public void chestCavityEatMixin(int pFoodLevelModifier, float pSaturationLevelModifier, CallbackInfo ci) {
         if (this.ccIns != null) {
-            float saturationGain = ChestCavityUtil.applyNutrition(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
-            int hungerGain = ChestCavityUtil.applyDigestion(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
+            float saturationGain = OrganEffectService.applyNutrition(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
+            int hungerGain = OrganEffectService.applyDigestion(this.ccIns, pFoodLevelModifier, pSaturationLevelModifier);
             this.foodLevel = Math.min(hungerGain + this.foodLevel, 20);
             this.saturationLevel = Math.min(this.saturationLevel + pFoodLevelModifier * saturationGain * 2.0F, this.foodLevel);
             ci.cancel();

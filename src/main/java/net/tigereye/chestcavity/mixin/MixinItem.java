@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.OrganLookupService;
 import net.tigereye.chestcavity.util.OrganUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +26,7 @@ public class MixinItem {
     )
     public void chestCavityItemAppendTooltip(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context, CallbackInfo info) {
         if (world == null || !world.isClientSide) return;
-        OrganData data = ChestCavityUtil.lookupOrgan(stack, null);
+        OrganData data = OrganLookupService.lookupOrgan(stack, null);
         if (!data.isEmpty()) {
             OrganUtil.displayCompatibility(stack, world, tooltip, context);
         }

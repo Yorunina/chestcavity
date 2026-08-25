@@ -5,7 +5,6 @@ import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import net.tigereye.chestcavity.compat.kubejs.events.*;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 public class CCKubeJSPlugin extends KubeJSPlugin {
 
@@ -29,6 +28,5 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
-        event.add("ChestCavityUtils", ChestCavityUtil.class);
     }
 }

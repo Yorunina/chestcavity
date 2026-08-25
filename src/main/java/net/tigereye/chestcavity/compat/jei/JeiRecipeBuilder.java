@@ -7,8 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
-import net.tigereye.chestcavity.chestcavities.json.ccAssignment.ChestCavityAssignmentManager;
-import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager;
+import net.tigereye.chestcavity.chestcavities.json.ChestCavityDataRepository;
 import net.tigereye.chestcavity.compat.jei.recipe.EntityOrgansRecipe;
 import net.tigereye.chestcavity.compat.jei.recipe.OrganSourceRecipe;
 
@@ -25,14 +24,14 @@ public class JeiRecipeBuilder {
         List<OrganSourceRecipe> recipes = new ArrayList<>();
         Map<ResourceLocation, Set<EntityType<?>>> organToEntitiesSetMap = new HashMap<>();
 
-        for (Map.Entry<ResourceLocation, ResourceLocation> assignment : ChestCavityAssignmentManager.ChestCavityAssignments.entrySet()) {
+        for (Map.Entry<ResourceLocation, ResourceLocation> assignment : ChestCavityDataRepository.getCurrent().getAssignments().entrySet()) {
             ResourceLocation entityId = assignment.getKey();
             ResourceLocation chestCavityTypeId = assignment.getValue();
 
             EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(entityId);
             if (entityType == null) continue;
 
-            ChestCavityType chestCavityType = ChestCavityTypeManager.ChestCavityTypes.get(chestCavityTypeId);
+            ChestCavityType chestCavityType = ChestCavityDataRepository.getCurrent().getChestCavityType(chestCavityTypeId);
             if (chestCavityType == null) continue;
 
             ChestCavityInventory inventory = chestCavityType.getDefaultChestCavity();
@@ -63,14 +62,14 @@ public class JeiRecipeBuilder {
     public static List<EntityOrgansRecipe> buildEntityOrgansRecipes() {
         List<EntityOrgansRecipe> recipes = new ArrayList<>();
 
-        for (Map.Entry<ResourceLocation, ResourceLocation> assignment : ChestCavityAssignmentManager.ChestCavityAssignments.entrySet()) {
+        for (Map.Entry<ResourceLocation, ResourceLocation> assignment : ChestCavityDataRepository.getCurrent().getAssignments().entrySet()) {
             ResourceLocation entityId = assignment.getKey();
             ResourceLocation chestCavityTypeId = assignment.getValue();
 
             EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(entityId);
             if (entityType == null) continue;
 
-            ChestCavityType chestCavityType = ChestCavityTypeManager.ChestCavityTypes.get(chestCavityTypeId);
+            ChestCavityType chestCavityType = ChestCavityDataRepository.getCurrent().getChestCavityType(chestCavityTypeId);
             if (chestCavityType == null) continue;
 
             ChestCavityInventory inventory = chestCavityType.getDefaultChestCavity();

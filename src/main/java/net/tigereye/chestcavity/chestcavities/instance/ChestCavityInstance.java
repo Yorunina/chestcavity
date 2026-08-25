@@ -13,7 +13,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
-import net.tigereye.chestcavity.util.ChestCavityUtil;
+import net.tigereye.chestcavity.service.ChestCavityEvaluationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,6 @@ public class ChestCavityInstance implements ContainerListener {
     // CustomDataMap暴露给Kubejs层使用
     public Map<String, Object> customDataMap = new HashMap<>();
     private ChestCavitySnapshot lastSnapshot;
-    private boolean stateDirty = true;
 
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -105,10 +104,6 @@ public class ChestCavityInstance implements ContainerListener {
         return InventoryTypeManager.getInventoryTypeData(this.oldInventoryType);
     }
 
-    public ChestCavitySnapshot getLastSnapshot() {
-        return this.lastSnapshot;
-    }
-
     public ChestCavitySnapshot createSnapshot() {
         return ChestCavitySnapshot.capture(this);
     }
@@ -121,17 +116,8 @@ public class ChestCavityInstance implements ContainerListener {
         return this.lastSnapshot == null || this.lastSnapshot.hasOrganScoreChanges(this);
     }
 
-    public boolean isStateDirty() {
-        return this.stateDirty;
-    }
-
     public void markDirty() {
-        this.stateDirty = true;
         this.updatePacket = true;
-    }
-
-    public void clearDirty() {
-        this.stateDirty = false;
     }
 
     public void setOpened(boolean opened) {
@@ -173,7 +159,6 @@ public class ChestCavityInstance implements ContainerListener {
         this.oldInventoryType = this.inventoryType;
         this.oldOrganScores.clear();
         this.oldOrganScores.putAll(this.organScores);
-        this.clearDirty();
     }
 
     public void clearListenerMap() {
@@ -200,7 +185,7 @@ public class ChestCavityInstance implements ContainerListener {
     public void containerChanged(@NotNull Container sender) {
         if (isSameAsOldInventory()) return;
         this.markDirty();
-        ChestCavityUtil.evaluateChestCavity(this);
+        ChestCavityEvaluationService.evaluate(this);
         this.syncInventoryTypeData();
     }
 
@@ -328,7 +313,7 @@ public class ChestCavityInstance implements ContainerListener {
         other.slotListenerMap.forEach((eventName, listeners) ->
                 this.slotListenerMap.put(eventName, new HashMap<>(listeners)));
         this.replaceInventory(other.inventory.copyFor(this), other.inventoryType, false);
-        ChestCavityUtil.evaluateChestCavity(this);
+        ChestCavityEvaluationService.evaluate(this);
     }
 
     /**

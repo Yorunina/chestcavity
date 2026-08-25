@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
+import net.tigereye.chestcavity.service.OrganLookupService;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public final class OrganUtil {
     public static void displayCompatibility(ItemStack itemStack, Level world, List<Component> tooltip, TooltipFlag tooltipContext) {
         CompoundTag tag = itemStack.getOrCreateTag();
         if (itemStack.isEmpty()) return;
-        OrganData organData = ChestCavityUtil.lookupOrgan(itemStack, null);
+        OrganData organData = OrganLookupService.lookupOrgan(itemStack, null);
         if (organData.pseudoOrgan) return;
 
         MutableComponent compatibleTooltip;

@@ -23,7 +23,11 @@ public class ChestCavityTypeSerializer {
     public ChestCavityTypeSerializer() {
     }
 
-    public ChestCavityType read(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
+    public ChestCavityType read(
+            ResourceLocation id,
+            ChestCavityTypeJsonFormat cctJson,
+            Map<ResourceLocation, InventoryTypeData> inventoryTypes
+    ) {
         if (cctJson == null) {
             throw new JsonSyntaxException("Chest Cavity Type " + id + " must be an object");
         } else if (cctJson.defaultChestCavity == null) {
@@ -40,7 +44,7 @@ public class ChestCavityTypeSerializer {
             }
 
             ChestCavityType cct = new ChestCavityType();
-            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson));
+            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson, inventoryTypes));
             cct.setBaseOrganScores(this.readBaseOrganScoresFromJson(id, cctJson));
             cct.setExceptionalOrganList(this.readExceptionalOrgansFromJson(id, cctJson));
             cct.setInventoryType(new ResourceLocation(cctJson.inventoryType));
@@ -48,8 +52,12 @@ public class ChestCavityTypeSerializer {
         }
     }
 
-    private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        InventoryTypeData inventoryTypeData = InventoryTypeManager.InventoryTypeData.getOrDefault(
+    private ChestCavityInventory readDefaultChestCavityFromJson(
+            ResourceLocation id,
+            ChestCavityTypeJsonFormat cctJson,
+            Map<ResourceLocation, InventoryTypeData> inventoryTypes
+    ) {
+        InventoryTypeData inventoryTypeData = inventoryTypes.getOrDefault(
                 new ResourceLocation(cctJson.inventoryType),
                 InventoryTypeManager.getDefaultInventoryTypeData());
         ChestCavityInventory inv = new ChestCavityInventory(inventoryTypeData.getSlotSize());
