@@ -37,27 +37,37 @@ public class ChestCavityDataManager implements PreparableReloadListener {
 
     @SubscribeEvent
     public static void playerConnected(PlayerEvent.PlayerLoggedInEvent event) {
-        ServerPlayer player = (ServerPlayer) event.getEntity();
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        sendDataTo(player);
+    }
+
+    private static void sendDataTo(ServerPlayer player) {
         ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(OrganManager.RawOrganData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
+
+    private static void broadcastData() {
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(OrganManager.RawOrganData));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes));
+        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments));
+    }
     
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager manager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backGrounExecutor, Executor executor) {
+    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager manager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             OrganManager.reloadOrganData(manager);
             ChestCavityAssignmentManager.reloadChestCavityAssignment(manager);
             InventoryTypeManager.reloadInventoryType(manager);
             ChestCavityTypeManager.reloadChestCavityType(manager);
             return null;
-        }, backGrounExecutor).thenCompose(preparationBarrier::wait).thenAcceptAsync((pObj) -> {
+        }, backgroundExecutor).thenCompose(preparationBarrier::wait).thenAcceptAsync(ignored -> {
             if (Environment.get().getDist().isDedicatedServer() && ServerLifecycleHooks.getCurrentServer() != null) {
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(OrganManager.RawOrganData));
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(InventoryTypeManager.RawInventoryTypeData));
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(ChestCavityTypeManager.RawChestCavityTypes));
-                ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(ChestCavityAssignmentManager.RawChestCavityAssignments));
+                broadcastData();
             }
         }, executor);
     }

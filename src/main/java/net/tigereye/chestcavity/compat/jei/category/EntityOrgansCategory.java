@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -24,13 +25,11 @@ import java.util.List;
 public class EntityOrgansCategory implements IRecipeCategory<EntityOrgansRecipe> {
     public static final RecipeType<EntityOrgansRecipe> TYPE = RecipeType.create(ChestCavity.MODID, "entity_organs", EntityOrgansRecipe.class);
 
-    private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
     private final IDrawable slotBackground;
 
     public EntityOrgansCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(160, 100);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(Items.SPAWNER));
         this.title = Component.translatable("jei.chestcavity.category.entity_organs");
         this.slotBackground = guiHelper.getSlotDrawable();
@@ -47,8 +46,13 @@ public class EntityOrgansCategory implements IRecipeCategory<EntityOrgansRecipe>
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public int getWidth() {
+        return 160;
+    }
+
+    @Override
+    public int getHeight() {
+        return 100;
     }
 
     @Override
@@ -97,10 +101,9 @@ public class EntityOrgansCategory implements IRecipeCategory<EntityOrgansRecipe>
     }
 
     @Override
-    public List<Component> getTooltipStrings(EntityOrgansRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public void getTooltip(ITooltipBuilder tooltip, EntityOrgansRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (mouseX >= 20 && mouseX < 38 && mouseY >= 40 && mouseY < 58) {
-            return List.of(recipe.getEntityType().getDescription());
+            tooltip.add(recipe.getEntityType().getDescription());
         }
-        return List.of();
     }
 }

@@ -64,7 +64,7 @@ public class ChestCavity {
         CCEnchantments.ENCHANTMENTS.register(eventBus);
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
         CCAttributes.ATTRIBUTE.register(eventBus);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CCAttributes::onEntityAttributeModification);
+        eventBus.addListener(CCAttributes::onEntityAttributeModification);
         ModPotions.register(eventBus);
         ChestCavityNetwork.register();
         MENU_TYPES.register(eventBus);

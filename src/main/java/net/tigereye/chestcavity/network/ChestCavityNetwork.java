@@ -8,10 +8,11 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.network.packet.*;
 
 public final class ChestCavityNetwork {
+    private static final String PROTOCOL_VERSION = "1.0";
     private static int packetId = 0;
-    public static SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
+    public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(ChestCavity.MODID, "messages"))
-            .networkProtocolVersion(() -> "1.0")
+            .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(s -> true)
             .serverAcceptedVersions(s -> true)
             .simpleChannel();

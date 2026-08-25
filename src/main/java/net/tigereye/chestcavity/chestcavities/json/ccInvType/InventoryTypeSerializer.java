@@ -2,6 +2,7 @@ package net.tigereye.chestcavity.chestcavities.json.ccInvType;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -14,6 +15,9 @@ public class InventoryTypeSerializer {
     }
 
     public InventoryTypeData read(ResourceLocation id, InventoryTypeJsonFormat inventoryTypeJsonFormat) {
+        if (inventoryTypeJsonFormat == null) {
+            throw new JsonSyntaxException("Inventory type " + id + " must be an object");
+        }
         InventoryTypeData result = InventoryTypeManager.getDefaultInventoryTypeData();
         result.setId(id);
         if (inventoryTypeJsonFormat.slotDefinitions != null) {

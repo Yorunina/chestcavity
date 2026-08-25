@@ -7,7 +7,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class TargetEntityInventoryTypePacket {
@@ -27,14 +26,13 @@ public class TargetEntityInventoryTypePacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
-        AtomicBoolean success = new AtomicBoolean(false);
-        contextSupplier.get().enqueueWork(() -> {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 TargetEntityInventoryTypeManager.setTargetEntityInventoryType(this.inventoryType);
-                success.set(true);
             });
         });
-        contextSupplier.get().setPacketHandled(true);
-        return success.get();
+        context.setPacketHandled(true);
+        return true;
     }
 }

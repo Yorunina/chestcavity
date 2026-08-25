@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -26,13 +27,11 @@ import java.util.List;
 public class OrganSourceCategory implements IRecipeCategory<OrganSourceRecipe> {
     public static final RecipeType<OrganSourceRecipe> TYPE = RecipeType.create(ChestCavity.MODID, "organ_source", OrganSourceRecipe.class);
 
-    private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
     private final IDrawable slotBackground;
 
     public OrganSourceCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(160, 100);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(Items.HEART_OF_THE_SEA));
         this.title = Component.translatable("jei.chestcavity.category.organ_source");
         this.slotBackground = guiHelper.getSlotDrawable();
@@ -49,8 +48,13 @@ public class OrganSourceCategory implements IRecipeCategory<OrganSourceRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public int getWidth() {
+        return 160;
+    }
+
+    @Override
+    public int getHeight() {
+        return 100;
     }
 
     @Override
@@ -100,7 +104,7 @@ public class OrganSourceCategory implements IRecipeCategory<OrganSourceRecipe> {
     }
 
     @Override
-    public List<Component> getTooltipStrings(OrganSourceRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public void getTooltip(ITooltipBuilder tooltip, OrganSourceRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> tooltips = new ArrayList<>();
 
         List<EntityType<?>> entities = recipe.getSourceEntities();
@@ -124,7 +128,6 @@ public class OrganSourceCategory implements IRecipeCategory<OrganSourceRecipe> {
                 tooltips.add(entityType.getDescription());
             }
         }
-
-        return tooltips;
+        tooltip.addAll(tooltips);
     }
 }

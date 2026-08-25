@@ -16,7 +16,9 @@ public class OrganSerializer {
     }
 
     public Tuple<ResourceLocation, OrganData> read(ResourceLocation id, OrganJsonFormat organJson) {
-        if (organJson.itemID == null) {
+        if (organJson == null) {
+            throw new JsonSyntaxException("Organ " + id + " must be an object");
+        } else if (organJson.itemID == null) {
             throw new JsonSyntaxException("Organ " + id + " must have an item ID");
         } else if (organJson.organScores == null) {
             throw new JsonSyntaxException("Organ " + id + " must have organScores");

@@ -101,10 +101,9 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public void addListener(String eventName, int slotIndex) {
-        if (!this.slotListenerMap.containsKey(eventName)) {
-            this.slotListenerMap.put(eventName, new HashMap<>());
-        }
-        this.slotListenerMap.get(eventName).put(slotIndex, this.getInventoryTypeData().getSlotType(slotIndex));
+        this.slotListenerMap
+                .computeIfAbsent(eventName, ignored -> new HashMap<>())
+                .put(slotIndex, this.getInventoryTypeData().getSlotType(slotIndex));
     }
 
     public Map<Integer, String> getListenerMap(String eventName) {
@@ -122,7 +121,7 @@ public class ChestCavityInstance implements ContainerListener {
         if (isSameAsOldInventory()) return;
         ChestCavityUtil.evaluateChestCavity(this);
         this.oldInventory = this.inventory.clone();
-        if (this.oldInventoryType != this.inventoryType) {
+        if (!this.oldInventoryType.equals(this.inventoryType)) {
             this.oldInventoryType = this.inventoryType;
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
@@ -131,7 +130,10 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public boolean isSameAsOldInventory() {
-        if (this.oldInventoryType != this.inventoryType) {
+        if (!this.oldInventoryType.equals(this.inventoryType)) {
+            return false;
+        }
+        if (this.oldInventory.getContainerSize() != this.inventory.getContainerSize()) {
             return false;
         }
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
@@ -224,22 +226,21 @@ public class ChestCavityInstance implements ContainerListener {
         this.compatibilityId = other.compatibilityId;
         this.oldInventoryType = other.oldInventoryType;
         this.inventoryType = other.inventoryType;
-        this.oldInventory = other.oldInventory;
+        this.oldInventory = other.oldInventory.copyFor(this);
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
         this.inventory.removeListener(this);
-        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
-            this.inventory.setItem(i, other.inventory.getItem(i));
-        }
-        this.inventory = other.inventory.clone();
+        this.inventory = other.inventory.copyFor(this);
         this.inventory.addListener(this);
         this.liverTimer = other.liverTimer;
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
         this.lungRemainder = other.lungRemainder;
-        this.customDataMap =  other.customDataMap;
-        this.slotListenerMap =  other.slotListenerMap;
+        this.customDataMap = new HashMap<>(other.customDataMap);
+        this.slotListenerMap = new HashMap<>();
+        other.slotListenerMap.forEach((eventName, listeners) ->
+                this.slotListenerMap.put(eventName, new HashMap<>(listeners)));
         ChestCavityUtil.evaluateChestCavity(this);
     }
 }

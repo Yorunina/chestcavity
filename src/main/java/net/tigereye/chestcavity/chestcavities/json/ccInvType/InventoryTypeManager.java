@@ -4,18 +4,16 @@ import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.util.ResourceDataUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class InventoryTypeManager {
     private static final InventoryTypeSerializer SERIALIZER = new InventoryTypeSerializer();
+    private static final Gson GSON = new Gson();
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/default.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
     public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default";
@@ -34,13 +32,11 @@ public class InventoryTypeManager {
     }
 
     public static void reloadInventoryType(ResourceManager manager) {
+        RawInventoryTypeData.clear();
         manager.listResources("cc_inventory_types", (path) -> path.getPath().endsWith(".json")).forEach((jsonId, resource) -> {
             try {
-                InputStream stream = resource.open();
                 ResourceLocation id = new ResourceLocation(jsonId.getNamespace(), jsonId.getPath().substring(0, jsonId.getPath().length() - 5));
-                String result = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining(System.lineSeparator()));
-                RawInventoryTypeData.put(id, result);
-                stream.close();
+                RawInventoryTypeData.put(id, ResourceDataUtil.readUtf8(resource));
             } catch (Exception openError) {
                 ChestCavity.LOGGER.error("Error occurred while loading resource json " + jsonId.toString(), openError);
             }
@@ -55,7 +51,7 @@ public class InventoryTypeManager {
     public static void parseData(Map<ResourceLocation, String> rawData) {
         InventoryTypeData.clear();
         rawData.forEach((id, data) -> {
-            InventoryTypeData inventoryTypeData = SERIALIZER.read(id, (new Gson()).fromJson(data, InventoryTypeJsonFormat.class));
+            InventoryTypeData inventoryTypeData = SERIALIZER.read(id, GSON.fromJson(data, InventoryTypeJsonFormat.class));
             InventoryTypeData.put(id, inventoryTypeData);
         });
     }

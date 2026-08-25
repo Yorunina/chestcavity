@@ -44,7 +44,14 @@ public class ChestCavityItemScreenHandler extends AbstractContainerMenu {
             nbt = chestCavityItem.getTag();
         }
 
+        if (!nbt.contains("InventoryType")) {
+            nbt.putString("InventoryType", inventoryType);
+        }
         inventoryType = nbt.getString("InventoryType");
+        if (inventoryType.isEmpty()) {
+            inventoryType = DEFAULT_INVENTORY_TYPE_STRING;
+            nbt.putString("InventoryType", inventoryType);
+        }
         InventoryTypeData inventoryTypeData = InventoryTypeManager.getInventoryTypeData(new ResourceLocation(inventoryType));
 
         int slotSize = inventoryTypeData.getSlotSize();

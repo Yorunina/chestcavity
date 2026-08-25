@@ -1,12 +1,12 @@
 package net.tigereye.chestcavity.chestcavities;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
+import net.tigereye.chestcavity.util.ContainerNbtUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ChestCavityInventory extends SimpleContainer {
@@ -30,14 +30,7 @@ public class ChestCavityInventory extends SimpleContainer {
 
     @Override
     public void fromTag(ListTag tags) {
-        this.clearContent();
-        for (int j = 0; j < tags.size(); ++j) {
-            CompoundTag NbtCompound = tags.getCompound(j);
-            int k = NbtCompound.getInt("Slot");
-            if (k < this.getContainerSize()) {
-                this.setItem(k, ItemStack.of(NbtCompound));
-            }
-        }
+        ContainerNbtUtil.load(this, tags);
     }
 
     public int countEmpty() {
@@ -52,17 +45,7 @@ public class ChestCavityInventory extends SimpleContainer {
 
     @Override
     public @NotNull ListTag createTag() {
-        ListTag list = new ListTag();
-        for (int i = 0; i < this.getContainerSize(); ++i) {
-            ItemStack itemStack = this.getItem(i);
-            if (!itemStack.isEmpty()) {
-                CompoundTag NbtCompound = new CompoundTag();
-                NbtCompound.putInt("Slot", i);
-                itemStack.save(NbtCompound);
-                list.add(NbtCompound);
-            }
-        }
-        return list;
+        return ContainerNbtUtil.save(this);
     }
 
     @Override
@@ -83,7 +66,17 @@ public class ChestCavityInventory extends SimpleContainer {
 
     @Override
     public ChestCavityInventory clone() {
-        ChestCavityInventory inventory = new ChestCavityInventory(this.instance);
+        return copyFor(this.instance);
+    }
+
+    /**
+     * Creates an item-copy snapshot associated with the supplied chest-cavity
+     * instance. This is used when transferring state between entities so the
+     * snapshot cannot retain a listener target from the source instance.
+     */
+    public ChestCavityInventory copyFor(ChestCavityInstance targetInstance) {
+        ChestCavityInventory inventory = new ChestCavityInventory(this.getContainerSize());
+        inventory.setInstance(targetInstance);
         for (int i = 0; i < this.getContainerSize(); ++i) {
             ItemStack pItem = this.getItem(i);
             if (pItem.isEmpty()) continue;

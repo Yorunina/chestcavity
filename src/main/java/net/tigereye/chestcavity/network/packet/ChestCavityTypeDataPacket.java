@@ -9,7 +9,6 @@ import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class ChestCavityTypeDataPacket {
@@ -39,15 +38,14 @@ public class ChestCavityTypeDataPacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
-        AtomicBoolean success = new AtomicBoolean(false);
-        contextSupplier.get().enqueueWork(() -> {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 ChestCavityTypeManager.RawChestCavityTypes = this.rawData;
                 ChestCavityTypeManager.parseData(this.rawData);
-                success.set(true);
             });
         });
-        contextSupplier.get().setPacketHandled(true);
-        return success.get();
+        context.setPacketHandled(true);
+        return true;
     }
 }

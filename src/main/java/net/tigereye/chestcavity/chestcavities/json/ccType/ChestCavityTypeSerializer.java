@@ -19,15 +19,17 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManage
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager.InventoryTypeData;
-
 public class ChestCavityTypeSerializer {
     public ChestCavityTypeSerializer() {
     }
 
     public ChestCavityType read(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        if (cctJson.defaultChestCavity == null) {
+        if (cctJson == null) {
+            throw new JsonSyntaxException("Chest Cavity Type " + id + " must be an object");
+        } else if (cctJson.defaultChestCavity == null) {
             throw new JsonSyntaxException("Chest Cavity Types must have a default chest cavity!");
+        } else if (cctJson.inventoryType == null || cctJson.inventoryType.isBlank()) {
+            throw new JsonSyntaxException("Chest Cavity Types must have an inventory type!");
         } else {
             if (cctJson.exceptionalOrgans == null) {
                 cctJson.exceptionalOrgans = new JsonArray();
@@ -47,7 +49,9 @@ public class ChestCavityTypeSerializer {
     }
 
     private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        InventoryTypeData inventoryTypeData = InventoryTypeData.getOrDefault(new ResourceLocation(cctJson.inventoryType), InventoryTypeManager.getDefaultInventoryTypeData());
+        InventoryTypeData inventoryTypeData = InventoryTypeManager.InventoryTypeData.getOrDefault(
+                new ResourceLocation(cctJson.inventoryType),
+                InventoryTypeManager.getDefaultInventoryTypeData());
         ChestCavityInventory inv = new ChestCavityInventory(inventoryTypeData.getSlotSize());
 
         for (JsonElement entry : cctJson.defaultChestCavity) {
@@ -74,7 +78,7 @@ public class ChestCavityTypeSerializer {
             }
 
             int pos = obj.get("position").getAsInt();
-            if (pos >= inv.getContainerSize()) {
+            if (pos < 0 || pos >= inv.getContainerSize()) {
                 ChestCavity.LOGGER.warn("Position component is out of bounds in " + id.toString() + "'s default chest cavity");
             } else {
                 inv.setItem(pos, stack);

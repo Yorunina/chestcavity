@@ -4,20 +4,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.ccAssignment.ChestCavityAssignmentManager;
 import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager;
 
 public class ChestCavityInstanceFactory {
-    private static final ResourceLocation DEFAULT_CHEST_CAVITY_TYPE = new ResourceLocation("chestcavity:cc_types/default.json");
+    private static final ResourceLocation DEFAULT_CHEST_CAVITY_TYPE =
+            new ResourceLocation(ChestCavity.MODID, "cc_types/default");
 
     public static ChestCavityInstance newChestCavityInstance(EntityType<? extends LivingEntity> entityType, LivingEntity owner) {
         ResourceLocation entityID = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
-        if (ChestCavityAssignmentManager.ChestCavityAssignments.containsKey(entityID)) {
-            ResourceLocation chestCavityTypeID = ChestCavityAssignmentManager.ChestCavityAssignments.get(entityID);
-            if (ChestCavityTypeManager.ChestCavityTypes.containsKey(chestCavityTypeID)) {
-                return new ChestCavityInstance(ChestCavityTypeManager.ChestCavityTypes.get(chestCavityTypeID), owner);
-            }
+        ResourceLocation chestCavityTypeID =
+                ChestCavityAssignmentManager.ChestCavityAssignments.get(entityID);
+        if (chestCavityTypeID == null) {
+            chestCavityTypeID = DEFAULT_CHEST_CAVITY_TYPE;
         }
-        return new ChestCavityInstance(ChestCavityTypeManager.ChestCavityTypes.get(DEFAULT_CHEST_CAVITY_TYPE), owner);
+
+        var chestCavityType = ChestCavityTypeManager.ChestCavityTypes.get(chestCavityTypeID);
+        if (chestCavityType == null) {
+            chestCavityType = ChestCavityTypeManager.ChestCavityTypes.get(DEFAULT_CHEST_CAVITY_TYPE);
+        }
+        if (chestCavityType == null) {
+            throw new IllegalStateException("Missing default chest cavity type: " + DEFAULT_CHEST_CAVITY_TYPE);
+        }
+        return new ChestCavityInstance(chestCavityType, owner);
     }
 }

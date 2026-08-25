@@ -12,7 +12,6 @@ import net.tigereye.chestcavity.util.NetworkUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class ChestCavityUpdatePacket {
@@ -52,20 +51,19 @@ public class ChestCavityUpdatePacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        AtomicBoolean success = new AtomicBoolean(false);
-        ctx.get().enqueueWork(() -> {
+        NetworkEvent.Context context = ctx.get();
+        context.enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 Optional<ChestCavityEntity> optional = ChestCavityEntity.of();
                 optional.ifPresent((chestCavityEntity) -> {
                     ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
                     instance.opened = this.opened;
                     instance.setOrganScores(this.organScoresMap);
-                    success.set(true);
                     NetworkUtil.SendC2SChestCavityReceivedUpdatePacket(instance);
                 });
             });
         });
-        ctx.get().setPacketHandled(true);
-        return success.get();
+        context.setPacketHandled(true);
+        return true;
     }
 }

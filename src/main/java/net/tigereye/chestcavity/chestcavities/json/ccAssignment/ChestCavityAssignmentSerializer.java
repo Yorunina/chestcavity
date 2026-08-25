@@ -14,7 +14,9 @@ public class ChestCavityAssignmentSerializer {
 
     public ChestCavityAssignmentResult read(ResourceLocation id, ChestCavityAssignmentJsonFormat ccaJson) {
         ChestCavityAssignmentResult result = new ChestCavityAssignmentResult();
-        if (ccaJson.chestcavity == null) {
+        if (ccaJson == null) {
+            throw new JsonSyntaxException("Chest cavity assignment " + id + " must be an object");
+        } else if (ccaJson.chestcavity == null) {
             throw new JsonSyntaxException("Chest cavity assignment " + id + " must have a chest cavity type");
         } else if (ccaJson.entities == null) {
             throw new JsonSyntaxException("Chest cavity assignment " + id + " must have a list of entities");
