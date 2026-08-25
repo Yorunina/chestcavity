@@ -19,6 +19,7 @@ import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.packet.TargetEntityInventoryTypePacket;
 import net.tigereye.chestcavity.service.ChestCavitySurgeryService;
+import net.tigereye.chestcavity.registration.CCRegistries;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
     }
 
     public ChestCavityScreenHandler(int syncId, Inventory playerInventory, ChestCavityEntity targetEntity) {
-        super(ChestCavity.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
+        super(CCRegistries.CHEST_CAVITY_SCREEN_HANDLER.get(), syncId);
         Player player = playerInventory.player;
         Level level = player.level();
         InventoryTypeData inventoryTypeData;

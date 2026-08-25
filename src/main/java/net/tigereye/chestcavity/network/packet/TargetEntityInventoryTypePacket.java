@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.tigereye.chestcavity.network.ChestCavityNetworkCodec;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 
 import java.util.function.Supplier;
@@ -13,16 +14,19 @@ public class TargetEntityInventoryTypePacket {
     private final ResourceLocation inventoryType;
 
     public TargetEntityInventoryTypePacket(ResourceLocation inventoryType) {
+        if (inventoryType == null) {
+            throw new IllegalArgumentException("Inventory type cannot be null");
+        }
         this.inventoryType = inventoryType;
     }
 
     public static TargetEntityInventoryTypePacket decode(FriendlyByteBuf buf) {
-        ResourceLocation inventoryType = buf.readResourceLocation();
+        ResourceLocation inventoryType = ChestCavityNetworkCodec.readResourceLocation(buf);
         return new TargetEntityInventoryTypePacket(inventoryType);
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.inventoryType);
+        ChestCavityNetworkCodec.writeResourceLocation(buf, this.inventoryType);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {

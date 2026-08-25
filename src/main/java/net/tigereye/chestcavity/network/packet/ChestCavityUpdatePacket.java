@@ -8,16 +8,15 @@ import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavitySnapshot;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.network.ChestCavityNetworkCodec;
 import net.tigereye.chestcavity.util.NetworkUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ChestCavityUpdatePacket {
     private final boolean opened;
-    private final int organScoreSize;
     private final Map<ResourceLocation, Float> organScoresMap;
 
     public ChestCavityUpdatePacket(ChestCavityInstance cc) {
@@ -25,34 +24,22 @@ public class ChestCavityUpdatePacket {
     }
 
     private ChestCavityUpdatePacket(ChestCavitySnapshot snapshot) {
-        this(snapshot.isOpened(), snapshot.getOrganScores().size(), snapshot.getOrganScores());
+        this(snapshot.isOpened(), snapshot.getOrganScores());
     }
 
-    public ChestCavityUpdatePacket(boolean opened, int organScoreSize, Map<ResourceLocation, Float> organScoresMap) {
+    public ChestCavityUpdatePacket(boolean opened, Map<ResourceLocation, Float> organScoresMap) {
         this.opened = opened;
-        this.organScoreSize = organScoreSize;
-        this.organScoresMap = organScoresMap;
+        this.organScoresMap = Map.copyOf(organScoresMap);
     }
 
     public static ChestCavityUpdatePacket decode(FriendlyByteBuf buf) {
-        Map<ResourceLocation, Float> organScores = new HashMap<>();
         boolean open = buf.readBoolean();
-        int entries = buf.readInt();
-
-        for (int i = 0; i < entries; ++i) {
-            organScores.put(new ResourceLocation(buf.readUtf()), buf.readFloat());
-        }
-
-        return new ChestCavityUpdatePacket(open, entries, organScores);
+        return new ChestCavityUpdatePacket(open, ChestCavityNetworkCodec.readOrganScores(buf));
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeBoolean(this.opened);
-        buf.writeInt(this.organScoreSize);
-        this.organScoresMap.forEach((id, value) -> {
-            buf.writeUtf(id.toString());
-            buf.writeFloat(value);
-        });
+        ChestCavityNetworkCodec.writeOrganScores(buf, this.organScoresMap);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
