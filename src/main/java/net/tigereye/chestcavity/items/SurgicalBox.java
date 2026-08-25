@@ -109,23 +109,17 @@ public class SurgicalBox extends Item implements MenuProvider {
             itemNbt.put("Inventory", new ChestCavityContainer(itemInventoryTypeData.getSlotSize()).createTag());
         }
         // 替换胸腔类
-        entityInstance.inventory.removeListener(entityInstance);
-        chestCavityEntity.setInventoryTypeData(itemInventoryTypeData.getId());
-        entityInstance.oldInventory = entityInstance.inventory.clone();
-        entityInstance.oldInventoryType = entityInstance.inventoryType;
-        entityInstance.inventoryType = itemInventoryTypeData.getId();
-
         itemNbt.putString("InventoryType", inventoryTypeData.getId().toString());
         // 替换胸腔物品栏数量，保存物品信息
         ListTag entityItemListNbt = entityInstance.inventory.createTag();
-        entityInstance.inventory = new ChestCavityInventory(entityInstance);
+        ChestCavityInventory replacement = new ChestCavityInventory(itemInventoryTypeData.getSlotSize());
         // 替换物品
         ChestCavityContainer itemInventory = new ChestCavityContainer(itemInventoryTypeData.getSlotSize());
         itemInventory.fromTag(itemNbt.getList("Inventory", 10));
         for (int i = 0; i < itemInventoryTypeData.getSlotSize(); i++) {
-            entityInstance.inventory.setItem(i, itemInventory.getItem(i));
+            replacement.setItem(i, itemInventory.getItem(i));
         }
-        entityInstance.inventory.addListener(entityInstance);
+        entityInstance.replaceInventory(replacement, itemInventoryTypeData.getId(), false);
         ChestCavityContainer playerInventory = new ChestCavityContainer(inventoryTypeData.getSlotSize());
         playerInventory.fromTag(entityItemListNbt);
         itemNbt.put("Inventory", playerInventory.createTag());

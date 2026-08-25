@@ -31,7 +31,7 @@ public class OrganTickListeners {
 
         if (!(entity instanceof ChestCavityEntity ccEntity)) return;
         ChestCavityInstance cc = ccEntity.getChestCavityInstance();
-        if (cc.updatePacket) NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
+        if (cc.isSyncPending()) NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
 
 
         if (!cc.opened) return;

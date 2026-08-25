@@ -10,7 +10,7 @@ import net.tigereye.chestcavity.network.packet.ReceivedChestCavityUpdatePacket;
 
 public class NetworkUtil {
     public static boolean SendS2CChestCavityUpdatePacket(ChestCavityInstance cc) {
-        cc.updatePacket = true;
+        cc.markSyncPending();
         return SendS2CChestCavityUpdatePacket(cc, true);
     }
 
@@ -29,12 +29,12 @@ public class NetworkUtil {
     }
 
     public static void ReadChestCavityReceivedUpdatePacket(ChestCavityInstance cc) {
-        cc.updatePacket = false;
+        cc.acknowledgeSync();
     }
 
     public static boolean SendC2SChestCavityReceivedUpdatePacket(ChestCavityInstance cc) {
         ChestCavityNetwork.INSTANCE.sendToServer(new ReceivedChestCavityUpdatePacket());
-        return SendS2CChestCavityUpdatePacket(cc, cc.updatePacket);
+        return SendS2CChestCavityUpdatePacket(cc, cc.isSyncPending());
     }
 
 }

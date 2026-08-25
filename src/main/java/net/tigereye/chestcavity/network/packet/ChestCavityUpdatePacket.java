@@ -6,6 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.instance.ChestCavitySnapshot;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.util.NetworkUtil;
 
@@ -20,7 +21,11 @@ public class ChestCavityUpdatePacket {
     private final Map<ResourceLocation, Float> organScoresMap;
 
     public ChestCavityUpdatePacket(ChestCavityInstance cc) {
-        this(cc.opened, cc.getOrganScores().size(), cc.getOrganScores());
+        this(cc.createSnapshot());
+    }
+
+    private ChestCavityUpdatePacket(ChestCavitySnapshot snapshot) {
+        this(snapshot.isOpened(), snapshot.getOrganScores().size(), snapshot.getOrganScores());
     }
 
     public ChestCavityUpdatePacket(boolean opened, int organScoreSize, Map<ResourceLocation, Float> organScoresMap) {
@@ -57,8 +62,7 @@ public class ChestCavityUpdatePacket {
                 Optional<ChestCavityEntity> optional = ChestCavityEntity.of();
                 optional.ifPresent((chestCavityEntity) -> {
                     ChestCavityInstance instance = chestCavityEntity.getChestCavityInstance();
-                    instance.opened = this.opened;
-                    instance.setOrganScores(this.organScoresMap);
+                    instance.applyRemoteState(this.opened, this.organScoresMap);
                     NetworkUtil.SendC2SChestCavityReceivedUpdatePacket(instance);
                 });
             });

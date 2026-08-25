@@ -41,7 +41,10 @@ public class ChestCavityInstance implements ContainerListener {
     public ResourceLocation inventoryType;
     public ResourceLocation oldInventoryType;
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
+    // CustomDataMap暴露给Kubejs层使用
     public Map<String, Object> customDataMap = new HashMap<>();
+    private ChestCavitySnapshot lastSnapshot;
+    private boolean stateDirty = true;
 
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
         this.type = type;
@@ -54,6 +57,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.inventory = new ChestCavityInventory(this);
         this.oldInventoryType = type.getInventoryType();
         this.oldInventory = this.inventory.clone();
+        this.commitSnapshot();
     }
 
     public IChestCavityType getChestCavityType() {
@@ -66,10 +70,12 @@ public class ChestCavityInstance implements ContainerListener {
 
     public void setOrganScore(ResourceLocation id, float score) {
         this.organScores.put(id, score);
+        this.markDirty();
     }
 
     public void setOrganScores(Map<ResourceLocation, Float> organScores) {
-        this.organScores = organScores;
+        this.organScores = new HashMap<>(organScores);
+        this.markDirty();
     }
 
     public float getOrganScore(ResourceLocation id) {
@@ -81,6 +87,9 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public float getOldOrganScore(ResourceLocation id) {
+        if (this.lastSnapshot != null) {
+            return this.lastSnapshot.getOrganScore(id);
+        }
         return this.oldOrganScores.getOrDefault(id, 0.0F);
     }
 
@@ -94,6 +103,77 @@ public class ChestCavityInstance implements ContainerListener {
 
     public InventoryTypeData getOldInventoryTypeData() {
         return InventoryTypeManager.getInventoryTypeData(this.oldInventoryType);
+    }
+
+    public ChestCavitySnapshot getLastSnapshot() {
+        return this.lastSnapshot;
+    }
+
+    public ChestCavitySnapshot createSnapshot() {
+        return ChestCavitySnapshot.capture(this);
+    }
+
+    public boolean hasInventoryChangesSinceSnapshot() {
+        return this.lastSnapshot == null || this.lastSnapshot.hasInventoryChanges(this);
+    }
+
+    public boolean hasOrganScoreChangesSinceSnapshot() {
+        return this.lastSnapshot == null || this.lastSnapshot.hasOrganScoreChanges(this);
+    }
+
+    public boolean isStateDirty() {
+        return this.stateDirty;
+    }
+
+    public void markDirty() {
+        this.stateDirty = true;
+        this.updatePacket = true;
+    }
+
+    public void clearDirty() {
+        this.stateDirty = false;
+    }
+
+    public void setOpened(boolean opened) {
+        if (this.opened != opened) {
+            this.opened = opened;
+            this.markDirty();
+        }
+    }
+
+    public void applyRemoteState(boolean opened, Map<ResourceLocation, Float> organScores) {
+        this.opened = opened;
+        this.organScores = new HashMap<>(organScores);
+        this.commitSnapshot();
+    }
+
+    public void markSyncPending() {
+        this.updatePacket = true;
+    }
+
+    public boolean isSyncPending() {
+        return this.updatePacket;
+    }
+
+    public void acknowledgeSync() {
+        this.updatePacket = false;
+    }
+
+    /**
+     * Commits the current state as the previous-state baseline used by
+     * change detection. The legacy public fields are kept in sync for
+     * compatibility with existing integrations.
+     */
+    public void commitSnapshot() {
+        if (this.inventory == null) {
+            return;
+        }
+        this.lastSnapshot = ChestCavitySnapshot.capture(this);
+        this.oldInventory = this.inventory.clone();
+        this.oldInventoryType = this.inventoryType;
+        this.oldOrganScores.clear();
+        this.oldOrganScores.putAll(this.organScores);
+        this.clearDirty();
     }
 
     public void clearListenerMap() {
@@ -119,17 +199,15 @@ public class ChestCavityInstance implements ContainerListener {
     @Override
     public void containerChanged(@NotNull Container sender) {
         if (isSameAsOldInventory()) return;
+        this.markDirty();
         ChestCavityUtil.evaluateChestCavity(this);
-        this.oldInventory = this.inventory.clone();
-        if (!this.oldInventoryType.equals(this.inventoryType)) {
-            this.oldInventoryType = this.inventoryType;
-            if (this.owner instanceof ChestCavityEntity ccEntity) {
-                ccEntity.setInventoryTypeData(this.inventoryType);
-            }
-        }
+        this.syncInventoryTypeData();
     }
 
     public boolean isSameAsOldInventory() {
+        if (this.lastSnapshot != null) {
+            return !this.lastSnapshot.hasInventoryChanges(this);
+        }
         if (!this.oldInventoryType.equals(this.inventoryType)) {
             return false;
         }
@@ -145,11 +223,8 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public void setInventoryType(ResourceLocation inventoryType) {
-        this.oldInventoryType = this.inventoryType;
-        this.inventoryType = inventoryType;
-        this.inventory.removeListener(this);
         int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
-        ChestCavityInventory newInventory = new ChestCavityInventory(this);
+        ChestCavityInventory newInventory = new ChestCavityInventory(newInventorySize);
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
             if (newInventorySize <= i) {
                 this.owner.spawnAtLocation(this.inventory.getItem(i));
@@ -157,15 +232,40 @@ public class ChestCavityInstance implements ContainerListener {
             }
             newInventory.setItem(i, this.inventory.getItem(i));
         }
-        this.inventory = newInventory;
-        this.inventory.addListener(this);
-        if (this.owner instanceof ChestCavityEntity ccEntity) {
-            ccEntity.setInventoryTypeData(this.inventoryType);
+        this.replaceInventory(newInventory, inventoryType);
+    }
+
+    public void replaceInventory(ChestCavityInventory replacement, ResourceLocation newInventoryType) {
+        this.replaceInventory(replacement, newInventoryType, true);
+    }
+
+    public void replaceInventory(ChestCavityInventory replacement, ResourceLocation newInventoryType, boolean evaluate) {
+        if (replacement == null) {
+            throw new IllegalArgumentException("replacement inventory cannot be null");
         }
+        if (this.inventory != null) {
+            this.oldInventory = this.inventory.clone();
+            this.oldInventoryType = this.inventoryType;
+            this.inventory.removeListener(this);
+        }
+        this.inventoryType = newInventoryType;
+        replacement.setInstance(this);
+        this.inventory = replacement;
+        this.inventory.addListener(this);
+        this.syncInventoryTypeData();
         if (this.owner instanceof ServerPlayer player && player.containerMenu instanceof ChestCavityScreenHandler) {
             player.closeContainer();
         }
-        this.containerChanged(this.inventory);
+        this.markDirty();
+        if (evaluate) {
+            this.containerChanged(this.inventory);
+        }
+    }
+
+    private void syncInventoryTypeData() {
+        if (this.owner instanceof ChestCavityEntity ccEntity) {
+            ccEntity.setInventoryTypeData(this.inventoryType);
+        }
     }
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {
@@ -178,32 +278,27 @@ public class ChestCavityInstance implements ContainerListener {
             this.liverTimer = ccTag.getInt("LiverTimer");
             this.metabolismRemainder = ccTag.getFloat("MetabolismRemainder");
             this.lungRemainder = ccTag.getFloat("LungRemainder");
-            this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
-            this.oldInventoryType = this.inventoryType;
-            if (this.owner instanceof ChestCavityEntity ccEntity) {
-                ccEntity.setInventoryTypeData(this.inventoryType);
-            }
+            ResourceLocation loadedInventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
             if (ccTag.contains("CompatibilityId")) {
                 this.compatibilityId = ccTag.getUUID("CompatibilityId");
             } else {
                 this.compatibilityId = owner.getUUID();
             }
-            this.inventory.removeListener(this);
 
-            int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
+            int newInventorySize = InventoryTypeManager.getInventoryTypeData(loadedInventoryType).getSlotSize();
             if (newInventorySize < this.inventory.getContainerSize()) {
                 for (int i = newInventorySize; i < this.inventory.getContainerSize(); i++) {
                     this.owner.spawnAtLocation(this.inventory.getItem(i));
                 }
             }
-            this.inventory = new ChestCavityInventory(this);
+
+            ChestCavityInventory loadedInventory = new ChestCavityInventory(newInventorySize);
             if (ccTag.contains("Inventory")) {
                 ListTag nbtList = ccTag.getList("Inventory", 10);
-                this.inventory.fromTag(nbtList);
+                loadedInventory.fromTag(nbtList);
             }
-            this.inventory.addListener(this);
-            ChestCavityUtil.evaluateChestCavity(this);
-            this.oldInventory = this.inventory.clone();
+            this.replaceInventory(loadedInventory, loadedInventoryType, false);
+            this.containerChanged(this.inventory);
         }
     }
 
@@ -220,19 +315,10 @@ public class ChestCavityInstance implements ContainerListener {
         tag.put("ChestCavity", ccTag);
     }
 
-    public void clone(ChestCavityInstance other) {
+    public void copyFrom(ChestCavityInstance other) {
         this.opened = other.opened;
         this.type = other.type;
         this.compatibilityId = other.compatibilityId;
-        this.oldInventoryType = other.oldInventoryType;
-        this.inventoryType = other.inventoryType;
-        this.oldInventory = other.oldInventory.copyFor(this);
-        if (this.owner instanceof ChestCavityEntity ccEntity) {
-            ccEntity.setInventoryTypeData(this.inventoryType);
-        }
-        this.inventory.removeListener(this);
-        this.inventory = other.inventory.copyFor(this);
-        this.inventory.addListener(this);
         this.liverTimer = other.liverTimer;
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
@@ -241,6 +327,14 @@ public class ChestCavityInstance implements ContainerListener {
         this.slotListenerMap = new HashMap<>();
         other.slotListenerMap.forEach((eventName, listeners) ->
                 this.slotListenerMap.put(eventName, new HashMap<>(listeners)));
+        this.replaceInventory(other.inventory.copyFor(this), other.inventoryType, false);
         ChestCavityUtil.evaluateChestCavity(this);
+    }
+
+    /**
+     * Compatibility alias retained for existing respawn integrations.
+     */
+    public void clone(ChestCavityInstance other) {
+        this.copyFrom(other);
     }
 }

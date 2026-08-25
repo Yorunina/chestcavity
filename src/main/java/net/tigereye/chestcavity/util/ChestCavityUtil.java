@@ -306,12 +306,11 @@ public class ChestCavityUtil {
 
     public static void generateChestCavityIfOpened(ChestCavityInstance cc) {
         ListTag tagList = cc.getChestCavityType().getDefaultChestCavity().createTag();
-        cc.inventory.removeListener(cc);
-        cc.inventory = new ChestCavityInventory(cc);
-        cc.inventory.fromTag(tagList);
-        cc.inventory.addListener(cc);
+        ChestCavityInventory newInventory = new ChestCavityInventory(cc);
+        newInventory.fromTag(tagList);
+        cc.replaceInventory(newInventory, cc.getInventoryType(), false);
         cc.getChestCavityType().setOrganCompatibility(cc);
-        cc.opened = true;
+        cc.setOpened(true);
         ChestCavityUtil.evaluateChestCavity(cc);
     }
 
@@ -395,15 +394,14 @@ public class ChestCavityUtil {
 
     public static void organUpdate(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
-        Map<ResourceLocation, Float> organScores = cc.getOrganScores();
-        if (!cc.oldOrganScores.equals(organScores)) {
+        if (cc.hasOrganScoreChangesSinceSnapshot()) {
+            cc.markDirty();
             OrganUpdateListeners.call(cc.owner, cc);
             CCEvents.postUpdateCCScore(cc);
-            cc.oldOrganScores.clear();
-            cc.oldOrganScores.putAll(organScores);
 
             NetworkUtil.SendS2CChestCavityUpdatePacket(cc);
         }
+        cc.commitSnapshot();
     }
 
 
