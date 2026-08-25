@@ -21,7 +21,11 @@ public class ChestCavitySlot extends Slot {
         if (!this.container.stillValid(playerIn)) {
             return false;
         }
-        return playerIn.isCreative() || !this.container.getItem(index).is(CCTags.CANNOT_REMOVE);
+        if (playerIn.isCreative()) return true;
+        ItemStack itemstack = this.container.getItem(index);
+        if (itemstack.is(CCTags.CANNOT_REMOVE)) return false;
+        if (itemstack.hasTag() && itemstack.getTag().getBoolean("cannotRemove")) return false;
+        return true;
     }
 
     @Override

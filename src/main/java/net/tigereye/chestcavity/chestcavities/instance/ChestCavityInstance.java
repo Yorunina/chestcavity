@@ -131,12 +131,10 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public boolean isSameAsOldInventory() {
-        int oldContainerSize = this.oldInventory.getContainerSize();
-        int containerSize = this.inventory.getContainerSize();
-        if (oldContainerSize != containerSize) {
+        if (this.oldInventoryType != this.inventoryType) {
             return false;
         }
-        for (int i = 0; i < containerSize; i++) {
+        for (int i = 0; i < this.inventory.getContainerSize(); i++) {
             if (!this.oldInventory.getItem(i).equals(this.inventory.getItem(i), true)) {
                 return false;
             }

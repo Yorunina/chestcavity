@@ -33,15 +33,13 @@ public class ChestOpener extends Item {
     public ChestOpener() {
         super(CCItems.CHEST_OPENER_SETTINGS);
     }
+
     public static void canNotOpenChestCavity(Player player, LivingEntity target) {
+        player.level().playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         if (!target.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
             player.sendSystemMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.obstructed"));
-            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         } else {
             player.sendSystemMessage(Component.translatable("status_msg.chestcavity.chestopener.fail.healthy"));
-            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 0.75F, 1.0F);
         }
     }
 
@@ -58,11 +56,7 @@ public class ChestOpener extends Item {
             return InteractionResult.SUCCESS;
         }
         if (!hand.equals(InteractionHand.MAIN_HAND)) return InteractionResult.FAIL;
-        Map<Enchantment, Integer> allEnchantments = stack.getAllEnchantments();
-        if (target instanceof Player && !allEnchantments.containsKey(CREATIVE_SURGERY.get())) {
-            return InteractionResult.PASS;
-        }
-        boolean success = this.openChestCavity(player, target, stack, true);
+        boolean success = this.openChestCavity(player, target, stack);
         if (success) {
             return InteractionResult.SUCCESS;
         } else {
@@ -81,41 +75,38 @@ public class ChestOpener extends Item {
         if (chestOpener.getAllEnchantments().containsKey(SAFE_SURGERY.get()) && !player.isCrouching()) {
             return InteractionResultHolder.fail(chestOpener);
         }
-        return this.openChestCavity(player, player, chestOpener, false) ? InteractionResultHolder.success(chestOpener) : InteractionResultHolder.fail(chestOpener);
+        return this.openChestCavity(player, player, chestOpener) ? InteractionResultHolder.success(chestOpener) : InteractionResultHolder.fail(chestOpener);
     }
 
-    public boolean openChestCavity(Player player, LivingEntity target, ItemStack chestOpener, boolean shouldKnockback) {
+    public boolean openChestCavity(Player player, LivingEntity target, ItemStack chestOpener) {
         Optional<ChestCavityEntity> optional = ChestCavityEntity.of(target);
+
         if (optional.isEmpty()) return false;
         ChestCavityEntity chestCavityEntity = optional.get();
         ChestCavityInstance cc = chestCavityEntity.getChestCavityInstance();
         cc.inventory.setInstance(cc);
+
         Map<Enchantment, Integer> allEnchantments = chestOpener.getAllEnchantments();
 
         double easeAccess = cc.opened ? cc.getOrganScore(CCOrganScores.EASE_OF_ACCESS) : cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.EASE_OF_ACCESS);
-        if (cc.owner.hasEffect(CCStatusEffects.SURGICAL_ANESTHESIA.get())) {
-            easeAccess = Math.max(easeAccess, 1.0D);
-        }
 
-        if (target != player && !cc.getChestCavityType().isOpenable(cc, allEnchantments, easeAccess)) {
+        if (cc.owner.hasEffect(CCStatusEffects.SURGICAL_ANESTHESIA.get())) easeAccess = Math.max(easeAccess, 1.0D);
+
+        boolean selfOpen = target == player;
+        boolean canEaseAccess = easeAccess > 0 || allEnchantments.containsKey(CREATIVE_SURGERY.get()) || allEnchantments.containsKey(PAINLESS_SURGERY.get());
+
+        if (target instanceof Player && !canEaseAccess && !selfOpen) return false;
+
+        if (!selfOpen && !cc.getChestCavityType().isOpenable(cc, allEnchantments, easeAccess)) {
             canNotOpenChestCavity(player, target);
             return false;
         } else {
-            if (easeAccess <= 0 && !allEnchantments.containsKey(CREATIVE_SURGERY.get()) && !allEnchantments.containsKey(PAINLESS_SURGERY.get())) {
-                if (!shouldKnockback) {
-                    target.hurt(player.damageSources().generic(), 4.0F);
-                } else {
-                    target.hurt(player.damageSources().magic(), 4.0F);
-                }
-            }
-
+            if (!canEaseAccess)
+                target.hurt(player.damageSources().magic(), 4.0F);
             if (target.isAlive()) {
-                // 界面渲染
-                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) ->
-                        new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
-                if (player instanceof ServerPlayer serverPlayer) {
+                player.openMenu(new SimpleMenuProvider((i, playerInventory, playerEntity) -> new ChestCavityScreenHandler(i, playerInventory, chestCavityEntity), Component.translatable("gui.chestcavity.chestopener.title", target.getDisplayName())));
+                if (player instanceof ServerPlayer serverPlayer)
                     ChestCavityQuestEventHandler.getInstance().onChestCavityOpened(serverPlayer, target);
-                }
             }
             return true;
         }

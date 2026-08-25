@@ -285,6 +285,7 @@ public class ChestCavityUtil {
                 }
             }
         }
+
         // kubejs接入点：胸腔属性计算节点，取代激活属性计算
         CCEvents.postEvaluateChestCavity(cc);
         organUpdate(cc);

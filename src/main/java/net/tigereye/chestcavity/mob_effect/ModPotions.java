@@ -18,6 +18,11 @@ public class ModPotions {
     public static final RegistryObject<Potion> LONG_ORGAN_SLIP = POTIONS.register("long_organ_slip",
             () -> new Potion(new MobEffectInstance(CCStatusEffects.ORGAN_SLIP.get(),1600,0)));
 
+    public static final RegistryObject<Potion> SURGICAL_ANESTHESIA = POTIONS.register("surgical_anesthesia",
+            () -> new Potion(new MobEffectInstance(CCStatusEffects.SURGICAL_ANESTHESIA.get(),100,0)));
+    public static final RegistryObject<Potion> LONG_SURGICAL_ANESTHESIA = POTIONS.register("long_surgical_anesthesia",
+            () -> new Potion(new MobEffectInstance(CCStatusEffects.SURGICAL_ANESTHESIA.get(),200,0)));
+
     public static void register(IEventBus eventBus) {
         POTIONS.register(eventBus);
     }
