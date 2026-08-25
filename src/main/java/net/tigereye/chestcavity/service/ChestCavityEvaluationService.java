@@ -7,8 +7,8 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
+import net.tigereye.chestcavity.network.ChestCavitySyncService;
 import net.tigereye.chestcavity.registration.CCOrganScores;
-import net.tigereye.chestcavity.util.NetworkUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -70,7 +70,7 @@ public final class ChestCavityEvaluationService {
             cc.markDirty();
             OrganUpdateListeners.call(cc.owner, cc);
             CCEvents.postUpdateCCScore(cc);
-            NetworkUtil.SendS2CChestCavityUpdatePacket(cc);
+            ChestCavitySyncService.enqueue(cc);
         }
         cc.commitSnapshot();
     }

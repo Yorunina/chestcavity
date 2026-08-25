@@ -12,6 +12,7 @@ import net.tigereye.chestcavity.chestcavities.IChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
+import net.tigereye.chestcavity.network.ChestCavitySyncService;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import net.tigereye.chestcavity.service.ChestCavityEvaluationService;
 import org.apache.logging.log4j.LogManager;
@@ -118,6 +119,7 @@ public class ChestCavityInstance implements ContainerListener {
 
     public void markDirty() {
         this.updatePacket = true;
+        ChestCavitySyncService.enqueue(this);
     }
 
     public void setOpened(boolean opened) {

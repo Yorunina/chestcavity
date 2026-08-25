@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.ITeleporter;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
-import net.tigereye.chestcavity.util.NetworkUtil;
+import net.tigereye.chestcavity.network.ChestCavitySyncService;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,7 +41,7 @@ public abstract class MixinServerPlayer extends net.minecraft.world.entity.playe
     public void chestCavityEntityMoveToWorldMixin(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> info) {
         Entity entity = info.getReturnValue();
         if (entity instanceof ChestCavityEntity && !entity.level().isClientSide) {
-            NetworkUtil.SendS2CChestCavityUpdatePacket(((ChestCavityEntity) entity).getChestCavityInstance());
+            ChestCavitySyncService.sendNow(((ChestCavityEntity) entity).getChestCavityInstance());
         }
     }
 }

@@ -14,7 +14,9 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
+import net.tigereye.chestcavity.network.ChestCavitySyncService;
 import net.tigereye.chestcavity.network.packet.ChestCavityAssignmentDataPacket;
 import net.tigereye.chestcavity.network.packet.ChestCavityTypeDataPacket;
 import net.tigereye.chestcavity.network.packet.InventoryTypeDataPacket;
@@ -37,6 +39,9 @@ public class ChestCavityDataManager implements PreparableReloadListener {
             return;
         }
         sendDataTo(player);
+        if (player instanceof ChestCavityEntity chestCavityEntity) {
+            ChestCavitySyncService.sendNow(chestCavityEntity.getChestCavityInstance());
+        }
     }
 
     private static void sendDataTo(ServerPlayer player) {

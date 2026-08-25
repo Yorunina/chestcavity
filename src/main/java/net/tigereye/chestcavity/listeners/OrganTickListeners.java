@@ -16,10 +16,11 @@ import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCDamageSources;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
-import net.tigereye.chestcavity.util.NetworkUtil;
 
 @Mod.EventBusSubscriber(modid = ChestCavity.MODID)
 public class OrganTickListeners {
+    private static final int LOW_FREQUENCY_INTERVAL = 5;
+
     public OrganTickListeners() {
     }
 
@@ -31,27 +32,25 @@ public class OrganTickListeners {
 
         if (!(entity instanceof ChestCavityEntity ccEntity)) return;
         ChestCavityInstance cc = ccEntity.getChestCavityInstance();
-        if (cc.isSyncPending()) NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
-
-
         if (!cc.opened) return;
         if (cc.owner != null) CCEvents.postOpenedEntityTick(entity, cc);
 
-        if (!entity.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) {
-            TickFiltration(entity, cc);
+        if (entity.level().getGameTime() % LOW_FREQUENCY_INTERVAL == 0 && !entity.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) {
+            TickFiltration(entity, cc, LOW_FREQUENCY_INTERVAL);
             TickHealth(entity, cc);
             TickIncompatibility(entity, cc);
         }
     }
 
     public static void TickClimbingAttribute(LivingEntity entity) {
+        if (!entity.horizontalCollision) return;
+
+        if (entity.getDeltaMovement().horizontalDistanceSqr() <= 1.0E-6D) return;
+
         AttributeInstance climbSpeed = entity.getAttribute(CCAttributes.CLIMB_SPEED.get());
         if (climbSpeed == null || climbSpeed.getValue() <= 0.0D) return;
-        if (entity.horizontalCollision) {
-            if (entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D) {
-                entity.setDeltaMovement(new Vec3(entity.getDeltaMovement().x(), climbSpeed.getValue(), entity.getDeltaMovement().z()));
-            }
-        }
+
+        entity.setDeltaMovement(new Vec3(entity.getDeltaMovement().x(), climbSpeed.getValue(), entity.getDeltaMovement().z()));
     }
 
     public static void TickHealth(LivingEntity entity, ChestCavityInstance cc) {
@@ -63,15 +62,14 @@ public class OrganTickListeners {
     }
 
 
-    public static void TickFiltration(LivingEntity entity, ChestCavityInstance cc) {
+    public static void TickFiltration(LivingEntity entity, ChestCavityInstance cc, int elapsedTicks) {
         if (!entity.level().isClientSide() && !(cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION) <= 0.0F)) {
             float KidneyRatio = cc.getOrganScore(CCOrganScores.FILTRATION) / cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.FILTRATION);
-            if (KidneyRatio < 1.0F) {
-                ++cc.bloodPoisonTimer;
-                if (cc.bloodPoisonTimer >= ChestCavity.config.KIDNEY_RATE) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, (int) Math.max(1.0F, 48.0F * (1.0F - KidneyRatio))));
-                    cc.bloodPoisonTimer = 0;
-                }
+            if (KidneyRatio >= 1.0F) return;
+            cc.bloodPoisonTimer += elapsedTicks;
+            if (cc.bloodPoisonTimer >= ChestCavity.config.KIDNEY_RATE) {
+                entity.addEffect(new MobEffectInstance(MobEffects.POISON, (int) Math.max(1.0F, 48.0F * (1.0F - KidneyRatio))));
+                cc.bloodPoisonTimer = 0;
             }
         }
 
