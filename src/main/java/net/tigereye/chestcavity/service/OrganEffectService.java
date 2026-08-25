@@ -5,7 +5,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
@@ -223,13 +222,11 @@ public final class OrganEffectService {
         }
 
         effect = OrganAddStatusEffectListeners.call(cc.owner, cc, effect);
-        try {
-            if (cc.owner != null && !cc.owner.level().isClientSide()) {
-                return CCEvents.postOpenedEntityAddStatus(cc, effect);
-            }
-        } catch (Exception ignored) {
-            // Compatibility hooks must not prevent vanilla effect application.
+
+        if (cc.owner != null && !cc.owner.level().isClientSide()) {
+            return CCEvents.postOpenedEntityAddStatus(cc, effect);
         }
+
         return effect;
     }
 }

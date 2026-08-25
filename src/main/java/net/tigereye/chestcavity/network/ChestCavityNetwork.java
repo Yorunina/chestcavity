@@ -26,25 +26,10 @@ public final class ChestCavityNetwork {
                 .decoder(ChestCavityUpdatePacket::decode)
                 .consumerMainThread(ChestCavityUpdatePacket::handle)
                 .add();
-        INSTANCE.messageBuilder(OrganDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(OrganDataPacket::encode)
-                .decoder(OrganDataPacket::decode)
-                .consumerMainThread(OrganDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ChestCavityAssignmentDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ChestCavityAssignmentDataPacket::encode)
-                .decoder(ChestCavityAssignmentDataPacket::decode)
-                .consumerMainThread(ChestCavityAssignmentDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(InventoryTypeDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(InventoryTypeDataPacket::encode)
-                .decoder(InventoryTypeDataPacket::decode)
-                .consumerMainThread(InventoryTypeDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ChestCavityTypeDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ChestCavityTypeDataPacket::encode)
-                .decoder(ChestCavityTypeDataPacket::decode)
-                .consumerMainThread(ChestCavityTypeDataPacket::handle)
+        INSTANCE.messageBuilder(ChestCavityDataSyncPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ChestCavityDataSyncPacket::encode)
+                .decoder(ChestCavityDataSyncPacket::decode)
+                .consumerMainThread(ChestCavityDataSyncPacket::handle)
                 .add();
         INSTANCE.messageBuilder(ReceivedChestCavityUpdatePacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ReceivedChestCavityUpdatePacket::encode)

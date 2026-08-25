@@ -17,10 +17,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.ChestCavitySyncService;
-import net.tigereye.chestcavity.network.packet.ChestCavityAssignmentDataPacket;
-import net.tigereye.chestcavity.network.packet.ChestCavityTypeDataPacket;
-import net.tigereye.chestcavity.network.packet.InventoryTypeDataPacket;
-import net.tigereye.chestcavity.network.packet.OrganDataPacket;
+import net.tigereye.chestcavity.network.packet.ChestCavityDataSyncPacket;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -46,18 +43,19 @@ public class ChestCavityDataManager implements PreparableReloadListener {
 
     private static void sendDataTo(ServerPlayer player) {
         ChestCavityDataSnapshot snapshot = ChestCavityDataRepository.getCurrent();
-        ChestCavityNetwork.INSTANCE.sendTo(new OrganDataPacket(snapshot.getVersion(), snapshot.getRawOrgans()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new InventoryTypeDataPacket(snapshot.getVersion(), snapshot.getRawInventoryTypes()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityTypeDataPacket(snapshot.getVersion(), snapshot.getRawChestCavityTypes()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        ChestCavityNetwork.INSTANCE.sendTo(new ChestCavityAssignmentDataPacket(snapshot.getVersion(), snapshot.getRawAssignments()), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        ChestCavityNetwork.INSTANCE.sendTo(
+                new ChestCavityDataSyncPacket(snapshot),
+                player.connection.connection,
+                NetworkDirection.PLAY_TO_CLIENT
+        );
     }
 
     private static void broadcastData() {
         ChestCavityDataSnapshot snapshot = ChestCavityDataRepository.getCurrent();
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new OrganDataPacket(snapshot.getVersion(), snapshot.getRawOrgans()));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new InventoryTypeDataPacket(snapshot.getVersion(), snapshot.getRawInventoryTypes()));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityTypeDataPacket(snapshot.getVersion(), snapshot.getRawChestCavityTypes()));
-        ChestCavityNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new ChestCavityAssignmentDataPacket(snapshot.getVersion(), snapshot.getRawAssignments()));
+        ChestCavityNetwork.INSTANCE.send(
+                PacketDistributor.ALL.noArg(),
+                new ChestCavityDataSyncPacket(snapshot)
+        );
     }
     
     @Override

@@ -11,7 +11,6 @@ import net.tigereye.chestcavity.chestcavities.json.ccType.ChestCavityTypeManager
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +34,6 @@ public final class ChestCavityDataRepository {
             Map<ResourceLocation, String> rawAssignments = ChestCavityAssignmentManager.loadRawData(resourceManager);
 
             publish(buildSnapshot(
-                    current.getVersion() + 1,
                     rawOrgans,
                     rawInventoryTypes,
                     rawChestCavityTypes,
@@ -46,39 +44,20 @@ public final class ChestCavityDataRepository {
         }
     }
 
-    public static synchronized void installOrganData(long version, Map<ResourceLocation, String> rawOrgans) {
-        install(version, rawOrgans, current.getRawInventoryTypes(), current.getRawChestCavityTypes(), current.getRawAssignments());
-    }
-
-    public static synchronized void installInventoryTypeData(long version, Map<ResourceLocation, String> rawInventoryTypes) {
-        install(version, current.getRawOrgans(), rawInventoryTypes, current.getRawChestCavityTypes(), current.getRawAssignments());
-    }
-
-    public static synchronized void installChestCavityTypeData(long version, Map<ResourceLocation, String> rawChestCavityTypes) {
-        install(version, current.getRawOrgans(), current.getRawInventoryTypes(), rawChestCavityTypes, current.getRawAssignments());
-    }
-
-    public static synchronized void installAssignmentData(long version, Map<ResourceLocation, String> rawAssignments) {
-        install(version, current.getRawOrgans(), current.getRawInventoryTypes(), current.getRawChestCavityTypes(), rawAssignments);
-    }
-
-    private static void install(
-            long version,
+    public static synchronized void install(
             Map<ResourceLocation, String> rawOrgans,
             Map<ResourceLocation, String> rawInventoryTypes,
             Map<ResourceLocation, String> rawChestCavityTypes,
             Map<ResourceLocation, String> rawAssignments
     ) {
         try {
-            long effectiveVersion = version < 0 ? current.getVersion() + 1 : version;
-            publish(buildSnapshot(effectiveVersion, rawOrgans, rawInventoryTypes, rawChestCavityTypes, rawAssignments));
+            publish(buildSnapshot(rawOrgans, rawInventoryTypes, rawChestCavityTypes, rawAssignments));
         } catch (Exception error) {
             ChestCavity.LOGGER.error("Chest Cavity client data installation failed; retaining the previous snapshot", error);
         }
     }
 
     private static ChestCavityDataSnapshot buildSnapshot(
-            long version,
             Map<ResourceLocation, String> rawOrgans,
             Map<ResourceLocation, String> rawInventoryTypes,
             Map<ResourceLocation, String> rawChestCavityTypes,
@@ -91,7 +70,6 @@ public final class ChestCavityDataRepository {
         Map<ResourceLocation, ResourceLocation> assignments = ChestCavityAssignmentManager.parseRawData(rawAssignments);
 
         return new ChestCavityDataSnapshot(
-                version,
                 organs,
                 inventoryTypes,
                 chestCavityTypes,
@@ -104,14 +82,6 @@ public final class ChestCavityDataRepository {
     }
 
     private static void publish(ChestCavityDataSnapshot snapshot) {
-        if (snapshot.getVersion() < current.getVersion()) {
-            ChestCavity.LOGGER.debug(
-                    "Ignoring stale Chest Cavity data snapshot {} (current {})",
-                    snapshot.getVersion(),
-                    current.getVersion()
-            );
-            return;
-        }
         current = snapshot;
         OrganManager.publish(snapshot.getOrgans(), snapshot.getRawOrgans());
         InventoryTypeManager.publish(snapshot.getInventoryTypes(), snapshot.getRawInventoryTypes());

@@ -2,7 +2,6 @@ package net.tigereye.chestcavity.chestcavities.json;
 
 import net.minecraft.resources.ResourceLocation;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
-import net.tigereye.chestcavity.chestcavities.json.ccAssignment.ChestCavityAssignmentResult;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 
@@ -18,7 +17,6 @@ import java.util.Map;
  * never observe a partially reloaded combination of resource types.</p>
  */
 public final class ChestCavityDataSnapshot {
-    private final long version;
     private final Map<ResourceLocation, OrganData> organs;
     private final Map<ResourceLocation, InventoryTypeData> inventoryTypes;
     private final Map<ResourceLocation, ChestCavityType> chestCavityTypes;
@@ -29,7 +27,6 @@ public final class ChestCavityDataSnapshot {
     private final Map<ResourceLocation, String> rawAssignments;
 
     public ChestCavityDataSnapshot(
-            long version,
             Map<ResourceLocation, OrganData> organs,
             Map<ResourceLocation, InventoryTypeData> inventoryTypes,
             Map<ResourceLocation, ChestCavityType> chestCavityTypes,
@@ -39,7 +36,6 @@ public final class ChestCavityDataSnapshot {
             Map<ResourceLocation, String> rawChestCavityTypes,
             Map<ResourceLocation, String> rawAssignments
     ) {
-        this.version = version;
         this.organs = immutableCopy(organs);
         this.inventoryTypes = immutableCopy(inventoryTypes);
         this.chestCavityTypes = immutableCopy(chestCavityTypes);
@@ -52,7 +48,6 @@ public final class ChestCavityDataSnapshot {
 
     public static ChestCavityDataSnapshot empty() {
         return new ChestCavityDataSnapshot(
-                0L,
                 Map.of(),
                 Map.of(),
                 Map.of(),
@@ -66,10 +61,6 @@ public final class ChestCavityDataSnapshot {
 
     private static <K, V> Map<K, V> immutableCopy(Map<K, V> source) {
         return Collections.unmodifiableMap(new LinkedHashMap<>(source));
-    }
-
-    public long getVersion() {
-        return this.version;
     }
 
     public Map<ResourceLocation, OrganData> getOrgans() {

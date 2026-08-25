@@ -4,7 +4,11 @@ import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
-import net.tigereye.chestcavity.compat.kubejs.events.*;
+import net.tigereye.chestcavity.compat.kubejs.events.EvaluateChestCavityJS;
+import net.tigereye.chestcavity.compat.kubejs.events.OpenedEntityTickJS;
+import net.tigereye.chestcavity.compat.kubejs.events.OrganAddStatusEffectJS;
+import net.tigereye.chestcavity.compat.kubejs.events.UpdateOrganScoreJS;
+import net.tigereye.chestcavity.service.OrganLookupService;
 
 public class CCKubeJSPlugin extends KubeJSPlugin {
 
@@ -28,5 +32,6 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
+        event.add("OrganLookupService", OrganLookupService.class);
     }
 }
