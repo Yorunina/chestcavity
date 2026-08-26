@@ -15,9 +15,8 @@ import java.util.UUID;
  * Immutable view of the state that is relevant for change detection and
  * client synchronization.
  *
- * <p>The existing public fields on {@link ChestCavityInstance} remain
- * available for compatibility. New code should use this snapshot through the
- * instance methods instead of maintaining another copy of the previous state.</p>
+ * <p>New code should use this snapshot through the instance methods instead of
+ * maintaining another copy of the previous state.</p>
  */
 public final class ChestCavitySnapshot {
     private final boolean opened;
@@ -56,10 +55,6 @@ public final class ChestCavitySnapshot {
         return this.opened;
     }
 
-    public ResourceLocation getInventoryType() {
-        return this.inventoryType;
-    }
-
     public float getOrganScore(ResourceLocation id) {
         return this.organScores.getOrDefault(id, 0.0F);
     }
@@ -80,11 +75,4 @@ public final class ChestCavitySnapshot {
         return inventory == null || !this.inventoryTag.equals(ContainerNbtUtil.save(inventory));
     }
 
-    public boolean matches(ChestCavityInstance current) {
-        return this.opened == current.opened
-                && Objects.equals(this.inventoryType, current.inventoryType)
-                && Objects.equals(this.compatibilityId, current.compatibilityId)
-                && this.organScores.equals(current.getOrganScores())
-                && (current.inventory != null && this.inventoryTag.equals(ContainerNbtUtil.save(current.inventory)));
-    }
 }

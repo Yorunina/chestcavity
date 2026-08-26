@@ -12,9 +12,6 @@ import org.jetbrains.annotations.NotNull;
 public class ChestCavityInventory extends SimpleContainer {
     ChestCavityInstance instance;
 
-    public ChestCavityInstance getInstance() {
-        return this.instance;
-    }
     public void setInstance(ChestCavityInstance instance) {
         this.instance = instance;
     }
@@ -31,16 +28,6 @@ public class ChestCavityInventory extends SimpleContainer {
     @Override
     public void fromTag(ListTag tags) {
         ContainerNbtUtil.load(this, tags);
-    }
-
-    public int countEmpty() {
-        int empty = 0;
-        for (int i = 0; i < this.getContainerSize(); ++i) {
-            if (this.getItem(i).isEmpty()) {
-                empty++;
-            }
-        }
-        return empty;
     }
 
     @Override
@@ -63,11 +50,6 @@ public class ChestCavityInventory extends SimpleContainer {
         }
     }
 
-
-    @Override
-    public ChestCavityInventory clone() {
-        return copyFor(this.instance);
-    }
 
     /**
      * Creates an item-copy snapshot associated with the supplied chest-cavity

@@ -28,7 +28,7 @@ public abstract class MixinServerPlayer extends net.minecraft.world.entity.playe
     public void copyFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo callbackInfo) {
         ChestCavityEntity.of(this).ifPresent((chestCavityEntity) -> {
             ChestCavityEntity.of(oldPlayer).ifPresent((oldCCPlayerEntityInterface) -> {
-                chestCavityEntity.getChestCavityInstance().clone(oldCCPlayerEntityInterface.getChestCavityInstance());
+                chestCavityEntity.getChestCavityInstance().copyFrom(oldCCPlayerEntityInterface.getChestCavityInstance());
             });
         });
     }

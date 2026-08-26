@@ -69,33 +69,6 @@ public class SurgicalBox extends Item implements MenuProvider {
         return pStack;
     }
 
-//    @Override
-//    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
-//        if (pPlayer.level().isClientSide) {
-//            return InteractionResult.PASS;
-//        }
-//        Optional<ChestCavityEntity> optionalChestCavityEntity = ChestCavityEntity.of(pInteractionTarget);
-//        if (!optionalChestCavityEntity.isPresent()) {
-//            return InteractionResult.FAIL;
-//        }
-//        ChestCavityEntity chestCavityEntity = optionalChestCavityEntity.get();
-//        InventoryTypeData inventoryTypeData = chestCavityEntity.getInventoryTypeData();
-//        if (inventoryTypeData.getSlotSize() == 0) return InteractionResult.FAIL;
-//        ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
-//        entityInstance.inventory.setInstance(entityInstance);
-//        Map<Enchantment, Integer> allEnchantments = pStack.getAllEnchantments();
-//        double easeAccess = entityInstance.opened ? entityInstance.getOrganScore(CCOrganScores.EASE_OF_ACCESS) : entityInstance.getChestCavityType().getDefaultOrganScore(CCOrganScores.EASE_OF_ACCESS);
-//        if (!entityInstance.getChestCavityType().isOpenable(entityInstance, allEnchantments, easeAccess)) {
-//            ChestOpener.canNotOpenChestCavity(pPlayer, pInteractionTarget);
-//            return InteractionResult.FAIL;
-//        }
-//
-//        replaceChestCavity(pStack, chestCavityEntity);
-//
-//        pPlayer.setItemInHand(pUsedHand, pStack);
-//        return InteractionResult.SUCCESS;
-//    }
-
     public static void replaceChestCavity(ItemStack pStack, ChestCavityEntity chestCavityEntity) {
         ChestCavityInstance entityInstance = chestCavityEntity.getChestCavityInstance();
         InventoryTypeData itemInventoryTypeData = getInventoryTypeData(pStack);

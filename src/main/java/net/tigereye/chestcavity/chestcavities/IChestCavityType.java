@@ -20,8 +20,6 @@ public interface IChestCavityType {
 
     ChestCavityInventory getDefaultChestCavity();
 
-    void fillChestCavityInventory(ChestCavityInventory var1);
-
     void loadBaseOrganScores(Map<ResourceLocation, Float> var1);
 
     OrganData catchExceptionalOrgan(ItemStack var1);

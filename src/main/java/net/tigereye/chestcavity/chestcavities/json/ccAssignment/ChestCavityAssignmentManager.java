@@ -8,16 +8,10 @@ import net.tigereye.chestcavity.util.ResourceDataUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
 
 public class ChestCavityAssignmentManager {
     private static final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
     private static final Gson GSON = new Gson();
-    @Deprecated
-    public static Map<ResourceLocation, ResourceLocation> ChestCavityAssignments = Map.of();
-    @Deprecated
-    public static Map<ResourceLocation, String> RawChestCavityAssignments = Map.of();
-
     public static Map<ResourceLocation, String> loadRawData(ResourceManager manager) {
         Map<ResourceLocation, String> rawData = new HashMap<>();
         manager.listResources("cc_entity_assignments", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
@@ -40,8 +34,4 @@ public class ChestCavityAssignmentManager {
         return parsedData;
     }
 
-    public static void publish(Map<ResourceLocation, ResourceLocation> parsedData, Map<ResourceLocation, String> rawData) {
-        ChestCavityAssignments = Collections.unmodifiableMap(new HashMap<>(parsedData));
-        RawChestCavityAssignments = Collections.unmodifiableMap(new HashMap<>(rawData));
-    }
 }

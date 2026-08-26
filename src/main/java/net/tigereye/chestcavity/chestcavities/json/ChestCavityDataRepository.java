@@ -83,9 +83,5 @@ public final class ChestCavityDataRepository {
 
     private static void publish(ChestCavityDataSnapshot snapshot) {
         current = snapshot;
-        OrganManager.publish(snapshot.getOrgans(), snapshot.getRawOrgans());
-        InventoryTypeManager.publish(snapshot.getInventoryTypes(), snapshot.getRawInventoryTypes());
-        ChestCavityTypeManager.publish(snapshot.getChestCavityTypes(), snapshot.getRawChestCavityTypes());
-        ChestCavityAssignmentManager.publish(snapshot.getAssignments(), snapshot.getRawAssignments());
     }
 }

@@ -113,11 +113,4 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         return valid;
     }
 
-    @Override
-    public void removed(@NotNull Player player) {
-        super.removed(player);
-//        if (player.level().isClientSide()) {
-//            TargetEntityInventoryTypeManager.removeTargetEntityInventoryType();
-//        }
-    }
 }

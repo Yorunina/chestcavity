@@ -10,13 +10,22 @@ import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.network.ChestCavitySyncService;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Coordinates inventory evaluation and applies the resulting score changes.
  */
 public final class ChestCavityEvaluationService {
+    private static final Set<ChestCavityInstance> EFFECT_UPDATES_IN_PROGRESS =
+            Collections.newSetFromMap(new IdentityHashMap<>());
+    private static final Set<ChestCavityInstance> EFFECT_UPDATES_PENDING =
+            Collections.newSetFromMap(new IdentityHashMap<>());
+
     private ChestCavityEvaluationService() {
     }
 
@@ -25,9 +34,8 @@ public final class ChestCavityEvaluationService {
             return;
         }
 
-        Map<ResourceLocation, Float> organScores = cc.getOrganScores();
+        Map<ResourceLocation, Float> organScores = new HashMap<>();
         if (!cc.opened) {
-            organScores.clear();
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {
                 organScores.putAll(cc.getChestCavityType().getDefaultOrganScores());
             }
@@ -58,20 +66,42 @@ public final class ChestCavityEvaluationService {
             }
         }
 
-        CCEvents.postEvaluateChestCavity(cc);
-        updateEffectsAndSync(cc);
+        cc.beginOrganScoreMutationBatch();
+        try {
+            cc.replaceBaseOrganScores(organScores);
+            CCEvents.postEvaluateChestCavity(cc);
+        } finally {
+            cc.endOrganScoreMutationBatch();
+        }
     }
 
     public static void updateEffectsAndSync(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) {
             return;
         }
-        if (cc.hasOrganScoreChangesSinceSnapshot()) {
-            cc.markDirty();
-            OrganUpdateListeners.call(cc.owner, cc);
-            CCEvents.postUpdateCCScore(cc);
-            ChestCavitySyncService.enqueue(cc);
+        if (!EFFECT_UPDATES_IN_PROGRESS.add(cc)) {
+            EFFECT_UPDATES_PENDING.add(cc);
+            return;
         }
-        cc.commitSnapshot();
+        try {
+            boolean publishUpdateEvent = true;
+            do {
+                EFFECT_UPDATES_PENDING.remove(cc);
+                if (cc.hasOrganScoreChangesSinceSnapshot()) {
+                    cc.markDirty();
+                    OrganUpdateListeners.call(cc.owner, cc);
+                    cc.commitSnapshot();
+                    if (publishUpdateEvent) {
+                        CCEvents.postUpdateCCScore(cc);
+                        publishUpdateEvent = false;
+                    }
+                    ChestCavitySyncService.enqueue(cc);
+                } else {
+                    cc.commitSnapshot();
+                }
+            } while (EFFECT_UPDATES_PENDING.remove(cc));
+        } finally {
+            EFFECT_UPDATES_IN_PROGRESS.remove(cc);
+        }
     }
 }

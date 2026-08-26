@@ -69,10 +69,6 @@ public class ChestCavityType implements IChestCavityType {
         return this.baseOrganScores;
     }
 
-    public float getBaseOrganScore(ResourceLocation id) {
-        return this.getBaseOrganScores().getOrDefault(id, 0.0F);
-    }
-
     public void setInventoryType(ResourceLocation id) {
         this.inventoryType = id;
     }
@@ -83,10 +79,6 @@ public class ChestCavityType implements IChestCavityType {
 
     public void setBaseOrganScores(Map<ResourceLocation, Float> organScores) {
         this.baseOrganScores = organScores;
-    }
-
-    public void setBaseOrganScore(ResourceLocation id, float score) {
-        this.baseOrganScores.put(id, score);
     }
 
     public Map<Ingredient, Map<ResourceLocation, Float>> getExceptionalOrganList() {
@@ -106,19 +98,6 @@ public class ChestCavityType implements IChestCavityType {
 
     public void setExceptionalOrganList(Map<Ingredient, Map<ResourceLocation, Float>> list) {
         this.exceptionalOrganList = list;
-    }
-
-    public void setExceptionalOrgan(Ingredient ingredient, Map<ResourceLocation, Float> scores) {
-        this.exceptionalOrganList.put(ingredient, scores);
-    }
-
-    public void fillChestCavityInventory(ChestCavityInventory chestCavity) {
-        chestCavity.clearContent();
-
-        for (int i = 0; i < chestCavity.getContainerSize(); ++i) {
-            chestCavity.setItem(i, this.defaultChestCavity.getItem(i));
-        }
-
     }
 
     public void loadBaseOrganScores(Map<ResourceLocation, Float> organScores) {
