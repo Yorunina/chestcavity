@@ -224,14 +224,11 @@ public class ChestCavityInstance implements ContainerListener {
         this.compatibilityId = other.compatibilityId;
         this.oldInventoryType = other.oldInventoryType;
         this.inventoryType = other.inventoryType;
-        this.oldInventory = other.oldInventory;
+        this.oldInventory = other.oldInventory.clone();
         if (this.owner instanceof ChestCavityEntity ccEntity) {
             ccEntity.setInventoryTypeData(this.inventoryType);
         }
         this.inventory.removeListener(this);
-        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
-            this.inventory.setItem(i, other.inventory.getItem(i));
-        }
         this.inventory = other.inventory.clone();
         this.inventory.addListener(this);
         this.liverTimer = other.liverTimer;

@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.mob_effect.OrganProtection;
 import net.tigereye.chestcavity.mob_effect.OrganRejection;
 import net.tigereye.chestcavity.mob_effect.OrganSlip;
@@ -19,7 +20,7 @@ public class CCStatusEffects {
     public CCStatusEffects() {}
 
     static {
-        MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, "chestcavity");
+        MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ChestCavity.MODID);
         ORGAN_REJECTION = MOB_EFFECTS.register("organ_rejection", OrganRejection::new);
         ORGAN_SLIP = MOB_EFFECTS.register("organ_slip", OrganSlip::new);
         ORGAN_PROTECTION = MOB_EFFECTS.register("organ_protection", OrganProtection::new);

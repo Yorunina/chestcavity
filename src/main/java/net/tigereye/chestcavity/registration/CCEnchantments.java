@@ -4,11 +4,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.tigereye.chestcavity.enchantments.CreativeSurgery;
-import net.tigereye.chestcavity.enchantments.PainlessSurgery;
-import net.tigereye.chestcavity.enchantments.PlayerSurgery;
-import net.tigereye.chestcavity.enchantments.SafeSurgery;
-import net.tigereye.chestcavity.enchantments.AdvanceSurgery;
+import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.enchantments.*;
 
 public class CCEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS;
@@ -22,7 +19,7 @@ public class CCEnchantments {
     }
 
     static {
-        ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, "chestcavity");
+        ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, ChestCavity.MODID);
         PAINLESS_SURGERY = ENCHANTMENTS.register("painless_surgery", PainlessSurgery::new);
         SAFE_SURGERY = ENCHANTMENTS.register("safe_surgery", SafeSurgery::new);
         CREATIVE_SURGERY = ENCHANTMENTS.register("creative_surgery", CreativeSurgery::new);
