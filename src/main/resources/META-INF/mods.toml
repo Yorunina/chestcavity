@@ -8,7 +8,7 @@ license = "All rights reserved"
 
 modId = "chestcavity" #mandatory
 
-version = "1.20.1-2.16.2" #mandatory
+version = "${minecraft_version}-${mod_version}" #mandatory
 
 displayName = "Chest Cavity" #mandatory
 

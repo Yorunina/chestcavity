@@ -13,16 +13,28 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
-import se.mickelus.mutil.gui.*;
+import se.mickelus.mutil.gui.ClipRectGui;
+import se.mickelus.mutil.gui.GuiAttachment;
+import se.mickelus.mutil.gui.GuiClickable;
+import se.mickelus.mutil.gui.GuiElement;
+import se.mickelus.mutil.gui.GuiItem;
+import se.mickelus.mutil.gui.GuiRect;
+import se.mickelus.mutil.gui.GuiString;
+import se.mickelus.mutil.gui.GuiText;
 import se.mickelus.mutil.gui.animation.Applier;
 import se.mickelus.mutil.gui.animation.KeyframeAnimation;
 import se.mickelus.mutil.gui.impl.GuiHorizontalScrollable;
 import se.mickelus.mutil.gui.impl.GuiVerticalLayoutGroup;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * A standalone organ catalogue styled after tetra's holosphere schematic page.
@@ -100,6 +112,12 @@ public class OrganHoloScreen extends Screen {
     }
 
     @Override
+    public void removed() {
+        page.stopAnimations();
+        super.removed();
+    }
+
+    @Override
     public boolean isPauseScreen() {
         return false;
     }
@@ -136,8 +154,8 @@ public class OrganHoloScreen extends Screen {
         }
 
         private void reload() {
+            hovered = null;
             list.reload();
-            detail.update(null);
         }
 
         private void onOrganSelected(@Nullable OrganEntry entry) {
@@ -151,7 +169,7 @@ public class OrganHoloScreen extends Screen {
         }
 
         private void onOrganBlurred(@Nullable OrganEntry entry) {
-            if (entry != null && entry.equals(hovered)) {
+            if (entry == null || entry.equals(hovered)) {
                 hovered = null;
                 updateDetail();
             }
@@ -159,6 +177,11 @@ public class OrganHoloScreen extends Screen {
 
         private void updateDetail() {
             detail.update(hovered != null ? hovered : selected);
+        }
+
+        private void stopAnimations() {
+            list.stopAnimations();
+            detail.stopAnimation();
         }
 
     }
@@ -198,6 +221,7 @@ public class OrganHoloScreen extends Screen {
         }
 
         private void reload() {
+            ResourceLocation selectedId = selected == null ? null : selected.id;
             Set<ResourceLocation> ids = new LinkedHashSet<>();
             allEntries = OrganManager.OrganData.entrySet().stream()
                     .map(entry -> {
@@ -205,14 +229,19 @@ public class OrganHoloScreen extends Screen {
                         return item == null ? null : new OrganEntry(entry.getKey(), new ItemStack(item), entry.getValue());
                     })
                     .filter(java.util.Objects::nonNull)
-                    .sorted(Comparator.comparing(entry -> entry.stack.getHoverName().getString()))
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .sorted(Comparator.comparing(entry -> entry.displayName))
+                    .toList();
+            selected = selectedId == null ? null : allEntries.stream()
+                    .filter(entry -> entry.id.equals(selectedId))
+                    .findFirst()
+                    .orElse(null);
             allEntries.forEach(entry -> ids.addAll(entry.data.organScores.keySet()));
             properties.clear();
             properties.addAll(ids);
             properties.sort(Comparator.comparing(OrganSortButton::shortName));
             sortButton.updateProperties(properties);
             rebuild();
+            onSelect.accept(selected);
         }
 
         private void updateFilter(String ignored) {
@@ -245,18 +274,23 @@ public class OrganHoloScreen extends Screen {
             itemAnimations.clear();
             content.clearChildren();
             String filter = filterButton.getFilter().toLowerCase(Locale.ROOT);
-            List<OrganEntry> visible = allEntries.stream()
-                    .filter(entry -> filter.isEmpty()
-                            || entry.stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(filter)
-                            || entry.id.toString().toLowerCase(Locale.ROOT).contains(filter))
-                    .filter(entry -> !sortButton.hasActiveProperty()
-                            || entry.data.organScores.getOrDefault(sortButton.getProperty(), 0f) != 0f)
-                    .sorted(sortButton.comparator())
-                    .toList();
-            if (selected != null && visible.stream().noneMatch(selected::equals)) {
+            List<OrganEntry> visible = new ArrayList<>(allEntries.size());
+            ResourceLocation sortProperty = sortButton.getProperty();
+            for (OrganEntry entry : allEntries) {
+                if (!filter.isEmpty() && !entry.searchText.contains(filter)) {
+                    continue;
+                }
+                if (sortProperty != null && entry.data.organScores.getOrDefault(sortProperty, 0f) == 0f) {
+                    continue;
+                }
+                visible.add(entry);
+            }
+            visible.sort(sortButton.comparator());
+            if (selected != null && !visible.contains(selected)) {
                 selected = null;
                 onSelect.accept(null);
             }
+            onBlur.accept(null);
             for (int i = 0; i < visible.size(); i++) {
                 OrganEntry entry = visible.get(i);
                 OrganListItem item = new OrganListItem(4 + (i / 2) * 20, 6 + (i % 2) * 20,
@@ -277,6 +311,11 @@ public class OrganHoloScreen extends Screen {
             itemAnimations.forEach(KeyframeAnimation::start);
         }
 
+        private void stopAnimations() {
+            itemAnimations.forEach(KeyframeAnimation::stop);
+            itemAnimations.clear();
+        }
+
         private void updateSelection() {
             content.getChildren(OrganListItem.class).forEach(item -> item.setSelected(item.entry.equals(selected)));
         }
@@ -286,11 +325,19 @@ public class OrganHoloScreen extends Screen {
         private final ResourceLocation id;
         private final ItemStack stack;
         private final OrganData data;
+        private final String displayName;
+        private final String searchText;
+        private final List<Map.Entry<ResourceLocation, Float>> sortedScores;
 
         private OrganEntry(ResourceLocation id, ItemStack stack, OrganData data) {
             this.id = id;
             this.stack = stack;
             this.data = data;
+            displayName = stack.getHoverName().getString();
+            searchText = (displayName + '\n' + id).toLowerCase(Locale.ROOT);
+            sortedScores = data.organScores.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .toList();
         }
 
         @Override
@@ -435,6 +482,9 @@ public class OrganHoloScreen extends Screen {
         }
 
         private void update(@Nullable OrganEntry entry) {
+            if (this.entry == entry) {
+                return;
+            }
             this.entry = entry;
             if (entry == null) {
                 showAnimation.stop();
@@ -454,9 +504,7 @@ public class OrganHoloScreen extends Screen {
             icon.setItem(entry.stack);
             content.addChild(icon);
 
-            List<Map.Entry<ResourceLocation, Float>> scores = entry.data.organScores.entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey())
-                    .toList();
+            List<Map.Entry<ResourceLocation, Float>> scores = entry.sortedScores;
             for (int i = 0; i < scores.size(); i++) {
                 Map.Entry<ResourceLocation, Float> score = scores.get(i);
                 OrganStatBar bar = new OrganStatBar((i % 3) * 106, 28 + (i / 3) * 18,
@@ -479,73 +527,79 @@ public class OrganHoloScreen extends Screen {
             content.addChild(acquisitionText);
             showAnimation.start();
         }
+
+        private void stopAnimation() {
+            showAnimation.stop();
+        }
     }
 
     private static final class OrganStatBar extends GuiElement {
-        private final ResourceLocation property;
+        private static final int BAR_WIDTH = 94;
+        private static final int BAR_CENTER_OFFSET = BAR_WIDTH / 2;
         private final float value;
+        private final int barLength;
+        private final OrganStatText propertyLabel;
+        private final OrganStatText valueLabel;
+        private final Component tooltip;
 
         private OrganStatBar(int x, int y, ResourceLocation property, float value) {
             super(x, y, 100, 15);
-            this.property = property;
             this.value = value;
+            float clamped = Math.max(-3f, Math.min(3f, value));
+            barLength = Math.round(Math.abs(clamped) / 3f * BAR_CENTER_OFFSET);
+            String key = "tooltips.organ_score." + property;
+            String label = I18n.exists(key) ? I18n.get(key) : property.getPath();
+            propertyLabel = new OrganStatText(0, 0, label);
+            propertyLabel.setColor(GUI_COLOR);
+            String valueText = String.format(Locale.ROOT, "%+.1f", value);
+            valueLabel = new OrganStatText(94, 0, valueText, GuiAttachment.topRight);
+            valueLabel.setColor(value < 0 ? GUI_NEGATIVE : value > 0 ? GUI_POSITIVE : GUI_MUTED);
+            tooltip = Component.translatable("tooltips.organ_score.hover." + property);
         }
 
         @Override
         public void draw(GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight,
                          int mouseX, int mouseY, float opacity) {
-            String key = "tooltips.organ_score." + property;
-            String label = I18n.exists(key) ? I18n.get(key) : property.getPath();
-            OrganStatText text = new OrganStatText(0, 0, label);
-            text.setColor(GUI_COLOR);
-            text.draw(graphics, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity);
+            propertyLabel.draw(graphics, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
             int barX = refX + x;
             int barY = refY + y + 6;
-            int barWidth = 94;
-            int center = barX + barWidth / 2;
-            drawRect(graphics, barX, barY, barX + barWidth, barY + 1, GUI_COLOR, .14f * opacity);
+            int center = barX + BAR_CENTER_OFFSET;
+            drawRect(graphics, barX, barY, barX + BAR_WIDTH, barY + 1, GUI_COLOR, .14f * opacity);
             drawRect(graphics, center, barY - 1, center + 1, barY + 2, GUI_MUTED, opacity);
-            float clamped = Math.max(-3f, Math.min(3f, value));
-            if (clamped < 0) {
-                int length = Math.round((-clamped / 3f) * (barWidth / 2f));
-                drawRect(graphics, center - length, barY, center, barY + 1, GUI_COLOR, opacity);
-            } else if (clamped > 0) {
-                int length = Math.round((clamped / 3f) * (barWidth / 2f));
-                drawRect(graphics, center + 1, barY, center + 1 + length, barY + 1, GUI_COLOR, opacity);
+            if (value < 0) {
+                drawRect(graphics, center - barLength, barY, center, barY + 1, GUI_COLOR, opacity);
+            } else if (value > 0) {
+                drawRect(graphics, center + 1, barY, center + 1 + barLength, barY + 1, GUI_COLOR, opacity);
             }
-            String valueText = String.format(Locale.ROOT, "%+.1f", value);
-            OrganStatText valueLabel = new OrganStatText(94, 0, valueText, GuiAttachment.topRight);
-            valueLabel.setColor(value < 0 ? GUI_NEGATIVE : value > 0 ? GUI_POSITIVE : GUI_MUTED);
             valueLabel.draw(graphics, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity);
         }
 
         @Override
         public List<Component> getTooltipLines() {
-            return null;
+            return hasFocus() ? List.of(tooltip) : null;
         }
     }
 
     private static class OrganStatText extends GuiString {
-        private final boolean rightAligned;
+        private final int drawX;
 
         private OrganStatText(int x, int y, String string) {
             super(x, y, string);
-            this.rightAligned = false;
+            this.drawX = x;
         }
 
         private OrganStatText(int x, int y, String string, GuiAttachment attachment) {
             super(x, y, string, attachment);
-            this.rightAligned = attachment == GuiAttachment.topRight;
+            this.drawX = attachment == GuiAttachment.topRight
+                    ? x - Math.round(fontRenderer.width(string) * .75f)
+                    : x;
         }
 
         @Override
         public void draw(GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight,
                          int mouseX, int mouseY, float opacity) {
             graphics.pose().pushPose();
-            int drawX = rightAligned
-                    ? x - Math.round(fontRenderer.width(string) * .75f)
-                    : x;
             graphics.pose().translate(refX + drawX, refY + y, 0);
             graphics.pose().scale(.75f, .75f, .75f);
             drawString(graphics, string, 0, 0, color, opacity * getOpacity(), drawShadow);
@@ -599,9 +653,9 @@ public class OrganHoloScreen extends Screen {
             // Keep the caret visible long enough to be noticed while still
             // matching the usual Minecraft/Tetra blinking rhythm.
             if (focused && System.currentTimeMillis() % 800L < 400L) {
-                String visibleFilter = Minecraft.getInstance().font.plainSubstrByWidth(
-                        filter, RESERVED_WIDTH - 3);
-                int cursorX = refX + x + 3 + Minecraft.getInstance().font.width(visibleFilter);
+                Minecraft minecraft = Minecraft.getInstance();
+                String visibleFilter = minecraft.font.plainSubstrByWidth(filter, RESERVED_WIDTH - 3);
+                int cursorX = refX + x + 3 + minecraft.font.width(visibleFilter);
                 int cursorY = refY + y + 1;
                 drawRect(graphics, cursorX, cursorY, cursorX + 1, cursorY + 9,
                         GUI_COLOR, opacity * getOpacity());
@@ -690,10 +744,6 @@ public class OrganHoloScreen extends Screen {
             popover.update(properties);
         }
 
-        private boolean hasActiveProperty() {
-            return property != null;
-        }
-
         @Nullable
         private ResourceLocation getProperty() {
             return property;
@@ -701,12 +751,12 @@ public class OrganHoloScreen extends Screen {
 
         private Comparator<OrganEntry> comparator() {
             if (property == null) {
-                return Comparator.comparing(entry -> entry.stack.getHoverName().getString());
+                return Comparator.comparing(entry -> entry.displayName);
             }
             Comparator<OrganEntry> comparator = Comparator.comparingDouble(entry ->
                     entry.data.organScores.getOrDefault(property, 0f));
-            return ascending ? comparator.thenComparing(entry -> entry.stack.getHoverName().getString())
-                    : comparator.reversed().thenComparing(entry -> entry.stack.getHoverName().getString());
+            return ascending ? comparator.thenComparing(entry -> entry.displayName)
+                    : comparator.reversed().thenComparing(entry -> entry.displayName);
         }
 
         private void select(@Nullable ResourceLocation selectedProperty) {

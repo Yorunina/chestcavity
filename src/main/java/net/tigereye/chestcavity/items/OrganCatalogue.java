@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.tigereye.chestcavity.client.OrganCatalogueClient;
 
 /**
  * Handheld organ catalogue. The actual screen is client-only and is opened
@@ -22,9 +23,7 @@ public class OrganCatalogue extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (level.isClientSide) {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    net.minecraft.client.Minecraft.getInstance().setScreen(
-                            new net.tigereye.chestcavity.ui.OrganHoloScreen()));
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> OrganCatalogueClient::open);
             return InteractionResultHolder.success(stack);
         }
         return InteractionResultHolder.pass(stack);
