@@ -79,6 +79,7 @@ dependencies {
         jarJar.ranged(it, "[0.5.3,)")
     }
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
+    implementation fg.deobf("curse.maven:mutil-351914:7772906")
     compileOnly fg.deobf("curse.maven:clothconfig-348521:3782784")
     compileOnly fg.deobf("curse.maven:architectury-forge-419699:5137938")
     compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
@@ -110,6 +111,7 @@ tasks.named('processResources', ProcessResources).configure {
             minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
             forge_version       : forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range,
+            mutil_version       : mutil_version, mutil_version_range: mutil_version_range,
             mod_id              : "${modid}", mod_name: "${modid}", mod_license: "MIT", mod_version: mod_version,
             mod_authors         : "examplemodsareus", mod_description: "",
     ]

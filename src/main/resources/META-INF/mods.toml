@@ -21,6 +21,13 @@ Perfectly Safe Extra Storage
 '''
 
 [[dependencies.chestcavity]]
+modId = "mutil"
+mandatory = true
+versionRange = "${mutil_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.chestcavity]]
 modId = "cloth_config"
 mandatory = true
 versionRange = "[8.0.75,)"
