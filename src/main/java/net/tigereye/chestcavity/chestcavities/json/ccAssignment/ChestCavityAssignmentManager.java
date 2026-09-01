@@ -1,42 +1,55 @@
 package net.tigereye.chestcavity.chestcavities.json.ccAssignment;
 
-import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.chestcavities.json.DataResourceUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ChestCavityAssignmentManager {
     private static final ChestCavityAssignmentSerializer SERIALIZER = new ChestCavityAssignmentSerializer();
-    public static Map<ResourceLocation, ResourceLocation> ChestCavityAssignments = new HashMap<>();
-    public static Map<ResourceLocation, String> RawChestCavityAssignments = new HashMap<>();
+    private static final com.google.gson.Gson GSON = new com.google.gson.Gson();
+    public static volatile Map<ResourceLocation, ResourceLocation> ChestCavityAssignments = Map.of();
+    public static volatile Map<ResourceLocation, String> RawChestCavityAssignments = Map.of();
 
     public static void reloadChestCavityAssignment(ResourceManager manager) {
-        manager.listResources("cc_entity_assignments", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
-            try {
-                InputStream stream = resource.open();
-                String result = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining(System.lineSeparator()));
-                RawChestCavityAssignments.put(id, result);
-                stream.close();
-            } catch (Exception var8) {
-                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), var8);
-            }
-        });
-        parseData(RawChestCavityAssignments);
+        Map<ResourceLocation, String> rawData = loadRawData(manager);
+        applySnapshot(rawData, parseDataSnapshot(rawData));
     }
 
+    public static Map<ResourceLocation, String> loadRawData(ResourceManager manager) {
+        return DataResourceUtil.readResources(manager, "cc_entity_assignments");
+    }
+
+    public static Map<ResourceLocation, ResourceLocation> parseDataSnapshot(Map<ResourceLocation, String> rawData) {
+        Map<ResourceLocation, ResourceLocation> result = new HashMap<>();
+        rawData.forEach((id, data) -> {
+            try {
+                ChestCavityAssignmentResult assignmentResult = SERIALIZER.read(
+                        id,
+                        GSON.fromJson(data, ChestCavityAssignmentJsonFormat.class)
+                );
+                if (assignmentResult.getChestcavityMap() != null) {
+                    result.putAll(assignmentResult.getChestcavityMap());
+                }
+            } catch (Exception error) {
+                ChestCavity.LOGGER.error("Error parsing chest cavity assignment resource " + id, error);
+            }
+        });
+        return result;
+    }
+
+    public static void applySnapshot(
+            Map<ResourceLocation, String> rawData,
+            Map<ResourceLocation, ResourceLocation> parsedData
+    ) {
+        RawChestCavityAssignments = Map.copyOf(rawData);
+        ChestCavityAssignments = Map.copyOf(parsedData);
+    }
 
     public static void parseData(Map<ResourceLocation, String> rawData) {
-        ChestCavityAssignments.clear();
-        rawData.forEach((id, data) -> {
-            ChestCavityAssignmentResult assignmentResult = SERIALIZER.read(id, new Gson().fromJson(data, ChestCavityAssignmentJsonFormat.class));
-            ChestCavityAssignments.putAll(assignmentResult.getChestcavityMap());
-        });
+        applySnapshot(rawData, parseDataSnapshot(rawData));
     }
 }

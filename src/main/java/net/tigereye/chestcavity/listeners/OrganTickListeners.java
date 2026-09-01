@@ -3,6 +3,7 @@ package net.tigereye.chestcavity.listeners;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -31,7 +32,9 @@ public class OrganTickListeners {
 
         if (!(entity instanceof ChestCavityEntity ccEntity)) return;
         ChestCavityInstance cc = ccEntity.getChestCavityInstance();
-        if (cc.updatePacket) NetworkUtil.SendS2CChestCavityUpdatePacket(cc, true);
+        if (entity instanceof ServerPlayer && (cc.updatePacket || cc.updatePacketInFlight)) {
+            NetworkUtil.SendS2CChestCavityUpdatePacket(cc, false);
+        }
 
 
         if (!cc.opened) return;

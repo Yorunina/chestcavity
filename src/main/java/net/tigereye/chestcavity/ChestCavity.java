@@ -8,7 +8,6 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -54,8 +53,6 @@ public class ChestCavity {
     public static final RegistryObject<MenuType<ChestCavityItemScreenHandler>> CHEST_CAVITY_ITEM_SCREEN_HANDLER = MENU_TYPES.register("chest_cavity_item_screen", () -> new MenuType<>(ChestCavityItemScreenHandler::new, FeatureFlags.VANILLA_SET));
 
     public ChestCavity() {
-        MinecraftForge.EVENT_BUS.register(this);
-
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();

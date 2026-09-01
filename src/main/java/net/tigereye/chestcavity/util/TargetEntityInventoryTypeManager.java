@@ -11,7 +11,4 @@ public class TargetEntityInventoryTypeManager {
     public static ResourceLocation getTargetEntityInventoryType() {
         return targetEntityInventoryType;
     }
-    public static void removeTargetEntityInventoryType() {
-        targetEntityInventoryType = null;
-    }
 }

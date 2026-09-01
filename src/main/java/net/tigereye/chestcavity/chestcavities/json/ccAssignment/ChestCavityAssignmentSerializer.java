@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.resources.ResourceLocation;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.chestcavities.json.DataResourceUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ChestCavityAssignmentSerializer {
             throw new JsonSyntaxException("Chest cavity assignment " + id + " must have a list of entities");
         } else {
             Map<ResourceLocation, ResourceLocation> chestcavityMap = new HashMap<>();
-            ResourceLocation chestCavityType = new ResourceLocation(ccaJson.chestcavity);
+            ResourceLocation chestCavityType = DataResourceUtil.normalizeId(ccaJson.chestcavity);
             int i = 0;
             for (JsonElement entry : ccaJson.entities) {
                 ++i;

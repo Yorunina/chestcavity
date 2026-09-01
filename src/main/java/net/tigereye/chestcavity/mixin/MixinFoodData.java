@@ -36,8 +36,11 @@ public class MixinFoodData implements CCFoodData {
     public void chestCavityUpdateMixin(Player player, CallbackInfo info) {
         if (this.ccIns == null) {
             ChestCavityEntity.of(player).ifPresent((ccPlayerEntityInterface) -> {
-                ChestCavityUtil.openChestCavity(ccPlayerEntityInterface.getChestCavityInstance());
-                this.ccIns = ccPlayerEntityInterface.getChestCavityInstance();
+                ChestCavityInstance instance = ccPlayerEntityInterface.getChestCavityInstance();
+                if (instance != null) {
+                    ChestCavityUtil.openChestCavity(instance);
+                    this.ccIns = instance;
+                }
             });
         }
 

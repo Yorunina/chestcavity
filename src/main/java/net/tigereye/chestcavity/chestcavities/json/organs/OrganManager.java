@@ -3,41 +3,55 @@ package net.tigereye.chestcavity.chestcavities.json.organs;
 import com.google.gson.Gson;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.ChestCavity;
+import net.tigereye.chestcavity.chestcavities.json.DataResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class OrganManager {
     private static final OrganSerializer SERIALIZER = new OrganSerializer();
-    public static Map<ResourceLocation, OrganData> OrganData = new HashMap<>();
-    public static Map<ResourceLocation, String> RawOrganData = new HashMap<>();
+    private static final Gson GSON = new Gson();
+    public static volatile Map<ResourceLocation, OrganData> OrganData = Map.of();
+    public static volatile Map<ResourceLocation, String> RawOrganData = Map.of();
 
     public OrganManager() {
     }
 
-    public static void reloadOrganData(ResourceManager manager) {
-        manager.listResources("organs", (path) -> path.getPath().endsWith(".json")).forEach((id, resource) -> {
+    public static void reloadOrganData(net.minecraft.server.packs.resources.ResourceManager manager) {
+        Map<ResourceLocation, String> rawData = DataResourceUtil.readResources(manager, "organs");
+        applySnapshot(rawData, parseDataSnapshot(rawData));
+    }
+
+    public static Map<ResourceLocation, String> loadRawData(net.minecraft.server.packs.resources.ResourceManager manager) {
+        return DataResourceUtil.readResources(manager, "organs");
+    }
+
+    public static Map<ResourceLocation, OrganData> parseDataSnapshot(Map<ResourceLocation, String> rawData) {
+        Map<ResourceLocation, OrganData> result = new HashMap<>();
+        rawData.forEach((id, data) -> {
             try {
-                InputStream stream = resource.open();
-                String result = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining(System.lineSeparator()));
-                RawOrganData.put(id, result);
-                stream.close();
-            } catch (Exception openError) {
-                ChestCavity.LOGGER.error("Error occurred while loading resource json " + id.toString(), openError);
+                Tuple<ResourceLocation, OrganData> organDataPair =
+                        SERIALIZER.read(id, GSON.fromJson(data, OrganJsonFormat.class));
+                result.put(organDataPair.getA(), organDataPair.getB());
+            } catch (Exception error) {
+                ChestCavity.LOGGER.error("Error parsing organ resource " + id, error);
             }
         });
-        parseData(RawOrganData);
+        return result;
+    }
+
+    public static void applySnapshot(
+            Map<ResourceLocation, String> rawData,
+            Map<ResourceLocation, OrganData> parsedData
+    ) {
+        RawOrganData = Map.copyOf(rawData);
+        OrganData = Map.copyOf(parsedData);
     }
 
     public static boolean hasEntry(Item item) {
@@ -65,10 +79,6 @@ public class OrganManager {
     }
 
     public static void parseData(Map<ResourceLocation, String> rawData) {
-        OrganData.clear();
-        rawData.forEach((id, data) -> {
-            Tuple<ResourceLocation, OrganData> organDataPair = SERIALIZER.read(id, new Gson().fromJson(data, OrganJsonFormat.class));
-            OrganData.put(organDataPair.getA(), organDataPair.getB());
-        });
+        applySnapshot(rawData, parseDataSnapshot(rawData));
     }
 }

@@ -3,13 +3,11 @@ package net.tigereye.chestcavity.registration;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tigereye.chestcavity.ChestCavity;
 
-@Mod.EventBusSubscriber
 public class CCAttributes {
     public static final DeferredRegister<Attribute> ATTRIBUTE;
     public static final RegistryObject<Attribute> CLIMB_SPEED;

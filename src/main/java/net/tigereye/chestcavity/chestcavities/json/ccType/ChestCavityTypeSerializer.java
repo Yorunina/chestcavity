@@ -15,6 +15,7 @@ import net.tigereye.chestcavity.chestcavities.ChestCavityInventory;
 import net.tigereye.chestcavity.chestcavities.ChestCavityType;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
+import net.tigereye.chestcavity.chestcavities.json.DataResourceUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,14 @@ public class ChestCavityTypeSerializer {
     }
 
     public ChestCavityType read(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
+        return read(id, cctJson, InventoryTypeData);
+    }
+
+    public ChestCavityType read(
+            ResourceLocation id,
+            ChestCavityTypeJsonFormat cctJson,
+            Map<ResourceLocation, InventoryTypeData> inventoryTypeDataMap
+    ) {
         if (cctJson.defaultChestCavity == null) {
             throw new JsonSyntaxException("Chest Cavity Types must have a default chest cavity!");
         } else {
@@ -38,16 +47,24 @@ public class ChestCavityTypeSerializer {
             }
 
             ChestCavityType cct = new ChestCavityType();
-            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson));
+            cct.setDefaultChestCavity(this.readDefaultChestCavityFromJson(id, cctJson, inventoryTypeDataMap));
             cct.setBaseOrganScores(this.readBaseOrganScoresFromJson(id, cctJson));
             cct.setExceptionalOrganList(this.readExceptionalOrgansFromJson(id, cctJson));
-            cct.setInventoryType(new ResourceLocation(cctJson.inventoryType));
+            cct.setInventoryType(DataResourceUtil.normalizeId(cctJson.inventoryType));
             return cct;
         }
     }
 
-    private ChestCavityInventory readDefaultChestCavityFromJson(ResourceLocation id, ChestCavityTypeJsonFormat cctJson) {
-        InventoryTypeData inventoryTypeData = InventoryTypeData.getOrDefault(new ResourceLocation(cctJson.inventoryType), InventoryTypeManager.getDefaultInventoryTypeData());
+    private ChestCavityInventory readDefaultChestCavityFromJson(
+            ResourceLocation id,
+            ChestCavityTypeJsonFormat cctJson,
+            Map<ResourceLocation, InventoryTypeData> inventoryTypeDataMap
+    ) {
+        ResourceLocation inventoryTypeId = DataResourceUtil.normalizeId(cctJson.inventoryType);
+        InventoryTypeData inventoryTypeData = inventoryTypeDataMap.getOrDefault(
+                inventoryTypeId,
+                InventoryTypeManager.getDefaultInventoryTypeData()
+        );
         ChestCavityInventory inv = new ChestCavityInventory(inventoryTypeData.getSlotSize());
 
         for (JsonElement entry : cctJson.defaultChestCavity) {

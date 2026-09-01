@@ -110,11 +110,9 @@ public class ChestCavityType implements IChestCavityType {
 
     public void fillChestCavityInventory(ChestCavityInventory chestCavity) {
         chestCavity.clearContent();
-
         for (int i = 0; i < chestCavity.getContainerSize(); ++i) {
             chestCavity.setItem(i, this.defaultChestCavity.getItem(i));
         }
-
     }
 
     public void loadBaseOrganScores(Map<ResourceLocation, Float> organScores) {

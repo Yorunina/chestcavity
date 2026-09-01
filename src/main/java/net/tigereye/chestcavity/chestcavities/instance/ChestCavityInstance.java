@@ -14,8 +14,6 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManage
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import java.util.UUID;
 
 
 public class ChestCavityInstance implements ContainerListener {
-    public static final Logger LOGGER = LogManager.getLogger();
     protected IChestCavityType type;
     public LivingEntity owner;
     public UUID compatibilityId;
@@ -38,9 +35,15 @@ public class ChestCavityInstance implements ContainerListener {
     public float metabolismRemainder = 0.0F;
     public float lungRemainder = 0.0F;
     public boolean updatePacket = true;
+    public boolean updatePacketInFlight = false;
+    public long updatePacketLastSentTick = Long.MIN_VALUE;
+    public int updatePacketRetryCount = 0;
+    private boolean lastPacketOpened;
+    private Map<ResourceLocation, Float> lastPacketOrganScores = Map.of();
     public ResourceLocation inventoryType;
     public ResourceLocation oldInventoryType;
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
+    // CustomDataMap暴露给Kubejs层使用
     public Map<String, Object> customDataMap = new HashMap<>();
 
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
@@ -69,7 +72,25 @@ public class ChestCavityInstance implements ContainerListener {
     }
 
     public void setOrganScores(Map<ResourceLocation, Float> organScores) {
-        this.organScores = organScores;
+        this.organScores = new HashMap<>(organScores);
+    }
+
+    public void markStatePacketSent(long gameTime) {
+        if (this.updatePacketInFlight) {
+            this.updatePacketRetryCount++;
+        } else {
+            this.updatePacketRetryCount = 0;
+        }
+        this.updatePacket = false;
+        this.updatePacketInFlight = true;
+        this.updatePacketLastSentTick = gameTime;
+        this.lastPacketOpened = this.opened;
+        this.lastPacketOrganScores = Map.copyOf(this.organScores);
+    }
+
+    public boolean stateMatchesLastPacket() {
+        return this.lastPacketOpened == this.opened
+                && this.lastPacketOrganScores.equals(this.organScores);
     }
 
     public float getOrganScore(ResourceLocation id) {
@@ -235,8 +256,8 @@ public class ChestCavityInstance implements ContainerListener {
         this.bloodPoisonTimer = other.bloodPoisonTimer;
         this.metabolismRemainder = other.metabolismRemainder;
         this.lungRemainder = other.lungRemainder;
-        this.customDataMap =  other.customDataMap;
-        this.slotListenerMap =  other.slotListenerMap;
+        this.customDataMap = other.customDataMap;
+        this.slotListenerMap = other.slotListenerMap;
         ChestCavityUtil.evaluateChestCavity(this);
     }
 }

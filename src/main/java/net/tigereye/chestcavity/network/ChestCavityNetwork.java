@@ -8,12 +8,13 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.network.packet.*;
 
 public final class ChestCavityNetwork {
+    public static final String NETWORK_PROTOCOL_VERSION = "2";
     private static int packetId = 0;
-    public static SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
+    public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(ChestCavity.MODID, "messages"))
-            .networkProtocolVersion(() -> "1.0")
-            .clientAcceptedVersions(s -> true)
-            .serverAcceptedVersions(s -> true)
+            .networkProtocolVersion(() -> NETWORK_PROTOCOL_VERSION)
+            .clientAcceptedVersions(NETWORK_PROTOCOL_VERSION::equals)
+            .serverAcceptedVersions(NETWORK_PROTOCOL_VERSION::equals)
             .simpleChannel();
     private static int id() {
         return packetId++;
@@ -25,25 +26,10 @@ public final class ChestCavityNetwork {
                 .decoder(ChestCavityUpdatePacket::decode)
                 .consumerMainThread(ChestCavityUpdatePacket::handle)
                 .add();
-        INSTANCE.messageBuilder(OrganDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(OrganDataPacket::encode)
-                .decoder(OrganDataPacket::decode)
-                .consumerMainThread(OrganDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ChestCavityAssignmentDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ChestCavityAssignmentDataPacket::encode)
-                .decoder(ChestCavityAssignmentDataPacket::decode)
-                .consumerMainThread(ChestCavityAssignmentDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(InventoryTypeDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(InventoryTypeDataPacket::encode)
-                .decoder(InventoryTypeDataPacket::decode)
-                .consumerMainThread(InventoryTypeDataPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ChestCavityTypeDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ChestCavityTypeDataPacket::encode)
-                .decoder(ChestCavityTypeDataPacket::decode)
-                .consumerMainThread(ChestCavityTypeDataPacket::handle)
+        INSTANCE.messageBuilder(DataSnapshotPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(DataSnapshotPacket::encode)
+                .decoder(DataSnapshotPacket::decode)
+                .consumerMainThread(DataSnapshotPacket::handle)
                 .add();
         INSTANCE.messageBuilder(ReceivedChestCavityUpdatePacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ReceivedChestCavityUpdatePacket::encode)
