@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
+import net.tigereye.chestcavity.client.OrganHoloTagFilter;
+import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 import se.mickelus.mutil.gui.ClipRectGui;
@@ -190,6 +192,7 @@ public class OrganHoloScreen extends Screen {
         private final GuiHorizontalScrollable scroll;
         private final GuiElement content;
         private final OrganFilterButton filterButton;
+        private final TagFilterButton tagFilterButton;
         private final OrganSortButton sortButton;
         private final Consumer<OrganEntry> onHover;
         private final Consumer<OrganEntry> onBlur;
@@ -214,15 +217,23 @@ public class OrganHoloScreen extends Screen {
 
             GuiElement controls = new GuiElement(0, 0, width, 11);
             filterButton = new OrganFilterButton(0, 0, this::updateFilter);
+            // Keep the existing property sorter at x=130. The tag selector
+            // remains on the right side of the same controls row, with a
+            // small right margin so it does not sit against the edge.
             sortButton = new OrganSortButton(130, 1, ignored -> updateSort(ignored));
+            tagFilterButton = new TagFilterButton(width - TagFilterButton.RESERVED_WIDTH
+                    - TagFilterButton.RIGHT_MARGIN, 0,
+                    this::updateTagFilter);
             controls.addChild(filterButton);
             controls.addChild(sortButton);
+            controls.addChild(tagFilterButton);
             addChild(controls);
         }
 
         private void reload() {
             ResourceLocation selectedId = selected == null ? null : selected.id;
             Set<ResourceLocation> ids = new LinkedHashSet<>();
+            tagFilterButton.updateTags(CCEvents.getOrganHoloFilterTags());
             allEntries = OrganManager.OrganData.entrySet().stream()
                     .map(entry -> {
                         Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());
@@ -248,6 +259,10 @@ public class OrganHoloScreen extends Screen {
             rebuild();
         }
 
+        private void updateTagFilter(@Nullable OrganHoloTagFilter ignored) {
+            rebuild();
+        }
+
         private void updateSort(ResourceLocation ignored) {
             rebuild();
         }
@@ -258,6 +273,13 @@ public class OrganHoloScreen extends Screen {
             // hitbox before dispatching to the item scroller. Otherwise the
             // underlying organ item can be selected while the user is merely
             // trying to dismiss the menu.
+            if (tagFilterButton.isPopoverVisible()) {
+                if (tagFilterButton.isPopoverFocused()) {
+                    return super.onMouseClick(x, y, button);
+                }
+                tagFilterButton.closePopover();
+                return true;
+            }
             if (sortButton.isPopoverVisible()) {
                 if (sortButton.isPopoverFocused()) {
                     return super.onMouseClick(x, y, button);
@@ -274,10 +296,14 @@ public class OrganHoloScreen extends Screen {
             itemAnimations.clear();
             content.clearChildren();
             String filter = filterButton.getFilter().toLowerCase(Locale.ROOT);
+            OrganHoloTagFilter tagFilter = tagFilterButton.getFilter();
             List<OrganEntry> visible = new ArrayList<>(allEntries.size());
             ResourceLocation sortProperty = sortButton.getProperty();
             for (OrganEntry entry : allEntries) {
                 if (!filter.isEmpty() && !entry.searchText.contains(filter)) {
+                    continue;
+                }
+                if (tagFilter != null && !tagFilter.matches(entry.stack)) {
                     continue;
                 }
                 if (sortProperty != null && entry.data.organScores.getOrDefault(sortProperty, 0f) == 0f) {
@@ -721,6 +747,87 @@ public class OrganHoloScreen extends Screen {
         }
     }
 
+    private static final class TagFilterButton extends GuiElement {
+        private static final int RESERVED_WIDTH = 78;
+        private static final int RIGHT_MARGIN = 24;
+        private final OrganSortGlyph icon;
+        private final GuiString label;
+        private final Consumer<OrganHoloTagFilter> onChange;
+        private final TagPopover popover;
+        private OrganHoloTagFilter filter;
+
+        private TagFilterButton(int x, int y, Consumer<OrganHoloTagFilter> onChange) {
+            super(x, y, RESERVED_WIDTH, 11);
+            this.onChange = onChange;
+            icon = new OrganSortGlyph(-3, -3);
+            label = new GuiString(11, 0, RESERVED_WIDTH - 11,
+                    I18n.get("gui.chestcavity.organ_holo.filter_tag"));
+            label.setColor(GUI_MUTED);
+            popover = new TagPopover(0, 11, this::select);
+            addChild(icon);
+            addChild(label);
+            addChild(popover);
+        }
+
+        @Nullable
+        private OrganHoloTagFilter getFilter() {
+            return filter;
+        }
+
+        private void updateTags(List<OrganHoloTagFilter> tags) {
+            popover.update(tags);
+            if (filter != null && tags.stream().noneMatch(tag -> tag.getId().equals(filter.getId()))) {
+                filter = null;
+            }
+            updateLabel();
+        }
+
+        private void select(@Nullable OrganHoloTagFilter selected) {
+            filter = selected;
+            updateLabel();
+            closePopover();
+            onChange.accept(filter);
+        }
+
+        private void updateLabel() {
+            label.setString(filter == null
+                    ? I18n.get("gui.chestcavity.organ_holo.filter_tag")
+                    : I18n.get(filter.getLabel()));
+            label.setColor(filter == null ? GUI_MUTED : GUI_COLOR);
+        }
+
+        private boolean isPopoverVisible() {
+            return popover.isVisible();
+        }
+
+        private boolean isPopoverFocused() {
+            return popover.hasFocus();
+        }
+
+        private void closePopover() {
+            popover.setVisible(false);
+            icon.setColor(GUI_COLOR);
+        }
+
+        @Override
+        public boolean onMouseClick(int x, int y, int button) {
+            if (popover.isVisible() && super.onMouseClick(x, y, button)) {
+                return true;
+            }
+            if (hasFocus()) {
+                popover.setVisible(!popover.isVisible());
+                icon.setColor(popover.isVisible() ? GUI_HOVER : GUI_COLOR);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean hasFocus() {
+            return super.hasFocus() || popover.hasFocus();
+        }
+    }
+
     private static final class OrganSortButton extends GuiElement {
         private final OrganSortGlyph icon;
         private final GuiString label;
@@ -810,6 +917,114 @@ public class OrganHoloScreen extends Screen {
         @Override
         public boolean hasFocus() {
             return super.hasFocus() || popover.hasFocus();
+        }
+    }
+
+    private static final class TagPopover extends GuiElement {
+        private static final int VISIBLE_ITEMS = 10;
+        private static final int ITEM_HEIGHT = 10;
+        private static final int ITEM_SPACING = 3;
+        private static final int VIEWPORT_HEIGHT =
+                VISIBLE_ITEMS * ITEM_HEIGHT + (VISIBLE_ITEMS - 1) * ITEM_SPACING;
+        private static final int POPOVER_HEIGHT = VIEWPORT_HEIGHT + 12;
+        private final GuiVerticalLayoutGroup items;
+        private final ClipRectGui viewport;
+        private final GuiRect backdrop;
+        private final Consumer<OrganHoloTagFilter> onSelect;
+        private List<OrganHoloTagFilter> tags = new ArrayList<>();
+        private double scrollOffset;
+        private int maxScroll;
+
+        private TagPopover(int x, int y, Consumer<OrganHoloTagFilter> onSelect) {
+            super(x, y - 3, 180, POPOVER_HEIGHT);
+            this.onSelect = onSelect;
+            backdrop = new GuiRect(0, 0, 180, POPOVER_HEIGHT, 0);
+            backdrop.setOpacity(.9f);
+            addChild(backdrop);
+            addChild(new GuiRect(1, 1, 6, 1, GUI_COLOR));
+            addChild(new GuiRect(-1, 1, 6, 1, GUI_COLOR).setAttachment(GuiAttachment.topRight));
+            addChild(new GuiRect(-1, -1, 6, 1, GUI_COLOR).setAttachment(GuiAttachment.bottomRight));
+            addChild(new GuiRect(1, -1, 6, 1, GUI_COLOR).setAttachment(GuiAttachment.bottomLeft));
+            viewport = new ClipRectGui(6, 6, 168, VIEWPORT_HEIGHT);
+            addChild(viewport);
+            items = new GuiVerticalLayoutGroup(0, 0, 0, ITEM_SPACING);
+            viewport.addChild(items);
+            setVisible(false);
+        }
+
+        private void update(List<OrganHoloTagFilter> tags) {
+            this.tags = new ArrayList<>(tags);
+            scrollOffset = 0;
+            rebuild();
+        }
+
+        private void rebuild() {
+            items.clearChildren();
+            items.addChild(new TagItem(0, 0, null,
+                    I18n.get("gui.chestcavity.organ_holo.filter_tag.all"), onSelect));
+            for (OrganHoloTagFilter tag : tags) {
+                items.addChild(new TagItem(0, 0, tag, I18n.get(tag.getLabel()), onSelect));
+            }
+            items.forceLayout();
+            int maxWidth = items.getChildren().stream()
+                    .mapToInt(GuiElement::getWidth).max().orElse(50);
+            items.getChildren().forEach(child -> child.setWidth(maxWidth));
+            setWidth(maxWidth + 12);
+            viewport.setWidth(getWidth() - 12);
+            backdrop.setWidth(getWidth());
+            maxScroll = Math.max(0, items.getHeight() - viewport.getHeight());
+            scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
+            items.setY(-(int) Math.round(scrollOffset));
+        }
+
+        @Override
+        protected void drawChildren(GuiGraphics graphics, int refX, int refY, int screenWidth,
+                                    int screenHeight, int mouseX, int mouseY, float opacity) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 200);
+            super.drawChildren(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+            graphics.pose().popPose();
+        }
+
+        @Override
+        public boolean onMouseScroll(double mouseX, double mouseY, double distance) {
+            if (!hasFocus()) {
+                return false;
+            }
+            double oldOffset = scrollOffset;
+            scrollOffset = Math.max(0, Math.min(maxScroll, scrollOffset - distance * 12));
+            items.setY(-(int) Math.round(scrollOffset));
+            return oldOffset != scrollOffset || maxScroll > 0;
+        }
+
+        @Override
+        public boolean onMouseClick(int x, int y, int button) {
+            if (super.onMouseClick(x, y, button)) {
+                return true;
+            }
+            return hasFocus();
+        }
+
+        private static final class TagItem extends GuiClickable {
+            private final GuiString label;
+
+            private TagItem(int x, int y, @Nullable OrganHoloTagFilter tag, String text,
+                            Consumer<OrganHoloTagFilter> onSelect) {
+                super(x, y, 40, 10, () -> onSelect.accept(tag));
+                label = new GuiString(0, 0, text);
+                addChild(label);
+                setWidth(label.getWidth());
+            }
+
+            @Override
+            protected void onFocus() {
+                label.setColor(GUI_HOVER);
+            }
+
+            @Override
+            protected void onBlur() {
+                label.setColor(GUI_COLOR);
+            }
         }
     }
 

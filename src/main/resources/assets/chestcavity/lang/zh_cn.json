@@ -48,6 +48,8 @@
   "gui.chestcavity.organ_holo.title": "器官图鉴",
   "gui.chestcavity.organ_holo.list": "器官",
   "gui.chestcavity.organ_holo.filter": "搜索...",
+  "gui.chestcavity.organ_holo.filter_tag": "标签",
+  "gui.chestcavity.organ_holo.filter_tag.all": "全部标签",
   "gui.chestcavity.organ_holo.sort.none": "排序",
   "gui.chestcavity.organ_holo.obtain_method": "获取方式",
   "itemGroup.chestcavity.organs": "器官",

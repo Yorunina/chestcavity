@@ -6,7 +6,11 @@ import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.compat.kubejs.events.EvaluateChestCavityJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OpenedEntityTickJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OrganAddStatusEffectJS;
+import net.tigereye.chestcavity.compat.kubejs.events.OrganHoloFilterTagsJS;
 import net.tigereye.chestcavity.compat.kubejs.events.UpdateOrganScoreJS;
+import net.tigereye.chestcavity.client.OrganHoloTagFilter;
+
+import java.util.List;
 
 import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
 import static net.tigereye.chestcavity.compat.kubejs.CCKubeJSPlugin.*;
@@ -37,5 +41,14 @@ public class CCEvents {
             return event.getEffect();
         }
         return effect;
+    }
+
+    public static List<OrganHoloTagFilter> getOrganHoloFilterTags() {
+        if (KUBEJS_LOADED) {
+            OrganHoloFilterTagsJS event = new OrganHoloFilterTagsJS();
+            ORGAN_HOLO_FILTER_TAGS.post(event);
+            return event.getTags();
+        }
+        return List.of();
     }
 }

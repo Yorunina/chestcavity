@@ -48,6 +48,8 @@
   "gui.chestcavity.organ_holo.title": "Organ Catalogue",
   "gui.chestcavity.organ_holo.list": "Organs",
   "gui.chestcavity.organ_holo.filter": "Search...",
+  "gui.chestcavity.organ_holo.filter_tag": "Tag",
+  "gui.chestcavity.organ_holo.filter_tag.all": "All tags",
   "gui.chestcavity.organ_holo.sort.none": "Sort",
   "gui.chestcavity.organ_holo.obtain_method": "Acquisition",
   "itemGroup.chestcavity.organs": "Organs",

@@ -20,6 +20,24 @@ Requires Minecraft 1.16.x and Fabric API.
 
 Also uses Onyx Studio's Cardinal Components.
 
+## KubeJS organ catalogue filters
+
+The organ catalogue exposes a client-side KubeJS event for configuring the
+item tags shown in its rightmost dropdown:
+
+```js
+// kubejs/client_scripts/chestcavity.js
+ChestCavityEvents.organHoloFilterTags(event => {
+  event.addTag('forge:ores', 'Ores')
+  event.addTag('c:ingots', 'Ingots')
+})
+```
+
+The first argument is an item tag id. Items in the catalogue are shown when
+they belong to the selected tag. The label is optional; when omitted, the tag
+id is used. `event.clear()` and `event.removeTag('namespace:tag')` can be used
+to edit the list before the dropdown is built.
+
 ## Images
 
 ![2_2_1 Organs](https://user-images.githubusercontent.com/12503726/99457027-2cd66c00-28df-11eb-9036-44a90c9e2b4c.png)

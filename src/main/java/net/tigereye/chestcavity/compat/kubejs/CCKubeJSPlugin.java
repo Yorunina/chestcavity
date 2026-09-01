@@ -22,6 +22,9 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
     public static EventHandler ORGAN_ADD_STATUS_EFFECT = CCGROUP
             .server("organAddStatusEffect", () -> OrganAddStatusEffectJS.class);
 
+    public static EventHandler ORGAN_HOLO_FILTER_TAGS = CCGROUP
+            .client("organHoloFilterTags", () -> OrganHoloFilterTagsJS.class);
+
     @Override
     public void registerEvents() {
         CCGROUP.register();
