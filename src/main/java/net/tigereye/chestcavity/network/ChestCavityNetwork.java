@@ -8,7 +8,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.network.packet.*;
 
 public final class ChestCavityNetwork {
-    public static final String NETWORK_PROTOCOL_VERSION = "2";
+    public static final String NETWORK_PROTOCOL_VERSION = "3";
     private static int packetId = 0;
     public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(ChestCavity.MODID, "messages"))
@@ -21,20 +21,10 @@ public final class ChestCavityNetwork {
     }
     public static void register() {
 
-        INSTANCE.messageBuilder(ChestCavityUpdatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ChestCavityUpdatePacket::encode)
-                .decoder(ChestCavityUpdatePacket::decode)
-                .consumerMainThread(ChestCavityUpdatePacket::handle)
-                .add();
         INSTANCE.messageBuilder(DataSnapshotPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(DataSnapshotPacket::encode)
                 .decoder(DataSnapshotPacket::decode)
                 .consumerMainThread(DataSnapshotPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ReceivedChestCavityUpdatePacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .encoder(ReceivedChestCavityUpdatePacket::encode)
-                .decoder(ReceivedChestCavityUpdatePacket::new)
-                .consumerMainThread(ReceivedChestCavityUpdatePacket::handle)
                 .add();
         INSTANCE.messageBuilder(TargetEntityInventoryTypePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(TargetEntityInventoryTypePacket::encode)

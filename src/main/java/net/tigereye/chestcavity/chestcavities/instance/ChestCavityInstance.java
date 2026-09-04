@@ -26,24 +26,21 @@ public class ChestCavityInstance implements ContainerListener {
     public LivingEntity owner;
     public UUID compatibilityId;
     public boolean opened = false;
+
+    public ResourceLocation inventoryType;
+    public ResourceLocation oldInventoryType;
+
     public ChestCavityInventory inventory;
     public ChestCavityInventory oldInventory;
-    public Map<ResourceLocation, Float> oldOrganScores = new HashMap<>();
-    protected Map<ResourceLocation, Float> organScores = new HashMap<>();
+
+    private final OrganScoreState organScoreState = new OrganScoreState();
+    // 器官状态
     public int bloodPoisonTimer = 0;
     public int liverTimer = 0;
     public float metabolismRemainder = 0.0F;
     public float lungRemainder = 0.0F;
-    public boolean updatePacket = true;
-    public boolean updatePacketInFlight = false;
-    public long updatePacketLastSentTick = Long.MIN_VALUE;
-    public int updatePacketRetryCount = 0;
-    private boolean lastPacketOpened;
-    private Map<ResourceLocation, Float> lastPacketOrganScores = Map.of();
-    public ResourceLocation inventoryType;
-    public ResourceLocation oldInventoryType;
+    // kubejs层数据
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
-    // CustomDataMap暴露给Kubejs层使用
     public Map<String, Object> customDataMap = new HashMap<>();
 
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
@@ -59,50 +56,26 @@ public class ChestCavityInstance implements ContainerListener {
         this.oldInventory = this.inventory.clone();
     }
 
+    public float getOrganScore(ResourceLocation id) {
+        return getOrganScoreState().getScore(id);
+    }
+    public Map<ResourceLocation, Float> getOrganScores() {
+        return getOrganScoreState().getScores();
+    }
+    public float getOrganScoreOrDefault(ResourceLocation id, float defaultValue) {
+        return getOrganScoreState().getScore(id, defaultValue);
+    }
+
+    public void setOrganScore(ResourceLocation id, float score) {
+        getOrganScoreState().setScore(id, score);
+    }
+
     public IChestCavityType getChestCavityType() {
         return this.type;
     }
 
-    public Map<ResourceLocation, Float> getOrganScores() {
-        return this.organScores;
-    }
-
-    public void setOrganScore(ResourceLocation id, float score) {
-        this.organScores.put(id, score);
-    }
-
-    public void setOrganScores(Map<ResourceLocation, Float> organScores) {
-        this.organScores = new HashMap<>(organScores);
-    }
-
-    public void markStatePacketSent(long gameTime) {
-        if (this.updatePacketInFlight) {
-            this.updatePacketRetryCount++;
-        } else {
-            this.updatePacketRetryCount = 0;
-        }
-        this.updatePacket = false;
-        this.updatePacketInFlight = true;
-        this.updatePacketLastSentTick = gameTime;
-        this.lastPacketOpened = this.opened;
-        this.lastPacketOrganScores = Map.copyOf(this.organScores);
-    }
-
-    public boolean stateMatchesLastPacket() {
-        return this.lastPacketOpened == this.opened
-                && this.lastPacketOrganScores.equals(this.organScores);
-    }
-
-    public float getOrganScore(ResourceLocation id) {
-        return this.organScores.getOrDefault(id, 0.0F);
-    }
-
-    public float getOrganScoreOrDefault(ResourceLocation id, float defaultValue) {
-        return this.organScores.getOrDefault(id, defaultValue);
-    }
-
-    public float getOldOrganScore(ResourceLocation id) {
-        return this.oldOrganScores.getOrDefault(id, 0.0F);
+    public OrganScoreState getOrganScoreState() {
+        return this.organScoreState;
     }
 
     public ResourceLocation getInventoryType() {
@@ -189,6 +162,7 @@ public class ChestCavityInstance implements ContainerListener {
 
     public void fromTag(CompoundTag tag, LivingEntity owner) {
         this.owner = owner;
+        this.organScoreState.clearModifiers();
         CompoundTag ccTag;
         if (tag.contains("ChestCavity")) {
             ccTag = tag.getCompound("ChestCavity");
@@ -258,6 +232,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.lungRemainder = other.lungRemainder;
         this.customDataMap = other.customDataMap;
         this.slotListenerMap = other.slotListenerMap;
+        this.organScoreState.copyModifiersFrom(other.organScoreState);
         ChestCavityUtil.evaluateChestCavity(this);
     }
 }

@@ -1,5 +1,6 @@
 package net.tigereye.chestcavity.listeners;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
+import net.tigereye.chestcavity.chestcavities.instance.OrganScoreState;
 import net.tigereye.chestcavity.interfaces.CCFoodData;
 import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCOrganScores;
@@ -46,105 +48,69 @@ public class OrganUpdateListeners {
     }
 
     public static void UpdateClimbing(LivingEntity entity, ChestCavityInstance cc) {
-        float climbingScore = cc.getOrganScore(CCOrganScores.CLIMBING);
-        if (cc.getOldOrganScore(CCOrganScores.CLIMBING) != climbingScore && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.CLIMBING) <= 0) {
-            AttributeInstance att = entity.getAttribute(CCAttributes.CLIMB_SPEED.get());
-
-            if (att == null) return;
-            AttributeModifier mod = new AttributeModifier(CLIMB_SPEED_ID, "ChestCavityClimbingSpeed", Math.max(climbingScore / 10.0F, 0), Operation.ADDITION);
-            ReplaceAttributeModifier(att, mod);
-        }
+        if (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.CLIMBING) > 0) return;
+        OrganScoreState state = cc.getOrganScoreState();
+        if (!state.hasScoreChanged(CCOrganScores.CLIMBING)) return;
+        float climbingScore = state.getScore(CCOrganScores.CLIMBING, 0.0F);
+        updateAttributeModifier(entity.getAttribute(CCAttributes.CLIMB_SPEED.get()), CLIMB_SPEED_ID, "ChestCavityClimbingSpeed", Math.max(climbingScore / 10.0F, 0), Operation.ADDITION);
     }
 
     public static void UpdateDefense(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.DEFENSE) != cc.getOrganScore(CCOrganScores.DEFENSE)) {
-            AttributeInstance att = entity.getAttribute(Attributes.ARMOR);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(DEFENSE_ID, "ChestCavityDefenseArmor", (cc.getOrganScore(CCOrganScores.DEFENSE) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.DEFENSE)) * ChestCavity.config.BONE_DEFENSE, Operation.ADDITION);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
+        updateAttributeModifier(cc, CCOrganScores.DEFENSE, entity.getAttribute(Attributes.ARMOR), DEFENSE_ID, "ChestCavityDefenseArmor", ChestCavity.config.BONE_DEFENSE, Operation.ADDITION);
     }
 
     public static void UpdateLuck(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.LUCK) != cc.getOrganScore(CCOrganScores.LUCK)) {
-            AttributeInstance att = entity.getAttribute(Attributes.LUCK);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(LUCK_ID, "ChestCavityLuck", (cc.getOrganScore(CCOrganScores.LUCK) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.LUCK)) * ChestCavity.config.APPENDIX_LUCK, Operation.ADDITION);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
+        updateAttributeModifier(cc, CCOrganScores.LUCK, entity.getAttribute(Attributes.LUCK), LUCK_ID, "ChestCavityLuck", ChestCavity.config.APPENDIX_LUCK, Operation.ADDITION);
     }
 
     public static void UpdateHealth(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.HEALTH) != cc.getOrganScore(CCOrganScores.HEALTH)) {
-            AttributeInstance att = entity.getAttribute(Attributes.MAX_HEALTH);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(HEALTH_ID, "ChestCavityHealth", (cc.getOrganScore(CCOrganScores.HEALTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.HEALTH)) * ChestCavity.config.HEART_HP, Operation.ADDITION);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
+        updateAttributeModifier(cc, CCOrganScores.HEALTH, entity.getAttribute(Attributes.MAX_HEALTH), HEALTH_ID, "ChestCavityHealth", ChestCavity.config.HEART_HP, Operation.ADDITION);
     }
 
     public static void UpdateStrength(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.STRENGTH) != cc.getOrganScore(CCOrganScores.STRENGTH)) {
-            AttributeInstance att = entity.getAttribute(Attributes.ATTACK_DAMAGE);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(STRENGTH_ID, "ChestCavityMuscleAttackDamage", (cc.getOrganScore(CCOrganScores.STRENGTH) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.STRENGTH)) * ChestCavity.config.MUSCLE_STRENGTH, Operation.ADDITION);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
-
+        updateAttributeModifier(cc, CCOrganScores.STRENGTH, entity.getAttribute(Attributes.ATTACK_DAMAGE), STRENGTH_ID, "ChestCavityMuscleAttackDamage", ChestCavity.config.MUSCLE_STRENGTH, Operation.ADDITION);
     }
 
     public static void UpdateSpeed(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.SPEED) != cc.getOrganScore(CCOrganScores.SPEED)) {
-            AttributeInstance att = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(SPEED_ID, "ChestCavityMovementSpeed", (cc.getOrganScore(CCOrganScores.SPEED) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.SPEED)) * ChestCavity.config.MUSCLE_SPEED / 8.0F, Operation.MULTIPLY_BASE);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
-
+        updateAttributeModifier(cc, CCOrganScores.SPEED, entity.getAttribute(Attributes.MOVEMENT_SPEED), SPEED_ID, "ChestCavityMovementSpeed", ChestCavity.config.MUSCLE_SPEED / 8.0F, Operation.MULTIPLY_BASE);
     }
 
     public static void UpdateNerves(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.NERVES) != cc.getOrganScore(CCOrganScores.NERVES) && cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NERVES) != 0.0F) {
-            AttributeInstance att = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-            AttributeModifier mod;
-            if (att != null) {
-                mod = new AttributeModifier(MOVEMENT_ID, "ChestCavityMovement", cc.getOrganScore(CCOrganScores.NERVES) > 0.0F ? 0.0 : -1.0, Operation.MULTIPLY_TOTAL);
-                ReplaceAttributeModifier(att, mod);
-            }
+        if (cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NERVES) == 0.0F) return;
+        OrganScoreState state = cc.getOrganScoreState();
+        float nervesScore = state.getScore(CCOrganScores.NERVES, 0.0F);
+        if (!state.hasScoreChanged(CCOrganScores.NERVES)) return;
 
-            att = entity.getAttribute(Attributes.ATTACK_SPEED);
-            if (att != null) {
-                mod = new AttributeModifier(ATTACK_SPEED_ID, "ChestCavityAttackSpeed", (cc.getOrganScore(CCOrganScores.NERVES) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.NERVES)) * ChestCavity.config.NERVES_HASTE, Operation.MULTIPLY_BASE);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
-
+        updateAttributeModifier(entity.getAttribute(Attributes.MOVEMENT_SPEED), MOVEMENT_ID, "ChestCavityMovement", nervesScore > 0.0F ? 0.0 : -1.0, Operation.MULTIPLY_TOTAL);
+        updateAttributeModifier(entity.getAttribute(Attributes.ATTACK_SPEED), ATTACK_SPEED_ID, "ChestCavityAttackSpeed", getScoreDelta(cc, CCOrganScores.NERVES) * ChestCavity.config.NERVES_HASTE, Operation.MULTIPLY_BASE);
     }
 
     public static void UpdateKnockBackResistance(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) != cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) {
-            AttributeInstance att = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-            if (att != null) {
-                AttributeModifier mod = new AttributeModifier(KNOCKBACK_RESISTANCE_ID, "ChestCavityKnockbackResistance", (double) (cc.getOrganScore(CCOrganScores.KNOCKBACK_RESISTANT) - cc.getChestCavityType().getDefaultOrganScore(CCOrganScores.KNOCKBACK_RESISTANT)) * 0.1, Operation.ADDITION);
-                ReplaceAttributeModifier(att, mod);
-            }
-        }
-
+        updateAttributeModifier(cc, CCOrganScores.KNOCKBACK_RESISTANT, entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE), KNOCKBACK_RESISTANCE_ID, "ChestCavityKnockbackResistance", 0.1, Operation.ADDITION);
     }
 
     public static void UpdateIncompatibility(LivingEntity entity, ChestCavityInstance cc) {
-        if (cc.getOldOrganScore(CCOrganScores.INCOMPATIBILITY) != cc.getOrganScore(CCOrganScores.INCOMPATIBILITY)) {
-            try {
-                entity.removeEffect(CCStatusEffects.ORGAN_REJECTION.get());
-            } catch (Exception ignored) {
-            }
+        if (!cc.getOrganScoreState().hasScoreChanged(CCOrganScores.INCOMPATIBILITY)) return;
+        try {
+            entity.removeEffect(CCStatusEffects.ORGAN_REJECTION.get());
+        } catch (Exception ignored) {
         }
+    }
 
+    private static float getScoreDelta(ChestCavityInstance cc, ResourceLocation scoreId) {
+        OrganScoreState state = cc.getOrganScoreState();
+        return state.getScore(scoreId, 0.0F) - cc.getChestCavityType().getDefaultOrganScore(scoreId);
+    }
+
+    private static void updateAttributeModifier(ChestCavityInstance cc, ResourceLocation scoreId, AttributeInstance attribute, UUID modifierId, String modifierName, double factor, Operation operation) {
+        OrganScoreState state = cc.getOrganScoreState();
+        if (attribute == null || !state.hasScoreChanged(scoreId)) return;
+        updateAttributeModifier(attribute, modifierId, modifierName, getScoreDelta(cc, scoreId) * factor, operation);
+    }
+
+    private static void updateAttributeModifier(AttributeInstance attribute, UUID modifierId, String modifierName, double amount, Operation operation) {
+        if (attribute == null) return;
+        ReplaceAttributeModifier(attribute, new AttributeModifier(modifierId, modifierName, amount, operation));
     }
 
     private static void ReplaceAttributeModifier(AttributeInstance att, AttributeModifier mod) {

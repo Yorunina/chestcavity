@@ -25,6 +25,7 @@ import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,13 +46,13 @@ public class ChestCavityUtil {
         if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) <= 0) {
             return newAir;
         }
-        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH)) {
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScoreState().getScore(CCOrganScores.BREATH_CAPACITY, 0.0F) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScoreState().getScore(CCOrganScores.WATERBREATH, 0.0F)) {
             return newAir;
         }
 
         float airLoss = 1;
         //if you have waterbreath, you can breath underwater. Yay! This will overwrite any incoming air loss.
-        float waterBreath = cc.getOrganScore(CCOrganScores.WATERBREATH);
+        float waterBreath = cc.getOrganScoreState().getScore(CCOrganScores.WATERBREATH, 0.0F);
         if (cc.owner.isSprinting()) {
             waterBreath /= 4;
         }
@@ -66,7 +67,7 @@ public class ChestCavityUtil {
                 //this would indicate that resperation was a success
                 airLoss = 0;
             } else {
-                float capacity = cc.getOrganScore(CCOrganScores.BREATH_CAPACITY);
+                float capacity = cc.getOrganScoreState().getScore(CCOrganScores.BREATH_CAPACITY, 0.0F);
                 airLoss *= (oldAir - newAir); //if you are downing at bonus speed, ok
                 if (airLoss > 0) {
                     float lungRatio = 5f;
@@ -97,7 +98,7 @@ public class ChestCavityUtil {
         if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) <= 0 && ccType.getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) <= 0) {
             return oldAir;
         }
-        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScore(CCOrganScores.BREATH_CAPACITY) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScore(CCOrganScores.WATERBREATH) && ccType.getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) == cc.getOrganScore(CCOrganScores.BREATH_RECOVERY)) {
+        if (ccType.getDefaultOrganScore(CCOrganScores.BREATH_CAPACITY) == cc.getOrganScoreState().getScore(CCOrganScores.BREATH_CAPACITY, 0.0F) && ccType.getDefaultOrganScore(CCOrganScores.WATERBREATH) == cc.getOrganScoreState().getScore(CCOrganScores.WATERBREATH, 0.0F) && ccType.getDefaultOrganScore(CCOrganScores.BREATH_RECOVERY) == cc.getOrganScoreState().getScore(CCOrganScores.BREATH_RECOVERY, 0.0F)) {
             return oldAir;
         }
 
@@ -112,12 +113,12 @@ public class ChestCavityUtil {
         //if you have breath, you can breath on land. Yay!
         //if in contact with water or rain apply on quarter your water breath as well
         //(so 2 gills can survive in humid conditions)
-        float breath = cc.getOrganScore(CCOrganScores.BREATH_RECOVERY);
+        float breath = cc.getOrganScoreState().getScore(CCOrganScores.BREATH_RECOVERY, 0.0F);
         if (cc.owner.isSprinting()) {
             breath /= 4;
         }
         if (cc.owner.isInWaterOrRain()) {
-            breath += cc.getOrganScore(CCOrganScores.WATERBREATH) / 4;
+            breath += cc.getOrganScoreState().getScore(CCOrganScores.WATERBREATH, 0.0F) / 4;
         }
         if (breath > 0) {
             airLoss += (-airGain * breath / 2);// + cc.lungRemainder;
@@ -132,7 +133,7 @@ public class ChestCavityUtil {
                 airLoss = 0;
             } else {
                 //then, we apply our breath capacity
-                float capacity = cc.getOrganScore(CCOrganScores.BREATH_CAPACITY);
+                float capacity = cc.getOrganScoreState().getScore(CCOrganScores.BREATH_CAPACITY, 0.0F);
                 float breathRatio = 5f;
                 if (capacity > 0.2f) {
                     breathRatio = Math.min(1 / capacity, 5f);
@@ -255,9 +256,8 @@ public class ChestCavityUtil {
 
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
-        Map<ResourceLocation, Float> organScores = cc.getOrganScores();
+        Map<ResourceLocation, Float> organScores = new HashMap<>();
         if (!cc.opened) {
-            organScores.clear();
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {
                 organScores.putAll(cc.getChestCavityType().getDefaultOrganScores());
             }
@@ -287,8 +287,8 @@ public class ChestCavityUtil {
         }
 
         // kubejs接入点：胸腔属性计算节点，取代激活属性计算
+        cc.getOrganScoreState().setScores(organScores);
         CCEvents.postEvaluateChestCavity(cc);
-        organUpdate(cc);
     }
 
     public static void forcefullyAddStack(ChestCavityInstance cc, ItemStack stack, int slot) {
@@ -395,15 +395,11 @@ public class ChestCavityUtil {
 
     public static void organUpdate(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
-        Map<ResourceLocation, Float> organScores = cc.getOrganScores();
-        if (!cc.oldOrganScores.equals(organScores)) {
-            OrganUpdateListeners.call(cc.owner, cc);
-            CCEvents.postUpdateCCScore(cc);
-            cc.oldOrganScores.clear();
-            cc.oldOrganScores.putAll(organScores);
-
-            NetworkUtil.SendS2CChestCavityUpdatePacket(cc);
-        }
+        var state = cc.getOrganScoreState();
+        if (!state.consumeDirty() || !state.hasScoresChanged()) return;
+        OrganUpdateListeners.call(cc.owner, cc);
+        CCEvents.postUpdateCCScore(cc);
+        state.commitScores();
     }
 
 

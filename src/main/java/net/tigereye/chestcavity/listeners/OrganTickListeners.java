@@ -3,7 +3,6 @@ package net.tigereye.chestcavity.listeners;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -17,7 +16,7 @@ import net.tigereye.chestcavity.registration.CCAttributes;
 import net.tigereye.chestcavity.registration.CCDamageSources;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
-import net.tigereye.chestcavity.util.NetworkUtil;
+import net.tigereye.chestcavity.util.ChestCavityUtil;
 
 @Mod.EventBusSubscriber(modid = ChestCavity.MODID)
 public class OrganTickListeners {
@@ -32,13 +31,11 @@ public class OrganTickListeners {
 
         if (!(entity instanceof ChestCavityEntity ccEntity)) return;
         ChestCavityInstance cc = ccEntity.getChestCavityInstance();
-        if (entity instanceof ServerPlayer && (cc.updatePacket || cc.updatePacketInFlight)) {
-            NetworkUtil.SendS2CChestCavityUpdatePacket(cc, false);
+        if (cc.opened && cc.owner != null) {
+            CCEvents.postOpenedEntityTick(entity, cc);
         }
-
-
+        ChestCavityUtil.organUpdate(cc);
         if (!cc.opened) return;
-        if (cc.owner != null) CCEvents.postOpenedEntityTick(entity, cc);
 
         if (!entity.hasEffect(CCStatusEffects.ORGAN_PROTECTION.get())) {
             TickFiltration(entity, cc);
