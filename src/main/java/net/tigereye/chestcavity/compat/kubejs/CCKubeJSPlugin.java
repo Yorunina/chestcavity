@@ -14,6 +14,8 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     public static EventHandler EVAL_CC = CCGROUP
             .server("evaluateChestCavity", () -> EvaluateChestCavityJS.class);
+    public static EventHandler INIT_CC = CCGROUP
+            .server("initChestCavity", () -> InitChestCavityJS.class);
     public static EventHandler UPDATE_CC_SCORE = CCGROUP
             .server("updateOrganScore", () -> UpdateOrganScoreJS.class);
 

@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.compat.kubejs.events.EvaluateChestCavityJS;
+import net.tigereye.chestcavity.compat.kubejs.events.InitChestCavityJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OpenedEntityTickJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OrganAddStatusEffectJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OrganHoloFilterTagsJS;
@@ -16,6 +17,15 @@ import static net.tigereye.chestcavity.ChestCavity.KUBEJS_LOADED;
 import static net.tigereye.chestcavity.compat.kubejs.CCKubeJSPlugin.*;
 
 public class CCEvents {
+    public static ChestCavityInstance postInitChestCavity(ChestCavityInstance cc) {
+        if (KUBEJS_LOADED) {
+            InitChestCavityJS event = new InitChestCavityJS(cc, cc.owner, cc.owner.level());
+            INIT_CC.post(event);
+            return event.getChestCavity();
+        }
+        return cc;
+    }
+
     public static void postUpdateCCScore(ChestCavityInstance cc) {
         if (KUBEJS_LOADED) {
             UPDATE_CC_SCORE.post(new UpdateOrganScoreJS(cc, cc.owner, cc.owner.level()));
