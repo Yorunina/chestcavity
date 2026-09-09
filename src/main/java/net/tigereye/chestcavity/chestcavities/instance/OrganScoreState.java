@@ -40,8 +40,11 @@ public final class OrganScoreState {
     }
 
     public void addModifier(ResourceLocation scoreId, OrganScoreModifier modifier) {
-        modifiers.computeIfAbsent(scoreId, ignored -> new HashMap<>())
-                .put(modifier.id(), modifier);
+        Map<UUID, OrganScoreModifier> scoreModifiers = modifiers.computeIfAbsent(scoreId, ignored -> new HashMap<>());
+        if (modifier.operation() == OrganScoreModifier.Operation.CONSTANT) {
+            scoreModifiers.values().removeIf(existing -> existing.operation() == OrganScoreModifier.Operation.CONSTANT);
+        }
+        scoreModifiers.put(modifier.id(), modifier);
         markChanged();
     }
 
@@ -128,6 +131,12 @@ public final class OrganScoreState {
     private void rebuild() {
         Map<ResourceLocation, Float> effectiveScores = new HashMap<>(baseScores);
         modifiers.forEach((scoreId, scoreModifiers) -> {
+            OrganScoreModifier constant = findConstant(scoreModifiers);
+            if (constant != null) {
+                effectiveScores.put(scoreId, (float) constant.amount());
+                return;
+            }
+
             double value = baseScores.getOrDefault(scoreId, 0.0F);
 
             for (OrganScoreModifier modifier : scoreModifiers.values()) {
@@ -149,6 +158,15 @@ public final class OrganScoreState {
             effectiveScores.put(scoreId, (float) value);
         });
         scores = effectiveScores;
+    }
+
+    private static OrganScoreModifier findConstant(Map<UUID, OrganScoreModifier> scoreModifiers) {
+        for (OrganScoreModifier modifier : scoreModifiers.values()) {
+            if (modifier.operation() == OrganScoreModifier.Operation.CONSTANT) {
+                return modifier;
+            }
+        }
+        return null;
     }
 
     private void markChanged() {

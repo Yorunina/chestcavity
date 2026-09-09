@@ -11,6 +11,7 @@ public record OrganScoreModifier(UUID id, String name, double amount, Operation 
     public enum Operation {
         ADDITION,
         MULTIPLY_BASE,
-        MULTIPLY_TOTAL
+        MULTIPLY_TOTAL,
+        CONSTANT
     }
 }
