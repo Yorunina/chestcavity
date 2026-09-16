@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public final class DataResourceUtil {
     public static final int MAX_JSON_LENGTH = 32767;
+    public static final String INVENTORY_TYPE_DIRECTORY = "cc_inventory_types";
+    private static final String INVENTORY_TYPE_PREFIX = INVENTORY_TYPE_DIRECTORY + "/";
 
     private DataResourceUtil() {
     }
@@ -36,6 +38,21 @@ public final class DataResourceUtil {
 
     public static ResourceLocation normalizeId(String id) {
         return normalizeId(new ResourceLocation(id));
+    }
+
+    public static ResourceLocation normalizeInventoryTypeId(ResourceLocation id) {
+        ResourceLocation normalized = normalizeId(id);
+        if (normalized == null) {
+            return null;
+        }
+        String path = normalized.getPath();
+        if (path.startsWith(INVENTORY_TYPE_PREFIX)) {
+            path = path.substring(INVENTORY_TYPE_PREFIX.length());
+            if (!path.isEmpty()) {
+                return new ResourceLocation(normalized.getNamespace(), path);
+            }
+        }
+        return normalized;
     }
 
     public static Map<ResourceLocation, String> readResources(ResourceManager manager, String root) {

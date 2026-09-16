@@ -15,7 +15,7 @@ public class InventoryTypeManager {
     private static final com.google.gson.Gson GSON = new com.google.gson.Gson();
     public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("chestcavity", "textures/gui/default.png");
     public static final List<ChestCavitySlotDefinition> DEFAULT_SLOT_DEFINITION = getDefaultInventoryTypeSlotDefinition();
-    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:cc_inventory_types/default";
+    public static final String DEFAULT_INVENTORY_TYPE_STRING = "chestcavity:default";
     public static final ResourceLocation DEFAULT_INVENTORY_TYPE =
             new ResourceLocation(DEFAULT_INVENTORY_TYPE_STRING);
     public static volatile Map<ResourceLocation, InventoryTypeData> InventoryTypeData = Map.of();
@@ -42,19 +42,25 @@ public class InventoryTypeManager {
     }
 
     public static InventoryTypeData getInventoryTypeData(ResourceLocation id) {
-        ResourceLocation normalized = DataResourceUtil.normalizeId(id);
-        return InventoryTypeData.getOrDefault(normalized, getDefaultInventoryTypeData());
+        if (id == null) {
+            return getDefaultInventoryTypeData();
+        }
+        return InventoryTypeData.getOrDefault(id, getDefaultInventoryTypeData());
     }
 
     public static Map<ResourceLocation, InventoryTypeData> parseDataSnapshot(Map<ResourceLocation, String> rawData) {
         Map<ResourceLocation, InventoryTypeData> result = new HashMap<>();
         rawData.forEach((id, data) -> {
             try {
+                ResourceLocation canonicalId = DataResourceUtil.normalizeInventoryTypeId(id);
+                if (canonicalId == null) {
+                    return;
+                }
                 InventoryTypeData inventoryTypeData = SERIALIZER.read(
-                        id,
+                        canonicalId,
                         GSON.fromJson(data, InventoryTypeJsonFormat.class)
                 );
-                result.put(DataResourceUtil.normalizeId(id), inventoryTypeData);
+                result.put(canonicalId, inventoryTypeData);
             } catch (Exception error) {
                 ChestCavity.LOGGER.error("Error parsing inventory type resource " + id, error);
             }

@@ -52,7 +52,7 @@ public class ChestCavityInstance implements ContainerListener {
             ccEntity.setInventoryTypeData(this.getInventoryType());
         }
         this.inventory = new ChestCavityInventory(this);
-        this.oldInventoryType = type.getInventoryType();
+        this.oldInventoryType = this.inventoryType;
         this.oldInventory = this.inventory.clone();
     }
 
@@ -140,7 +140,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.oldInventoryType = this.inventoryType;
         this.inventoryType = inventoryType;
         this.inventory.removeListener(this);
-        int newInventorySize = InventoryTypeManager.getInventoryTypeData(inventoryType).getSlotSize();
+        int newInventorySize = InventoryTypeManager.getInventoryTypeData(this.inventoryType).getSlotSize();
         ChestCavityInventory newInventory = new ChestCavityInventory(this);
         for (int i = 0; i < this.inventory.getContainerSize(); i++) {
             if (newInventorySize <= i) {
@@ -171,7 +171,8 @@ public class ChestCavityInstance implements ContainerListener {
             this.liverTimer = ccTag.getInt("LiverTimer");
             this.metabolismRemainder = ccTag.getFloat("MetabolismRemainder");
             this.lungRemainder = ccTag.getFloat("LungRemainder");
-            this.inventoryType = new ResourceLocation(ccTag.getString("InventoryType"));
+            String loadedInventoryType = ccTag.getString("InventoryType");
+            this.inventoryType = loadedInventoryType.isEmpty() ? InventoryTypeManager.DEFAULT_INVENTORY_TYPE : new ResourceLocation(loadedInventoryType);
             this.oldInventoryType = this.inventoryType;
             if (this.owner instanceof ChestCavityEntity ccEntity) {
                 ccEntity.setInventoryTypeData(this.inventoryType);
