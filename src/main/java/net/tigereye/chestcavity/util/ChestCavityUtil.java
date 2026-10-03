@@ -23,6 +23,7 @@ import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
+import net.tigereye.chestcavity.network.OverlayScoreSync;
 import net.tigereye.chestcavity.registration.CCOrganScores;
 
 import java.util.HashMap;
@@ -289,6 +290,7 @@ public class ChestCavityUtil {
         // kubejs接入点：胸腔属性计算节点，取代激活属性计算
         cc.getOrganScoreState().setScores(organScores);
         CCEvents.postEvaluateChestCavity(cc);
+        OverlayScoreSync.notifyIfViewing(cc);
     }
 
     public static void forcefullyAddStack(ChestCavityInstance cc, ItemStack stack, int slot) {
@@ -400,6 +402,7 @@ public class ChestCavityUtil {
         OrganUpdateListeners.call(cc.owner, cc);
         CCEvents.postUpdateCCScore(cc);
         state.commitScores();
+        OverlayScoreSync.notifyIfViewing(cc);
     }
 
 

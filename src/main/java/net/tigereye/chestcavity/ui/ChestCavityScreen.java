@@ -11,6 +11,8 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.ChestCavitySlotDefi
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeManager;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
+import net.tigereye.chestcavity.client.overlay.OverlayHudClient;
+import net.tigereye.chestcavity.client.overlay.OverlayHudPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainerMenu> {
     private ResourceLocation backgroundTexture;
     private InventoryTypeData inventoryTypeData;
+    private final OverlayHudPanel overlayHud = new OverlayHudPanel();
 
     public ChestCavityScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
@@ -34,6 +37,8 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
 
     @Override
     protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+        overlayHud.prepare(this);
+        overlayHud.render(context, this.font, mouseX, mouseY);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         context.blit(this.backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
@@ -43,7 +48,13 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
-        this.renderTooltip(context, mouseX, mouseY);
+        boolean overlayInput = overlayHud.capturesInput(mouseX, mouseY, this);
+        List<Component> overlayTooltip = overlayHud.getHoveredTooltip();
+        if (overlayInput && overlayTooltip != null && !overlayTooltip.isEmpty()) {
+            context.renderTooltip(this.font, overlayTooltip, Optional.empty(), mouseX, mouseY);
+        } else if (!overlayInput) {
+            this.renderTooltip(context, mouseX, mouseY);
+        }
     }
 
     @Override
@@ -85,5 +96,45 @@ public class ChestCavityScreen extends AbstractContainerScreen<AbstractContainer
         this.inventoryLabelX = 8 + inventoryTypeData.getInventoryLabelPosition().getX();
         this.inventoryLabelY = this.imageHeight - 94 + inventoryTypeData.getInventoryLabelPosition().getY();
         this.backgroundTexture = inventoryTypeData.getBackgroundTexture();
+    }
+
+    @Override
+    public void removed() {
+        OverlayHudClient.clearScores();
+        super.removed();
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        overlayHud.prepare(this);
+        if (overlayHud.capturesInput(mouseX, mouseY, this)) {
+            return overlayHud.mouseClicked(mouseX, mouseY, button);
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (overlayHud.mouseDragged(mouseX, mouseY, button, this)) {
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (overlayHud.mouseReleased(mouseX, mouseY, button)) {
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        overlayHud.prepare(this);
+        if (overlayHud.capturesInput(mouseX, mouseY, this) && overlayHud.mouseScrolled(mouseX, mouseY, delta)) {
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

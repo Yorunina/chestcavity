@@ -18,6 +18,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.SlotDefinition;
 import net.tigereye.chestcavity.interfaces.ChestCavityEntity;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.network.packet.TargetEntityInventoryTypePacket;
+import net.tigereye.chestcavity.network.OverlayScoreSync;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
 import net.tigereye.chestcavity.util.TargetEntityInventoryTypeManager;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,9 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
         // 在服务器端，向客户端发送目标实体的inventoryType信息
         if (player instanceof ServerPlayer serverPlayer) {
             ChestCavityNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new TargetEntityInventoryTypePacket(inventoryTypeData.getId()));
+            if (targetEntity != null) {
+                OverlayScoreSync.sendTo(serverPlayer, targetEntity.getChestCavityInstance());
+            }
         }
 
         SlotDefinition playerInventoryPosition = inventoryTypeData.getPlayerInventoryPosition();
@@ -110,6 +114,10 @@ public class ChestCavityScreenHandler extends AbstractContainerMenu {
             player.closeContainer();
         }
         return valid;
+    }
+
+    public ChestCavityInventory getChestCavityInventory() {
+        return this.inventory;
     }
 
 }

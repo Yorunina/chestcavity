@@ -27,6 +27,8 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
 
     public static EventHandler ORGAN_HOLO_FILTER_TAGS = CCGROUP
             .client("organHoloFilterTags", () -> OrganHoloFilterTagsJS.class);
+    public static EventHandler OVERLAY_HUD = CCGROUP
+            .client("overlayHud", () -> OverlayHudJS.class);
 
     @Override
     public void registerEvents() {

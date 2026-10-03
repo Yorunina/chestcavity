@@ -8,7 +8,7 @@ import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.network.packet.*;
 
 public final class ChestCavityNetwork {
-    public static final String NETWORK_PROTOCOL_VERSION = "3";
+    public static final String NETWORK_PROTOCOL_VERSION = "4";
     private static int packetId = 0;
     public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(ChestCavity.MODID, "messages"))
@@ -30,6 +30,11 @@ public final class ChestCavityNetwork {
                 .encoder(TargetEntityInventoryTypePacket::encode)
                 .decoder(TargetEntityInventoryTypePacket::decode)
                 .consumerMainThread(TargetEntityInventoryTypePacket::handle)
+                .add();
+        INSTANCE.messageBuilder(OverlayScorePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(OverlayScorePacket::encode)
+                .decoder(OverlayScorePacket::decode)
+                .consumerMainThread(OverlayScorePacket::handle)
                 .add();
     }
 }

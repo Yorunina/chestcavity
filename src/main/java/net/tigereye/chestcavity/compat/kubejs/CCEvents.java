@@ -10,6 +10,8 @@ import net.tigereye.chestcavity.compat.kubejs.events.OrganAddStatusEffectJS;
 import net.tigereye.chestcavity.compat.kubejs.events.OrganHoloFilterTagsJS;
 import net.tigereye.chestcavity.compat.kubejs.events.UpdateOrganScoreJS;
 import net.tigereye.chestcavity.client.OrganHoloTagFilter;
+import net.tigereye.chestcavity.client.overlay.OverlayHudCatalog;
+import net.tigereye.chestcavity.compat.kubejs.events.OverlayHudJS;
 
 import java.util.List;
 
@@ -60,5 +62,14 @@ public class CCEvents {
             return event.getTags();
         }
         return List.of();
+    }
+
+    public static OverlayHudCatalog getOverlayHud() {
+        if (KUBEJS_LOADED) {
+            OverlayHudJS event = new OverlayHudJS();
+            OVERLAY_HUD.post(event);
+            return event.toCatalog();
+        }
+        return OverlayHudCatalog.EMPTY;
     }
 }
