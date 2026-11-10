@@ -34,6 +34,7 @@ public class ChestCavityInstance implements ContainerListener {
     public ChestCavityInventory oldInventory;
 
     private final OrganScoreState organScoreState = new OrganScoreState();
+    private final OrganQueryIndex organQueryIndex = new OrganQueryIndex();
     // 器官状态
     public int bloodPoisonTimer = 0;
     public int liverTimer = 0;
@@ -76,6 +77,10 @@ public class ChestCavityInstance implements ContainerListener {
 
     public OrganScoreState getOrganScoreState() {
         return this.organScoreState;
+    }
+
+    public OrganQueryIndex getOrganQueryIndex() {
+        return this.organQueryIndex;
     }
 
     public ResourceLocation getInventoryType() {

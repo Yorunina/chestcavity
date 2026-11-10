@@ -2,7 +2,7 @@ package net.tigereye.chestcavity.client.overlay;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.Slot;
@@ -20,16 +20,34 @@ import java.util.Objects;
 
 public final class OverlayHudPanel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(ChestCavity.MODID, "textures/gui/overlay.png");
-    public static final int TEX_SIZE = 256;
-    public static final int WINDOW_WIDTH = 140;
-    public static final int DRAG_HEIGHT = 14;
-    public static final int HEADER_HEIGHT = 16;
-    public static final int MAX_LIST_HEIGHT = 88;
-    public static final int ROW_HEIGHT = 11;
-    public static final int FOLD_SIZE = 12;
+    public static final int TEX_WIDTH = 256;
+    public static final int TEX_HEIGHT = 64;
+    public static final int WINDOW_WIDTH = 128;
+    public static final int DRAG_HEIGHT = 4;
+    public static final int HEADER_HEIGHT = 20;
+    public static final int MAX_LIST_HEIGHT = 90;
+    public static final int ROW_HEIGHT = 18;
+    public static final int FOLD_SIZE = 18;
     public static final int MARGIN = 4;
+    private static final int CONTENT_INSET = 2;
+    private static final int DRAG_WIDTH = 124;
+    private static final int ROW_WIDTH = 124;
+    private static final int ROW_BORDER = 2;
+    private static final int TEXT_INSET = 8;
+    private static final int DRAG_U = 0;
+    private static final int DRAG_V = 0;
+    private static final int HEADER_U = 0;
+    private static final int HEADER_V = 4;
+    private static final int ROW_U = 0;
+    private static final int ROW_V = 24;
+    private static final int FOLD_CLOSED_U = 128;
+    private static final int FOLD_OPEN_U = 146;
+    private static final int FOLD_V = 4;
     private static final int TEXT_COLOR = 0xE0E0E0;
-    private static final int VALUE_COLOR = 0xFFFFFF;
+    private static final int SCROLLBAR_WIDTH = 2;
+    private static final int SCROLLBAR_MIN_THUMB = 8;
+    private static final int SCROLLBAR_TRACK_COLOR = 0x66303030;
+    private static final int SCROLLBAR_THUMB_COLOR = 0xFFC0C0C0;
 
     private OverlayHudCatalog catalog = OverlayHudCatalog.EMPTY;
     private final List<Row> scoreRows = new ArrayList<>();
@@ -46,6 +64,7 @@ public final class OverlayHudPanel {
     private int dragOffsetX;
     private int dragOffsetY;
     private boolean catalogLoaded;
+    private List<Component> hoveredTooltip = List.of();
 
     public boolean isVisible() {
         return visible;
@@ -55,12 +74,21 @@ public final class OverlayHudPanel {
         return visible && mouseX >= x && mouseX < x + WINDOW_WIDTH && mouseY >= y && mouseY < y + height;
     }
 
+    public boolean capturesInput(double mouseX, double mouseY, ChestCavityScreen screen) {
+        return contains(mouseX, mouseY);
+    }
+
+    public List<Component> getHoveredTooltip() {
+        return hoveredTooltip;
+    }
+
     public void prepare(ChestCavityScreen screen) {
         if (!catalogLoaded) {
             reloadCatalog();
         }
         if (catalog.isEmpty()) {
             visible = false;
+            hoveredTooltip = List.of();
             return;
         }
         visible = true;
@@ -86,39 +114,19 @@ public final class OverlayHudPanel {
 
     public void render(GuiGraphics graphics, Font font, int mouseX, int mouseY) {
         if (!visible) {
+            hoveredTooltip = List.of();
             return;
         }
         int cursor = y;
-        blit(graphics, x, cursor, 0, 0, WINDOW_WIDTH, DRAG_HEIGHT);
+        blit(graphics, x + CONTENT_INSET, cursor, DRAG_U, DRAG_V, DRAG_WIDTH, DRAG_HEIGHT);
         cursor += DRAG_HEIGHT;
         if (!catalog.getScores().isEmpty()) {
-            cursor = renderSection(
-                    graphics,
-                    font,
-                    cursor,
-                    catalog.getScoreTitle(),
-                    scoreRows,
-                    scoreListHeight,
-                    scoreScroll,
-                    OverlayHudClient.isScoresCollapsed(),
-                    mouseX,
-                    mouseY
-            );
+            cursor = renderSection(graphics, font, cursor, catalog.getScoreTitle(), scoreRows, scoreListHeight, scoreScroll, OverlayHudClient.isScoresCollapsed());
         }
         if (!catalog.getTags().isEmpty()) {
-            renderSection(
-                    graphics,
-                    font,
-                    cursor,
-                    catalog.getTagTitle(),
-                    tagRows,
-                    tagListHeight,
-                    tagScroll,
-                    OverlayHudClient.isTagsCollapsed(),
-                    mouseX,
-                    mouseY
-            );
+            renderSection(graphics, font, cursor, catalog.getTagTitle(), tagRows, tagListHeight, tagScroll, OverlayHudClient.isTagsCollapsed());
         }
+        hoveredTooltip = findHoveredTooltip(mouseX, mouseY);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -140,6 +148,10 @@ public final class OverlayHudPanel {
             return true;
         }
         return true;
+    }
+
+    public boolean mouseDragged(double mouseX, double mouseY, int button, ChestCavityScreen screen) {
+        return mouseDragged(mouseX, mouseY, button, screen.width, screen.height);
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, int screenWidth, int screenHeight) {
@@ -187,7 +199,11 @@ public final class OverlayHudPanel {
             if (value == 0.0F) {
                 continue;
             }
-            scoreRows.add(new Row(I18n.get(entry.getLabel()), formatValue(value)));
+            OverlayHudLineJS line = new OverlayHudLineJS(value);
+            entry.getRenderer().accept(line);
+            if (line.shouldShow()) {
+                scoreRows.add(new Row(line.getText(), line.getHover()));
+            }
         }
         InventoryTypeData inventoryTypeData = screen.getInventoryTypeData();
         int slotSize = inventoryTypeData.getSlotSize();
@@ -207,8 +223,13 @@ public final class OverlayHudPanel {
                     count++;
                 }
             }
-            if (count > 0) {
-                tagRows.add(new Row(I18n.get(entry.getLabel()), "x" + count));
+            if (count <= 0) {
+                continue;
+            }
+            OverlayHudLineJS line = new OverlayHudLineJS(count);
+            entry.getRenderer().accept(line);
+            if (line.shouldShow()) {
+                tagRows.add(new Row(line.getText(), line.getHover()));
             }
         }
     }
@@ -224,49 +245,60 @@ public final class OverlayHudPanel {
         y = clampY(screen.getGuiTop(), screen.height);
     }
 
-    private int renderSection(
-            GuiGraphics graphics,
-            Font font,
-            int headerY,
-            String title,
-            List<Row> rows,
-            int listHeight,
-            int scroll,
-            boolean collapsed,
-            int mouseX,
-            int mouseY
-    ) {
-        blit(graphics, x, headerY, 0, 16, WINDOW_WIDTH, HEADER_HEIGHT);
+    private int renderSection(GuiGraphics graphics, Font font, int headerY, Component title, List<Row> rows, int listHeight, int scroll, boolean collapsed) {
+        blit(graphics, x, headerY, HEADER_U, HEADER_V, WINDOW_WIDTH, HEADER_HEIGHT);
         if (title != null) {
-            String text = I18n.get(title);
-            graphics.drawString(font, font.plainSubstrByWidth(text, WINDOW_WIDTH - FOLD_SIZE - 10), x + 4, headerY + 4, TEXT_COLOR, false);
+            int textY = headerY + Math.max(0, (HEADER_HEIGHT - font.lineHeight) / 2);
+            graphics.drawString(font, title, x + TEXT_INSET, textY, TEXT_COLOR, false);
         }
-        int foldX = foldX();
-        int foldY = headerY + (HEADER_HEIGHT - FOLD_SIZE) / 2;
-        int foldV = collapsed ? 16 : 0;
-        blit(graphics, foldX, foldY, 140, foldV, FOLD_SIZE, FOLD_SIZE);
+        blit(graphics, foldX(), headerY, collapsed ? FOLD_OPEN_U : FOLD_CLOSED_U, FOLD_V, FOLD_SIZE, HEADER_HEIGHT);
         int listY = headerY + HEADER_HEIGHT;
         if (collapsed || listHeight <= 0) {
             return listY;
         }
-        blit(graphics, x, listY, 0, 32, WINDOW_WIDTH, listHeight);
-        graphics.enableScissor(x + 2, listY, x + WINDOW_WIDTH - 2, listY + listHeight);
-        int rowY = listY - scroll + 1;
+        for (int rowOffset = 0; rowOffset < listHeight; rowOffset += ROW_HEIGHT) {
+            blit(graphics, x + CONTENT_INSET, listY + rowOffset, ROW_U, ROW_V, ROW_WIDTH, Math.min(ROW_HEIGHT, listHeight - rowOffset));
+        }
+        graphics.enableScissor(x + CONTENT_INSET + ROW_BORDER, listY, scrollbarX(), listY + listHeight);
+        int rowY = listY - scroll + Math.max(0, (ROW_HEIGHT - font.lineHeight) / 2);
         for (Row row : rows) {
             if (rowY + ROW_HEIGHT > listY && rowY < listY + listHeight) {
-                int valueWidth = font.width(row.value);
-                int nameMax = WINDOW_WIDTH - valueWidth - 12;
-                graphics.drawString(font, font.plainSubstrByWidth(row.name, Math.max(nameMax, 8)), x + 4, rowY, TEXT_COLOR, false);
-                graphics.drawString(font, row.value, x + WINDOW_WIDTH - 4 - valueWidth, rowY, VALUE_COLOR, false);
+                graphics.drawString(font, row.text, x + TEXT_INSET, rowY, TEXT_COLOR, false);
             }
             rowY += ROW_HEIGHT;
         }
         graphics.disableScissor();
+        drawScrollbar(graphics, listY, listHeight, rows.size(), scroll);
         return listY + listHeight;
     }
 
+    private void drawScrollbar(GuiGraphics graphics, int listY, int listHeight, int rowCount, int scroll) {
+        int contentHeight = rowCount * ROW_HEIGHT;
+        if (contentHeight <= listHeight) {
+            return;
+        }
+        int scrollbarX = scrollbarX();
+        graphics.fill(scrollbarX, listY, scrollbarX + SCROLLBAR_WIDTH, listY + listHeight, SCROLLBAR_TRACK_COLOR);
+
+        int thumbHeight = Math.max(SCROLLBAR_MIN_THUMB, listHeight * listHeight / contentHeight);
+        int maxScroll = contentHeight - listHeight;
+        int thumbTravel = listHeight - thumbHeight;
+        int thumbOffset = maxScroll <= 0 ? 0 : scroll * thumbTravel / maxScroll;
+        graphics.fill(
+                scrollbarX,
+                listY + thumbOffset,
+                scrollbarX + SCROLLBAR_WIDTH,
+                listY + thumbOffset + thumbHeight,
+                SCROLLBAR_THUMB_COLOR
+        );
+    }
+
     private static void blit(GuiGraphics graphics, int x, int y, int u, int v, int width, int height) {
-        graphics.blit(TEXTURE, x, y, u, v, width, height, TEX_SIZE, TEX_SIZE);
+        graphics.blit(TEXTURE, x, y, u, v, width, height, TEX_WIDTH, TEX_HEIGHT);
+    }
+
+    private int scrollbarX() {
+        return x + CONTENT_INSET + ROW_WIDTH - ROW_BORDER - SCROLLBAR_WIDTH;
     }
 
     private static int listHeight(boolean missing, boolean collapsed, int rows) {
@@ -293,28 +325,19 @@ public final class OverlayHudPanel {
     }
 
     private boolean inDragBar(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX < x + WINDOW_WIDTH && mouseY >= y && mouseY < y + DRAG_HEIGHT;
+        return mouseX >= x + CONTENT_INSET && mouseX < x + CONTENT_INSET + DRAG_WIDTH && mouseY >= y && mouseY < y + DRAG_HEIGHT;
     }
 
     private boolean inFoldButton(int headerY, double mouseX, double mouseY) {
-        if (headerY < 0) {
-            return false;
-        }
-        int foldX = foldX();
-        int foldY = headerY + (HEADER_HEIGHT - FOLD_SIZE) / 2;
-        return mouseX >= foldX && mouseX < foldX + FOLD_SIZE && mouseY >= foldY && mouseY < foldY + FOLD_SIZE;
+        return headerY >= 0 && mouseX >= foldX() && mouseX < foldX() + FOLD_SIZE && mouseY >= headerY && mouseY < headerY + HEADER_HEIGHT;
     }
 
     private boolean inList(int listY, int listHeight, double mouseX, double mouseY) {
-        return listHeight > 0
-                && mouseX >= x
-                && mouseX < x + WINDOW_WIDTH
-                && mouseY >= listY
-                && mouseY < listY + listHeight;
+        return listHeight > 0 && mouseX >= x + CONTENT_INSET && mouseX < x + CONTENT_INSET + ROW_WIDTH && mouseY >= listY && mouseY < listY + listHeight;
     }
 
     private int foldX() {
-        return x + WINDOW_WIDTH - FOLD_SIZE - 3;
+        return x + WINDOW_WIDTH - FOLD_SIZE;
     }
 
     private int scoreHeaderY() {
@@ -340,21 +363,28 @@ public final class OverlayHudPanel {
         return tagHeaderY() < 0 ? -1 : tagHeaderY() + HEADER_HEIGHT;
     }
 
-    private static String formatValue(float value) {
-        if (value == (int) value) {
-            return Integer.toString((int) value);
+    private List<Component> findHoveredTooltip(double mouseX, double mouseY) {
+        if (!contains(mouseX, mouseY)) {
+            return List.of();
         }
-        String text = String.format(java.util.Locale.ROOT, "%.2f", value);
-        int end = text.length();
-        while (end > 0 && text.charAt(end - 1) == '0') {
-            end--;
+        List<Component> tooltip = hoveredRowTooltip(scoreListY(), scoreListHeight, scoreScroll, scoreRows, mouseX, mouseY);
+        if (!tooltip.isEmpty()) {
+            return tooltip;
         }
-        if (end > 0 && text.charAt(end - 1) == '.') {
-            end--;
-        }
-        return text.substring(0, end);
+        return hoveredRowTooltip(tagListY(), tagListHeight, tagScroll, tagRows, mouseX, mouseY);
     }
 
-    private record Row(String name, String value) {
+    private List<Component> hoveredRowTooltip(int listY, int listHeight, int scroll, List<Row> rows, double mouseX, double mouseY) {
+        if (listHeight <= 0 || mouseX < x + CONTENT_INSET + ROW_BORDER || mouseX >= scrollbarX() || mouseY < listY || mouseY >= listY + listHeight) {
+            return List.of();
+        }
+        int index = (int) ((mouseY - listY + scroll) / ROW_HEIGHT);
+        if (index < 0 || index >= rows.size()) {
+            return List.of();
+        }
+        return rows.get(index).hover;
+    }
+
+    private record Row(Component text, List<Component> hover) {
     }
 }

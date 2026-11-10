@@ -257,6 +257,7 @@ public class ChestCavityUtil {
 
     public static void evaluateChestCavity(ChestCavityInstance cc) {
         if (cc.owner == null || cc.owner.level().isClientSide()) return;
+        cc.getOrganQueryIndex().rebuild(cc.inventory, cc.getInventoryTypeData());
         Map<ResourceLocation, Float> organScores = new HashMap<>();
         if (!cc.opened) {
             if (cc.getChestCavityType().getDefaultOrganScores() != null) {

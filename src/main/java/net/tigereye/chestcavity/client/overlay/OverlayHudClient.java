@@ -11,8 +11,8 @@ public final class OverlayHudClient {
     private static Integer posX;
     @Nullable
     private static Integer posY;
-    private static boolean scoresCollapsed;
-    private static boolean tagsCollapsed;
+    private static boolean scoresCollapsed = true;
+    private static boolean tagsCollapsed = true;
 
     private OverlayHudClient() {
     }
@@ -66,7 +66,7 @@ public final class OverlayHudClient {
         scores = Map.of();
         posX = null;
         posY = null;
-        scoresCollapsed = false;
-        tagsCollapsed = false;
+        scoresCollapsed = true;
+        tagsCollapsed = true;
     }
 }

@@ -1,5 +1,7 @@
 package net.tigereye.chestcavity.client.overlay;
 
+import net.minecraft.network.chat.Component;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,15 +11,15 @@ public final class OverlayHudCatalog {
     public static final OverlayHudCatalog EMPTY = new OverlayHudCatalog(null, null, List.of(), List.of());
 
     @Nullable
-    private final String scoreTitle;
+    private final Component scoreTitle;
     @Nullable
-    private final String tagTitle;
+    private final Component tagTitle;
     private final List<OverlayHudEntry> scores;
     private final List<OverlayHudEntry> tags;
 
     public OverlayHudCatalog(
-            @Nullable String scoreTitle,
-            @Nullable String tagTitle,
+            @Nullable Component scoreTitle,
+            @Nullable Component tagTitle,
             Collection<OverlayHudEntry> scores,
             Collection<OverlayHudEntry> tags
     ) {
@@ -28,12 +30,12 @@ public final class OverlayHudCatalog {
     }
 
     @Nullable
-    public String getScoreTitle() {
+    public Component getScoreTitle() {
         return scoreTitle;
     }
 
     @Nullable
-    public String getTagTitle() {
+    public Component getTagTitle() {
         return tagTitle;
     }
 

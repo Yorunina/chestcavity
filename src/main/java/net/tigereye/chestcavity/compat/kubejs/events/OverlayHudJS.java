@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.compat.kubejs.events;
 
 import dev.latvian.mods.kubejs.event.EventJS;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.tigereye.chestcavity.client.overlay.OverlayHudCatalog;
 import net.tigereye.chestcavity.client.overlay.OverlayHudEntry;
@@ -35,17 +36,17 @@ public class OverlayHudJS extends EventJS {
     private final Map<ResourceLocation, OverlayHudEntry> scores = new LinkedHashMap<>();
     private final Map<ResourceLocation, OverlayHudEntry> tags = new LinkedHashMap<>();
     @Nullable
-    private String scoreTitle;
+    private Component scoreTitle;
     @Nullable
-    private String tagTitle;
+    private Component tagTitle;
 
-    public OverlayHudJS setScoreTitle(String title) {
-        this.scoreTitle = emptyToNull(title);
+    public OverlayHudJS setScoreTitle(Component title) {
+        this.scoreTitle = title;
         return this;
     }
 
-    public OverlayHudJS setTagTitle(String title) {
-        this.tagTitle = emptyToNull(title);
+    public OverlayHudJS setTagTitle(Component title) {
+        this.tagTitle = title;
         return this;
     }
 
@@ -92,12 +93,4 @@ public class OverlayHudJS extends EventJS {
         return ResourceLocation.tryParse(normalized);
     }
 
-    @Nullable
-    private static String emptyToNull(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
-    }
 }
