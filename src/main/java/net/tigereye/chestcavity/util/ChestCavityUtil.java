@@ -21,6 +21,7 @@ import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
+import net.tigereye.chestcavity.interfaces.OrganDataProviders;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
 import net.tigereye.chestcavity.listeners.OrganUpdateListeners;
 import net.tigereye.chestcavity.network.OverlayScoreSync;
@@ -370,6 +371,7 @@ public class ChestCavityUtil {
             organData.mergeOrganScores(managedOrganData);
         }
 
+        organData.mergeOrganScores(OrganDataProviders.getOrganData(itemStack));
         return organData;
     }
 
