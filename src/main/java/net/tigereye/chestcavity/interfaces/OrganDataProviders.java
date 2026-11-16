@@ -3,6 +3,8 @@ package net.tigereye.chestcavity.interfaces;
 import net.minecraft.world.item.ItemStack;
 import net.tigereye.chestcavity.ChestCavity;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
+import net.tigereye.chestcavity.organproviders.ManagedOrganDataProvider;
+import net.tigereye.chestcavity.organproviders.NbtOrganDataProvider;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
