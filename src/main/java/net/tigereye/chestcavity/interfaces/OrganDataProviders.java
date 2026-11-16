@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class OrganDataProviders {
+    private static final List<OrganDataProvider> BUILT_IN_PROVIDERS = List.of(
+            new NbtOrganDataProvider(),
+            new ManagedOrganDataProvider()
+    );
     private static final List<OrganDataProvider> PROVIDERS = new CopyOnWriteArrayList<>();
 
     private OrganDataProviders() {
@@ -21,15 +25,23 @@ public final class OrganDataProviders {
 
     public static OrganData getOrganData(ItemStack itemStack) {
         OrganData organData = null;
+        for (OrganDataProvider provider : BUILT_IN_PROVIDERS) {
+            organData = mergeProviderData(itemStack, provider, organData);
+        }
         for (OrganDataProvider provider : PROVIDERS) {
-            try {
-                OrganData providedData = provider.getOrganData(itemStack);
-                if (providedData == null) continue;
-                if (organData == null) organData = new OrganData();
-                organData.mergeOrganScores(providedData);
-            } catch (Exception error) {
-                ChestCavity.LOGGER.error("Error reading dynamic organ data", error);
-            }
+            organData = mergeProviderData(itemStack, provider, organData);
+        }
+        return organData;
+    }
+
+    private static OrganData mergeProviderData(ItemStack itemStack, OrganDataProvider provider, OrganData organData) {
+        try {
+            OrganData providedData = provider.getOrganData(itemStack);
+            if (providedData == null) return organData;
+            if (organData == null) organData = new OrganData();
+            organData.mergeOrganScores(providedData);
+        } catch (Exception error) {
+            ChestCavity.LOGGER.error("Error reading dynamic organ data", error);
         }
         return organData;
     }

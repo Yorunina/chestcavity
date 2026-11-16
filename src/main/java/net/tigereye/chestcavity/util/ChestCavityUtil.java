@@ -19,7 +19,6 @@ import net.tigereye.chestcavity.chestcavities.IChestCavityType;
 import net.tigereye.chestcavity.chestcavities.instance.ChestCavityInstance;
 import net.tigereye.chestcavity.chestcavities.json.ccInvType.InventoryTypeData;
 import net.tigereye.chestcavity.chestcavities.json.organs.OrganData;
-import net.tigereye.chestcavity.chestcavities.json.organs.OrganManager;
 import net.tigereye.chestcavity.compat.kubejs.CCEvents;
 import net.tigereye.chestcavity.interfaces.OrganDataProviders;
 import net.tigereye.chestcavity.listeners.OrganAddStatusEffectListeners;
@@ -360,15 +359,6 @@ public class ChestCavityUtil {
         if (cct != null) {
             OrganData exceptionalOrganData = cct.catchExceptionalOrgan(itemStack);
             organData.mergeOrganScores(exceptionalOrganData);
-        }
-
-        OrganData nbtOrganData = OrganManager.readNBTOrganData(itemStack);
-        organData.mergeOrganScores(nbtOrganData);
-
-        Item item = itemStack.getItem();
-        if (OrganManager.hasEntry(item)) {
-            OrganData managedOrganData = OrganManager.getEntry(item);
-            organData.mergeOrganScores(managedOrganData);
         }
 
         organData.mergeOrganScores(OrganDataProviders.getOrganData(itemStack));
