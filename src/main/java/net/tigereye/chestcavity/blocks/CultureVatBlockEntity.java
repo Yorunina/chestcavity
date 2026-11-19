@@ -206,9 +206,19 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             return InteractionResult.SUCCESS;
         }
         if (!this.organ.isEmpty()) {
-            if (player.isShiftKeyDown() && held.isEmpty()) {
-                player.setItemInHand(hand, this.organ.copy());
+            if (held.isEmpty()) {
+                giveToPlayer(player, this.organ.copy());
                 this.organ = ItemStack.EMPTY;
+                this.cultured = false;
+                this.progress = 0;
+                this.setChanged();
+                this.sync();
+                return InteractionResult.SUCCESS;
+            }
+            if (this.findAcceptedRecipe(held) != null) {
+                giveToPlayer(player, this.organ.copy());
+                this.organ = held.copyWithCount(1);
+                held.shrink(1);
                 this.cultured = false;
                 this.progress = 0;
                 this.setChanged();
@@ -232,6 +242,12 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
 
     private @Nullable CulturingRecipe findAcceptedRecipe(ItemStack stack) {
         return CulturingRecipes.find(this.level, this.tank.getFluid(), stack);
+    }
+
+    private static void giveToPlayer(Player player, ItemStack stack) {
+        if (!player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
     }
 
     public void dropContents() {
