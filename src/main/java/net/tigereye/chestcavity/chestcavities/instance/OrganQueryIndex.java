@@ -35,7 +35,9 @@ public final class OrganQueryIndex {
             String itemId = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
             int count = stack.getCount();
             items.computeIfAbsent(itemId, ignored -> new ArrayList<>()).add(new Slot(i, slotType, count));
-            stack.getTags().forEach(tag -> tagCounts.merge(tag.location().toString(), count, Integer::sum));
+            if (!"container_slot".equals(slotType)) {
+                stack.getTags().forEach(tag -> tagCounts.merge(tag.location().toString(), count, Integer::sum));
+            }
         }
     }
 
@@ -88,7 +90,7 @@ public final class OrganQueryIndex {
         return slotTypes.getOrDefault(index, "");
     }
 
-    /** 全部库存的标签件数，包含 container_slot；tagId 不带 #。 */
+    /** 已安装槽位的标签件数，不包含 container_slot；tagId 不带 #。 */
     public int getTagCount(String tagId) {
         return tagCounts.getOrDefault(tagId, 0);
     }
