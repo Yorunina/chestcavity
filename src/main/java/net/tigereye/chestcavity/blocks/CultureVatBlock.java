@@ -1,6 +1,7 @@
 package net.tigereye.chestcavity.blocks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,7 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
@@ -18,8 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,8 +29,7 @@ import net.tigereye.chestcavity.registration.CCBlocks;
 import org.jetbrains.annotations.Nullable;
 
 public class CultureVatBlock extends Block implements EntityBlock {
-    private static final VoxelShape BOTTOM_SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
-    private static final VoxelShape TOP_SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+    private static final VoxelShape SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 
     private final boolean top;
 
@@ -40,13 +41,9 @@ public class CultureVatBlock extends Block implements EntityBlock {
         this.top = top;
     }
 
-    public boolean isTop() {
-        return this.top;
-    }
-
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return this.top ? TOP_SHAPE : BOTTOM_SHAPE;
+        return SHAPE;
     }
 
     @Override
@@ -55,8 +52,8 @@ public class CultureVatBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean skipRendering(BlockState state, BlockState adjacentState, net.minecraft.core.Direction side) {
-        return adjacentState.is(this);
+    public boolean skipRendering(BlockState state, BlockState adjacentState, Direction side) {
+        return adjacentState.getBlock() instanceof CultureVatBlock;
     }
 
     @Override
@@ -93,48 +90,33 @@ public class CultureVatBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, net.minecraft.core.Direction direction, BlockState neighborState,
-                                  net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        net.minecraft.core.Direction partnerSide = this.top ? net.minecraft.core.Direction.DOWN : net.minecraft.core.Direction.UP;
-        if (direction == partnerSide) {
-            return neighborState.getBlock() instanceof CultureVatBlock ? state : net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+                                  LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Direction partnerSide = this.top ? Direction.DOWN : Direction.UP;
+        if (direction == partnerSide && !(neighborState.getBlock() instanceof CultureVatBlock)) {
+            return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, net.minecraft.world.level.LevelReader level, BlockPos pos) {
-        if (this.top) {
-            return level.getBlockState(pos.below()).getBlock() instanceof CultureVatBlock;
-        }
-        return true;
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return !this.top || level.getBlockState(pos.below()).getBlock() instanceof CultureVatBlock;
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
-            if (!this.top) {
-                BlockEntity blockEntity = level.getBlockEntity(pos);
-                if (blockEntity instanceof CultureVatBlockEntity vat) {
-                    vat.dropContents();
-                }
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof CultureVatBlockEntity vat) {
+                vat.dropContents();
             }
             BlockPos other = this.top ? pos.below() : pos.above();
             if (level.getBlockState(other).getBlock() instanceof CultureVatBlock) {
-                level.setBlock(other, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(other, Blocks.AIR.defaultBlockState(), 3);
             }
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return Fluids.EMPTY.defaultFluidState();
     }
 
     @Override

@@ -9,10 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public final class CulturingRecipes {
-    private static final Map<String, Optional<CulturingRecipe>> CACHE = new HashMap<>();
+    private static final Map<String, CulturingRecipe> CACHE = new HashMap<>();
 
     private CulturingRecipes() {
     }
@@ -21,17 +20,19 @@ public final class CulturingRecipes {
         if (level == null || fluid.isEmpty() || organ.isEmpty()) {
             return null;
         }
-        String key = organ.getItem() + "|" + net.minecraftforge.registries.ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
-        return CACHE.computeIfAbsent(key, ignored -> lookup(level, fluid, organ)).orElse(null);
+        String key = organ.getItem() + "|" + (organ.hasTag() ? organ.getTag().hashCode() : 0) + "|"
+                + net.minecraftforge.registries.ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
+        CulturingRecipe recipe = CACHE.computeIfAbsent(key, ignored -> lookup(level, fluid, organ));
+        return recipe != null && recipe.matches(fluid, organ) ? recipe : null;
     }
 
-    private static Optional<CulturingRecipe> lookup(Level level, FluidStack fluid, ItemStack organ) {
+    private static @Nullable CulturingRecipe lookup(Level level, FluidStack fluid, ItemStack organ) {
         for (CulturingRecipe recipe : level.getRecipeManager().getAllRecipesFor(CCRecipeTypes.CULTURING.get())) {
-            if (recipe.matches(fluid, organ)) {
-                return Optional.of(recipe);
+            if (recipe.getIngredient().test(organ) && recipe.getFluid().getFluid().isSame(fluid.getFluid())) {
+                return recipe;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     public static void onDatapackSync(OnDatapackSyncEvent event) {

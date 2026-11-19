@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tigereye.chestcavity.registration.CCRecipeTypes;
@@ -76,7 +77,7 @@ public class CulturingRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return this.output;
+        return this.output.copy();
     }
 
     @Override
@@ -112,7 +113,7 @@ public class CulturingRecipe implements Recipe<Container> {
             FluidStack fluid = readFluid(GsonHelper.getAsJsonObject(json, "fluid"));
             Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "ingredient"));
             int ticks = GsonHelper.getAsInt(json, "ticks", 200);
-            ItemStack output = net.minecraftforge.common.crafting.CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "output"), true);
+            ItemStack output = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "output"), true);
             return new CulturingRecipe(id, fluid, ingredient, ticks, output);
         }
 

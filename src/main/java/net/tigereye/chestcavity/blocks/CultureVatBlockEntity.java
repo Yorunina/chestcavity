@@ -65,11 +65,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
                 return stack;
             }
             if (!simulate) {
-                CultureVatBlockEntity.this.organ = stack.copyWithCount(1);
-                CultureVatBlockEntity.this.cultured = false;
-                CultureVatBlockEntity.this.progress = 0;
-                CultureVatBlockEntity.this.setChanged();
-                CultureVatBlockEntity.this.sync();
+                CultureVatBlockEntity.this.setOrgan(stack.copyWithCount(1));
             }
             ItemStack remainder = stack.copy();
             remainder.shrink(1);
@@ -88,9 +84,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return CultureVatBlockEntity.this.organ.isEmpty()
-                    && !CultureVatBlockEntity.this.tank.getFluid().isEmpty()
-                    && CulturingRecipes.find(CultureVatBlockEntity.this.level, CultureVatBlockEntity.this.tank.getFluid(), stack) != null;
+            return CultureVatBlockEntity.this.organ.isEmpty() && CultureVatBlockEntity.this.findAcceptedRecipe(stack) != null;
         }
     };
     private final IItemHandler outputHandler = new IItemHandler() {
@@ -116,11 +110,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             }
             ItemStack out = CultureVatBlockEntity.this.organ.copyWithCount(Math.min(amount, CultureVatBlockEntity.this.organ.getCount()));
             if (!simulate) {
-                CultureVatBlockEntity.this.organ = ItemStack.EMPTY;
-                CultureVatBlockEntity.this.cultured = false;
-                CultureVatBlockEntity.this.progress = 0;
-                CultureVatBlockEntity.this.setChanged();
-                CultureVatBlockEntity.this.sync();
+                CultureVatBlockEntity.this.setOrgan(ItemStack.EMPTY);
             }
             return out;
         }
@@ -150,8 +140,12 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         return this.organ;
     }
 
-    public int getProgress() {
-        return this.progress;
+    private void setOrgan(ItemStack stack) {
+        this.organ = stack;
+        this.cultured = false;
+        this.progress = 0;
+        this.setChanged();
+        this.sync();
     }
 
     public float getRenderedFluidLevel() {
@@ -171,7 +165,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             vat.syncTimer = 0;
             vat.sync();
         }
-        if (vat.organ.isEmpty()) {
+        if (vat.organ.isEmpty() || vat.cultured) {
             vat.progress = 0;
             return;
         }
@@ -207,22 +201,16 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         }
         if (!this.organ.isEmpty()) {
             if (held.isEmpty()) {
-                giveToPlayer(player, this.organ.copy());
-                this.organ = ItemStack.EMPTY;
-                this.cultured = false;
-                this.progress = 0;
-                this.setChanged();
-                this.sync();
+                ItemStack taken = this.organ.copy();
+                setOrgan(ItemStack.EMPTY);
+                giveToPlayer(player, taken);
                 return InteractionResult.SUCCESS;
             }
             if (this.findAcceptedRecipe(held) != null) {
-                giveToPlayer(player, this.organ.copy());
-                this.organ = held.copyWithCount(1);
+                ItemStack replaced = this.organ.copy();
+                setOrgan(held.copyWithCount(1));
                 held.shrink(1);
-                this.cultured = false;
-                this.progress = 0;
-                this.setChanged();
-                this.sync();
+                giveToPlayer(player, replaced);
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
@@ -230,13 +218,9 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         if (held.isEmpty() || this.tank.getFluid().isEmpty() || this.findAcceptedRecipe(held) == null) {
             return InteractionResult.PASS;
         }
-        this.organ = held.copyWithCount(1);
-        this.cultured = false;
+        setOrgan(held.copyWithCount(1));
         held.shrink(1);
-        this.progress = 0;
         this.level.playSound(null, this.worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
-        this.setChanged();
-        this.sync();
         return InteractionResult.SUCCESS;
     }
 
@@ -261,9 +245,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
                 this.organ.copy());
         entity.setDefaultPickUpDelay();
         this.level.addFreshEntity(entity);
-        this.organ = ItemStack.EMPTY;
-        this.cultured = false;
-        this.setChanged();
+        setOrgan(ItemStack.EMPTY);
     }
 
     private void sync() {
