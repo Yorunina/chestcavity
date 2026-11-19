@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "chestcavity:culture_vat",
-    "chestcavity:culture_vat_top"
+    "chestcavity:culture_vat"
   ]
 }

@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "chestcavity:block/culture_vat" }
+    "half=lower": { "model": "chestcavity:block/culture_vat" },
+    "half=upper": { "model": "chestcavity:block/culture_vat_top" }
   }
 }

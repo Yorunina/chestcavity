@@ -22,23 +22,30 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.tigereye.chestcavity.registration.CCBlocks;
 import org.jetbrains.annotations.Nullable;
 
 public class CultureVatBlock extends Block implements EntityBlock {
+    public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     private static final VoxelShape SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 
-    private final boolean top;
-
-    public CultureVatBlock(boolean top) {
+    public CultureVatBlock() {
         super(BlockBehaviour.Properties.of()
                 .strength(1.5F)
                 .sound(SoundType.GLASS)
                 .noOcclusion());
-        this.top = top;
+        this.registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(HALF);
     }
 
     @Override
@@ -53,17 +60,15 @@ public class CultureVatBlock extends Block implements EntityBlock {
 
     @Override
     public boolean skipRendering(BlockState state, BlockState adjacentState, Direction side) {
-        return adjacentState.getBlock() instanceof CultureVatBlock;
+        return side.getAxis() == Direction.Axis.Y
+                && adjacentState.is(this)
+                && state.getValue(HALF) != adjacentState.getValue(HALF);
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        if (this.top) {
-            return null;
-        }
-        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        if (!level.getBlockState(pos.above()).canBeReplaced(context)) {
+        if (!context.getLevel().getBlockState(pos.above()).canBeReplaced(context)) {
             return null;
         }
         return this.defaultBlockState();
@@ -71,9 +76,7 @@ public class CultureVatBlock extends Block implements EntityBlock {
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (!this.top) {
-            level.setBlock(pos.above(), CCBlocks.CULTURE_VAT_TOP.get().defaultBlockState(), 3);
-        }
+        level.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), 3);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class CultureVatBlock extends Block implements EntityBlock {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
-        BlockPos base = this.top ? pos.below() : pos;
+        BlockPos base = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
         BlockEntity blockEntity = level.getBlockEntity(base);
         if (blockEntity instanceof CultureVatBlockEntity vat) {
             return vat.use(player, hand);
@@ -92,8 +95,11 @@ public class CultureVatBlock extends Block implements EntityBlock {
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                   LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        Direction partnerSide = this.top ? Direction.DOWN : Direction.UP;
-        if (direction == partnerSide && !(neighborState.getBlock() instanceof CultureVatBlock)) {
+        DoubleBlockHalf half = state.getValue(HALF);
+        Direction partnerSide = half == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
+        DoubleBlockHalf partnerHalf = half == DoubleBlockHalf.UPPER ? DoubleBlockHalf.LOWER : DoubleBlockHalf.UPPER;
+        if (direction == partnerSide
+                && (!neighborState.is(this) || neighborState.getValue(HALF) != partnerHalf)) {
             return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
@@ -101,7 +107,10 @@ public class CultureVatBlock extends Block implements EntityBlock {
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return !this.top || level.getBlockState(pos.below()).getBlock() instanceof CultureVatBlock;
+        DoubleBlockHalf half = state.getValue(HALF);
+        return half == DoubleBlockHalf.LOWER
+                || (level.getBlockState(pos.below()).is(this)
+                && level.getBlockState(pos.below()).getValue(HALF) == DoubleBlockHalf.LOWER);
     }
 
     @Override
@@ -111,8 +120,9 @@ public class CultureVatBlock extends Block implements EntityBlock {
             if (blockEntity instanceof CultureVatBlockEntity vat) {
                 vat.dropContents();
             }
-            BlockPos other = this.top ? pos.below() : pos.above();
-            if (level.getBlockState(other).getBlock() instanceof CultureVatBlock) {
+            BlockPos other = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos.above();
+            BlockState otherState = level.getBlockState(other);
+            if (otherState.is(this)) {
                 level.setBlock(other, Blocks.AIR.defaultBlockState(), 3);
             }
         }
@@ -121,12 +131,14 @@ public class CultureVatBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return this.top ? null : new CultureVatBlockEntity(pos, state);
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER
+                ? new CultureVatBlockEntity(pos, state)
+                : null;
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (this.top) {
+        if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
             return null;
         }
         return level.isClientSide

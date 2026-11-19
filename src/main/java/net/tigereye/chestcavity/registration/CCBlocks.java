@@ -14,9 +14,7 @@ public class CCBlocks {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ChestCavity.MODID);
 
     public static final RegistryObject<Block> CULTURE_VAT = BLOCKS.register("culture_vat",
-            () -> new CultureVatBlock(false));
-    public static final RegistryObject<Block> CULTURE_VAT_TOP = BLOCKS.register("culture_vat_top",
-            () -> new CultureVatBlock(true));
+            CultureVatBlock::new);
 
     public static final RegistryObject<Item> CULTURE_VAT_ITEM = ITEMS.register("culture_vat",
             () -> new BlockItem(CULTURE_VAT.get(), new Item.Properties()));
