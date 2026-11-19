@@ -79,5 +79,6 @@ public class ChestCavity {
             KUBEJS_LOADED = true;
         }
         ChestCavityQuestEventHandler.getInstance().init();
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(net.tigereye.chestcavity.recipes.CulturingRecipes::onDatapackSync);
     }
 }

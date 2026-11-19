@@ -22,9 +22,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
 import net.tigereye.chestcavity.recipes.CulturingRecipe;
+import net.tigereye.chestcavity.recipes.CulturingRecipes;
 import net.tigereye.chestcavity.registration.CCBlockEntities;
-import net.tigereye.chestcavity.registration.CCRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,10 +43,100 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> this);
 
     private ItemStack organ = ItemStack.EMPTY;
+    private boolean cultured;
     private int progress;
     private int syncTimer;
     private boolean dirty;
     private float clientFluidLevel = -1.0F;
+    private final IItemHandler inputHandler = new IItemHandler() {
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return CultureVatBlockEntity.this.organ;
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (stack.isEmpty() || !isItemValid(slot, stack)) {
+                return stack;
+            }
+            if (!simulate) {
+                CultureVatBlockEntity.this.organ = stack.copyWithCount(1);
+                CultureVatBlockEntity.this.cultured = false;
+                CultureVatBlockEntity.this.progress = 0;
+                CultureVatBlockEntity.this.setChanged();
+                CultureVatBlockEntity.this.sync();
+            }
+            ItemStack remainder = stack.copy();
+            remainder.shrink(1);
+            return remainder;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return CultureVatBlockEntity.this.organ.isEmpty()
+                    && !CultureVatBlockEntity.this.tank.getFluid().isEmpty()
+                    && CulturingRecipes.find(CultureVatBlockEntity.this.level, CultureVatBlockEntity.this.tank.getFluid(), stack) != null;
+        }
+    };
+    private final IItemHandler outputHandler = new IItemHandler() {
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return CultureVatBlockEntity.this.cultured ? CultureVatBlockEntity.this.organ : ItemStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (!CultureVatBlockEntity.this.cultured || CultureVatBlockEntity.this.organ.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+            ItemStack out = CultureVatBlockEntity.this.organ.copyWithCount(Math.min(amount, CultureVatBlockEntity.this.organ.getCount()));
+            if (!simulate) {
+                CultureVatBlockEntity.this.organ = ItemStack.EMPTY;
+                CultureVatBlockEntity.this.cultured = false;
+                CultureVatBlockEntity.this.progress = 0;
+                CultureVatBlockEntity.this.setChanged();
+                CultureVatBlockEntity.this.sync();
+            }
+            return out;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 64;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false;
+        }
+    };
+    private final LazyOptional<IItemHandler> inputHandlerCap = LazyOptional.of(() -> this.inputHandler);
+    private final LazyOptional<IItemHandler> outputHandlerCap = LazyOptional.of(() -> this.outputHandler);
 
     public CultureVatBlockEntity(BlockPos pos, BlockState state) {
         super(CCBlockEntities.CULTURE_VAT.get(), pos, state);
@@ -95,6 +186,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         }
         vat.tank.drain(recipe.getFluid().getAmount(), FluidAction.EXECUTE);
         vat.organ = recipe.getOutput().copy();
+        vat.cultured = true;
         vat.progress = 0;
         vat.setChanged();
         vat.sync();
@@ -102,15 +194,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     }
 
     private @Nullable CulturingRecipe findMatchingRecipe() {
-        if (this.level == null || this.organ.isEmpty() || this.tank.getFluid().isEmpty()) {
-            return null;
-        }
-        for (CulturingRecipe recipe : this.level.getRecipeManager().getAllRecipesFor(CCRecipeTypes.CULTURING.get())) {
-            if (recipe.matches(this.tank.getFluid(), this.organ)) {
-                return recipe;
-            }
-        }
-        return null;
+        return CulturingRecipes.find(this.level, this.tank.getFluid(), this.organ);
     }
 
     public InteractionResult use(Player player, InteractionHand hand) {
@@ -125,6 +209,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             if (player.isShiftKeyDown() && held.isEmpty()) {
                 player.setItemInHand(hand, this.organ.copy());
                 this.organ = ItemStack.EMPTY;
+                this.cultured = false;
                 this.progress = 0;
                 this.setChanged();
                 this.sync();
@@ -136,6 +221,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             return InteractionResult.PASS;
         }
         this.organ = held.copyWithCount(1);
+        this.cultured = false;
         held.shrink(1);
         this.progress = 0;
         this.level.playSound(null, this.worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
@@ -145,15 +231,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     }
 
     private @Nullable CulturingRecipe findAcceptedRecipe(ItemStack stack) {
-        if (this.level == null) {
-            return null;
-        }
-        for (CulturingRecipe recipe : this.level.getRecipeManager().getAllRecipesFor(CCRecipeTypes.CULTURING.get())) {
-            if (recipe.getIngredient().test(stack)) {
-                return recipe;
-            }
-        }
-        return null;
+        return CulturingRecipes.find(this.level, this.tank.getFluid(), stack);
     }
 
     public void dropContents() {
@@ -168,6 +246,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         entity.setDefaultPickUpDelay();
         this.level.addFreshEntity(entity);
         this.organ = ItemStack.EMPTY;
+        this.cultured = false;
         this.setChanged();
     }
 
@@ -182,6 +261,8 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     public void setRemoved() {
         super.setRemoved();
         this.fluidHandler.invalidate();
+        this.inputHandlerCap.invalidate();
+        this.outputHandlerCap.invalidate();
     }
 
     @Override
@@ -189,6 +270,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         super.load(tag);
         this.tank.readFromNBT(tag.getCompound("Tank"));
         this.organ = ItemStack.of(tag.getCompound("Organ"));
+        this.cultured = tag.getBoolean("Cultured");
         this.progress = tag.getInt("Progress");
         this.clientFluidLevel = -1.0F;
     }
@@ -200,6 +282,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         if (!this.organ.isEmpty()) {
             tag.put("Organ", this.organ.save(new CompoundTag()));
         }
+        tag.putBoolean("Cultured", this.cultured);
         tag.putInt("Progress", this.progress);
     }
 
@@ -227,6 +310,9 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return this.fluidHandler.cast();
+        }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return (side == Direction.DOWN ? this.outputHandlerCap : this.inputHandlerCap).cast();
         }
         return super.getCapability(cap, side);
     }
