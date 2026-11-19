@@ -54,11 +54,14 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         pose.popPose();
     }
 
+    private static TextureAtlasSprite getSprite(net.minecraft.resources.ResourceLocation texture) {
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+    }
+
     private static void renderFluid(FluidStack fluid, PoseStack pose, MultiBufferSource buffers, int light, float top) {
         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid.getFluid());
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(properties.getStillTexture(fluid));
+        TextureAtlasSprite stillSprite = getSprite(properties.getStillTexture(fluid));
+        TextureAtlasSprite flowingSprite = getSprite(properties.getFlowingTexture(fluid));
         int color = properties.getTintColor(fluid);
         float red = ((color >> 16) & 0xFF) / 255.0F;
         float green = ((color >> 8) & 0xFF) / 255.0F;
@@ -67,26 +70,30 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         if (alpha <= 0.0F) {
             alpha = 1.0F;
         }
-        float u0 = sprite.getU0();
-        float u1 = sprite.getU1();
-        float v0 = sprite.getV0();
-        float v1 = sprite.getV1();
+        float stillU0 = stillSprite.getU0();
+        float stillU1 = stillSprite.getU1();
+        float stillV0 = stillSprite.getV0();
+        float stillV1 = stillSprite.getV1();
+        float flowingU0 = flowingSprite.getU0();
+        float flowingU1 = flowingSprite.getU1();
+        float flowingV0 = flowingSprite.getV0();
+        float flowingV1 = flowingSprite.getV1();
 
         pose.pushPose();
         Matrix4f matrix = pose.last().pose();
         Matrix3f normal = pose.last().normal();
         VertexConsumer consumer = buffers.getBuffer(FLUID_LAYER);
 
-        consumer.vertex(matrix, INNER_MIN, top, INNER_MIN).color(red, green, blue, alpha).uv(u0, v0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(matrix, INNER_MIN, top, INNER_MAX).color(red, green, blue, alpha).uv(u0, v1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(matrix, INNER_MAX, top, INNER_MAX).color(red, green, blue, alpha).uv(u1, v1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(matrix, INNER_MAX, top, INNER_MIN).color(red, green, blue, alpha).uv(u1, v0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(matrix, INNER_MIN, top, INNER_MIN).color(red, green, blue, alpha).uv(stillU0, stillV0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(matrix, INNER_MIN, top, INNER_MAX).color(red, green, blue, alpha).uv(stillU0, stillV1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(matrix, INNER_MAX, top, INNER_MAX).color(red, green, blue, alpha).uv(stillU1, stillV1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(matrix, INNER_MAX, top, INNER_MIN).color(red, green, blue, alpha).uv(stillU1, stillV0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 
-        float bottomV = v0 + (v1 - v0) * (top - FLOOR) / (CEILING - FLOOR);
-        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MIN, top, u0, u1, bottomV, v0, red, green, blue, alpha, light, 0.0F, 0.0F, -1.0F);
-        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MAX, top, u0, u1, bottomV, v0, red, green, blue, alpha, light, 0.0F, 0.0F, 1.0F);
-        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MAX, top, u0, u1, bottomV, v0, red, green, blue, alpha, light, 1.0F, 0.0F, 0.0F);
-        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MIN, top, u0, u1, bottomV, v0, red, green, blue, alpha, light, -1.0F, 0.0F, 0.0F);
+        float bottomV = flowingV0 + (flowingV1 - flowingV0) * (top - FLOOR) / (CEILING - FLOOR);
+        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MIN, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 0.0F, 0.0F, -1.0F);
+        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MAX, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 0.0F, 0.0F, 1.0F);
+        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MAX, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 1.0F, 0.0F, 0.0F);
+        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MIN, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, -1.0F, 0.0F, 0.0F);
 
         pose.popPose();
     }
