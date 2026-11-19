@@ -20,16 +20,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.tigereye.chestcavity.registration.CCBlocks;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CultureVatBlock extends Block implements EntityBlock {
     private static final VoxelShape BOTTOM_SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
@@ -98,30 +93,38 @@ public class CultureVatBlock extends Block implements EntityBlock {
     }
 
     @Override
+    public BlockState updateShape(BlockState state, net.minecraft.core.Direction direction, BlockState neighborState,
+                                  net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        net.minecraft.core.Direction partnerSide = this.top ? net.minecraft.core.Direction.DOWN : net.minecraft.core.Direction.UP;
+        if (direction == partnerSide) {
+            return neighborState.getBlock() instanceof CultureVatBlock ? state : net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        }
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, net.minecraft.world.level.LevelReader level, BlockPos pos) {
+        if (this.top) {
+            return level.getBlockState(pos.below()).getBlock() instanceof CultureVatBlock;
+        }
+        return true;
+    }
+
+    @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
+            if (!this.top) {
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof CultureVatBlockEntity vat) {
+                    vat.dropContents();
+                }
+            }
             BlockPos other = this.top ? pos.below() : pos.above();
-            BlockState otherState = level.getBlockState(other);
-            if (otherState.getBlock() instanceof CultureVatBlock) {
+            if (level.getBlockState(other).getBlock() instanceof CultureVatBlock) {
                 level.setBlock(other, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
             }
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    @Override
-    public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        List<ItemStack> drops = new ArrayList<>(super.getDrops(state, params));
-        if (!this.top) {
-            BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-            if (blockEntity instanceof CultureVatBlockEntity vat) {
-                ItemStack organ = vat.getOrgan();
-                if (!organ.isEmpty()) {
-                    drops.add(organ.copy());
-                }
-            }
-        }
-        return drops;
     }
 
     @Override

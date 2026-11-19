@@ -24,6 +24,7 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
     private static final float INNER_MAX = 0.86F;
     private static final float FLOOR = 0.0625F;
     private static final float CEILING = 0.9375F;
+    private static final RenderType FLUID_LAYER = RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
 
     private final ItemRenderer itemRenderer;
 
@@ -36,7 +37,7 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         FluidStack fluid = vat.getFluid();
         float fluidHeight = 0.0F;
         if (!fluid.isEmpty()) {
-            fluidHeight = FLOOR + (CEILING - FLOOR) * Math.min(1.0F, (float) fluid.getAmount() / (float) CultureVatBlockEntity.CAPACITY);
+            fluidHeight = FLOOR + (CEILING - FLOOR) * vat.getRenderedFluidLevel();
             renderFluid(fluid, pose, buffers, light, fluidHeight);
         }
         ItemStack organ = vat.getOrgan();
@@ -74,7 +75,7 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         pose.pushPose();
         Matrix4f matrix = pose.last().pose();
         Matrix3f normal = pose.last().normal();
-        VertexConsumer consumer = buffers.getBuffer(RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS));
+        VertexConsumer consumer = buffers.getBuffer(FLUID_LAYER);
 
         consumer.vertex(matrix, INNER_MIN, top, INNER_MIN).color(red, green, blue, alpha).uv(u0, v0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
         consumer.vertex(matrix, INNER_MIN, top, INNER_MAX).color(red, green, blue, alpha).uv(u0, v1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

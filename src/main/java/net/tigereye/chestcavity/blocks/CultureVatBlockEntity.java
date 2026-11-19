@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,17 +28,15 @@ import net.tigereye.chestcavity.registration.CCRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler {
     public static final int CAPACITY = 4000;
-    private static final int SYNC_INTERVAL = 20;
+    private static final int SYNC_INTERVAL = 5;
 
     private final FluidTank tank = new FluidTank(CAPACITY) {
         @Override
         protected void onContentsChanged() {
             CultureVatBlockEntity.this.setChanged();
-            CultureVatBlockEntity.this.sync();
+            CultureVatBlockEntity.this.dirty = true;
         }
     };
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> this);
@@ -45,6 +44,8 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
     private ItemStack organ = ItemStack.EMPTY;
     private int progress;
     private int syncTimer;
+    private boolean dirty;
+    private float clientFluidLevel = -1.0F;
 
     public CultureVatBlockEntity(BlockPos pos, BlockState state) {
         super(CCBlockEntities.CULTURE_VAT.get(), pos, state);
@@ -62,41 +63,45 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         return this.progress;
     }
 
-    public float getProgressRatio() {
-        CulturingRecipe recipe = this.findRecipe();
-        return recipe == null ? 0.0F : (float) this.progress / (float) recipe.getTicks();
+    public float getRenderedFluidLevel() {
+        float target = this.tank.getFluid().isEmpty()
+                ? 0.0F
+                : Math.min(1.0F, (float) this.tank.getFluid().getAmount() / (float) CAPACITY);
+        if (this.clientFluidLevel < 0.0F) {
+            this.clientFluidLevel = target;
+        }
+        this.clientFluidLevel += (target - this.clientFluidLevel) * 0.2F;
+        return this.clientFluidLevel;
     }
 
     public static void serverTick(Level level, CultureVatBlockEntity vat) {
-        if (vat.organ.isEmpty()) {
-            if (vat.progress != 0) {
-                vat.progress = 0;
-            }
-            return;
-        }
-        CulturingRecipe recipe = vat.findRecipe();
-        if (recipe == null) {
-            if (vat.progress != 0) {
-                vat.progress = 0;
-                vat.setChanged();
-            }
-            return;
-        }
-        vat.progress++;
-        if (vat.progress >= recipe.getTicks()) {
-            vat.tank.drain(recipe.getFluid().getAmount(), FluidAction.EXECUTE);
-            vat.organ = recipe.getResultItem(level.registryAccess()).copy();
-            vat.progress = 0;
-            vat.setChanged();
-            vat.sync();
-            level.playSound(null, vat.worldPosition, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.6F, 1.0F);
-        } else if (++vat.syncTimer >= SYNC_INTERVAL) {
+        if (vat.dirty && ++vat.syncTimer >= SYNC_INTERVAL) {
+            vat.dirty = false;
             vat.syncTimer = 0;
             vat.sync();
         }
+        if (vat.organ.isEmpty()) {
+            vat.progress = 0;
+            return;
+        }
+        CulturingRecipe recipe = vat.findMatchingRecipe();
+        if (recipe == null) {
+            vat.progress = 0;
+            return;
+        }
+        vat.progress++;
+        if (vat.progress < recipe.getTicks()) {
+            return;
+        }
+        vat.tank.drain(recipe.getFluid().getAmount(), FluidAction.EXECUTE);
+        vat.organ = recipe.getOutput().copy();
+        vat.progress = 0;
+        vat.setChanged();
+        vat.sync();
+        level.playSound(null, vat.worldPosition, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.6F, 1.0F);
     }
 
-    private @Nullable CulturingRecipe findRecipe() {
+    private @Nullable CulturingRecipe findMatchingRecipe() {
         if (this.level == null || this.organ.isEmpty() || this.tank.getFluid().isEmpty()) {
             return null;
         }
@@ -127,7 +132,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             }
             return InteractionResult.PASS;
         }
-        if (held.isEmpty() || this.tank.getFluid().isEmpty() || this.findRecipeFor(held) == null) {
+        if (held.isEmpty() || this.tank.getFluid().isEmpty() || this.findAcceptedRecipe(held) == null) {
             return InteractionResult.PASS;
         }
         this.organ = held.copyWithCount(1);
@@ -139,7 +144,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         return InteractionResult.SUCCESS;
     }
 
-    private @Nullable CulturingRecipe findRecipeFor(ItemStack stack) {
+    private @Nullable CulturingRecipe findAcceptedRecipe(ItemStack stack) {
         if (this.level == null) {
             return null;
         }
@@ -149,6 +154,21 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
             }
         }
         return null;
+    }
+
+    public void dropContents() {
+        if (this.level == null || this.level.isClientSide || this.organ.isEmpty()) {
+            return;
+        }
+        ItemEntity entity = new ItemEntity(this.level,
+                this.worldPosition.getX() + 0.5D,
+                this.worldPosition.getY() + 1.0D,
+                this.worldPosition.getZ() + 0.5D,
+                this.organ.copy());
+        entity.setDefaultPickUpDelay();
+        this.level.addFreshEntity(entity);
+        this.organ = ItemStack.EMPTY;
+        this.setChanged();
     }
 
     private void sync() {
@@ -170,6 +190,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
         this.tank.readFromNBT(tag.getCompound("Tank"));
         this.organ = ItemStack.of(tag.getCompound("Organ"));
         this.progress = tag.getInt("Progress");
+        this.clientFluidLevel = -1.0F;
     }
 
     @Override
@@ -232,31 +253,16 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        int filled = this.tank.fill(resource, action);
-        if (filled > 0 && action.execute()) {
-            this.setChanged();
-            this.sync();
-        }
-        return filled;
+        return this.tank.fill(resource, action);
     }
 
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-        FluidStack drained = this.tank.drain(resource, action);
-        if (!drained.isEmpty() && action.execute()) {
-            this.setChanged();
-            this.sync();
-        }
-        return drained;
+        return this.tank.drain(resource, action);
     }
 
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        FluidStack drained = this.tank.drain(maxDrain, action);
-        if (!drained.isEmpty() && action.execute()) {
-            this.setChanged();
-            this.sync();
-        }
-        return drained;
+        return this.tank.drain(maxDrain, action);
     }
 }
