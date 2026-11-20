@@ -86,6 +86,8 @@
   "chestcavity.task.ftbquests.open_chest_cavity.title": "打开胸腔: %sx %s",
   "jei.chestcavity.category.organ_source": "器官来源",
   "jei.chestcavity.category.entity_organs": "生物器官",
+  "jei.chestcavity.category.culturing": "培养",
+  "block.chestcavity.culture_vat": "培养罐",
   "jei.chestcavity.organ_source.organ": "器官",
   "jei.chestcavity.organ_source.sources": "来源生物",
   "jei.chestcavity.entity_organs.entity": "生物",

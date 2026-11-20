@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
+import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import net.tigereye.chestcavity.compat.kubejs.events.*;
 import net.tigereye.chestcavity.chestcavities.instance.OrganScoreModifier;
 import net.tigereye.chestcavity.util.ChestCavityUtil;
@@ -39,5 +40,10 @@ public class CCKubeJSPlugin extends KubeJSPlugin {
     public void registerBindings(BindingsEvent event) {
         event.add("ChestCavityUtils", ChestCavityUtil.class);
         event.add("OrganScoreModifier", OrganScoreModifier.class);
+    }
+
+    @Override
+    public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
+        CCRecipeSchemas.register(event);
     }
 }
