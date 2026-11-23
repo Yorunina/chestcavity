@@ -42,6 +42,8 @@ public class ChestCavityInstance implements ContainerListener {
     public float lungRemainder = 0.0F;
     // kubejs层数据
     public Map<String, Map<Integer, String>> slotListenerMap = new HashMap<>();
+    // kubejs层按槽位运行时数据，不持久化
+    public Map<Integer, Map<String, Object>> slotDataMap = new HashMap<>();
     public Map<String, Object> customDataMap = new HashMap<>();
 
     public ChestCavityInstance(IChestCavityType type, LivingEntity owner) {
@@ -116,6 +118,34 @@ public class ChestCavityInstance implements ContainerListener {
         }
     }
 
+    public void setSlotData(int slotIndex, String key, Object value) {
+        this.slotDataMap.computeIfAbsent(slotIndex, ignored -> new HashMap<>()).put(key, value);
+    }
+
+    public Object getSlotData(int slotIndex, String key) {
+        Map<String, Object> data = this.slotDataMap.get(slotIndex);
+        return data == null ? null : data.get(key);
+    }
+
+    public void removeSlotData(int slotIndex, String key) {
+        Map<String, Object> data = this.slotDataMap.get(slotIndex);
+        if (data == null) {
+            return;
+        }
+        data.remove(key);
+        if (data.isEmpty()) {
+            this.slotDataMap.remove(slotIndex);
+        }
+    }
+
+    public void clearSlotData(int slotIndex) {
+        this.slotDataMap.remove(slotIndex);
+    }
+
+    public void clearSlotDataMap() {
+        this.slotDataMap.clear();
+    }
+
     @Override
     public void containerChanged(@NotNull Container sender) {
         if (isSameAsOldInventory()) return;
@@ -168,6 +198,8 @@ public class ChestCavityInstance implements ContainerListener {
     public void fromTag(CompoundTag tag, LivingEntity owner) {
         this.owner = owner;
         this.organScoreState.clearModifiers();
+        this.clearListenerMap();
+        this.clearSlotDataMap();
         CompoundTag ccTag;
         if (tag.contains("ChestCavity")) {
             ccTag = tag.getCompound("ChestCavity");
@@ -238,6 +270,7 @@ public class ChestCavityInstance implements ContainerListener {
         this.lungRemainder = other.lungRemainder;
         this.customDataMap = other.customDataMap;
         this.slotListenerMap = other.slotListenerMap;
+        this.slotDataMap = new HashMap<>();
         this.organScoreState.copyModifiersFrom(other.organScoreState);
         ChestCavityUtil.evaluateChestCavity(this);
     }
