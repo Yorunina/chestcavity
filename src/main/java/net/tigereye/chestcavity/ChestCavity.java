@@ -20,8 +20,11 @@ import net.tigereye.chestcavity.config.CCConfig;
 import net.tigereye.chestcavity.mob_effect.ModPotions;
 import net.tigereye.chestcavity.network.ChestCavityNetwork;
 import net.tigereye.chestcavity.registration.CCAttributes;
+import net.tigereye.chestcavity.registration.CCBlockEntities;
+import net.tigereye.chestcavity.registration.CCBlocks;
 import net.tigereye.chestcavity.registration.CCEnchantments;
 import net.tigereye.chestcavity.registration.CCItems;
+import net.tigereye.chestcavity.registration.CCRecipeTypes;
 import net.tigereye.chestcavity.registration.CCStatusEffects;
 import net.tigereye.chestcavity.ui.ChestCavityItemScreenHandler;
 import net.tigereye.chestcavity.ui.ChestCavityScreenHandler;
@@ -45,6 +48,7 @@ public class ChestCavity {
             .title(Component.translatable("tabs." + MODID + ".tab"))
             .displayItems((featureFlagSet, tabOutput) -> {
                 CCItems.ITEMS_FOR_TAB_LIST.forEach(registryObject -> tabOutput.accept(new ItemStack(registryObject.get())));
+                tabOutput.accept(new ItemStack(CCBlocks.CULTURE_VAT_ITEM.get()));
             }).build()
     );
 
@@ -57,6 +61,11 @@ public class ChestCavity {
         AutoConfig.register(CCConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(CCConfig.class).getConfig();
         CCItems.ITEMS.register(eventBus);
+        CCBlocks.BLOCKS.register(eventBus);
+        CCBlocks.ITEMS.register(eventBus);
+        CCBlockEntities.BLOCK_ENTITIES.register(eventBus);
+        CCRecipeTypes.RECIPE_TYPES.register(eventBus);
+        CCRecipeTypes.RECIPE_SERIALIZERS.register(eventBus);
         CREATIVE_TABS.register(eventBus);
         CCEnchantments.ENCHANTMENTS.register(eventBus);
         CCStatusEffects.MOB_EFFECTS.register(eventBus);
@@ -70,5 +79,6 @@ public class ChestCavity {
             KUBEJS_LOADED = true;
         }
         ChestCavityQuestEventHandler.getInstance().init();
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(net.tigereye.chestcavity.recipes.CulturingRecipes::onDatapackSync);
     }
 }
