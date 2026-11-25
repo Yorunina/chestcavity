@@ -20,10 +20,10 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEntity> {
-    private static final float INNER_MIN = 0.14F;
-    private static final float INNER_MAX = 0.86F;
-    private static final float FLOOR = 0.0625F;
-    private static final float CEILING = 1.9375F;
+    private static final float INNER_MIN = 0.20625F;
+    private static final float INNER_MAX = 0.78125F;
+    private static final float FLOOR = 0.19375F;
+    private static final float CEILING = 1.95625F;
     private static final RenderType FLUID_LAYER = RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
 
     private final ItemRenderer itemRenderer;
