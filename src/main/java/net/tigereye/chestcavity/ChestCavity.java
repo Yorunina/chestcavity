@@ -80,5 +80,6 @@ public class ChestCavity {
         }
         ChestCavityQuestEventHandler.getInstance().init();
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(net.tigereye.chestcavity.recipes.CulturingRecipes::onDatapackSync);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(net.tigereye.chestcavity.recipes.CulturingRecipes::onReload);
     }
 }

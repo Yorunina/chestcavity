@@ -22,8 +22,8 @@ import org.joml.Matrix4f;
 public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEntity> {
     private static final float INNER_MIN = 0.20625F;
     private static final float INNER_MAX = 0.78125F;
-    private static final float FLOOR = 0.19375F;
-    private static final float CEILING = 1.95625F;
+    private static final float FLOOR = 0.40625F;
+    private static final float CEILING = 1.98125F;
     private static final RenderType FLUID_LAYER = RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
 
     private final ItemRenderer itemRenderer;
@@ -44,7 +44,9 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         if (organ.isEmpty()) {
             return;
         }
-        float centerY = Math.max(fluidHeight / 2.0F, 0.0F);
+        float centerY = fluidHeight > FLOOR
+                ? FLOOR + (fluidHeight - FLOOR) / 2.0F
+                : FLOOR;
         double bob = Math.sin((vat.getLevel() == null ? 0.0D : vat.getLevel().getGameTime()) * 0.08D) * 0.03D;
         pose.pushPose();
         pose.translate(0.5F, centerY + bob, 0.5F);
@@ -61,7 +63,6 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
     private static void renderFluid(FluidStack fluid, PoseStack pose, MultiBufferSource buffers, int light, float top) {
         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid.getFluid());
         TextureAtlasSprite stillSprite = getSprite(properties.getStillTexture(fluid));
-        TextureAtlasSprite flowingSprite = getSprite(properties.getFlowingTexture(fluid));
         int color = properties.getTintColor(fluid);
         float red = ((color >> 16) & 0xFF) / 255.0F;
         float green = ((color >> 8) & 0xFF) / 255.0F;
@@ -74,10 +75,6 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         float stillU1 = stillSprite.getU1();
         float stillV0 = stillSprite.getV0();
         float stillV1 = stillSprite.getV1();
-        float flowingU0 = flowingSprite.getU0();
-        float flowingU1 = flowingSprite.getU1();
-        float flowingV0 = flowingSprite.getV0();
-        float flowingV1 = flowingSprite.getV1();
 
         pose.pushPose();
         Matrix4f matrix = pose.last().pose();
@@ -89,11 +86,11 @@ public class CultureVatRenderer implements BlockEntityRenderer<CultureVatBlockEn
         consumer.vertex(matrix, INNER_MAX, top, INNER_MAX).color(red, green, blue, alpha).uv(stillU1, stillV1).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
         consumer.vertex(matrix, INNER_MAX, top, INNER_MIN).color(red, green, blue, alpha).uv(stillU1, stillV0).overlayCoords(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 
-        float bottomV = flowingV0 + (flowingV1 - flowingV0) * (top - FLOOR) / (CEILING - FLOOR);
-        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MIN, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 0.0F, 0.0F, -1.0F);
-        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MAX, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 0.0F, 0.0F, 1.0F);
-        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MAX, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, 1.0F, 0.0F, 0.0F);
-        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MIN, top, flowingU0, flowingU1, bottomV, flowingV0, red, green, blue, alpha, light, -1.0F, 0.0F, 0.0F);
+        float bottomV = stillV0 + (stillV1 - stillV0) * (top - FLOOR) / (CEILING - FLOOR);
+        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MIN, top, stillU0, stillU1, bottomV, stillV0, red, green, blue, alpha, light, 0.0F, 0.0F, -1.0F);
+        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MAX, top, stillU0, stillU1, bottomV, stillV0, red, green, blue, alpha, light, 0.0F, 0.0F, 1.0F);
+        addWall(consumer, matrix, normal, INNER_MAX, FLOOR, INNER_MIN, INNER_MAX, FLOOR, INNER_MAX, top, stillU0, stillU1, bottomV, stillV0, red, green, blue, alpha, light, 1.0F, 0.0F, 0.0F);
+        addWall(consumer, matrix, normal, INNER_MIN, FLOOR, INNER_MAX, INNER_MIN, FLOOR, INNER_MIN, top, stillU0, stillU1, bottomV, stillV0, red, green, blue, alpha, light, -1.0F, 0.0F, 0.0F);
 
         pose.popPose();
     }

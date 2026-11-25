@@ -84,7 +84,7 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return CultureVatBlockEntity.this.organ.isEmpty() && CultureVatBlockEntity.this.findAcceptedRecipe(stack) != null;
+            return !stack.isEmpty() && CultureVatBlockEntity.this.organ.isEmpty();
         }
     };
     private final IItemHandler outputHandler = new IItemHandler() {
@@ -206,26 +206,19 @@ public class CultureVatBlockEntity extends BlockEntity implements IFluidHandler 
                 giveToPlayer(player, taken);
                 return InteractionResult.SUCCESS;
             }
-            if (this.findAcceptedRecipe(held) != null) {
-                ItemStack replaced = this.organ.copy();
-                setOrgan(held.copyWithCount(1));
-                held.shrink(1);
-                giveToPlayer(player, replaced);
-                return InteractionResult.SUCCESS;
-            }
-            return InteractionResult.PASS;
+            ItemStack replaced = this.organ.copy();
+            setOrgan(held.copyWithCount(1));
+            held.shrink(1);
+            giveToPlayer(player, replaced);
+            return InteractionResult.SUCCESS;
         }
-        if (held.isEmpty() || this.tank.getFluid().isEmpty() || this.findAcceptedRecipe(held) == null) {
+        if (held.isEmpty()) {
             return InteractionResult.PASS;
         }
         setOrgan(held.copyWithCount(1));
         held.shrink(1);
         this.level.playSound(null, this.worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
         return InteractionResult.SUCCESS;
-    }
-
-    private @Nullable CulturingRecipe findAcceptedRecipe(ItemStack stack) {
-        return CulturingRecipes.find(this.level, this.tank.getFluid(), stack);
     }
 
     private static void giveToPlayer(Player player, ItemStack stack) {

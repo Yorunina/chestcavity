@@ -2,6 +2,7 @@ package net.tigereye.chestcavity.recipes;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.tigereye.chestcavity.registration.CCRecipeTypes;
@@ -22,8 +23,17 @@ public final class CulturingRecipes {
         }
         String key = organ.getItem() + "|" + (organ.hasTag() ? organ.getTag().hashCode() : 0) + "|"
                 + net.minecraftforge.registries.ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
-        CulturingRecipe recipe = CACHE.computeIfAbsent(key, ignored -> lookup(level, fluid, organ));
-        return recipe != null && recipe.matches(fluid, organ) ? recipe : null;
+        CulturingRecipe recipe = CACHE.get(key);
+        if (recipe != null && recipe.matches(fluid, organ)) {
+            return recipe;
+        }
+        recipe = lookup(level, fluid, organ);
+        if (recipe == null) {
+            CACHE.remove(key);
+            return null;
+        }
+        CACHE.put(key, recipe);
+        return recipe.matches(fluid, organ) ? recipe : null;
     }
 
     private static @Nullable CulturingRecipe lookup(Level level, FluidStack fluid, ItemStack organ) {
@@ -36,6 +46,10 @@ public final class CulturingRecipes {
     }
 
     public static void onDatapackSync(OnDatapackSyncEvent event) {
+        CACHE.clear();
+    }
+
+    public static void onReload(AddReloadListenerEvent event) {
         CACHE.clear();
     }
 }
