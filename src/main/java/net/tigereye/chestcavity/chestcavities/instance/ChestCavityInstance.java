@@ -198,8 +198,6 @@ public class ChestCavityInstance implements ContainerListener {
     public void fromTag(CompoundTag tag, LivingEntity owner) {
         this.owner = owner;
         this.organScoreState.clearModifiers();
-        this.clearListenerMap();
-        this.clearSlotDataMap();
         CompoundTag ccTag;
         if (tag.contains("ChestCavity")) {
             ccTag = tag.getCompound("ChestCavity");
